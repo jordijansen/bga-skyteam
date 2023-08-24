@@ -1,0 +1,9 @@
+@use "sass:list";
+
+@import 'Variables';
+
+.st-board {
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+  border-radius: 10px;
+}

@@ -1,0 +1,49 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * SkyTeam implementation : © Jordi Jansen <jordi@itbyjj.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ */
+@use 'sass:math';
+
+@import '../../node_modules/bga-zoom/bga-zoom';
+@import '../../node_modules/bga-cards/bga-cards';
+@import 'Variables';
+@import 'Boards';
+@import 'Tokens';
+@import 'Cards';
+
+.bga-cards_selectable-card {
+  .card-side {
+    outline: 6px rgba(80, 200, 255, 0.75) solid;
+    cursor: pointer;
+  }
+}
+
+.bga-cards_selected-card {
+  .card-side {
+    outline: 6px rgba(124, 252, 0, 0.75) solid;
+    cursor: pointer;
+  }
+}
+
+#st-game {
+  display: flex;
+  flex-direction: column;
+}
+
+html, .mode_3d #game_play_area_background {
+  //background-image: url('img/skyteam-bg.jpg');
+  .whiteblock {
+    border-radius: 10px;
+  }
+}
+
+#custom-actions {
+
+}
+

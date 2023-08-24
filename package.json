@@ -1,0 +1,25 @@
+{
+  "name": "bga-sky-team",
+  "version": "1.0.0",
+  "description": "",
+  "main": "skyteam.js",
+  "scripts": {
+    "build:ts": "tsc",
+    "build:scss": "sass src/scss/SkyTeam.scss skyteam.css",
+    "watch:ts": "tsc --watch",
+    "watch:scss": "sass --watch src/scss/SkyTeam.scss skyteam.css",
+    "watch": "npm run watch:ts & npm run watch:scss",
+    "build": "npm run build:ts & npm run build:scss"
+  },
+  "author": "Jordi Jansen",
+  "license": "ISC",
+  "dependencies": {
+    "bga-cards": "thoun/bga-cards#2.1.0",
+    "bga-animations": "thoun/bga-animations#1.1.0",
+    "bga-zoom": "thoun/bga-zoom#0.2.0"
+  },
+  "devDependencies": {
+    "sass": "^1.63.6",
+    "typescript": "^5.1.6"
+  }
+}

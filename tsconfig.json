@@ -1,0 +1,45 @@
+{
+  "rootDir": ".",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "none",
+    "lib": ["dom", "esnext"],
+    "sourceMap": false,
+    "outFile": "skyteam.js",
+    "allowJs": true
+  },
+  "files": [
+    "src/bga/Framework.d.ts",
+    "src/bga/Card.d.ts",
+    "src/bga/Counter.d.ts",
+    "src/bga/Define.ts",
+    "src/SkyTeam.d.ts",
+
+    "node_modules/bga-zoom/src/zoom-manager.ts",
+
+    "node_modules/bga-animations/src/animations.ts",
+    "node_modules/bga-animations/src/animations/attach-with-animation.ts",
+    "node_modules/bga-animations/src/animations/cumulated-animations.ts",
+    "node_modules/bga-animations/src/animations/pause-animation.ts",
+    "node_modules/bga-animations/src/animations/show-screen-center-animation.ts",
+    "node_modules/bga-animations/src/animations/slide-animation.ts",
+    "node_modules/bga-animations/src/animations/slide-to-animation.ts",
+    "node_modules/bga-animations/src/animation-manager.ts",
+    "node_modules/bga-animations/src/animations-utils.ts",
+
+    "node_modules/bga-cards/src/animations.ts",
+    "node_modules/bga-cards/src/stocks/card-stock.ts",
+    "node_modules/bga-cards/src/stocks/manual-position-stock.ts",
+    "node_modules/bga-cards/src/stocks/all-visible-deck.ts",
+    "node_modules/bga-cards/src/stocks/void-stock.ts",
+    "node_modules/bga-cards/src/stocks/line-stock.ts",
+    "node_modules/bga-cards/src/stocks/slot-stock.ts",
+    "node_modules/bga-cards/src/stocks/deck.ts",
+    "node_modules/bga-cards/src/card-manager.ts",
+    "node_modules/bga-cards/src/sort.ts",
+
+    "src/bga/AutoZoomManager.ts",
+
+    "src/SkyTeam.ts",
+  ]
+}
