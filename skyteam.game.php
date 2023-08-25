@@ -19,6 +19,7 @@
 use actions\ActionManager;
 use commands\CommandManager;
 use managers\PlayerManager;
+use managers\PlaneManager;
 use traits\ActionTrait;
 use traits\ArgsTrait;
 use traits\DebugTrait;
@@ -33,6 +34,7 @@ require_once('modules/php/Constants.inc.php');
 require_once('modules/php/utils/ReflectionUtils.php');
 
 require_once('modules/php/objects/Card.php');
+require_once('modules/php/objects/Plane.php');
 
 require_once('modules/php/commands/CommandManager.php');
 require_once('modules/php/commands/BaseCommand.php');
@@ -48,6 +50,7 @@ require_once('modules/php/traits/DebugTrait.php');
 require_once('modules/php/traits/SetupTrait.php');
 
 require_once('modules/php/PlayerManager.php');
+require_once('modules/php/PlaneManager.php');
 
 
 class SkyTeam extends Table
@@ -68,6 +71,8 @@ class SkyTeam extends Table
     public PlayerManager $playerManager;
     public ActionManager $actionManager;
 
+    public PlaneManager $planeManager;
+
 	function __construct( )
 	{
         // Your global variables labels:
@@ -86,8 +91,10 @@ class SkyTeam extends Table
         $this->commandManager = new CommandManager();
         $this->playerManager = new PlayerManager();
         $this->actionManager = new ActionManager();
+
+        $this->planeManager = new PlaneManager();
 	}
-	
+
     protected function getGameName( )
     {
 		// Used for translations and stuff. Please do not modify.
@@ -113,7 +120,8 @@ class SkyTeam extends Table
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
-  
+
+        $result['plane'] = $this->planeManager->get();
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
         return $result;

@@ -296,9 +296,149 @@ body > .card {
   border-radius: 10px;
 }
 
+#st-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#st-game #st-game-boards-wrapper {
+  display: flex;
+  width: 1000px;
+  justify-content: center;
+}
+#st-game #st-game-boards-wrapper #st-main-board {
+  background-image: url("img/skyteam-main-board.png");
+  width: 607px;
+  height: 850px;
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator {
+  background-image: url(img/skyteam-axis-indicator.png);
+  width: 190px;
+  height: 190px;
+  position: absolute;
+  left: calc(50% - 95px);
+  top: 145px;
+  background-size: cover;
+  transition: transform 1s ease-in-out;
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="-3"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="-2"] {
+  transform: rotate(-50deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="-1"] {
+  transform: rotate(-25deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="0"] {
+  transform: rotate(0deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="1"] {
+  transform: rotate(25deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="2"] {
+  transform: rotate(50deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-axis-indicator[data-value="3"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker, #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker {
+  position: absolute;
+  transition-property: transform, left, top;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="4"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="4"] {
+  left: 180px;
+  top: 353px;
+  transform: rotate(42deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="5"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="5"] {
+  left: 222px;
+  top: 379px;
+  transform: rotate(25deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="6"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="6"] {
+  left: 269px;
+  top: 392px;
+  transform: rotate(8deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="7"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="7"] {
+  left: 319px;
+  top: 392px;
+  transform: rotate(-8deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="8"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="8"] {
+  left: 363px;
+  top: 379px;
+  transform: rotate(-25deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="9"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="9"] {
+  left: 403px;
+  top: 353px;
+  transform: rotate(-42deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="10"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="10"] {
+  left: 438px;
+  top: 312px;
+  transform: rotate(-59deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="11"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="11"] {
+  left: 457px;
+  top: 268px;
+  transform: rotate(-76deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-blue-marker[data-value="12"], #st-game #st-game-boards-wrapper #st-main-board #st-plane-aerodynamics-orange-marker[data-value="12"] {
+  left: 464px;
+  top: 220px;
+  transform: rotate(-90deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-brake-marker {
+  position: absolute;
+  transition-property: transform, left, top;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-brake-marker[data-value="0"] {
+  left: 180px;
+  top: 517px;
+  transform: rotate(42deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-brake-marker[data-value="2"] {
+  left: 222px;
+  top: 544px;
+  transform: rotate(25deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-brake-marker[data-value="4"] {
+  left: 319px;
+  top: 557px;
+  transform: rotate(-8deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board #st-plane-brake-marker[data-value="6"] {
+  left: 404px;
+  top: 517px;
+  transform: rotate(-42deg);
+}
+
 .st-token {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+
+.st-plane-marker {
+  background-image: url("img/skyteam-plane-markers.png");
+  background-size: 300% auto;
+  height: 40px;
+  width: 25px;
+}
+.st-plane-marker[data-type=aerodynamics-blue] {
+  background-position: 0 0;
+}
+.st-plane-marker[data-type=aerodynamics-orange] {
+  background-position: 50% 0;
+}
+.st-plane-marker[data-type=brakes-red] {
+  background-position: 100% 0;
 }
 
 .bga-cards_selectable-card .card-side {
@@ -311,11 +451,9 @@ body > .card {
   cursor: pointer;
 }
 
-#st-game {
-  display: flex;
-  flex-direction: column;
+html, .mode_3d #game_play_area_background {
+  background-image: url("img/skyteam-bg.jpg");
 }
-
 html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   border-radius: 10px;
 }

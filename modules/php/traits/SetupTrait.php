@@ -1,6 +1,8 @@
 <?php
 
 namespace traits;
+use objects\Plane;
+
 trait SetupTrait
 {
 
@@ -42,6 +44,13 @@ trait SetupTrait
         self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         self::reloadPlayersBasicInfos();
 
+        $this->setInitialPlaneParameters();
+
         $this->gamestate->setAllPlayersMultiactive();
+    }
+
+    private function setInitialPlaneParameters()
+    {
+        $this->planeManager->save(new Plane(0, 4, 8, 0));
     }
 }

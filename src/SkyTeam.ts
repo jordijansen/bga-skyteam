@@ -18,6 +18,7 @@ class SkyTeam implements SkyTeamGame {
     public gamedatas: SkyTeamGameData;
     private zoomManager: ZoomManager;
     public animationManager: AnimationManager;
+    public planeManager: PlaneManager;
 
 
     // UI elements
@@ -28,7 +29,7 @@ class SkyTeam implements SkyTeamGame {
 
     constructor() {
         // Init Managers
-
+        this.planeManager = new PlaneManager();
         // Init Modules
 
     }
@@ -46,13 +47,16 @@ class SkyTeam implements SkyTeamGame {
         "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
     */
 
-    public setup(gamedatas: SkyTeamGameData) {
+    public setup(data: SkyTeamGameData) {
         log( "Starting game setup" );
-        log('gamedatas', gamedatas);
+        log('gamedatas', data);
 
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level')
         this.animationManager = new AnimationManager(this, {duration: ANIMATION_MS})
+
+        // Setup Managers
+        this.planeManager.setUp(data);
 
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last')
 

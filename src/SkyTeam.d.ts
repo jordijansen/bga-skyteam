@@ -1,3 +1,10 @@
+interface Plane {
+    axis: number;
+    aerodynamicsBlue: number;
+    aerodynamicsOrange: number,
+    brake: number
+}
+
 interface SkyTeamGame extends Game {
     gamedatas: SkyTeamGameData;
     getPlayerId(): number;
@@ -11,7 +18,7 @@ interface SkyTeamPlayer extends Player {
 }
 
 interface SkyTeamGameData extends GameData {
-
+    plane: Plane
 }
 
 // ARGS

@@ -4,3 +4,13 @@
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 }
+
+.st-plane-marker {
+  background-image: url('img/skyteam-plane-markers.png');
+  background-size: 300% auto;
+  height: 40px;
+  width: 25px;
+  &[data-type="aerodynamics-blue"] {background-position: 0 0;}
+  &[data-type="aerodynamics-orange"] {background-position: 50% 0;}
+  &[data-type="brakes-red"] {background-position: 100% 0;}
+}

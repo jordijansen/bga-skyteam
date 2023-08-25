@@ -26,7 +26,14 @@
 -->
 
 <div id="st-game">
-
+    <div id="st-game-boards-wrapper">
+        <div id="st-main-board" class="st-board">
+            <div id="st-plane-axis-indicator" class="st-token"></div>
+            <div id="st-plane-aerodynamics-blue-marker" class="st-plane-marker st-token" data-type="aerodynamics-blue"></div>
+            <div id="st-plane-aerodynamics-orange-marker" class="st-plane-marker st-token" data-type="aerodynamics-orange"></div>
+            <div id="st-plane-brake-marker" class="st-plane-marker st-token" data-type="brakes-red"></div>
+        </div>
+    </div>
 </div>
 
 <div id="zoom-overall" style="width: 100%;"></div>

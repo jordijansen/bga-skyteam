@@ -33,6 +33,7 @@
 -- Example 2: add a custom field to the standard "player" table
 -- ALTER TABLE `player` ADD `player_my_custom_field` INT UNSIGNED NOT NULL DEFAULT '0';
 
+-- FRAMEWORK TABLES
 CREATE TABLE IF NOT EXISTS `global_variables` (
     `name` varchar(200) NOT NULL,
     `value` json,
@@ -52,5 +53,15 @@ CREATE TABLE IF NOT EXISTS `extra_player` (
     `player_custom_order` int(10) unsigned NOT NULL DEFAULT '0',
     PRIMARY KEY (`player_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- GAME TABLES
+CREATE TABLE IF NOT EXISTS `plane` (
+    `id` int(10) unsigned NOT NULL,
+    `axis` int(11) NOT NULL,
+    `aerodynamics_blue` int(11) unsigned NOT NULL,
+    `aerodynamics_orange` int(11) unsigned NOT NULL,
+    `brake` int(11) unsigned NOT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

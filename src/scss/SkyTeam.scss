@@ -31,13 +31,8 @@
   }
 }
 
-#st-game {
-  display: flex;
-  flex-direction: column;
-}
-
 html, .mode_3d #game_play_area_background {
-  //background-image: url('img/skyteam-bg.jpg');
+  background-image: url('img/skyteam-bg.jpg');
   .whiteblock {
     border-radius: 10px;
   }

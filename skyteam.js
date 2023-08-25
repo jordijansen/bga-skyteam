@@ -2064,6 +2064,21 @@ var AutoZoomManager = /** @class */ (function (_super) {
     }
     return AutoZoomManager;
 }(ZoomManager));
+var PlaneManager = /** @class */ (function () {
+    function PlaneManager() {
+    }
+    PlaneManager.prototype.setUp = function (data) {
+        $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = data.plane.axis;
+        $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
+        $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
+        $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
+    };
+    PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
+    PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
+    PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
+    PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
+    return PlaneManager;
+}());
 var ANIMATION_MS = 800;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
@@ -2072,6 +2087,7 @@ var SkyTeam = /** @class */ (function () {
     // Modules
     function SkyTeam() {
         // Init Managers
+        this.planeManager = new PlaneManager();
         // Init Modules
     }
     /*
@@ -2086,12 +2102,14 @@ var SkyTeam = /** @class */ (function () {
 
         "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
     */
-    SkyTeam.prototype.setup = function (gamedatas) {
+    SkyTeam.prototype.setup = function (data) {
         log("Starting game setup");
-        log('gamedatas', gamedatas);
+        log('gamedatas', data);
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
+        // Setup Managers
+        this.planeManager.setUp(data);
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last');
         this.setupNotifications();
         log("Ending game setup");
