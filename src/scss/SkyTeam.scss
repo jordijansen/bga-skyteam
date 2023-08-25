@@ -19,15 +19,13 @@
 
 .bga-cards_selectable-card {
   .card-side {
-    outline: 6px rgba(80, 200, 255, 0.75) solid;
-    cursor: pointer;
+    @include selectable();
   }
 }
 
 .bga-cards_selected-card {
   .card-side {
-    outline: 6px rgba(124, 252, 0, 0.75) solid;
-    cursor: pointer;
+    @include selected();
   }
 }
 
@@ -40,5 +38,14 @@ html, .mode_3d #game_play_area_background {
 
 #custom-actions {
 
+}
+
+#st-player-setup {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  .st-role-card {
+    margin: 10px 0;
+  }
 }
 

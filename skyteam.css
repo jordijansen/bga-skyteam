@@ -296,14 +296,8 @@ body > .card {
   border-radius: 10px;
 }
 
-#st-game {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 #st-game #st-game-boards-wrapper {
   display: flex;
-  width: 1000px;
   justify-content: center;
 }
 #st-game #st-game-boards-wrapper #st-main-board {
@@ -441,6 +435,42 @@ body > .card {
   background-position: 100% 0;
 }
 
+.st-role-card {
+  background-image: url("img/skyteam-roles.jpg");
+  background-size: 200% auto;
+  border-radius: 10px;
+  width: 200px;
+  height: 159px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.st-role-card p {
+  text-align: center;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 24px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+.st-role-card[data-type=pilot] {
+  background-position: 0 0;
+}
+.st-role-card[data-type=co-pilot] {
+  background-position: 100% 0;
+}
+.st-role-card.selected {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-role-card.selectable {
+  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  cursor: pointer;
+}
+
 .bga-cards_selectable-card .card-side {
   outline: 6px rgba(80, 200, 255, 0.75) solid;
   cursor: pointer;
@@ -456,6 +486,15 @@ html, .mode_3d #game_play_area_background {
 }
 html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   border-radius: 10px;
+}
+
+#st-player-setup {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+#st-player-setup .st-role-card {
+  margin: 10px 0;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

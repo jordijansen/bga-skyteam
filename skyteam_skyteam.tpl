@@ -26,6 +26,7 @@
 -->
 
 <div id="st-game">
+    <div id="st-player-setup"></div>
     <div id="st-game-boards-wrapper">
         <div id="st-main-board" class="st-board">
             <div id="st-plane-axis-indicator" class="st-token"></div>

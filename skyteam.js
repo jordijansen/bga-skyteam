@@ -2064,6 +2064,35 @@ var AutoZoomManager = /** @class */ (function (_super) {
     }
     return AutoZoomManager;
 }(ZoomManager));
+var PlayerRoleManager = /** @class */ (function () {
+    function PlayerRoleManager(game) {
+        this.game = game;
+    }
+    PlayerRoleManager.prototype.setUp = function (data) {
+        var _this = this;
+        Object.keys(data.players).forEach(function (playerId) {
+            var player = data.players[playerId];
+            if (player.role) {
+                dojo.place(_this.createRoleCard(player.role), "player_board_".concat(playerId));
+            }
+        });
+    };
+    PlayerRoleManager.prototype.createRoleCard = function (role) {
+        return "<div id=\"st-role-card-".concat(role, "\" class=\"st-role-card\" data-type=\"").concat(role, "\"><p>").concat(_(role), "</p></div>");
+    };
+    PlayerRoleManager.prototype.setRole = function (playerId, role, roleColor) {
+        this.game.gamedatas.players[playerId].color = roleColor;
+        this.game.gamedatas.players[playerId].role = role;
+        var element = document.querySelector("#player_name_".concat(playerId, " a"));
+        element.style.color = "#".concat(roleColor);
+        dojo.place(this.createRoleCard(role), "st-role-card-".concat(role), 'replace');
+        return this.game.animationManager.play(new BgaAttachWithAnimation({
+            animation: new BgaSlideAnimation({ element: $("st-role-card-".concat(role)), transitionTimingFunction: 'ease-out' }),
+            attachElement: document.getElementById("player_board_".concat(playerId))
+        }));
+    };
+    return PlayerRoleManager;
+}());
 var PlaneManager = /** @class */ (function () {
     function PlaneManager() {
     }
@@ -2079,15 +2108,54 @@ var PlaneManager = /** @class */ (function () {
     PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     return PlaneManager;
 }());
+var PlayerSetup = /** @class */ (function () {
+    function PlayerSetup(game, elementId) {
+        this.game = game;
+        this.elementId = elementId;
+        this.selectedRole = null;
+    }
+    PlayerSetup.prototype.setUp = function () {
+        this.createRoleCard('pilot');
+        this.createRoleCard('co-pilot');
+    };
+    PlayerSetup.prototype.createRoleCard = function (role) {
+        var _this = this;
+        dojo.place(this.game.playerRoleManager.createRoleCard(role), this.elementId);
+        if (this.game.isCurrentPlayerActive()) {
+            var element = document.getElementById("st-role-card-".concat(role));
+            element.classList.add('selectable');
+            dojo.connect(element, 'onclick', function () { _this.roleCardClicked(role); });
+        }
+    };
+    PlayerSetup.prototype.roleCardClicked = function (role) {
+        var _this = this;
+        var currentPlayer = this.game.getPlayer(this.game.getPlayerId());
+        var otherPlayer = Object.keys(this.game.gamedatas.players)
+            .filter(function (playerId) { return Number(playerId) !== _this.game.getPlayerId(); })
+            .map(function (playerId) { return _this.game.gamedatas.players[playerId]; })[0];
+        var clickedElement = document.getElementById("st-role-card-".concat(role));
+        var otherElement = document.getElementById("st-role-card-".concat(role === 'pilot' ? 'co-pilot' : 'pilot'));
+        clickedElement.classList.add('selected');
+        clickedElement.classList.remove('selectable');
+        dojo.destroy("st-role-card-playername-".concat(currentPlayer.id));
+        dojo.place("<p id=\"st-role-card-playername-".concat(currentPlayer.id, "\">").concat(currentPlayer.name, "</p>"), clickedElement);
+        otherElement.classList.add('selectable');
+        otherElement.classList.remove('selected');
+        dojo.destroy("st-role-card-playername-".concat(otherPlayer.id));
+        dojo.place("<p id=\"st-role-card-playername-".concat(otherPlayer.id, "\">").concat(otherPlayer.name, "</p>"), otherElement);
+        this.selectedRole = role;
+    };
+    return PlayerSetup;
+}());
 var ANIMATION_MS = 800;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
-    // UI elements
     // Managers
     // Modules
     function SkyTeam() {
         // Init Managers
         this.planeManager = new PlaneManager();
+        this.playerRoleManager = new PlayerRoleManager(this);
         // Init Modules
     }
     /*
@@ -2109,6 +2177,7 @@ var SkyTeam = /** @class */ (function () {
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
         // Setup Managers
+        this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last');
         this.setupNotifications();
@@ -2122,7 +2191,13 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onEnteringState = function (stateName, args) {
         log('Entering state: ' + stateName, args.args);
         switch (stateName) {
+            case 'playerSetup':
+                this.enteringPlayerSetup();
         }
+    };
+    SkyTeam.prototype.enteringPlayerSetup = function () {
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.playerSetup.setUp();
     };
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
@@ -2135,6 +2210,10 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onUpdateActionButtons = function (stateName, args) {
         var _this = this;
         if (this.isCurrentPlayerActive()) {
+            switch (stateName) {
+                case 'playerSetup':
+                    this.addActionButton('confirmPlayerSetup', _("Confirm"), function () { return _this.confirmPlayerSetup(); });
+            }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
                 this.addActionButton('undoLast', _("Undo last"), function () { return _this.undoLast(); }, null, null, 'red');
                 this.addActionButton('undoAll', _("Undo all"), function () { return _this.undoAll(); }, null, null, 'red');
@@ -2146,6 +2225,15 @@ var SkyTeam = /** @class */ (function () {
                     // CHANGE MULTIACTIVE STATE
                 }
             }
+        }
+    };
+    SkyTeam.prototype.confirmPlayerSetup = function () {
+        if (this.playerSetup.selectedRole) {
+            this.takeAction('confirmPlayerSetup', {
+                settings: JSON.stringify({
+                    activePlayerRole: this.playerSetup.selectedRole
+                })
+            });
         }
     };
     SkyTeam.prototype.undoLast = function () {
@@ -2223,9 +2311,9 @@ var SkyTeam = /** @class */ (function () {
         var _this = this;
         log('notifications subscriptions setup');
         var notifs = [
-        // ['finalScoringRevealed', undefined]
-        // ['shortTime', 1],
-        // ['fixedTime', 1000]
+            ['playerRoleAssigned', undefined]
+            // ['shortTime', 1],
+            // ['fixedTime', 1000]
         ];
         notifs.forEach(function (notif) {
             dojo.subscribe(notif[0], _this, function (notifDetails) {
@@ -2237,6 +2325,9 @@ var SkyTeam = /** @class */ (function () {
             // make all notif as synchronous
             _this.notifqueue.setSynchronous(notif[0], notif[1]);
         });
+    };
+    SkyTeam.prototype.notif_playerRoleAssigned = function (args) {
+        return this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         try {

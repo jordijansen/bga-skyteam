@@ -40,7 +40,11 @@
 
     "src/bga/AutoZoomManager.ts",
 
+    "src/managers/PlayerRoleManager.ts",
     "src/managers/PlaneManager.ts",
+
+    "src/ui/PlayerSetup.ts",
+
     "src/SkyTeam.ts",
   ]
 }

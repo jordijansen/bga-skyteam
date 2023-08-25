@@ -6,6 +6,8 @@ interface Plane {
 }
 
 interface SkyTeamGame extends Game {
+    playerRoleManager: PlayerRoleManager;
+    animationManager: AnimationManager,
     gamedatas: SkyTeamGameData;
     getPlayerId(): number;
     getPlayer(playerId: number): SkyTeamPlayer;
@@ -15,6 +17,7 @@ interface SkyTeamGame extends Game {
 }
 
 interface SkyTeamPlayer extends Player {
+    role: 'pilot'|'co-pilot'
 }
 
 interface SkyTeamGameData extends GameData {
@@ -24,3 +27,8 @@ interface SkyTeamGameData extends GameData {
 // ARGS
 
 // NOTIFS
+interface NotifPlayerRoleAssigned {
+    playerId: number,
+    roleColor: string;
+    role: string;
+}

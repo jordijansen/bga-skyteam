@@ -36,6 +36,18 @@ class action_skyteam extends APP_GameAction
         }
     }
 
+    public function confirmPlayerSetup()
+    {
+        self::setAjaxMode();
+
+        $settings = self::getArg("settings", AT_json, true);
+        $this->validateJSonAlphaNum($settings, 'settings');
+
+        $this->game->confirmPlayerSetup($settings);
+
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

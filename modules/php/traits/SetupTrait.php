@@ -34,19 +34,18 @@ trait SetupTrait
         foreach( $players as $player_id => $player )
         {
             $color = array_shift( $default_colors );
-            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."', 5)";
+            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."', 0)";
             $extraValues[] = "('".$player_id."')";
         }
         $sql .= implode( ',', $values );
         $extraSql .= implode( ',', $extraValues );
         self::DbQuery( $extraSql );
         self::DbQuery( $sql );
-        self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         self::reloadPlayersBasicInfos();
 
         $this->setInitialPlaneParameters();
 
-        $this->gamestate->setAllPlayersMultiactive();
+        $this->activeNextPlayer();
     }
 
     private function setInitialPlaneParameters()

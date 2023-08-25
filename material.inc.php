@@ -19,6 +19,11 @@
  *
  */
 
+$this->ROLES = [
+    PILOT => clienttranslate('pilot'),
+    CO_PILOT => clienttranslate('co-pilot')
+];
+
 
 /*
 

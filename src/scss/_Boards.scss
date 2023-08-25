@@ -9,13 +9,8 @@
 }
 
 #st-game {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   #st-game-boards-wrapper {
     display: flex;
-    width: 1000px;
     justify-content: center;
     #st-main-board {
       background-image: url("img/skyteam-main-board.png");

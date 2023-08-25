@@ -19,9 +19,10 @@ class SkyTeam implements SkyTeamGame {
     private zoomManager: ZoomManager;
     public animationManager: AnimationManager;
     public planeManager: PlaneManager;
-
+    public playerRoleManager: PlayerRoleManager;
 
     // UI elements
+    private playerSetup: PlayerSetup;
 
     // Managers
 
@@ -30,6 +31,7 @@ class SkyTeam implements SkyTeamGame {
     constructor() {
         // Init Managers
         this.planeManager = new PlaneManager();
+        this.playerRoleManager = new PlayerRoleManager(this);
         // Init Modules
 
     }
@@ -56,6 +58,7 @@ class SkyTeam implements SkyTeamGame {
         this.animationManager = new AnimationManager(this, {duration: ANIMATION_MS})
 
         // Setup Managers
+        this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
 
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last')
@@ -74,8 +77,14 @@ class SkyTeam implements SkyTeamGame {
         log('Entering state: ' + stateName, args.args);
 
         switch (stateName) {
-
+            case 'playerSetup':
+                this.enteringPlayerSetup();
         }
+    }
+
+    private enteringPlayerSetup() {
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.playerSetup.setUp();
     }
 
     public onLeavingState(stateName: string) {
@@ -92,6 +101,11 @@ class SkyTeam implements SkyTeamGame {
     public onUpdateActionButtons(stateName: string, args: any) {
 
         if ((this as any).isCurrentPlayerActive()) {
+            switch (stateName) {
+                case 'playerSetup':
+                    (this as any).addActionButton('confirmPlayerSetup', _("Confirm"), () => this.confirmPlayerSetup());
+
+            }
 
             if (args?.canCancelMoves) {
                 (this as any).addActionButton('undoLast', _("Undo last"), () => this.undoLast(), null, null, 'red');
@@ -103,6 +117,16 @@ class SkyTeam implements SkyTeamGame {
                     // CHANGE MULTIACTIVE STATE
                 }
             }
+        }
+    }
+
+    private confirmPlayerSetup() {
+        if (this.playerSetup.selectedRole) {
+            this.takeAction('confirmPlayerSetup', {
+                settings: JSON.stringify({
+                    activePlayerRole: this.playerSetup.selectedRole
+                })
+            })
         }
     }
 
@@ -189,7 +213,7 @@ class SkyTeam implements SkyTeamGame {
         log( 'notifications subscriptions setup' );
 
         const notifs = [
-            // ['finalScoringRevealed', undefined]
+            ['playerRoleAssigned', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -206,6 +230,10 @@ class SkyTeam implements SkyTeamGame {
             // make all notif as synchronous
             (this as any).notifqueue.setSynchronous(notif[0], notif[1]);
         });
+    }
+
+    private notif_playerRoleAssigned(args: NotifPlayerRoleAssigned) {
+        return this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
     }
     public format_string_recursive(log: string, args: any) {
         try {

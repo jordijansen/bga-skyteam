@@ -2,10 +2,19 @@
 
 namespace traits;
 
-use objects\AutoWalker;
-
 trait UtilsTrait
 {
+
+    function getPlayerRole(int $playerId)
+    {
+        $playerColor = $this->getPlayerColor($playerId);
+        if ($playerColor == PILOT_PLAYER_COLOR) {
+            return PILOT;
+        } else if ($playerColor == CO_PILOT_PLAYER_COLOR) {
+            return CO_PILOT;
+        }
+        return null;
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     //////////// Generic Utility functions
@@ -34,11 +43,7 @@ trait UtilsTrait
     }
 
     function getPlayerName(int $playerId) {
-        if ($playerId > 2) {
-            return self::getUniqueValueFromDB("SELECT player_name FROM player WHERE player_id = $playerId");
-        } else {
-            return "Autowalker #$playerId";
-        }
+        return self::getUniqueValueFromDB("SELECT player_name FROM player WHERE player_id = $playerId");
     }
 
     function getPlayerColor(int $playerId) {
@@ -47,6 +52,10 @@ trait UtilsTrait
 
     function getPlayers() {
         return $this->getCollectionFromDB("SELECT * FROM player");
+    }
+
+    function getPlayerIds() {
+        return array_keys($this->getCollectionFromDB("SELECT player_id FROM player"));
     }
 
     function getPlayerNo($playerId) {

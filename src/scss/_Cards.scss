@@ -2,3 +2,35 @@
 
 @import 'Variables';
 
+.st-role-card {
+  background-image: url('img/skyteam-roles.jpg');
+  background-size: 200% auto;
+  border-radius: 10px;
+  width: 200px;
+  height: 159px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  p {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 24px;
+    filter: drop-shadow(1px 1px 1px black);
+    -webkit-filter: drop-shadow(1px 1px 1px black);
+  }
+
+  &[data-type="pilot"] {background-position: 0 0;}
+  &[data-type="co-pilot"] {background-position: 100% 0;}
+
+  &.selected {
+    @include selected();
+  }
+  &.selectable {
+    @include selectable();
+  }
+}

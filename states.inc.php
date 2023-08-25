@@ -56,7 +56,7 @@ $basicGameStates = [
         "description" => clienttranslate("Game setup"),
         "type" => "manager",
         "action" => "stGameSetup",
-        "transitions" => [ "" => ST_STRATEGY_DICE_ROLLS ]
+        "transitions" => [ "" => ST_PLAYER_SETUP ]
     ],
 
     // Final state.
@@ -71,6 +71,18 @@ $basicGameStates = [
 ];
 
 $gameStates = [
+    ST_PLAYER_SETUP => [
+        "name" => "playerSetup",
+        "description" => clienttranslate('${actplayer} confirm roles'),
+        "descriptionmyturn" => clienttranslate('${you} must confirm roles'),
+        "type" => "activeplayer",
+        "possibleactions" => [
+            ACT_CONFIRM_PLAYER_SETUP
+        ],
+        "transitions" => [
+            "" => ST_STRATEGY_DICE_ROLLS
+        ],
+    ],
     ST_STRATEGY_DICE_ROLLS => [
         "name" => "strategyAndDiceRolls",
         "description" => clienttranslate('Waiting for players to confirm they are ready'),
