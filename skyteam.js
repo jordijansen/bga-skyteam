@@ -2094,19 +2094,73 @@ var PlayerRoleManager = /** @class */ (function () {
     return PlayerRoleManager;
 }());
 var PlaneManager = /** @class */ (function () {
-    function PlaneManager() {
+    function PlaneManager(game) {
+        this.game = game;
+        // TEMP
+        this.currentApproach = 1;
+        this.currentAltitude = 1;
     }
     PlaneManager.prototype.setUp = function (data) {
+        var _this = this;
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = data.plane.axis;
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
+        $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
+        $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+        this.setApproachAndAltitude(data.plane.approach, data.plane.altitude);
+        dojo.connect($(PlaneManager.PLANE_ALTITUDE_TRACK), 'onclick', function () { return _this.updateAltitude(_this.currentAltitude + 1); });
+        dojo.connect($(PlaneManager.PLANE_APPROACH_TRACK), 'onclick', function () { return _this.updateApproach(_this.currentApproach + 1); });
+    };
+    PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue) {
+        var wrapper = $('st-main-board-tracks');
+        var altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
+        var approach = $(PlaneManager.PLANE_APPROACH_TRACK);
+        var altitudeSize = this.game.gamedatas.altitude.size;
+        var approachSize = this.game.gamedatas.approach.size;
+        var altitudeHeight = altitude.offsetHeight - 22 - ((altitudeSize - altitudeValue) * 96);
+        var approachHeight = approach.offsetHeight - 22 - ((approachSize - approachValue) * 96);
+        altitude.style.bottom = "-".concat(altitudeHeight, "px");
+        approach.style.bottom = "-".concat(approachHeight, "px");
+        var newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
+        wrapper.style.height = "".concat(newWrapperHeight, "px");
+    };
+    PlaneManager.prototype.updateApproach = function (value) {
+        this.currentApproach = value;
+        this.setApproachAndAltitude(value, this.currentAltitude);
+    };
+    PlaneManager.prototype.updateAltitude = function (value) {
+        this.currentAltitude = value;
+        this.setApproachAndAltitude(this.currentApproach, value);
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
     PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
+    PlaneManager.PLANE_ALTITUDE_TRACK = 'st-altitude-track';
+    PlaneManager.PLANE_APPROACH_TRACK = 'st-approach-track';
     return PlaneManager;
+}());
+var DiceManager = /** @class */ (function () {
+    function DiceManager(game) {
+        this.game = game;
+    }
+    DiceManager.prototype.setUp = function (data) {
+        var player = data.players[this.game.getPlayerId()];
+        this.createDice(player.dice);
+    };
+    DiceManager.prototype.createDie = function (die) {
+        var element = "<div id=\"st-dice-".concat(die.id, "\" class=\"st-dice\" data-type=\"").concat(die.typeArg, "\" data-side=\"").concat(die.side, "\">\n                    <div class=\"side\" data-side=\"1\"></div>\n                    <div class=\"side\" data-side=\"2\"></div>\n                    <div class=\"side\" data-side=\"3\"></div>\n                    <div class=\"side\" data-side=\"4\"></div>\n                    <div class=\"side\" data-side=\"5\"></div>\n                    <div class=\"side\" data-side=\"6\"></div>\n                </div>");
+        if (die.location === 'player') {
+            dojo.place(element, DiceManager.PLAYER_AREA);
+        }
+    };
+    DiceManager.prototype.createDice = function (dice) {
+        var _this = this;
+        dice.forEach(function (die) { return _this.createDie(die); });
+    };
+    DiceManager.PLAYER_AREA = 'st-player-dice';
+    return DiceManager;
 }());
 var PlayerSetup = /** @class */ (function () {
     function PlayerSetup(game, elementId) {
@@ -2154,8 +2208,9 @@ var SkyTeam = /** @class */ (function () {
     // Modules
     function SkyTeam() {
         // Init Managers
-        this.planeManager = new PlaneManager();
+        this.planeManager = new PlaneManager(this);
         this.playerRoleManager = new PlayerRoleManager(this);
+        this.diceManager = new DiceManager(this);
         // Init Modules
     }
     /*
@@ -2179,6 +2234,7 @@ var SkyTeam = /** @class */ (function () {
         // Setup Managers
         this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
+        this.diceManager.setUp(data);
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last');
         this.setupNotifications();
         log("Ending game setup");
@@ -2327,7 +2383,11 @@ var SkyTeam = /** @class */ (function () {
         });
     };
     SkyTeam.prototype.notif_playerRoleAssigned = function (args) {
-        return this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
+        var promise = this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
+        if (args.playerId === this.getPlayerId()) {
+            this.diceManager.createDice(args.dice);
+        }
+        return promise;
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         try {

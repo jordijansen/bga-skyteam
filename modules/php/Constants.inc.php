@@ -9,6 +9,18 @@ const CO_PILOT = 'co-pilot';
 const PILOT_PLAYER_COLOR = '365ea5';
 const CO_PILOT_PLAYER_COLOR = 'fba919';
 
+const DICE_PLAYER = 'player';
+const DICE_WEATHER = 'weather';
+
+const APPROACH_GREEN = 'green';
+const APPROACH_YELLOW = 'yellow';
+const APPROACH_RED = 'red';
+const APPROACH_BLACK = 'black';
+
+const TOKEN_PLANE = 'plane';
+const TOKEN_REROLL = 'reroll';
+
+const ROUND_START_PLAYER = 'startPlayer';
 /**
  * Options
  */
@@ -36,6 +48,8 @@ const ACT_UNDO = 'undo';
 /**
  * Locations
  */
+const LOCATION_DECK = 'deck';
+const LOCATION_PLAYER = 'player';
 
 
 /**

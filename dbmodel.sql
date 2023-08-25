@@ -61,7 +61,20 @@ CREATE TABLE IF NOT EXISTS `plane` (
     `aerodynamics_blue` int(11) unsigned NOT NULL,
     `aerodynamics_orange` int(11) unsigned NOT NULL,
     `brake` int(11) unsigned NOT NULL,
+    `approach` int(11) unsigned NOT NULL,
+    `altitude` int(11) unsigned NOT NULL,
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `dice` (
+    `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `card_type` varchar(100) NOT NULL,
+    `card_type_arg` varchar(100) NOT NULL,
+    `card_location` varchar(100) NOT NULL,
+    `card_location_arg` int(11) NOT NULL,
+    `card_side` int(1) NOT NULL DEFAULT '1',
+    PRIMARY KEY (`card_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 

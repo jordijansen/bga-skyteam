@@ -42,6 +42,7 @@
 
     "src/managers/PlayerRoleManager.ts",
     "src/managers/PlaneManager.ts",
+    "src/managers/DiceManager.ts",
 
     "src/ui/PlayerSetup.ts",
 

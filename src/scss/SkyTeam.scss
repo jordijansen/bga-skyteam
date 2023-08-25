@@ -32,20 +32,30 @@
 html, .mode_3d #game_play_area_background {
   background-image: url('img/skyteam-bg.jpg');
   .whiteblock {
+    &:empty {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
     border-radius: 10px;
   }
 }
 
+
 #custom-actions {
 
+}
+
+#st-player-dice {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 #st-player-setup {
   display: flex;
   justify-content: center;
   gap: 20px;
-  .st-role-card {
-    margin: 10px 0;
-  }
 }
+
+
 

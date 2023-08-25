@@ -19,9 +19,53 @@
  *
  */
 
+require_once(__DIR__.'/modules/php/Constants.inc.php');
+
 $this->ROLES = [
     PILOT => clienttranslate('pilot'),
     CO_PILOT => clienttranslate('co-pilot')
+];
+
+$this->APPROACH_CATEGORIES = [
+  APPROACH_GREEN => clienttranslate('Routine Landing'),
+  APPROACH_YELLOW => clienttranslate('Exceptional Conditions'),
+  APPROACH_RED => clienttranslate('Elite Pilots Only'),
+  APPROACH_BLACK => clienttranslate('Heroic Landing: Success will put you in the history books.'),
+];
+
+$this->APPROACH_TRACKS = [
+    1 => [
+        'type' => 1,
+        'category' => APPROACH_GREEN,
+        'name' => 'YUL Montreal-Trudeau',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 2],
+            6 => [TOKEN_PLANE => 3],
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2],
+            3 => [TOKEN_PLANE => 1],
+            2 => [],
+            1 => [],
+        ]
+    ]
+];
+
+$this->ALTITUDE_TRACKS = [
+    1 => [
+        'type' => 1,
+        'categories' => [APPROACH_GREEN, APPROACH_YELLOW],
+        'size' => 7,
+        'spaces' => [
+            7 => [ROUND_START_PLAYER => PILOT],
+            6 => [ROUND_START_PLAYER => CO_PILOT],
+            5 => [ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+            4 => [ROUND_START_PLAYER => CO_PILOT],
+            3 => [ROUND_START_PLAYER => PILOT],
+            2 => [ROUND_START_PLAYER => CO_PILOT],
+            1 => [ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
+    ]
 ];
 
 

@@ -20,6 +20,7 @@ class SkyTeam implements SkyTeamGame {
     public animationManager: AnimationManager;
     public planeManager: PlaneManager;
     public playerRoleManager: PlayerRoleManager;
+    public diceManager: DiceManager;
 
     // UI elements
     private playerSetup: PlayerSetup;
@@ -30,8 +31,9 @@ class SkyTeam implements SkyTeamGame {
 
     constructor() {
         // Init Managers
-        this.planeManager = new PlaneManager();
+        this.planeManager = new PlaneManager(this);
         this.playerRoleManager = new PlayerRoleManager(this);
+        this.diceManager = new DiceManager(this);
         // Init Modules
 
     }
@@ -60,6 +62,7 @@ class SkyTeam implements SkyTeamGame {
         // Setup Managers
         this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
+        this.diceManager.setUp(data);
 
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last')
 
@@ -233,7 +236,12 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_playerRoleAssigned(args: NotifPlayerRoleAssigned) {
-        return this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
+        const promise = this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
+        if (args.playerId === this.getPlayerId()) {
+            this.diceManager.createDice(args.dice)
+        }
+
+        return promise;
     }
     public format_string_recursive(log: string, args: any) {
         try {

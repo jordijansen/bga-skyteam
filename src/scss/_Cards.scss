@@ -34,3 +34,96 @@
     @include selectable();
   }
 }
+
+.st-dice {
+  width: 50px;
+  height: 50px;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+  margin: 2px;
+
+  .side {
+    position: absolute;
+    border-radius:5px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 2em;
+    box-shadow: 0 0 5px #000000a0;
+    background-image: url('img/skyteam-dice.png');
+    background-size: 600% auto;
+
+    &:nth-child(1) { transform: translateZ(1.364em); }
+    &:nth-child(6) { transform: rotateY(90deg) translateZ(1.364em); }
+    &:nth-child(3) { transform: rotateY(-90deg) translateZ(1.364em); }
+    &:nth-child(4) { transform: rotateX(90deg) translateZ(1.364em); }
+    &:nth-child(5) { transform: rotateX(-90deg) translateZ(1.364em); }
+    &:nth-child(2) { transform: rotateY(-180deg) translateZ(1.364em); }
+  }
+
+  &.selectable .side {
+    @include selectable()
+  }
+
+  &.selected .side {
+    @include selected()
+  }
+
+  &[data-side="1"] { transform: rotateX(720deg) rotateZ(-720deg); }
+  &[data-side="2"] { transform: rotateX(-900deg) rotateZ(1080deg); }
+  &[data-side="3"] { transform: rotateY(810deg) rotateZ(720deg); }
+  &[data-side="4"] { transform: rotateX(-810deg) rotateZ(-1080deg); }
+  &[data-side="5"] { transform: rotateX(450deg) rotateZ(-720deg); }
+  &[data-side="6"] { transform: rotateY(-450deg) rotateZ(-1440deg); }
+
+  &[data-type="pilot"] {
+    [data-side="1"] { background-position: 0 0;}
+    [data-side="2"] { background-position: 20% 0;}
+    [data-side="3"] { background-position: 40% 0;}
+    [data-side="4"] { background-position: 60% 0;}
+    [data-side="5"] { background-position: 80% 0;}
+    [data-side="6"] { background-position: 100% 0;}
+  }
+
+  &[data-type="co-pilot"] {
+    [data-side="1"] { background-position: 0 50%;}
+    [data-side="2"] { background-position: 20% 50%;}
+    [data-side="3"] { background-position: 40% 50%;}
+    [data-side="4"] { background-position: 60% 50%;}
+    [data-side="5"] { background-position: 80% 50%;}
+    [data-side="6"] { background-position: 100% 50%;}
+  }
+
+  &[data-type="weather"] {
+    [data-side="1"] { background-position: 0 100%;}
+    [data-side="2"] { background-position: 20% 100%;}
+    [data-side="3"] { background-position: 40% 100%;}
+    [data-side="4"] { background-position: 60% 100%;}
+    [data-side="5"] { background-position: 80% 100%;}
+    [data-side="6"] { background-position: 100% 100%;}
+  }
+}
+
+.st-altitude {
+  background-image: url('img/skyteam-alltitude-tracks.png');
+  background-size: 200% auto;
+  width: 173px;
+  height: 720px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+
+  &[data-type="1"] { background-position: 0 0; }
+  &[data-type="2"] { background-position: 100% 0; }
+}
+
+.st-approach {
+  background-image: url('img/skyteam-approach-tracks.png');
+  background-size: 300% auto;
+  width: 173px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+
+  &[data-type="1"] { height: 718px; background-position: 0 0; }
+  &[data-type="2"] { height: 621px; background-position: 50% 0; }
+  &[data-type="3"] { height: 812px; background-position: 100% 0; }
+}

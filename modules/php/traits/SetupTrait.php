@@ -44,12 +44,23 @@ trait SetupTrait
         self::reloadPlayersBasicInfos();
 
         $this->setInitialPlaneParameters();
+        $this->createDice();
 
         $this->activeNextPlayer();
     }
 
     private function setInitialPlaneParameters()
     {
-        $this->planeManager->save(new Plane(0, 4, 8, 0));
+        $this->planeManager->save(new Plane(0, 4, 8, 0, 1, 1));
+    }
+
+    private function createDice()
+    {
+        $dice = array();
+        $dice[] = array( 'type' => DICE_PLAYER, 'type_arg' => PILOT, 'nbr' => 4);
+        $dice[] = array( 'type' => DICE_PLAYER, 'type_arg' => CO_PILOT, 'nbr' => 4);
+        $dice[] = array( 'type' => DICE_WEATHER, 'type_arg' => '', 'nbr' => 4);
+
+        $this->dice->createCards($dice, LOCATION_DECK);
     }
 }
