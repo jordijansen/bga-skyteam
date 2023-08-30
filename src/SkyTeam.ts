@@ -10,6 +10,10 @@ declare const g_archive_mode;
 const ANIMATION_MS = 800;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 
+const delay = async (ms: number) => {
+    await new Promise(resolve => setTimeout(resolve, ms))
+}
+
 class SkyTeam implements SkyTeamGame {
 
     instantaneousMode: boolean;
@@ -19,8 +23,10 @@ class SkyTeam implements SkyTeamGame {
     private zoomManager: ZoomManager;
     public animationManager: AnimationManager;
     public planeManager: PlaneManager;
+    private reserveManager: ReserveManager;
     public playerRoleManager: PlayerRoleManager;
     public diceManager: DiceManager;
+    public tokenManager: TokenManager;
 
     // UI elements
     private playerSetup: PlayerSetup;
@@ -32,8 +38,10 @@ class SkyTeam implements SkyTeamGame {
     constructor() {
         // Init Managers
         this.planeManager = new PlaneManager(this);
+        this.reserveManager = new ReserveManager(this);
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
+        this.tokenManager = new TokenManager(this);
         // Init Modules
 
     }
@@ -62,6 +70,7 @@ class SkyTeam implements SkyTeamGame {
         // Setup Managers
         this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
+        this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
 
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last')

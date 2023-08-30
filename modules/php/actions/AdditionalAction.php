@@ -1,7 +1,7 @@
 <?php
 namespace actions;
 
-use managers\utils\ReflectionUtils;
+use utils\ReflectionUtils;
 
 class AdditionalAction {
 

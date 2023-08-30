@@ -2,8 +2,29 @@
 
 namespace traits;
 
+use objects\AltitudeTrack;
+use utils\ReflectionUtils;
+use objects\ApproachTrack;
+
 trait UtilsTrait
 {
+    /**
+     * @return ApproachTrack
+     */
+    function getApproachTrack()
+    {
+        // TODO GET BASED ON SCENARIO
+        return ReflectionUtils::rebuildAllPropertyValues($this->APPROACH_TRACKS[1], ApproachTrack::class);
+    }
+
+    /**
+     * @return AltitudeTrack
+     */
+    function getAltitudeTrack()
+    {
+        // TODO GET BASED ON SCENARIO
+        return ReflectionUtils::rebuildAllPropertyValues($this->ALTITUDE_TRACKS[1], AltitudeTrack::class);
+    }
 
     function getPlayerRole(int $playerId)
     {
@@ -78,5 +99,9 @@ trait UtilsTrait
             $playerScore = 0;
         }
         $this->DbQuery("UPDATE player SET player_score = ".$playerScore." WHERE player_id = ". $playerId);
+    }
+
+    function getAllFromTable(string $tableName) {
+        return $this->getCollectionFromDB("SELECT * FROM $tableName");
     }
 }

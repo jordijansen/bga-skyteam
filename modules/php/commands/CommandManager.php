@@ -3,7 +3,7 @@
 namespace commands;
 
 use APP_DbObject;
-use managers\utils\ReflectionUtils;
+use utils\ReflectionUtils;
 use ReflectionClass;
 
 class CommandManager extends APP_DbObject

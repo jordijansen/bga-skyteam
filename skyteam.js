@@ -2108,30 +2108,75 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
-        this.setApproachAndAltitude(data.plane.approach, data.plane.altitude);
+        var approachTokenStockSlots = Object.keys(data.approach.spaces).map(function (slotId) { return "st-approach-track-slot-".concat(slotId); }).reverse();
+        this.approachTokenStock = new SlotStock(this.game.tokenManager, $('st-approach-track'), {
+            slotsIds: approachTokenStockSlots,
+            mapCardToSlot: function (card) { return "st-approach-track-slot-".concat(card.locationArg); },
+            gap: '1px',
+            direction: 'column',
+            center: false
+        });
+        this.approachTokenStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'approach'; }));
+        var altitudeTokenStockSlots = Object.keys(data.altitude.spaces).map(function (slotId) { return "st-altitude-track-slot-".concat(slotId); }).reverse();
+        this.altitudeTokenStock = new SlotStock(this.game.tokenManager, $('st-altitude-track'), {
+            slotsIds: altitudeTokenStockSlots,
+            mapCardToSlot: function (card) { return "st-altitude-track-slot-".concat(card.locationArg); },
+            gap: '1px',
+            direction: 'column',
+            center: false
+        });
+        this.altitudeTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'altitude'; }));
+        this.setApproachAndAltitude(data.plane.approach, data.plane.altitude, true);
+        this.coffeeTokenStock = new SlotStock(this.game.tokenManager, $('st-available-coffee'), {
+            slotsIds: ['st-available-coffee-1', 'st-available-coffee-2', 'st-available-coffee-3'],
+            mapCardToSlot: function (card) { return "st-available-coffee-".concat(card.locationArg); },
+            gap: '1px',
+            direction: 'column',
+            center: false
+        });
+        this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'available'; }));
+        this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {});
+        this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
+        // TEMP
         dojo.connect($(PlaneManager.PLANE_ALTITUDE_TRACK), 'onclick', function () { return _this.updateAltitude(_this.currentAltitude + 1); });
         dojo.connect($(PlaneManager.PLANE_APPROACH_TRACK), 'onclick', function () { return _this.updateApproach(_this.currentApproach + 1); });
     };
-    PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue) {
-        var wrapper = $('st-main-board-tracks');
-        var altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
-        var approach = $(PlaneManager.PLANE_APPROACH_TRACK);
-        var altitudeSize = this.game.gamedatas.altitude.size;
-        var approachSize = this.game.gamedatas.approach.size;
-        var altitudeHeight = altitude.offsetHeight - 22 - ((altitudeSize - altitudeValue) * 96);
-        var approachHeight = approach.offsetHeight - 22 - ((approachSize - approachValue) * 96);
-        altitude.style.bottom = "-".concat(altitudeHeight, "px");
-        approach.style.bottom = "-".concat(approachHeight, "px");
-        var newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
-        wrapper.style.height = "".concat(newWrapperHeight, "px");
+    PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
+        if (forceInstant === void 0) { forceInstant = false; }
+        return __awaiter(this, void 0, void 0, function () {
+            var wrapper, altitude, approach, altitudeSize, approachSize, altitudeHeight, approachHeight, newWrapperHeight;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        wrapper = $('st-main-board-tracks');
+                        altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
+                        approach = $(PlaneManager.PLANE_APPROACH_TRACK);
+                        altitudeSize = this.game.gamedatas.altitude.size;
+                        approachSize = this.game.gamedatas.approach.size;
+                        altitudeHeight = altitude.offsetHeight - 22 - ((altitudeSize - altitudeValue) * 96);
+                        approachHeight = approach.offsetHeight - 22 - ((approachSize - approachValue) * 96);
+                        altitude.style.bottom = "-".concat(altitudeHeight, "px");
+                        approach.style.bottom = "-".concat(approachHeight, "px");
+                        newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
+                        if (!(this.game.instantaneousMode || forceInstant)) return [3 /*break*/, 1];
+                        wrapper.style.height = "".concat(newWrapperHeight, "px");
+                        return [3 /*break*/, 3];
+                    case 1: return [4 /*yield*/, delay(1000)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, wrapper.style.height = "".concat(newWrapperHeight, "px")];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     PlaneManager.prototype.updateApproach = function (value) {
         this.currentApproach = value;
-        this.setApproachAndAltitude(value, this.currentAltitude);
+        return this.setApproachAndAltitude(value, this.currentAltitude);
     };
     PlaneManager.prototype.updateAltitude = function (value) {
         this.currentAltitude = value;
-        this.setApproachAndAltitude(this.currentApproach, value);
+        return this.setApproachAndAltitude(this.currentApproach, value);
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
@@ -2140,6 +2185,23 @@ var PlaneManager = /** @class */ (function () {
     PlaneManager.PLANE_ALTITUDE_TRACK = 'st-altitude-track';
     PlaneManager.PLANE_APPROACH_TRACK = 'st-approach-track';
     return PlaneManager;
+}());
+var ReserveManager = /** @class */ (function () {
+    function ReserveManager(game) {
+        this.game = game;
+    }
+    ReserveManager.prototype.setUp = function (data) {
+        this.reserveCoffeeStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_COFFEE), { center: true });
+        this.reserveRerollStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_REROLL), { center: true });
+        this.reservePlaneStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_PLANE), { center: true });
+        this.reserveCoffeeStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'reserve'; }));
+        this.reserveRerollStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'reserve'; }));
+        this.reservePlaneStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'reserve'; }));
+    };
+    ReserveManager.TOKEN_RESERVE_COFFEE = 'st-token-reserve-coffee';
+    ReserveManager.TOKEN_RESERVE_PLANE = 'st-token-reserve-coffee';
+    ReserveManager.TOKEN_RESERVE_REROLL = 'st-token-reserve-coffee';
+    return ReserveManager;
 }());
 var DiceManager = /** @class */ (function () {
     function DiceManager(game) {
@@ -2162,6 +2224,27 @@ var DiceManager = /** @class */ (function () {
     DiceManager.PLAYER_AREA = 'st-player-dice';
     return DiceManager;
 }());
+var TokenManager = /** @class */ (function (_super) {
+    __extends(TokenManager, _super);
+    function TokenManager(game) {
+        var _this = _super.call(this, game, {
+            getId: function (token) { return "st-token-".concat(token.id); },
+            setupDiv: function (token, div) {
+                div.classList.add('token');
+                div.classList.add('st-token');
+                div.dataset.type = token.type;
+            },
+            setupFrontDiv: function (token, div) {
+            },
+            cardWidth: 50,
+            cardHeight: 50
+        }) || this;
+        _this.game = game;
+        return _this;
+    }
+    TokenManager.COFFEE_RESERVE = 'st-coffee-reserve';
+    return TokenManager;
+}(CardManager));
 var PlayerSetup = /** @class */ (function () {
     function PlayerSetup(game, elementId) {
         this.game = game;
@@ -2201,16 +2284,29 @@ var PlayerSetup = /** @class */ (function () {
     };
     return PlayerSetup;
 }());
+var _this = this;
 var ANIMATION_MS = 800;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
+var delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
 var SkyTeam = /** @class */ (function () {
     // Managers
     // Modules
     function SkyTeam() {
         // Init Managers
         this.planeManager = new PlaneManager(this);
+        this.reserveManager = new ReserveManager(this);
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
+        this.tokenManager = new TokenManager(this);
         // Init Modules
     }
     /*
@@ -2234,6 +2330,7 @@ var SkyTeam = /** @class */ (function () {
         // Setup Managers
         this.playerRoleManager.setUp(data);
         this.planeManager.setUp(data);
+        this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
         dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last');
         this.setupNotifications();

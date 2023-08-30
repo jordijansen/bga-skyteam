@@ -1,6 +1,9 @@
 <?php
 
-namespace managers\utils;
+namespace utils;
+use ReflectionClass;
+use ReflectionException;
+
 class ReflectionUtils
 {
 

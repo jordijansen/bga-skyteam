@@ -21,6 +21,7 @@ use commands\CommandManager;
 use managers\PlayerManager;
 use managers\PlaneManager;
 use objects\Dice;
+use objects\Token;
 use traits\ActionTrait;
 use traits\ArgsTrait;
 use traits\DebugTrait;
@@ -35,8 +36,11 @@ require_once('modules/php/Constants.inc.php');
 require_once('modules/php/utils/ReflectionUtils.php');
 
 require_once('modules/php/objects/Card.php');
+require_once('modules/php/objects/Token.php');
 require_once('modules/php/objects/Plane.php');
 require_once('modules/php/objects/Dice.php');
+require_once('modules/php/objects/ApproachTrack.php');
+require_once('modules/php/objects/AltitudeTrack.php');
 
 require_once('modules/php/commands/CommandManager.php');
 require_once('modules/php/commands/BaseCommand.php');
@@ -76,6 +80,7 @@ class SkyTeam extends Table
     public PlaneManager $planeManager;
 
     public Deck $dice;
+    public Deck $tokens;
 
     function __construct( )
 	{
@@ -94,6 +99,9 @@ class SkyTeam extends Table
 
         $this->dice = self::getNew("module.common.deck");
         $this->dice->init('dice');
+
+        $this->tokens = self::getNew("module.common.deck");
+        $this->tokens->init('token');
 
         $this->commandManager = new CommandManager();
         $this->playerManager = new PlayerManager();
@@ -136,8 +144,13 @@ class SkyTeam extends Table
         }
 
         // TODO GET CORRECT TRACKS FOR SCENARIO
-        $result['approach'] = $this->APPROACH_TRACKS[1];
-        $result['altitude'] = $this->ALTITUDE_TRACKS[1];
+        $result['approach'] = $this->getApproachTrack();
+        $result['altitude'] = $this->getAltitudeTrack();
+
+        $allTokens = Token::fromArray($this->getAllFromTable('token'));
+        $result['coffeeTokens'] = array_filter($allTokens, fn($token) => $token->type == TOKEN_COFFEE);
+        $result['planeTokens'] = array_filter($allTokens, fn($token) => $token->type == TOKEN_PLANE);
+        $result['rerollTokens'] = array_filter($allTokens, fn($token) => $token->type == TOKEN_REROLL);
 
         $result['plane'] = $this->planeManager->get();
         // TODO: Gather all information about current game situation (visible by player $current_player_id).

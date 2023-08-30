@@ -8,6 +8,7 @@ interface Plane {
 }
 
 interface SkyTeamGame extends Game {
+    tokenManager: TokenManager;
     playerRoleManager: PlayerRoleManager;
     animationManager: AnimationManager,
     gamedatas: SkyTeamGameData;
@@ -47,6 +48,9 @@ interface SkyTeamPlayer extends Player {
 }
 
 interface SkyTeamGameData extends GameData {
+    rerollTokens: { [id: number]: Card };
+    planeTokens: { [id: number]: Card };
+    coffeeTokens: { [id: number]: Card };
     plane: Plane,
     approach: ApproachTrack,
     altitude: AltitudeTrack

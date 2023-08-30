@@ -1,6 +1,6 @@
 @use "sass:list";
 
-.st-token {
+.token {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 }
@@ -13,4 +13,19 @@
   &[data-type="aerodynamics-blue"] {background-position: 0 0;}
   &[data-type="aerodynamics-orange"] {background-position: 50% 0;}
   &[data-type="brakes-red"] {background-position: 100% 0;}
+}
+
+.st-token {
+  background-image: url('img/skyteam-tokens.png');
+  height: 50px;
+  width: 50px;
+  background-size: 300% auto;
+  &[data-type="reroll"] {background-position: 0 0;}
+  &[data-type="coffee"] {background-position: 50% 0;}
+  &[data-type="plane"] {background-position: 100% 0;}
+  .card-sides {
+    .card-side {
+      box-shadow: none;
+    }
+  }
 }

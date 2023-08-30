@@ -30,7 +30,8 @@
 }
 
 html, .mode_3d #game_play_area_background {
-  background-image: url('img/skyteam-bg.jpg');
+  background-image: unset;
+  background-color: #03afee;
   .whiteblock {
     &:empty {
       margin: 0 !important;

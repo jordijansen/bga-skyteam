@@ -19,6 +19,7 @@ const APPROACH_BLACK = 'black';
 
 const TOKEN_PLANE = 'plane';
 const TOKEN_REROLL = 'reroll';
+const TOKEN_COFFEE = 'coffee';
 
 const ROUND_START_PLAYER = 'startPlayer';
 /**
@@ -49,6 +50,9 @@ const ACT_UNDO = 'undo';
  * Locations
  */
 const LOCATION_DECK = 'deck';
+const LOCATION_RESERVE = 'reserve';
+const LOCATION_APPROACH = 'approach';
+const LOCATION_ALTITUDE = 'altitude';
 const LOCATION_PLAYER = 'player';
 
 
