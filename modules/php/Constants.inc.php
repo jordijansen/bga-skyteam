@@ -37,6 +37,7 @@ const ACTION_SPACE_BRAKES = 'brakes';
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';
 const MANDATORY = 'mandatory';
+const REQUIRES_DIE_IN = 'requiresDieIn';
 
 /**
  * Failure Reasons

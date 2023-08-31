@@ -34,7 +34,14 @@ class PlaneManager extends APP_DbObject
             $diceOnActionSpace = array_filter($diceAlreadyPlaced, fn($die) => $die->locationArg == $actionSpaceId);
 
             if (in_array($playerRole, $actionSpace[ALLOWED_ROLES]) && sizeof($diceOnActionSpace) == 0) {
-                $result[$actionSpaceId] = $actionSpace;
+                if (array_key_exists(REQUIRES_DIE_IN, $actionSpace)) {
+                    $diceInRequiredLocation = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $actionSpace[REQUIRES_DIE_IN]));
+                    if (sizeof($diceInRequiredLocation) == 1) {
+                        $result[$actionSpaceId] = $actionSpace;
+                    }
+                } else {
+                    $result[$actionSpaceId] = $actionSpace;
+                }
             }
         }
         return $result;
@@ -138,6 +145,22 @@ class PlaneManager extends APP_DbObject
                 $plane->aerodynamicsBlue = $plane->aerodynamicsBlue + 1;
                 SkyTeam::$instance->notifyAllPlayers( "planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker (blue) moves to <b>${aerodynamicsBlue}</b>'), [
                     'aerodynamicsBlue' => $plane->aerodynamicsBlue
+                ]);
+            }
+        } else if ($actionSpace['type'] == ACTION_SPACE_FLAPS) {
+            $switch = $plane->switches[$die->locationArg];
+            if (!$switch->value) {
+                $switch->value = true;
+                $switch->save();
+
+                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Flap ${landingGearNumber}</b> deployed'), [
+                    'planeSwitch' => $switch,
+                    'landingGearNumber' => str_replace(ACTION_SPACE_FLAPS.'-', '', $switch->id)
+                ]);
+
+                $plane->aerodynamicsOrange = $plane->aerodynamicsOrange + 1;
+                SkyTeam::$instance->notifyAllPlayers( "planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker (orange) moves to <b>${aerodynamicsOrange}</b>'), [
+                    'aerodynamicsOrange' => $plane->aerodynamicsOrange
                 ]);
             }
         }

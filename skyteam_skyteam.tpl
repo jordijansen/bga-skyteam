@@ -54,6 +54,10 @@
                         <div id="landing-gear-1" class="st-action-space"></div>
                         <div id="landing-gear-2" class="st-action-space"></div>
                         <div id="landing-gear-3" class="st-action-space"></div>
+                        <div id="flaps-1" class="st-action-space"></div>
+                        <div id="flaps-2" class="st-action-space"></div>
+                        <div id="flaps-3" class="st-action-space"></div>
+                        <div id="flaps-4" class="st-action-space"></div>
                     </div>
                     <div class="st-plane-switches">
                         <div id="plane-switch-landing-gear-1" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
