@@ -14,5 +14,12 @@ trait ArgsTrait
         game state.
     */
 
+    function argDicePlacementSelect()
+    {
+        return [
+            'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId())
+        ];
+    }
+
     
 }

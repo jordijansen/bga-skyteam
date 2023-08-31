@@ -20,6 +20,8 @@
   height: 50px;
   width: 50px;
   background-size: 300% auto;
+  display: inline-block;
+  vertical-align: middle;
   &[data-type="reroll"] {background-position: 0 0;}
   &[data-type="coffee"] {background-position: 50% 0;}
   &[data-type="plane"] {background-position: 100% 0;}

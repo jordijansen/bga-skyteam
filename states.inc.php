@@ -80,18 +80,60 @@ $gameStates = [
             ACT_CONFIRM_PLAYER_SETUP
         ],
         "transitions" => [
-            "" => ST_STRATEGY_DICE_ROLLS
+            "" => ST_START_ROUND
         ],
     ],
-    ST_STRATEGY_DICE_ROLLS => [
-        "name" => "strategyAndDiceRolls",
+    ST_START_ROUND => [
+        "name" => "startRound",
+        "description" => clienttranslate('Starting a new round...'),
+        "type" => "game",
+        "action" => "stStartRound",
+        "transitions" => [
+            '' => ST_STRATEGY
+        ]
+    ],
+    ST_STRATEGY => [
+        "name" => "strategy",
         "description" => clienttranslate('Waiting for players to confirm they are ready'),
         "descriptionmyturn" => clienttranslate('Players may discuss strategy, once you are ready to start the round click the ready button'),
         "type" => "multipleactiveplayer",
         "possibleactions" => [
+            ACT_READY
         ],
         "transitions" => [
+            "" => ST_DICE_PLACEMENT_START
         ],
+    ],
+    ST_DICE_PLACEMENT_START => [
+        "name" => "dicePlacementStart",
+        "description" => clienttranslate('Starting dice placement phase...'),
+        "type" => "game",
+        "action" => "stDicePlacementStart",
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_SELECT
+        ]
+    ],
+    ST_DICE_PLACEMENT_SELECT => [
+        "name" => "dicePlacementSelect",
+        "description" => clienttranslate('${actplayer} must place a die'),
+        "descriptionmyturn" => clienttranslate('${you} must must place a die'),
+        "type" => "activeplayer",
+        "args" => "argDicePlacementSelect",
+        "possibleactions" => [
+            ACT_DICE_PLACEMENT_SELECT
+        ],
+        "transitions" => [
+            "" => ST_DICE_PLACEMENT_NEXT
+        ],
+    ],
+    ST_DICE_PLACEMENT_NEXT => [
+        "name" => "dicePlacementNext",
+        "description" => '',
+        "type" => "game",
+        "action" => "stDicePlacementNext",
+        "transitions" => [
+            'next' => ST_DICE_PLACEMENT_SELECT
+        ]
     ],
 ];
 

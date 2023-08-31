@@ -2023,7 +2023,9 @@ function sortFunction() {
     };
 }
 var determineBoardWidth = function () {
-    return 1000;
+    var BASE_BOARD = 607;
+    // TODO ADD MODULES
+    return BASE_BOARD;
 };
 var determineMaxZoomLevel = function () {
     var bodycoords = dojo.marginBox("zoom-overall");
@@ -2203,27 +2205,134 @@ var ReserveManager = /** @class */ (function () {
     ReserveManager.TOKEN_RESERVE_REROLL = 'st-token-reserve-coffee';
     return ReserveManager;
 }());
-var DiceManager = /** @class */ (function () {
-    function DiceManager(game) {
+var CommunicationInfoManager = /** @class */ (function () {
+    function CommunicationInfoManager(game) {
         this.game = game;
     }
-    DiceManager.prototype.setUp = function (data) {
-        var player = data.players[this.game.getPlayerId()];
-        this.createDice(player.dice);
+    CommunicationInfoManager.prototype.setUp = function (data) {
+        this.update(data.phase);
     };
-    DiceManager.prototype.createDie = function (die) {
-        var element = "<div id=\"st-dice-".concat(die.id, "\" class=\"st-dice\" data-type=\"").concat(die.typeArg, "\" data-side=\"").concat(die.side, "\">\n                    <div class=\"side\" data-side=\"1\"></div>\n                    <div class=\"side\" data-side=\"2\"></div>\n                    <div class=\"side\" data-side=\"3\"></div>\n                    <div class=\"side\" data-side=\"4\"></div>\n                    <div class=\"side\" data-side=\"5\"></div>\n                    <div class=\"side\" data-side=\"6\"></div>\n                </div>");
-        if (die.location === 'player') {
-            dojo.place(element, DiceManager.PLAYER_AREA);
+    CommunicationInfoManager.prototype.setCommunicationLimited = function () {
+        var element = $(CommunicationInfoManager.ELEMENT_ID);
+        dojo.empty(element);
+        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only. You are not allowed to discuss the dice.'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i></h2>"), element);
+        dojo.place("<div class=\"st-communication-info-examples\">\n                            <div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C".concat(_('We really need to get rid of that plane token'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('Let’s make sure we advance 2 spaces.'), "\u201C</div>\n                            </div>\n                            <div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('If you get a 6, put it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Use your weakest die to do this action'), "\u201C</div>\n                            </div>\n                        </div>"), element);
+    };
+    CommunicationInfoManager.prototype.setCommunicationNotAllowed = function () {
+        var element = $(CommunicationInfoManager.ELEMENT_ID);
+        dojo.empty(element);
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication. Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
+        dojo.place("<div class=\"st-communication-info-examples\">\n                            <div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C".concat(_('Are you still there?'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('I need to step away for a minute, be right back'), "\u201C</div>\n                            </div>\n                            <div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('I have a 6 and I can use it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('What dice do you have?'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Remember the brakes!'), "\u201C</div>\n                            </div>\n                        </div>"), element);
+    };
+    CommunicationInfoManager.prototype.update = function (newPhase) {
+        if (newPhase == 'strategy') {
+            this.setCommunicationLimited();
+        }
+        else if (newPhase == 'diceplacement') {
+            this.setCommunicationNotAllowed();
         }
     };
-    DiceManager.prototype.createDice = function (dice) {
+    CommunicationInfoManager.ELEMENT_ID = 'st-communication-info';
+    return CommunicationInfoManager;
+}());
+var ActionSpaceManager = /** @class */ (function () {
+    function ActionSpaceManager(game) {
+        this.game = game;
+        this.selectedActionSpaceId = null;
+        this.actionSpaces = {};
+    }
+    ActionSpaceManager.prototype.setUp = function (data) {
         var _this = this;
-        dice.forEach(function (die) { return _this.createDie(die); });
+        Object.entries(data.actionSpaces).forEach(function (_a) {
+            var id = _a[0], space = _a[1];
+            console.log(id);
+            _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
+            dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
+        });
+        data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
+    };
+    ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged) {
+        this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
+        this.setAllActionSpacesUnselectable();
+        Object.entries(ids).forEach(function (_a) {
+            var id = _a[0], space = _a[1];
+            var element = $(id);
+            element.classList.add('selectable');
+        });
+    };
+    ActionSpaceManager.prototype.setAllActionSpacesUnselectable = function () {
+        Object.keys(this.actionSpaces).forEach(function (id) {
+            var element = $(id);
+            element.classList.remove('selected');
+            element.classList.remove('selectable');
+        });
+    };
+    ActionSpaceManager.prototype.moveDieToActionSpace = function (die) {
+        return this.actionSpaces[die.locationArg].addCard(die);
+    };
+    ActionSpaceManager.prototype.actionSpaceClicked = function (id, event) {
+        dojo.stopEvent(event);
+        var target = $(id);
+        if (target.classList.contains('selectable')) {
+            target.classList.remove('selectable');
+            target.classList.add('selected');
+            this.selectedActionSpaceId = target.id;
+            this.onSelectedActionSpaceChanged();
+        }
+        else if (target.classList.contains('selected')) {
+            target.classList.remove('selected');
+            target.classList.add('selectable');
+            this.selectedActionSpaceId = null;
+            this.onSelectedActionSpaceChanged();
+        }
+        console.log('Selected: ' + this.selectedActionSpaceId);
+    };
+    return ActionSpaceManager;
+}());
+var DiceManager = /** @class */ (function (_super) {
+    __extends(DiceManager, _super);
+    function DiceManager(game) {
+        var _this = _super.call(this, game, {
+            getId: function (die) { return "st-dice-".concat(die.id); },
+            setupDiv: function (die, div) {
+                div.classList.add('st-dice');
+                div.dataset['type'] = die.typeArg;
+                div.dataset['value'] = String(die.side);
+                [1, 2, 3, 4, 5, 6].forEach(function (side) {
+                    var sideDiv = document.createElement('div');
+                    sideDiv.classList.add('side');
+                    sideDiv.dataset['side'] = String(side);
+                    div.appendChild(sideDiv);
+                });
+            },
+            cardWidth: 50,
+            cardHeight: 50
+        }) || this;
+        _this.game = game;
+        return _this;
+    }
+    DiceManager.prototype.setUp = function (data) {
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {});
+        var player = data.players[this.game.getPlayerId()];
+        if (player && player.dice) {
+            this.playerDiceStock.addCards(player.dice);
+        }
+    };
+    DiceManager.prototype.updateCardInformations = function (die, settings) {
+        _super.prototype.updateCardInformations.call(this, die, settings);
+        var cardElement = this.getCardElement(die);
+        cardElement.dataset['value'] = String(die.side);
+        console.log(die.side);
+    };
+    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged) {
+        if (this.playerDiceStock) {
+            this.playerDiceStock.setSelectionMode(selectionMode);
+            this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
+        }
     };
     DiceManager.PLAYER_AREA = 'st-player-dice';
     return DiceManager;
-}());
+}(CardManager));
 var TokenManager = /** @class */ (function (_super) {
     __extends(TokenManager, _super);
     function TokenManager(game) {
@@ -2285,7 +2394,7 @@ var PlayerSetup = /** @class */ (function () {
     return PlayerSetup;
 }());
 var _this = this;
-var ANIMATION_MS = 800;
+var ANIMATION_MS = 20000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -2298,7 +2407,6 @@ var delay = function (ms) { return __awaiter(_this, void 0, void 0, function () 
     });
 }); };
 var SkyTeam = /** @class */ (function () {
-    // Managers
     // Modules
     function SkyTeam() {
         // Init Managers
@@ -2307,6 +2415,8 @@ var SkyTeam = /** @class */ (function () {
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
         this.tokenManager = new TokenManager(this);
+        this.communicationInfoManager = new CommunicationInfoManager(this);
+        this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
     }
     /*
@@ -2324,6 +2434,8 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.setup = function (data) {
         log("Starting game setup");
         log('gamedatas', data);
+        var maintitlebarContent = $('maintitlebar_content');
+        dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last');
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
@@ -2332,7 +2444,8 @@ var SkyTeam = /** @class */ (function () {
         this.planeManager.setUp(data);
         this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
-        dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last');
+        this.communicationInfoManager.setUp(data);
+        this.actionSpaceManager.setUp(data);
         this.setupNotifications();
         log("Ending game setup");
     };
@@ -2346,15 +2459,54 @@ var SkyTeam = /** @class */ (function () {
         switch (stateName) {
             case 'playerSetup':
                 this.enteringPlayerSetup();
+                break;
+            case 'dicePlacementSelect':
+                this.enteringDicePlacementSelect(args.args);
+                break;
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function () {
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.playerSetup.setUp();
     };
+    SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
+        var _this = this;
+        if (this.isCurrentPlayerActive()) {
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(); });
+            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(); });
+        }
+    };
+    SkyTeam.prototype.onDicePlacementSelectChange = function () {
+        var _a;
+        var selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
+        var selectedDice = this.diceManager.playerDiceStock.getSelection();
+        (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
+            var die = selectedDice[0];
+            var dieElement = this.diceManager.getCardElement(die);
+            var dieElementClonePlaceholder = dieElement.cloneNode(true);
+            dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
+            dieElementClonePlaceholder.classList.add('st-dice-placeholder');
+            $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
+            console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
+            dojo.removeClass('confirmPlacement', 'disabled');
+        }
+        else {
+            dojo.addClass('confirmPlacement', 'disabled');
+        }
+    };
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
+            case 'dicePlacementSelect':
+                this.leavingDicePlacementSelect();
+                break;
+        }
+    };
+    SkyTeam.prototype.leavingDicePlacementSelect = function () {
+        if (this.isCurrentPlayerActive()) {
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
         }
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
@@ -2366,6 +2518,14 @@ var SkyTeam = /** @class */ (function () {
             switch (stateName) {
                 case 'playerSetup':
                     this.addActionButton('confirmPlayerSetup', _("Confirm"), function () { return _this.confirmPlayerSetup(); });
+                    break;
+                case 'strategy':
+                    this.addActionButton('confirmReadyStrategy', _("I'm Ready"), function () { return _this.confirmReadyStrategy(); });
+                    break;
+                case 'dicePlacementSelect':
+                    this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
+                    dojo.addClass('confirmPlacement', 'disabled');
+                    break;
             }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
                 this.addActionButton('undoLast', _("Undo last"), function () { return _this.undoLast(); }, null, null, 'red');
@@ -2379,6 +2539,18 @@ var SkyTeam = /** @class */ (function () {
                 }
             }
         }
+    };
+    SkyTeam.prototype.confirmReadyStrategy = function () {
+        this.takeAction('confirmReadyStrategy');
+    };
+    SkyTeam.prototype.confirmPlacement = function () {
+        var _a;
+        (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
+        var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
+        this.takeAction('confirmPlacement', {
+            placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId })
+        });
     };
     SkyTeam.prototype.confirmPlayerSetup = function () {
         if (this.playerSetup.selectedRole) {
@@ -2464,7 +2636,11 @@ var SkyTeam = /** @class */ (function () {
         var _this = this;
         log('notifications subscriptions setup');
         var notifs = [
-            ['playerRoleAssigned', undefined]
+            ['newPhaseStarted', 1],
+            ['playerRoleAssigned', undefined],
+            ['tokenReceived', undefined],
+            ['diceRolled', undefined],
+            ['diePlaced', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2479,17 +2655,46 @@ var SkyTeam = /** @class */ (function () {
             _this.notifqueue.setSynchronous(notif[0], notif[1]);
         });
     };
+    SkyTeam.prototype.notif_newPhaseStarted = function (args) {
+        this.communicationInfoManager.update(args.newPhase);
+    };
     SkyTeam.prototype.notif_playerRoleAssigned = function (args) {
         var promise = this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
         if (args.playerId === this.getPlayerId()) {
-            this.diceManager.createDice(args.dice);
+            this.diceManager.playerDiceStock.addCards(args.dice);
         }
         return promise;
     };
+    SkyTeam.prototype.notif_tokenReceived = function (args) {
+        if (args.token.type == 'reroll') {
+            return this.planeManager.rerollTokenStock.addCard(args.token);
+        }
+        else if (args.token.type == 'coffee') {
+            return this.planeManager.coffeeTokenStock.addCard(args.token);
+        }
+        return Promise.resolve();
+    };
+    SkyTeam.prototype.notif_diceRolled = function (args) {
+        var _this = this;
+        args.dice.forEach(function (die) { return _this.diceManager.updateCardInformations(die); });
+        return Promise.resolve();
+    };
+    SkyTeam.prototype.notif_diePlaced = function (args) {
+        return this.actionSpaceManager.moveDieToActionSpace(args.die);
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
+        var _this = this;
         try {
             if (log && args && !args.processed) {
                 Object.keys(args).forEach(function (argKey) {
+                    if (argKey.startsWith('token_') && typeof args[argKey] == 'string') {
+                        args[argKey] = _this.tokenIcon(args[argKey]);
+                    }
+                    else if (argKey.startsWith('icon_dice') && typeof args[argKey] == 'object') {
+                        console.log(args[argKey]);
+                        var diceIcons = args[argKey].map(function (die) { return _this.diceIcon(die); });
+                        args[argKey] = diceIcons.join('');
+                    }
                 });
             }
         }
@@ -2508,6 +2713,12 @@ var SkyTeam = /** @class */ (function () {
         //     '_': (t) => this.tokenIcon(t.replace('icon-', ''))
         // });
         return '';
+    };
+    SkyTeam.prototype.tokenIcon = function (type) {
+        return "<span class=\"st-token\" data-type=\"".concat(type, "\"></span>");
+    };
+    SkyTeam.prototype.diceIcon = function (die) {
+        return "<span class=\"st-dice\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");
     };
     return SkyTeam;
 }());

@@ -43,6 +43,9 @@ trait SetupTrait
         self::DbQuery( $sql );
         self::reloadPlayersBasicInfos();
 
+        $this->setGlobalVariable(CURRENT_ROUND, 0);
+        $this->setGlobalVariable(CURRENT_PHASE, PHASE_SETUP);
+
         $this->setInitialPlaneParameters();
         $this->createDice();
         $this->createTokens();
@@ -60,7 +63,7 @@ trait SetupTrait
         $dice = [];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => PILOT, 'nbr' => 4];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => CO_PILOT, 'nbr' => 4];
-        $dice[] = ['type' => DICE_WEATHER, 'type_arg' => '', 'nbr' => 4];
+        $dice[] = ['type' => DICE_WEATHER, 'type_arg' => '', 'nbr' => 1];
 
         $this->dice->createCards($dice, LOCATION_DECK);
     }

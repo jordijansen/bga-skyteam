@@ -86,6 +86,11 @@
             top: 37px;
             left: 29px;
           }
+
+          .st-action-spaces {
+            #axis-1 { top: 129px; left: 116px; }
+            #axis-2 { top: 129px; right: 115px; }
+          }
         }
 
         #st-token-reserves {
@@ -137,5 +142,22 @@
         }
       }
     }
+  }
+}
+
+.st-action-space {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  &.selected {
+    @include selected();
+    animation: jj-pulse 2s infinite;
+  }
+  &.selectable {
+    @include selectable();
+    animation: jj-pulse 2s infinite;
   }
 }

@@ -19,7 +19,7 @@ class Token extends APP_GameClass {
 
     /**
      * @param $dbCards
-     * @return Dice[]
+     * @return Token[]
      */
     public static function fromArray($dbCards): array
     {

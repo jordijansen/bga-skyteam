@@ -143,7 +143,10 @@ class SkyTeam extends Table
             }
         }
 
-        // TODO GET CORRECT TRACKS FOR SCENARIO
+        $result['round'] = $this->getGlobalVariable(CURRENT_ROUND);
+        $result['phase'] = $this->getGlobalVariable(CURRENT_PHASE);
+        $result['actionSpaces'] = $this->planeManager->getAllActionSpaces();
+
         $result['approach'] = $this->getApproachTrack();
         $result['altitude'] = $this->getAltitudeTrack();
 
@@ -153,6 +156,8 @@ class SkyTeam extends Table
         $result['rerollTokens'] = array_filter($allTokens, fn($token) => $token->type == TOKEN_REROLL);
 
         $result['plane'] = $this->planeManager->get();
+
+        $result['planeDice'] = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE));
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
         return $result;

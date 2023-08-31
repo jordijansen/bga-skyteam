@@ -8,6 +8,7 @@ interface Plane {
 }
 
 interface SkyTeamGame extends Game {
+    diceManager: DiceManager;
     tokenManager: TokenManager;
     playerRoleManager: PlayerRoleManager;
     animationManager: AnimationManager,
@@ -24,7 +25,8 @@ interface Dice {
     type: 'player' | 'weather',
     typeArg: 'pilot' | 'co-pilot',
     side: number,
-    location: string
+    location: string,
+    locationArg: string
 }
 
 interface ApproachTrack {
@@ -42,12 +44,22 @@ interface AltitudeTrack {
     spaces: {[space: number]: {startPlayer: 'pilot' | 'co-pilot', reroll?: number}}
 }
 
+interface ActionSpace {
+    allowedRoles: SkyTeamPlayer['role'][],
+    mandatory: boolean,
+    type: 'axis'
+}
+
 interface SkyTeamPlayer extends Player {
     role: 'pilot'|'co-pilot',
     dice: Dice[]
 }
 
 interface SkyTeamGameData extends GameData {
+    planeDice: Dice[];
+    round: number,
+    phase: 'setup' | 'strategy' | 'diceplacement',
+    actionSpaces: {[actionSpaceId: string]: ActionSpace}
     rerollTokens: { [id: number]: Card };
     planeTokens: { [id: number]: Card };
     coffeeTokens: { [id: number]: Card };
@@ -57,11 +69,31 @@ interface SkyTeamGameData extends GameData {
 }
 
 // ARGS
+interface DicePlacementSelectArgs {
+    availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
+}
 
 // NOTIFS
+interface NotifNewPhaseStarted {
+    newPhase: SkyTeamGameData['phase']
+}
 interface NotifPlayerRoleAssigned {
     playerId: number,
     roleColor: string;
     role: string;
     dice: Dice[]
+}
+
+interface NotifTokenReceived {
+    token: Card;
+}
+
+interface NotifDiceRolled {
+    playerId: number,
+    dice: Dice[];
+}
+
+interface NotifDiePlaced {
+    playerId: number,
+    die: Dice
 }

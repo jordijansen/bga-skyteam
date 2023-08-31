@@ -41,6 +41,22 @@
   transform-style: preserve-3d;
   transition: transform 1s;
   margin: 2px;
+  display: inline-block;
+  vertical-align: middle;
+
+  &.st-dice-placeholder {
+    box-shadow: none !important;
+    outline: none !important;
+    .side {
+      box-shadow: inset 0 0 0 100px rgba(0,0,0,.6) !important;
+      outline: none !important;
+    }
+  }
+
+  .card-side {
+    box-shadow: none !important;
+    outline: none !important;
+  }
 
   .side {
     position: absolute;
@@ -52,29 +68,28 @@
     box-shadow: 0 0 5px #000000a0;
     background-image: url('img/skyteam-dice.png');
     background-size: 600% auto;
-
-    &:nth-child(1) { transform: translateZ(1.364em); }
-    &:nth-child(6) { transform: rotateY(90deg) translateZ(1.364em); }
-    &:nth-child(3) { transform: rotateY(-90deg) translateZ(1.364em); }
-    &:nth-child(4) { transform: rotateX(90deg) translateZ(1.364em); }
-    &:nth-child(5) { transform: rotateX(-90deg) translateZ(1.364em); }
-    &:nth-child(2) { transform: rotateY(-180deg) translateZ(1.364em); }
+    &[data-side="1"] { transform: translateZ(1.364em);}
+    &[data-side="2"] { transform: rotateX(-180deg) translateZ(1.364em);}
+    &[data-side="3"] { transform: rotateY(-90deg) translateZ(1.364em);}
+    &[data-side="4"] { transform: rotateX(90deg) translateZ(1.364em);}
+    &[data-side="5"] { transform: rotateX(-90deg) translateZ(1.364em);}
+    &[data-side="6"] {  transform: rotateY(90deg) translateZ(1.364em);}
   }
 
-  &.selectable .side {
+  &.bga-cards_selectable-card .side {
     @include selectable()
   }
 
-  &.selected .side {
+  &.bga-cards_selected-card .side {
     @include selected()
   }
 
-  &[data-side="1"] { transform: rotateX(720deg) rotateZ(-720deg); }
-  &[data-side="2"] { transform: rotateX(-900deg) rotateZ(1080deg); }
-  &[data-side="3"] { transform: rotateY(810deg) rotateZ(720deg); }
-  &[data-side="4"] { transform: rotateX(-810deg) rotateZ(-1080deg); }
-  &[data-side="5"] { transform: rotateX(450deg) rotateZ(-720deg); }
-  &[data-side="6"] { transform: rotateY(-450deg) rotateZ(-1440deg); }
+  &[data-value="1"] { transform: rotateX(720deg) rotateZ(-720deg); }
+  &[data-value="2"] { transform: rotateX(-900deg) rotateZ(1080deg); }
+  &[data-value="3"] { transform: rotateY(810deg) rotateZ(720deg); }
+  &[data-value="4"] { transform: rotateX(-810deg) rotateZ(-1080deg); }
+  &[data-value="5"] { transform: rotateX(450deg) rotateZ(-720deg); }
+  &[data-value="6"] { transform: rotateY(-450deg) rotateZ(-1440deg); }
 
   &[data-type="pilot"] {
     [data-side="1"] { background-position: 0 0;}

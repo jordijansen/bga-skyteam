@@ -26,8 +26,8 @@
 -->
 
 <div id="st-game">
+    <div id="st-communication-info" class="whiteblock"></div>
     <div id="st-player-setup" class="whiteblock"></div>
-    <div id="st-player-dice" class="whiteblock"></div>
     <div id="st-game-boards-wrapper">
         <div id="st-main-board-wrapper">
             <div id="st-main-board-tracks">
@@ -42,6 +42,10 @@
                     <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-available-coffee"></div>
                     <div id="st-available-reroll"></div>
+                    <div class="st-action-spaces">
+                        <div id="axis-1" class="st-action-space"></div>
+                        <div id="axis-2" class="st-action-space"></div>
+                    </div>
                 </div>
                 <div id="st-token-reserves">
                     <div id="st-token-reserve-coffee" class="st-token-reserve"></div>

@@ -50,12 +50,25 @@ html, .mode_3d #game_play_area_background {
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin: 10px 0;
 }
 
 #st-player-setup {
   display: flex;
   justify-content: center;
   gap: 20px;
+}
+
+#st-communication-info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  .st-communication-info-examples {
+    text-align: left;
+    display: flex;
+    gap: 25px;
+  }
 }
 
 

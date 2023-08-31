@@ -37,6 +37,17 @@ trait UtilsTrait
         return null;
     }
 
+    function getPlayerIdForRole(string $role) {
+        $roleColor = $role == PILOT ? PILOT_PLAYER_COLOR : CO_PILOT_PLAYER_COLOR;
+        $playerIds = $this->getPlayerIds();
+        foreach ($playerIds as $playerId) {
+            if ($this->getPlayerColor($playerId) == $roleColor) {
+                return $playerId;
+            }
+        }
+        return null;
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //////////// Generic Utility functions
     ////////////

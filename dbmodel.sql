@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `dice` (
     `card_type` varchar(100) NOT NULL,
     `card_type_arg` varchar(100) NOT NULL,
     `card_location` varchar(100) NOT NULL,
-    `card_location_arg` int(11) NOT NULL,
+    `card_location_arg` varchar(100) NOT NULL,
     `card_side` int(1) NOT NULL DEFAULT '1',
     PRIMARY KEY (`card_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

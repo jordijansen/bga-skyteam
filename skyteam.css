@@ -290,6 +290,28 @@ body > .card {
   top: calc((var(--height) + var(--shift)) * var(--order));
 }
 
+@keyframes jj-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+@keyframes jj-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
 .st-board {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -449,6 +471,14 @@ body > .card {
   top: 37px;
   left: 29px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #axis-1 {
+  top: 129px;
+  left: 116px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #axis-2 {
+  top: 129px;
+  right: 115px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-token-reserves {
   margin-top: 10px;
 }
@@ -495,6 +525,25 @@ body > .card {
   margin-top: 36px;
 }
 
+.st-action-space {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.st-action-space.selected {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+  animation: jj-pulse 2s infinite;
+}
+.st-action-space.selectable {
+  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  cursor: pointer;
+  animation: jj-pulse 2s infinite;
+}
+
 .token {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -521,6 +570,8 @@ body > .card {
   height: 50px;
   width: 50px;
   background-size: 300% auto;
+  display: inline-block;
+  vertical-align: middle;
 }
 .st-token[data-type=reroll] {
   background-position: 0 0;
@@ -535,6 +586,17 @@ body > .card {
   box-shadow: none;
 }
 
+@keyframes jj-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
 .st-role-card {
   background-image: url("img/skyteam-roles.jpg");
   background-size: 200% auto;
@@ -577,6 +639,20 @@ body > .card {
   transform-style: preserve-3d;
   transition: transform 1s;
   margin: 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.st-dice.st-dice-placeholder {
+  box-shadow: none !important;
+  outline: none !important;
+}
+.st-dice.st-dice-placeholder .side {
+  box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.6) !important;
+  outline: none !important;
+}
+.st-dice .card-side {
+  box-shadow: none !important;
+  outline: none !important;
 }
 .st-dice .side {
   position: absolute;
@@ -589,48 +665,48 @@ body > .card {
   background-image: url("img/skyteam-dice.png");
   background-size: 600% auto;
 }
-.st-dice .side:nth-child(1) {
+.st-dice .side[data-side="1"] {
   transform: translateZ(1.364em);
 }
-.st-dice .side:nth-child(6) {
-  transform: rotateY(90deg) translateZ(1.364em);
+.st-dice .side[data-side="2"] {
+  transform: rotateX(-180deg) translateZ(1.364em);
 }
-.st-dice .side:nth-child(3) {
+.st-dice .side[data-side="3"] {
   transform: rotateY(-90deg) translateZ(1.364em);
 }
-.st-dice .side:nth-child(4) {
+.st-dice .side[data-side="4"] {
   transform: rotateX(90deg) translateZ(1.364em);
 }
-.st-dice .side:nth-child(5) {
+.st-dice .side[data-side="5"] {
   transform: rotateX(-90deg) translateZ(1.364em);
 }
-.st-dice .side:nth-child(2) {
-  transform: rotateY(-180deg) translateZ(1.364em);
+.st-dice .side[data-side="6"] {
+  transform: rotateY(90deg) translateZ(1.364em);
 }
-.st-dice.selectable .side {
+.st-dice.bga-cards_selectable-card .side {
   outline: 6px rgba(80, 200, 255, 0.75) solid;
   cursor: pointer;
 }
-.st-dice.selected .side {
+.st-dice.bga-cards_selected-card .side {
   outline: 6px rgba(124, 252, 0, 0.75) solid;
   cursor: pointer;
 }
-.st-dice[data-side="1"] {
+.st-dice[data-value="1"] {
   transform: rotateX(720deg) rotateZ(-720deg);
 }
-.st-dice[data-side="2"] {
+.st-dice[data-value="2"] {
   transform: rotateX(-900deg) rotateZ(1080deg);
 }
-.st-dice[data-side="3"] {
+.st-dice[data-value="3"] {
   transform: rotateY(810deg) rotateZ(720deg);
 }
-.st-dice[data-side="4"] {
+.st-dice[data-value="4"] {
   transform: rotateX(-810deg) rotateZ(-1080deg);
 }
-.st-dice[data-side="5"] {
+.st-dice[data-value="5"] {
   transform: rotateX(450deg) rotateZ(-720deg);
 }
-.st-dice[data-side="6"] {
+.st-dice[data-value="6"] {
   transform: rotateY(-450deg) rotateZ(-1440deg);
 }
 .st-dice[data-type=pilot] [data-side="1"] {
@@ -749,12 +825,25 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin: 10px 0;
 }
 
 #st-player-setup {
   display: flex;
   justify-content: center;
   gap: 20px;
+}
+
+#st-communication-info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+#st-communication-info .st-communication-info-examples {
+  text-align: left;
+  display: flex;
+  gap: 25px;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

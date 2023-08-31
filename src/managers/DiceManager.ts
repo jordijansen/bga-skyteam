@@ -1,31 +1,48 @@
-class DiceManager  {
+class DiceManager extends CardManager<Dice> {
 
     private static readonly PLAYER_AREA = 'st-player-dice';
-    constructor(private game: SkyTeamGame) {
+    public playerDiceStock: LineStock<Dice>;
+    constructor(public game: SkyTeamGame) {
+        super(game, {
+            getId: (die) => `st-dice-${die.id}`,
+            setupDiv: (die: Dice, div: HTMLElement) => {
+                div.classList.add('st-dice')
+                div.dataset['type'] = die.typeArg;
+                div.dataset['value'] = String(die.side);
 
+                [1,2,3,4,5,6].forEach(side => {
+                    const sideDiv = document.createElement('div');
+                    sideDiv.classList.add('side');
+                    sideDiv.dataset['side'] = String(side);
+                    div.appendChild(sideDiv);
+                });
+            },
+            cardWidth: 50,
+            cardHeight: 50
+        })
     }
 
     public setUp(data: SkyTeamGameData) {
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {})
+
         const player = data.players[this.game.getPlayerId()];
-        this.createDice(player.dice);
-    }
-
-    public createDie(die: Dice) {
-        const element = `<div id="st-dice-${die.id}" class="st-dice" data-type="${die.typeArg}" data-side="${die.side}">
-                    <div class="side" data-side="1"></div>
-                    <div class="side" data-side="2"></div>
-                    <div class="side" data-side="3"></div>
-                    <div class="side" data-side="4"></div>
-                    <div class="side" data-side="5"></div>
-                    <div class="side" data-side="6"></div>
-                </div>`;
-
-        if (die.location === 'player') {
-            dojo.place(element, DiceManager.PLAYER_AREA)
+        if (player && player.dice) {
+            this.playerDiceStock.addCards(player.dice);
         }
     }
 
-    public createDice(dice: Dice[]) {
-        dice.forEach(die => this.createDie(die));
+    public override updateCardInformations(die: Dice, settings?: Omit<FlipCardSettings, 'updateData'>): void {
+        super.updateCardInformations(die, settings);
+        const cardElement = this.getCardElement(die);
+        cardElement.dataset['value'] = String(die.side);
+        console.log(die.side);
+    }
+
+    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: () => void) {
+        if (this.playerDiceStock) {
+            this.playerDiceStock.setSelectionMode(selectionMode);
+            this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
+
+        }
     }
 }

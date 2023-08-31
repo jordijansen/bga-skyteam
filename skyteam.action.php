@@ -48,6 +48,27 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function confirmReadyStrategy()
+    {
+        self::setAjaxMode();
+
+        $this->game->confirmReadyStrategy();
+
+        self::ajaxResponse();
+    }
+
+    public function confirmPlacement()
+    {
+        self::setAjaxMode();
+
+        $placement = self::getArg("placement", AT_json, true);
+        $this->validateJSonAlphaNum($placement, 'placement');
+
+        $this->game->confirmPlacement($placement);
+
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

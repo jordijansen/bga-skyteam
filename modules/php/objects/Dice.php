@@ -8,7 +8,7 @@ class Dice extends APP_GameClass {
     public string $type;
     public string $typeArg;
     public string $location;
-    public int $locationArg;
+    public string $locationArg;
     public int $side;
 
 
@@ -18,8 +18,15 @@ class Dice extends APP_GameClass {
         $this->type = $dbCard['card_type'] ?? $dbCard['type'];
         $this->typeArg = $dbCard['card_type_arg'] ?? $dbCard['type_arg'];
         $this->location = $dbCard['card_location'] ?? $dbCard['location'];
-        $this->locationArg = intval($dbCard['card_location_arg'] ?? $dbCard['location_arg']);
+        $this->locationArg = $dbCard['card_location_arg'] ?? $dbCard['location_arg'];
         $this->side = self::getUniqueValueFromDB('SELECT card_side FROM dice WHERE card_id = '.$this->id);
+    }
+
+    public function rollDie(): int
+    {
+        $this->side = bga_rand(1, 6);
+        self::DbQuery("UPDATE dice SET card_side = $this->side WHERE card_id = $this->id");
+        return $this->side;
     }
 
     /**
@@ -35,4 +42,6 @@ class Dice extends APP_GameClass {
     {
         return new Dice($dbCard);
     }
+
+
 }

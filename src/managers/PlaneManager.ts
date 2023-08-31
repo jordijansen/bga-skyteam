@@ -12,8 +12,8 @@ class PlaneManager  {
     private static readonly PLANE_APPROACH_TRACK = 'st-approach-track';
     private approachTokenStock: SlotStock<Card>;
     private altitudeTokenStock: SlotStock<Card>;
-    private coffeeTokenStock: SlotStock<Card>;
-    private rerollTokenStock: AllVisibleDeck<Card>;
+    public coffeeTokenStock: SlotStock<Card>;
+    public rerollTokenStock: AllVisibleDeck<Card>;
 
     constructor(private game: SkyTeamGame) {
 

@@ -43,6 +43,8 @@
     "src/managers/PlayerRoleManager.ts",
     "src/managers/PlaneManager.ts",
     "src/managers/ReserveManager.ts",
+    "src/managers/CommunicationInfoManager.ts",
+    "src/managers/ActionSpaceManager.ts",
     "src/managers/DiceManager.ts",
     "src/managers/TokenManager.ts",
 

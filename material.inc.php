@@ -33,6 +33,11 @@ $this->APPROACH_CATEGORIES = [
   APPROACH_BLACK => clienttranslate('Heroic Landing: Success will put you in the history books.'),
 ];
 
+$this->ACTION_SPACES = [
+    ACTION_SPACE_AXIS.'-1' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [PILOT], MANDATORY => true],
+    ACTION_SPACE_AXIS.'-2' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true]
+];
+
 $this->APPROACH_TRACKS = [
     1 => [
         'type' => 1,

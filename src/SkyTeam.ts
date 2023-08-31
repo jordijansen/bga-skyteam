@@ -7,7 +7,7 @@ declare const g_gamethemeurl;
 declare const g_replayFrom;
 declare const g_archive_mode;
 
-const ANIMATION_MS = 800;
+const ANIMATION_MS = 20000;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 
 const delay = async (ms: number) => {
@@ -22,16 +22,18 @@ class SkyTeam implements SkyTeamGame {
     public gamedatas: SkyTeamGameData;
     private zoomManager: ZoomManager;
     public animationManager: AnimationManager;
-    public planeManager: PlaneManager;
-    private reserveManager: ReserveManager;
-    public playerRoleManager: PlayerRoleManager;
-    public diceManager: DiceManager;
-    public tokenManager: TokenManager;
 
     // UI elements
     private playerSetup: PlayerSetup;
 
     // Managers
+    public planeManager: PlaneManager;
+    private reserveManager: ReserveManager;
+    public playerRoleManager: PlayerRoleManager;
+    public diceManager: DiceManager;
+    public tokenManager: TokenManager;
+    public communicationInfoManager: CommunicationInfoManager;
+    private actionSpaceManager: ActionSpaceManager;
 
     // Modules
 
@@ -42,6 +44,8 @@ class SkyTeam implements SkyTeamGame {
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
         this.tokenManager = new TokenManager(this);
+        this.communicationInfoManager = new CommunicationInfoManager(this);
+        this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
 
     }
@@ -63,6 +67,9 @@ class SkyTeam implements SkyTeamGame {
         log( "Starting game setup" );
         log('gamedatas', data);
 
+        const maintitlebarContent = $('maintitlebar_content');
+        dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last')
+
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level')
         this.animationManager = new AnimationManager(this, {duration: ANIMATION_MS})
@@ -72,8 +79,8 @@ class SkyTeam implements SkyTeamGame {
         this.planeManager.setUp(data);
         this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
-
-        dojo.place('<div id="custom-actions"></div>', $('maintitlebar_content'), 'last')
+        this.communicationInfoManager.setUp(data);
+        this.actionSpaceManager.setUp(data);
 
         this.setupNotifications();
         log( "Ending game setup" );
@@ -91,6 +98,10 @@ class SkyTeam implements SkyTeamGame {
         switch (stateName) {
             case 'playerSetup':
                 this.enteringPlayerSetup();
+                break;
+            case 'dicePlacementSelect':
+                this.enteringDicePlacementSelect(args.args);
+                break;
         }
     }
 
@@ -99,11 +110,45 @@ class SkyTeam implements SkyTeamGame {
         this.playerSetup.setUp();
     }
 
+    private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
+        if ((this as any).isCurrentPlayerActive()) {
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange());
+            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange());
+        }
+    }
+
+    private onDicePlacementSelectChange() {
+        const selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
+        const selectedDice = this.diceManager.playerDiceStock.getSelection()
+        document.querySelector('.st-dice-placeholder')?.remove();
+        if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
+            const die = selectedDice[0];
+            const dieElement = this.diceManager.getCardElement(die);
+            const dieElementClonePlaceholder = dieElement.cloneNode(true) as any;
+            dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
+            dieElementClonePlaceholder.classList.add('st-dice-placeholder');
+            $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
+            console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
+            dojo.removeClass('confirmPlacement', 'disabled');
+        } else {
+            dojo.addClass('confirmPlacement', 'disabled');
+        }
+    }
+
     public onLeavingState(stateName: string) {
         log( 'Leaving state: '+stateName );
 
         switch (stateName) {
+            case 'dicePlacementSelect':
+                this.leavingDicePlacementSelect();
+                break;
+        }
+    }
 
+    private leavingDicePlacementSelect() {
+        if ((this as any).isCurrentPlayerActive()) {
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
         }
     }
 
@@ -116,6 +161,14 @@ class SkyTeam implements SkyTeamGame {
             switch (stateName) {
                 case 'playerSetup':
                     (this as any).addActionButton('confirmPlayerSetup', _("Confirm"), () => this.confirmPlayerSetup());
+                    break;
+                case 'strategy':
+                    (this as any).addActionButton('confirmReadyStrategy', _("I'm Ready"), () => this.confirmReadyStrategy());
+                    break;
+                case 'dicePlacementSelect':
+                    (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
+                    dojo.addClass('confirmPlacement', 'disabled');
+                    break;
 
             }
 
@@ -130,6 +183,19 @@ class SkyTeam implements SkyTeamGame {
                 }
             }
         }
+    }
+
+    private confirmReadyStrategy() {
+        this.takeAction('confirmReadyStrategy')
+    }
+
+    private confirmPlacement() {
+        document.querySelector('.st-dice-placeholder')?.remove();
+        const actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
+        const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
+        this.takeAction('confirmPlacement', {
+            placement: JSON.stringify({actionSpaceId, diceId})
+        });
     }
 
     private confirmPlayerSetup() {
@@ -225,7 +291,11 @@ class SkyTeam implements SkyTeamGame {
         log( 'notifications subscriptions setup' );
 
         const notifs = [
-            ['playerRoleAssigned', undefined]
+            ['newPhaseStarted', 1],
+            ['playerRoleAssigned', undefined],
+            ['tokenReceived', undefined],
+            ['diceRolled', undefined],
+            ['diePlaced', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -244,18 +314,47 @@ class SkyTeam implements SkyTeamGame {
         });
     }
 
+    private notif_newPhaseStarted(args: NotifNewPhaseStarted) {
+        this.communicationInfoManager.update(args.newPhase);
+    }
+
     private notif_playerRoleAssigned(args: NotifPlayerRoleAssigned) {
         const promise = this.playerRoleManager.setRole(args.playerId, args.role, args.roleColor);
         if (args.playerId === this.getPlayerId()) {
-            this.diceManager.createDice(args.dice)
+            this.diceManager.playerDiceStock.addCards(args.dice)
         }
-
         return promise;
     }
+
+    private notif_tokenReceived(args: NotifTokenReceived) {
+        if (args.token.type == 'reroll') {
+            return this.planeManager.rerollTokenStock.addCard(args.token);
+        }else if (args.token.type == 'coffee') {
+            return this.planeManager.coffeeTokenStock.addCard(args.token);
+        }
+        return Promise.resolve();
+    }
+
+    private notif_diceRolled(args: NotifDiceRolled) {
+        args.dice.forEach(die => this.diceManager.updateCardInformations(die));
+        return Promise.resolve();
+    }
+
+    private notif_diePlaced(args: NotifDiePlaced) {
+        return this.actionSpaceManager.moveDieToActionSpace(args.die);
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
                 Object.keys(args).forEach(argKey => {
+                    if (argKey.startsWith('token_') && typeof args[argKey] == 'string') {
+                        args[argKey] = this.tokenIcon(args[argKey])
+                    } else if (argKey.startsWith('icon_dice') && typeof args[argKey] == 'object') {
+                        console.log(args[argKey]);
+                        const diceIcons = args[argKey].map((die: Dice) => this.diceIcon(die))
+                        args[argKey] = diceIcons.join('');
+                    }
                 })
             }
         } catch (e) {
@@ -275,6 +374,21 @@ class SkyTeam implements SkyTeamGame {
         //     '_': (t) => this.tokenIcon(t.replace('icon-', ''))
         // });
         return '';
+    }
+
+    public tokenIcon(type) {
+        return `<span class="st-token" data-type="${type}"></span>`
+    }
+
+    public diceIcon(die: Dice) {
+        return `<span class="st-dice" data-type="${die.typeArg}" data-value="${die.side}">
+                    <span class="side" data-side="1"></span>
+                    <span class="side" data-side="2"></span>
+                    <span class="side" data-side="3"></span>
+                    <span class="side" data-side="4"></span>
+                    <span class="side" data-side="5"></span>
+                    <span class="side" data-side="6"></span>
+               </span>`;
     }
 
 }
