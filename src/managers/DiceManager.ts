@@ -38,9 +38,13 @@ class DiceManager extends CardManager<Dice> {
         console.log(die.side);
     }
 
-    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: () => void) {
+    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: () => void, allowedValues?: number[]) {
         if (this.playerDiceStock) {
-            this.playerDiceStock.setSelectionMode(selectionMode);
+            let  selectableDice = this.playerDiceStock.getCards();
+            if (allowedValues && allowedValues.length > 0) {
+                selectableDice = selectableDice.filter(die => allowedValues.includes(die.side))
+            }
+            this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
 
         }

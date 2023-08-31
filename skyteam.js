@@ -2148,33 +2148,24 @@ var PlaneManager = /** @class */ (function () {
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
-        return __awaiter(this, void 0, void 0, function () {
-            var wrapper, altitude, approach, altitudeSize, approachSize, altitudeHeight, approachHeight, newWrapperHeight;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        wrapper = $('st-main-board-tracks');
-                        altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
-                        approach = $(PlaneManager.PLANE_APPROACH_TRACK);
-                        altitudeSize = this.game.gamedatas.altitude.size;
-                        approachSize = this.game.gamedatas.approach.size;
-                        altitudeHeight = altitude.offsetHeight - 22 - ((altitudeSize - altitudeValue) * 96);
-                        approachHeight = approach.offsetHeight - 22 - ((approachSize - approachValue) * 96);
-                        altitude.style.bottom = "-".concat(altitudeHeight, "px");
-                        approach.style.bottom = "-".concat(approachHeight, "px");
-                        newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
-                        if (!(this.game.instantaneousMode || forceInstant)) return [3 /*break*/, 1];
-                        wrapper.style.height = "".concat(newWrapperHeight, "px");
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, delay(ANIMATION_MS)];
-                    case 2:
-                        _a.sent();
-                        wrapper.style.height = "".concat(newWrapperHeight, "px");
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
+        var wrapper = $('st-main-board-tracks');
+        var altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
+        var approach = $(PlaneManager.PLANE_APPROACH_TRACK);
+        var altitudeSize = this.game.gamedatas.altitude.size;
+        var approachSize = this.game.gamedatas.approach.size;
+        var altitudeHeight = altitude.offsetHeight - 22 - ((altitudeSize - altitudeValue) * 96);
+        var approachHeight = approach.offsetHeight - 22 - ((approachSize - approachValue) * 96);
+        altitude.style.bottom = "-".concat(altitudeHeight, "px");
+        approach.style.bottom = "-".concat(approachHeight, "px");
+        var newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
+        if (this.game.instantaneousMode || forceInstant) {
+            wrapper.style.height = "".concat(newWrapperHeight, "px");
+        }
+        else {
+            return this.game.delay(ANIMATION_MS).then(function () {
+                wrapper.style.height = "".concat(newWrapperHeight, "px");
             });
-        });
+        }
     };
     PlaneManager.prototype.updateApproach = function (value) {
         this.currentApproach = value;
@@ -2186,7 +2177,19 @@ var PlaneManager = /** @class */ (function () {
     };
     PlaneManager.prototype.updateAxis = function (axis) {
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
-        return delay(ANIMATION_MS);
+        return this.game.delay(ANIMATION_MS);
+    };
+    PlaneManager.prototype.updateSwitch = function (planeSwitch) {
+        $("plane-switch-".concat(planeSwitch.id)).dataset.value = planeSwitch.value;
+        return this.game.delay(ANIMATION_MS);
+    };
+    PlaneManager.prototype.updateAerodynamicsBlue = function (aerodynamicsBlue) {
+        $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = aerodynamicsBlue;
+        return this.game.delay(ANIMATION_MS);
+    };
+    PlaneManager.prototype.updateAerodynamicsOrange = function (aerodynamicsOrange) {
+        $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = aerodynamicsOrange;
+        return this.game.delay(ANIMATION_MS);
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
@@ -2259,20 +2262,28 @@ var ActionSpaceManager = /** @class */ (function () {
         });
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
     };
-    ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged) {
-        this.selectedActionSpaceId = null;
+    ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged, dieValue) {
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
-        Object.entries(ids).forEach(function (_a) {
+        Object.entries(ids).filter(function (_a) {
+            var _b;
+            var id = _a[0], space = _a[1];
+            return !dieValue || (!space.allowedValues || ((_b = space.allowedValues) === null || _b === void 0 ? void 0 : _b.includes(dieValue)));
+        }).forEach(function (_a) {
             var id = _a[0], space = _a[1];
             var element = $(id);
-            element.classList.add('selectable');
+            if (!element.classList.contains('selected')) {
+                element.classList.add('selectable');
+            }
         });
     };
     ActionSpaceManager.prototype.setAllActionSpacesUnselectable = function () {
+        var _this = this;
         Object.keys(this.actionSpaces).forEach(function (id) {
             var element = $(id);
-            element.classList.remove('selected');
+            if (_this.selectedActionSpaceId !== id) {
+                element.classList.remove('selected');
+            }
             element.classList.remove('selectable');
         });
     };
@@ -2282,16 +2293,20 @@ var ActionSpaceManager = /** @class */ (function () {
     ActionSpaceManager.prototype.actionSpaceClicked = function (id, event) {
         dojo.stopEvent(event);
         var target = $(id);
-        if (target.classList.contains('selectable')) {
-            target.classList.remove('selectable');
-            target.classList.add('selected');
-            this.selectedActionSpaceId = target.id;
+        if (target.classList.contains('selected')) {
+            target.classList.add('selectable');
+            target.classList.remove('selected');
+            this.selectedActionSpaceId = null;
             this.onSelectedActionSpaceChanged();
         }
-        else if (target.classList.contains('selected')) {
-            target.classList.remove('selected');
-            target.classList.add('selectable');
-            this.selectedActionSpaceId = null;
+        else if (target.classList.contains('selectable')) {
+            target.classList.add('selected');
+            target.classList.remove('selectable');
+            if (this.selectedActionSpaceId) {
+                $(this.selectedActionSpaceId).classList.remove('selected');
+                $(this.selectedActionSpaceId).classList.add('selectable');
+            }
+            this.selectedActionSpaceId = target.id;
             this.onSelectedActionSpaceChanged();
         }
         console.log('Selected: ' + this.selectedActionSpaceId);
@@ -2333,9 +2348,13 @@ var DiceManager = /** @class */ (function (_super) {
         cardElement.dataset['value'] = String(die.side);
         console.log(die.side);
     };
-    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged) {
+    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues) {
         if (this.playerDiceStock) {
-            this.playerDiceStock.setSelectionMode(selectionMode);
+            var selectableDice = this.playerDiceStock.getCards();
+            if (allowedValues && allowedValues.length > 0) {
+                selectableDice = selectableDice.filter(function (die) { return allowedValues.includes(die.side); });
+            }
+            this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
         }
     };
@@ -2440,22 +2459,29 @@ var EndGameInfo = /** @class */ (function () {
     };
     return EndGameInfo;
 }());
-var _this = this;
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
-var delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
 var SkyTeam = /** @class */ (function () {
     // Modules
     function SkyTeam() {
+        var _this = this;
+        this.delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.instantaneousMode) return [3 /*break*/, 2];
+                        return [4 /*yield*/, Promise.resolve()];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
         // Init Managers
         this.planeManager = new PlaneManager(this);
         this.reserveManager = new ReserveManager(this);
@@ -2523,21 +2549,34 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
         var _this = this;
         if (this.isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(); });
-            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(); });
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); });
+            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); });
         }
     };
-    SkyTeam.prototype.onDicePlacementSelectChange = function () {
+    SkyTeam.prototype.onDicePlacementSelectChange = function (args) {
+        var _this = this;
         var _a;
         var selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var selectedDice = this.diceManager.playerDiceStock.getSelection();
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); });
+        this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); });
+        if (selectedDice && selectedDice.length === 1) {
+            var die = selectedDice[0];
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); }, die.side);
+        }
+        if (selectedActionSpaceId) {
+            var actionSpace = this.gamedatas.actionSpaces[selectedActionSpaceId];
+            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); }, actionSpace.allowedValues && actionSpace.allowedValues.length > 0 ? actionSpace.allowedValues : []);
+        }
         if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
             var die = selectedDice[0];
             var dieElement = this.diceManager.getCardElement(die);
             var dieElementClonePlaceholder = dieElement.cloneNode(true);
             dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
             dieElementClonePlaceholder.classList.add('st-dice-placeholder');
+            dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
+            dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
             $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
             console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
             dojo.removeClass('confirmPlacement', 'disabled');
@@ -2549,15 +2588,6 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
-            case 'dicePlacementSelect':
-                this.leavingDicePlacementSelect();
-                break;
-        }
-    };
-    SkyTeam.prototype.leavingDicePlacementSelect = function () {
-        if (this.isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable({}, null);
-            this.diceManager.setSelectionMode('none', null);
         }
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
@@ -2595,12 +2625,17 @@ var SkyTeam = /** @class */ (function () {
         this.takeAction('confirmReadyStrategy');
     };
     SkyTeam.prototype.confirmPlacement = function () {
+        var _this = this;
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         this.takeAction('confirmPlacement', {
             placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId })
+        }, function () {
+            _this.actionSpaceManager.selectedActionSpaceId = null;
+            _this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            _this.diceManager.setSelectionMode('none', null);
         });
     };
     SkyTeam.prototype.confirmPlayerSetup = function () {
@@ -2695,7 +2730,9 @@ var SkyTeam = /** @class */ (function () {
             ['planeAxisChanged', undefined],
             ['planeFailure', undefined],
             ['planeApproachChanged', undefined],
-            ['planeTokenRemoved', undefined]
+            ['planeTokenRemoved', undefined],
+            ['planeSwitchChanged', undefined],
+            ['planeAerodynamicsChanged', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2749,6 +2786,18 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_planeTokenRemoved = function (args) {
         if (args.plane) {
             return this.reserveManager.reservePlaneStock.addCard(args.plane);
+        }
+        return Promise.resolve();
+    };
+    SkyTeam.prototype.notif_planeSwitchChanged = function (args) {
+        return this.planeManager.updateSwitch(args.planeSwitch);
+    };
+    SkyTeam.prototype.notif_planeAerodynamicsChanged = function (args) {
+        if (args.aerodynamicsBlue) {
+            return this.planeManager.updateAerodynamicsBlue(args.aerodynamicsBlue);
+        }
+        if (args.aerodynamicsOrange) {
+            return this.planeManager.updateAerodynamicsOrange(args.aerodynamicsOrange);
         }
         return Promise.resolve();
     };

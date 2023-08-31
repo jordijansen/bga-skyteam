@@ -17,6 +17,10 @@ class PlaneSwitch extends APP_GameClass {
         $this->value = $value;
     }
 
+    public function save() {
+        self::DbQuery("UPDATE plane_switch SET value = $this->value WHERE id = '$this->id'");
+    }
+
     /**
      * @param $dbCards
      * @return PlaneSwitch[]

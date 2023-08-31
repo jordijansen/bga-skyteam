@@ -92,7 +92,11 @@ trait ActionTrait
             throw new BgaUserException('Invalid dice supplied!');
         }
 
-        // TODO Check value restriction
+        $actionSpace = $actionSpaces[$actionSpaceId];
+        if (array_key_exists(ALLOWED_VALUES, $actionSpace) && !in_array($die->side, $actionSpace[ALLOWED_VALUES])) {
+            throw new BgaUserException('Value not allowed');
+        }
+
         $this->dice->moveCard($die->id, LOCATION_PLANE, $actionSpaceId);
         $die = Dice::from($this->dice->getCard($diceId));
 
@@ -102,7 +106,7 @@ trait ActionTrait
             'player_name' => $this->getPlayerName($playerId),
             'die' =>  $die,
             'icon_dice' => [$die],
-            'action_type' => $actionSpaces[$actionSpaceId]['type']
+            'action_type' => $actionSpace['type']
         ]);
 
         $continue = $this->planeManager->resolveDicePlacement($die);

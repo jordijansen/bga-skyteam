@@ -53,6 +53,10 @@
     }
   }
 
+  &.bga-cards_disabled-card {
+    filter: unset !important;
+  }
+
   .card-side {
     box-shadow: none !important;
     outline: none !important;

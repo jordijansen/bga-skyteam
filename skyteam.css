@@ -541,6 +541,18 @@ body > .card {
   top: 115px;
   right: 20px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-1 {
+  top: 309px;
+  left: 21px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-2 {
+  top: 445px;
+  left: 21px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-3 {
+  top: 581px;
+  left: 21px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
@@ -774,6 +786,9 @@ body > .card {
 .st-dice.st-dice-placeholder .side {
   box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.6) !important;
   outline: none !important;
+}
+.st-dice.bga-cards_disabled-card {
+  filter: unset !important;
 }
 .st-dice .card-side {
   box-shadow: none !important;

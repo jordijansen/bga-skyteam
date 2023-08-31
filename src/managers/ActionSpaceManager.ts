@@ -19,23 +19,25 @@ class ActionSpaceManager {
         data.planeDice.forEach(die => this.moveDieToActionSpace(die));
     }
 
-    public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: () => void) {
-        this.selectedActionSpaceId = null;
-
+    public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: () => void, dieValue?: number) {
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
 
         this.setAllActionSpacesUnselectable();
 
-        Object.entries(ids).forEach(([id, space]) => {
+        Object.entries(ids).filter(([id, space]) => !dieValue || (!space.allowedValues || space.allowedValues?.includes(dieValue))).forEach(([id, space]) => {
             const element = $(id);
-            element.classList.add('selectable');
+            if (!element.classList.contains('selected')) {
+                element.classList.add('selectable');
+            }
         });
     }
 
     public setAllActionSpacesUnselectable() {
         Object.keys(this.actionSpaces).forEach(id => {
             const element = $(id);
-            element.classList.remove('selected');
+            if (this.selectedActionSpaceId !== id) {
+                element.classList.remove('selected');
+            }
             element.classList.remove('selectable');
         });
     }
@@ -47,17 +49,21 @@ class ActionSpaceManager {
     private actionSpaceClicked(id, event) {
         dojo.stopEvent(event);
         const target = $(id);
-        if (target.classList.contains('selectable')) {
-            target.classList.remove('selectable');
-            target.classList.add('selected');
-            this.selectedActionSpaceId = target.id;
-            this.onSelectedActionSpaceChanged();
-        } else if (target.classList.contains('selected')) {
-            target.classList.remove('selected');
-            target.classList.add('selectable')
+         if (target.classList.contains('selected')) {
+             target.classList.add('selectable');
+             target.classList.remove('selected');
             this.selectedActionSpaceId = null;
             this.onSelectedActionSpaceChanged();
-        }
+        } else if (target.classList.contains('selectable')) {
+             target.classList.add('selected');
+             target.classList.remove('selectable');
+             if (this.selectedActionSpaceId) {
+                 $(this.selectedActionSpaceId).classList.remove('selected');
+                 $(this.selectedActionSpaceId).classList.add('selectable');
+             }
+             this.selectedActionSpaceId = target.id;
+             this.onSelectedActionSpaceChanged();
+         }
         console.log('Selected: ' + this.selectedActionSpaceId)
     }
 

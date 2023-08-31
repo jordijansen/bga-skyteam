@@ -71,7 +71,7 @@ class PlaneManager  {
         dojo.connect($(PlaneManager.PLANE_APPROACH_TRACK), 'onclick', () => this.updateApproach(this.currentApproach + 1))
     }
 
-    public async setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {
+    public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {
         const wrapper = $('st-main-board-tracks');
         const altitude = $(PlaneManager.PLANE_ALTITUDE_TRACK);
         const approach = $(PlaneManager.PLANE_APPROACH_TRACK);
@@ -89,8 +89,9 @@ class PlaneManager  {
         if (this.game.instantaneousMode || forceInstant) {
             wrapper.style.height = `${newWrapperHeight}px`
         } else {
-            await delay(ANIMATION_MS);
-            wrapper.style.height = `${newWrapperHeight}px`;
+            return this.game.delay(ANIMATION_MS).then(() => {
+                wrapper.style.height = `${newWrapperHeight}px`;
+            });
         }
     }
 
@@ -106,6 +107,21 @@ class PlaneManager  {
 
     public updateAxis(axis: number) {
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
-        return delay(ANIMATION_MS);
+        return this.game.delay(ANIMATION_MS);
+    }
+
+    public updateSwitch(planeSwitch: PlaneSwitch) {
+        $(`plane-switch-${planeSwitch.id}`).dataset.value = planeSwitch.value;
+        return this.game.delay(ANIMATION_MS);
+    }
+
+    public updateAerodynamicsBlue(aerodynamicsBlue: number) {
+        $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = aerodynamicsBlue;
+        return this.game.delay(ANIMATION_MS);
+    }
+
+    public updateAerodynamicsOrange(aerodynamicsOrange: number) {
+        $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = aerodynamicsOrange;
+        return this.game.delay(ANIMATION_MS);
     }
 }

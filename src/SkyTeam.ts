@@ -10,9 +10,7 @@ declare const g_archive_mode;
 const ANIMATION_MS = 1000;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 
-const delay = async (ms: number) => {
-    await new Promise(resolve => setTimeout(resolve, ms))
-}
+
 
 class SkyTeam implements SkyTeamGame {
 
@@ -118,25 +116,40 @@ class SkyTeam implements SkyTeamGame {
 
     private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
         if ((this as any).isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange());
-            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange());
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args));
+            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args));
         }
     }
 
-    private onDicePlacementSelectChange() {
+    private onDicePlacementSelectChange(args: DicePlacementSelectArgs) {
         const selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         const selectedDice = this.diceManager.playerDiceStock.getSelection()
         document.querySelector('.st-dice-placeholder')?.remove();
+
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args));
+        this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args));
+
+        if (selectedDice && selectedDice.length === 1) {
+            const die = selectedDice[0];
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args), die.side)
+        }
+        if (selectedActionSpaceId) {
+            const actionSpace = this.gamedatas.actionSpaces[selectedActionSpaceId];
+            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args), actionSpace.allowedValues && actionSpace.allowedValues.length > 0 ? actionSpace.allowedValues : []);
+        }
+
         if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
             const die = selectedDice[0];
             const dieElement = this.diceManager.getCardElement(die);
             const dieElementClonePlaceholder = dieElement.cloneNode(true) as any;
             dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
             dieElementClonePlaceholder.classList.add('st-dice-placeholder');
+            dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
+            dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
             $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
             console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
             dojo.removeClass('confirmPlacement', 'disabled');
-        } else {
+        }  else {
             dojo.addClass('confirmPlacement', 'disabled');
         }
     }
@@ -145,16 +158,6 @@ class SkyTeam implements SkyTeamGame {
         log( 'Leaving state: '+stateName );
 
         switch (stateName) {
-            case 'dicePlacementSelect':
-                this.leavingDicePlacementSelect();
-                break;
-        }
-    }
-
-    private leavingDicePlacementSelect() {
-        if ((this as any).isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable({}, null);
-            this.diceManager.setSelectionMode('none', null);
         }
     }
 
@@ -201,6 +204,10 @@ class SkyTeam implements SkyTeamGame {
         const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         this.takeAction('confirmPlacement', {
             placement: JSON.stringify({actionSpaceId, diceId})
+        }, () => {
+            this.actionSpaceManager.selectedActionSpaceId = null;
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
         });
     }
 
@@ -281,6 +288,14 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
+    public delay = async (ms: number) => {
+        if (this.instantaneousMode) {
+            await Promise.resolve();
+        } else {
+            await new Promise(resolve => setTimeout(resolve, ms))
+        }
+    }
+
     ///////////////////////////////////////////////////
     //// Reaction to cometD notifications
 
@@ -305,7 +320,9 @@ class SkyTeam implements SkyTeamGame {
             ['planeAxisChanged', undefined],
             ['planeFailure', undefined],
             ['planeApproachChanged', undefined],
-            ['planeTokenRemoved', undefined]
+            ['planeTokenRemoved', undefined],
+            ['planeSwitchChanged', undefined],
+            ['planeAerodynamicsChanged', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -369,6 +386,20 @@ class SkyTeam implements SkyTeamGame {
     private notif_planeTokenRemoved(args: NotifPlaneTokenRemoved) {
         if (args.plane) {
             return this.reserveManager.reservePlaneStock.addCard(args.plane);
+        }
+        return Promise.resolve();
+    }
+
+    private notif_planeSwitchChanged(args: NotifPlaneSwitchChanged) {
+        return this.planeManager.updateSwitch(args.planeSwitch);
+    }
+
+    private notif_planeAerodynamicsChanged(args: NotifPlaneAerodynamicsChanged) {
+        if (args.aerodynamicsBlue) {
+            return this.planeManager.updateAerodynamicsBlue(args.aerodynamicsBlue);
+        }
+        if (args.aerodynamicsOrange) {
+            return this.planeManager.updateAerodynamicsOrange(args.aerodynamicsOrange);
         }
         return Promise.resolve();
     }

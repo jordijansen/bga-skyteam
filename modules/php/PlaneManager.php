@@ -124,6 +124,22 @@ class PlaneManager extends APP_DbObject
                 'nrOfPlanesRemoved' => $planeTokenRemoved != null ? 1 : 0,
                 'plane' => $planeTokenRemoved
             ]);
+        } else if ($actionSpace['type'] == ACTION_SPACE_LANDING_GEAR) {
+            $switch = $plane->switches[$die->locationArg];
+            if (!$switch->value) {
+                $switch->value = true;
+                $switch->save();
+
+                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Landing Gear ${landingGearNumber}</b> deployed'), [
+                    'planeSwitch' => $switch,
+                    'landingGearNumber' => str_replace(ACTION_SPACE_LANDING_GEAR.'-', '', $switch->id)
+                ]);
+
+                $plane->aerodynamicsBlue = $plane->aerodynamicsBlue + 1;
+                SkyTeam::$instance->notifyAllPlayers( "planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker (blue) moves to <b>${aerodynamicsBlue}</b>'), [
+                    'aerodynamicsBlue' => $plane->aerodynamicsBlue
+                ]);
+            }
         }
         $this->save($plane);
         return $continue;

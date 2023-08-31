@@ -35,6 +35,7 @@ const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
 
 const ALLOWED_ROLES = 'allowedRoles';
+const ALLOWED_VALUES = 'allowedValues';
 const MANDATORY = 'mandatory';
 
 /**

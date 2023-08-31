@@ -24,6 +24,7 @@ interface SkyTeamGame extends Game {
     isReadOnly(): boolean;
     setTooltipToClass(className: string, html: string): void;
     formatWithIcons(description: string): string
+    delay(ANIMATION_MS: number): Promise<void>;
 }
 
 interface Dice {
@@ -51,6 +52,7 @@ interface AltitudeTrack {
 }
 
 interface ActionSpace {
+    allowedValues?: number[],
     allowedRoles: SkyTeamPlayer['role'][],
     mandatory: boolean,
     type: 'axis'
@@ -123,4 +125,13 @@ interface NotifPlaneApproachChanged {
 
 interface NotifPlaneTokenRemoved {
     plane?: Card
+}
+
+interface NotifPlaneSwitchChanged {
+    planeSwitch: PlaneSwitch;
+}
+
+interface NotifPlaneAerodynamicsChanged {
+    aerodynamicsBlue?: number,
+    aerodynamicsOrange?: number
 }
