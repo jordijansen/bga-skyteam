@@ -5,6 +5,7 @@ namespace managers;
 use APP_DbObject;
 use objects\Dice;
 use objects\Plane;
+use objects\Token;
 use SkyTeam;
 
 class PlaneManager extends APP_DbObject
@@ -109,7 +110,20 @@ class PlaneManager extends APP_DbObject
                     $continue = false;
                 }
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_RADIO) {
+            $spaceToTakePlaneFrom = $plane->approach + ($die->side - 1);
+            $planeTokensInSpace = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_PLANE, null, LOCATION_APPROACH, $spaceToTakePlaneFrom));
+            $planeTokenRemoved = null;
+            if (sizeof($planeTokensInSpace) > 0) {
+                $planeTokenRemoved = current($planeTokensInSpace);
+                SkyTeam::$instance->tokens->moveCard($planeTokenRemoved->id, LOCATION_RESERVE);
+                $planeTokenRemoved = Token::from(SkyTeam::$instance->tokens->getCard($planeTokenRemoved->id));
+            }
 
+            SkyTeam::$instance->notifyAllPlayers( "planeTokenRemoved", clienttranslate('Radio used to divert <b>${nrOfPlanesRemoved}</b> plane(s) from approach'), [
+                'nrOfPlanesRemoved' => $planeTokenRemoved != null ? 1 : 0,
+                'plane' => $planeTokenRemoved
+            ]);
         }
         $this->save($plane);
         return $continue;

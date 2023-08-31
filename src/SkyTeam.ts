@@ -304,7 +304,8 @@ class SkyTeam implements SkyTeamGame {
             ['diePlaced', undefined],
             ['planeAxisChanged', undefined],
             ['planeFailure', undefined],
-            ['planeApproachChanged', undefined]
+            ['planeApproachChanged', undefined],
+            ['planeTokenRemoved', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -363,6 +364,13 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_planeApproachChanged(args: NotifPlaneApproachChanged) {
         return this.planeManager.updateApproach(args.approach);
+    }
+
+    private notif_planeTokenRemoved(args: NotifPlaneTokenRemoved) {
+        if (args.plane) {
+            return this.reserveManager.reservePlaneStock.addCard(args.plane);
+        }
+        return Promise.resolve();
     }
 
     public format_string_recursive(log: string, args: any) {

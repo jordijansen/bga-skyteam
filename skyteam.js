@@ -2260,6 +2260,7 @@ var ActionSpaceManager = /** @class */ (function () {
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
     };
     ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged) {
+        this.selectedActionSpaceId = null;
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
         Object.entries(ids).forEach(function (_a) {
@@ -2693,7 +2694,8 @@ var SkyTeam = /** @class */ (function () {
             ['diePlaced', undefined],
             ['planeAxisChanged', undefined],
             ['planeFailure', undefined],
-            ['planeApproachChanged', undefined]
+            ['planeApproachChanged', undefined],
+            ['planeTokenRemoved', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2743,6 +2745,12 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_planeApproachChanged = function (args) {
         return this.planeManager.updateApproach(args.approach);
+    };
+    SkyTeam.prototype.notif_planeTokenRemoved = function (args) {
+        if (args.plane) {
+            return this.reserveManager.reservePlaneStock.addCard(args.plane);
+        }
+        return Promise.resolve();
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

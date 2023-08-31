@@ -120,3 +120,7 @@ interface NotifPlaneFailure {
 interface NotifPlaneApproachChanged {
     approach: number
 }
+
+interface NotifPlaneTokenRemoved {
+    plane?: Card
+}

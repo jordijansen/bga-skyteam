@@ -20,6 +20,8 @@ class ActionSpaceManager {
     }
 
     public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: () => void) {
+        this.selectedActionSpaceId = null;
+
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
 
         this.setAllActionSpacesUnselectable();

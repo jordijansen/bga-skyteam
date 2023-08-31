@@ -2,9 +2,9 @@ class ReserveManager  {
     private static readonly TOKEN_RESERVE_COFFEE = 'st-token-reserve-coffee';
     private static readonly TOKEN_RESERVE_PLANE = 'st-token-reserve-coffee';
     private static readonly TOKEN_RESERVE_REROLL = 'st-token-reserve-coffee';
-    private reserveCoffeeStock: LineStock<Card>;
-    private reserveRerollStock: LineStock<Card>;
-    private reservePlaneStock: LineStock<Card>;
+    public reserveCoffeeStock: LineStock<Card>;
+    public reserveRerollStock: LineStock<Card>;
+    public reservePlaneStock: LineStock<Card>;
     constructor(private game: SkyTeamGame) {
 
     }

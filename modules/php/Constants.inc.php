@@ -29,6 +29,7 @@ const PHASE_DICE_PLACEMENT = 'diceplacement';
 
 const ACTION_SPACE_AXIS = 'axis';
 const ACTION_SPACE_ENGINES = 'engines';
+const ACTION_SPACE_RADIO = 'radio';
 const ACTION_SPACE_LANDING_GEAR = 'landing-gear';
 const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
