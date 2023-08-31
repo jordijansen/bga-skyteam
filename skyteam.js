@@ -2110,6 +2110,9 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+        Object.values(data.plane.switches).forEach(function (planeSwitch) {
+            $("plane-switch-".concat(planeSwitch.id)).dataset.value = planeSwitch.value;
+        });
         var approachTokenStockSlots = Object.keys(data.approach.spaces).map(function (slotId) { return "st-approach-track-slot-".concat(slotId); }).reverse();
         this.approachTokenStock = new SlotStock(this.game.tokenManager, $('st-approach-track'), {
             slotsIds: approachTokenStockSlots,

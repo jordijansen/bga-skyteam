@@ -56,6 +56,13 @@ trait SetupTrait
     private function setInitialPlaneParameters()
     {
         $this->planeManager->save(new Plane(0, 4, 8, 0, 1, 1));
+        $query = 'INSERT INTO plane_switch (id, value) VALUES ';
+        $queryValues = [];
+        foreach ($this->PLANE_SWITCHES as $i => $planeSwitch) {
+            $queryValues[] = "('$planeSwitch', 0)";
+        }
+        $query .= implode(',', $queryValues);
+        self::DbQuery( $query );
     }
 
     private function createDice()

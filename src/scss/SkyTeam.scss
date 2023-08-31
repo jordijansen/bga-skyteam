@@ -75,6 +75,7 @@ html, .mode_3d #game_play_area_background {
   display: flex;
   justify-content: center;
   .st-end-game-info-box {
+    background-color: #97c355;
     &.failure {
       background-color: #c13633;
     }

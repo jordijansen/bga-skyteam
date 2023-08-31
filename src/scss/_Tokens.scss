@@ -31,3 +31,13 @@
     }
   }
 }
+
+.st-plane-switch {
+  background-image: url('img/skyteam-plane-switch.png');
+  height: 33px;
+  width: 33px;
+
+  transition-property: left;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
+}

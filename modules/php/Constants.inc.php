@@ -28,6 +28,9 @@ const PHASE_STRATEGY = 'strategy';
 const PHASE_DICE_PLACEMENT = 'diceplacement';
 
 const ACTION_SPACE_AXIS = 'axis';
+const ACTION_SPACE_LANDING_GEAR = 'landing-gear';
+const ACTION_SPACE_FLAPS = 'flaps';
+const ACTION_SPACE_BRAKES = 'brakes';
 
 const ALLOWED_ROLES = 'allowedRoles';
 const MANDATORY = 'mandatory';

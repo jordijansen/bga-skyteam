@@ -38,6 +38,7 @@ require_once('modules/php/utils/ReflectionUtils.php');
 require_once('modules/php/objects/Card.php');
 require_once('modules/php/objects/Token.php');
 require_once('modules/php/objects/Plane.php');
+require_once('modules/php/objects/PlaneSwitch.php');
 require_once('modules/php/objects/Dice.php');
 require_once('modules/php/objects/ApproachTrack.php');
 require_once('modules/php/objects/AltitudeTrack.php');

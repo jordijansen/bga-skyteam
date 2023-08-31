@@ -47,6 +47,18 @@
                         <div id="axis-1" class="st-action-space"></div>
                         <div id="axis-2" class="st-action-space"></div>
                     </div>
+                    <div class="st-plane-switches">
+                        <div id="plane-switch-landing-gear-1" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-landing-gear-2" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-landing-gear-3" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-flaps-1" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-flaps-2" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-flaps-3" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-flaps-4" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-brakes-1" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-brakes-2" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                        <div id="plane-switch-brakes-3" class="st-plane-switch-wrapper"><div class="st-plane-switch token"></div></div>
+                    </div>
                 </div>
                 <div id="st-token-reserves">
                     <div id="st-token-reserve-coffee" class="st-token-reserve"></div>

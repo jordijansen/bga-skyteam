@@ -24,9 +24,12 @@ class PlaneManager  {
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
-
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+
+        Object.values(data.plane.switches).forEach((planeSwitch) => {
+            $(`plane-switch-${planeSwitch.id}`).dataset.value = planeSwitch.value;
+        })
 
         const approachTokenStockSlots = Object.keys(data.approach.spaces).map(slotId => `st-approach-track-slot-${slotId}`).reverse();
         this.approachTokenStock = new SlotStock(this.game.tokenManager, $('st-approach-track'), {

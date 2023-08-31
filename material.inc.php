@@ -33,6 +33,21 @@ $this->APPROACH_CATEGORIES = [
   APPROACH_BLACK => clienttranslate('Heroic Landing: Success will put you in the history books.'),
 ];
 
+$this->PLANE_SWITCHES = [
+    ACTION_SPACE_LANDING_GEAR.'-1',
+    ACTION_SPACE_LANDING_GEAR.'-2',
+    ACTION_SPACE_LANDING_GEAR.'-3',
+
+    ACTION_SPACE_FLAPS.'-1',
+    ACTION_SPACE_FLAPS.'-2',
+    ACTION_SPACE_FLAPS.'-3',
+    ACTION_SPACE_FLAPS.'-4',
+
+    ACTION_SPACE_BRAKES.'-1',
+    ACTION_SPACE_BRAKES.'-2',
+    ACTION_SPACE_BRAKES.'-3',
+];
+
 $this->ACTION_SPACES = [
     ACTION_SPACE_AXIS.'-1' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [PILOT], MANDATORY => true],
     ACTION_SPACE_AXIS.'-2' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true]

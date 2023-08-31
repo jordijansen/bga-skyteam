@@ -1,6 +1,7 @@
 <?php
 namespace objects;
 use APP_GameClass;
+use managers\objects\PlaneSwitch;
 
 class Plane extends APP_GameClass {
 
@@ -10,6 +11,7 @@ class Plane extends APP_GameClass {
     public int $brake;
     public int $approach;
     public int $altitude;
+    public array $switches;
 
     public function __construct($axis, $aerodynamicsBlue, $aerodynamicsOrange, $brake, $approach, $altitude)
     {
@@ -19,6 +21,7 @@ class Plane extends APP_GameClass {
         $this->brake = $brake;
         $this->approach = $approach;
         $this->altitude = $altitude;
+        $this->switches = PlaneSwitch::fromArray(self::getCollectionFromDB('SELECT * FROM plane_switch'));
     }
 
     public static function from($dbCard) {

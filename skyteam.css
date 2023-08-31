@@ -521,6 +521,46 @@ body > .card {
   top: 129px;
   right: 115px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-1 {
+  top: 386px;
+  left: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-2 {
+  top: 522px;
+  left: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-3 {
+  top: 658px;
+  left: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-1 {
+  top: 386px;
+  right: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-2 {
+  top: 522px;
+  right: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-3 {
+  top: 658px;
+  right: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-4 {
+  top: 794px;
+  right: 18px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-1 {
+  top: 690px;
+  left: 179px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-2 {
+  top: 690px;
+  left: 272px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-3 {
+  top: 690px;
+  left: 365px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-token-reserves {
   margin-top: 10px;
 }
@@ -586,6 +626,20 @@ body > .card {
   animation: jj-pulse 2s infinite;
 }
 
+.st-plane-switch-wrapper {
+  position: absolute;
+  width: 66px;
+  height: 33px;
+  display: flex;
+}
+.st-plane-switch-wrapper .st-plane-switch {
+  position: relative;
+  left: 0;
+}
+.st-plane-switch-wrapper[data-value=false] .st-plane-switch {
+  left: 33px;
+}
+
 .token {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -626,6 +680,15 @@ body > .card {
 }
 .st-token .card-sides .card-side {
   box-shadow: none;
+}
+
+.st-plane-switch {
+  background-image: url("img/skyteam-plane-switch.png");
+  height: 33px;
+  width: 33px;
+  transition-property: left;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
 }
 
 @keyframes jj-pulse {
@@ -893,6 +956,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   justify-content: center;
 }
 #st-end-game-info-wrapper .st-end-game-info-box {
+  background-color: #97c355;
   width: 300px;
   border-radius: 10px;
   color: white;

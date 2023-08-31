@@ -4,7 +4,13 @@ interface Plane {
     axis: number;
     aerodynamicsBlue: number;
     aerodynamicsOrange: number,
-    brake: number
+    brake: number,
+    switches: {[id: string]: PlaneSwitch}
+}
+
+interface PlaneSwitch {
+    id: string,
+    value: boolean
 }
 
 interface SkyTeamGame extends Game {

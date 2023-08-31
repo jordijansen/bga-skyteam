@@ -66,6 +66,11 @@ CREATE TABLE IF NOT EXISTS `plane` (
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `plane_switch` (
+    `id` varchar(1000) NOT NULL,
+    `value` BOOLEAN NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `dice` (
     `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
