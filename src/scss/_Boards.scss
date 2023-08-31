@@ -34,6 +34,13 @@
             top: 145px;
             background-size: cover;
             transition: transform 1s ease-in-out;
+            &[data-value="-10"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-9"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-8"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-7"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-6"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-5"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
+            &[data-value="-4"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
             &[data-value="-3"] { transform: rotate(-3 * $axis-rotation-step-degrees); }
             &[data-value="-2"] { transform: rotate(-2 * $axis-rotation-step-degrees); }
             &[data-value="-1"] { transform: rotate(-1 * $axis-rotation-step-degrees); }
@@ -41,6 +48,13 @@
             &[data-value="1"] { transform: rotate(1 * $axis-rotation-step-degrees); }
             &[data-value="2"] { transform: rotate(2 * $axis-rotation-step-degrees); }
             &[data-value="3"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="4"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="5"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="6"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="7"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="8"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="9"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+            &[data-value="10"] { transform: rotate(3 * $axis-rotation-step-degrees); }
           }
 
           #st-plane-aerodynamics-blue-marker, #st-plane-aerodynamics-orange-marker {

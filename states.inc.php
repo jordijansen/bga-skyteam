@@ -135,6 +135,15 @@ $gameStates = [
             'next' => ST_DICE_PLACEMENT_SELECT
         ]
     ],
+    ST_PLANE_FAILURE => [
+        "name" => "planeFailure",
+        "description" => clienttranslate('MAYDAY MAYDAY, something went horribly wrong...'),
+        "type" => "game",
+        "action" => "stPlaneFailure",
+        "transitions" => [
+            '' => ST_GAME_END
+        ]
+    ],
 ];
 
 

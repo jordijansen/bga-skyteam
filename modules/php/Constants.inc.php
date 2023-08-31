@@ -33,6 +33,11 @@ const ALLOWED_ROLES = 'allowedRoles';
 const MANDATORY = 'mandatory';
 
 /**
+ * Failure Reasons
+ */
+const FAILURE_AXIS = 'failure-axis';
+
+/**
  * Options
  */
 
@@ -52,6 +57,8 @@ const ST_DICE_PLACEMENT_START = 30;
 const ST_DICE_PLACEMENT_SELECT = 35;
 const ST_DICE_PLACEMENT_PLACE = 36;
 const ST_DICE_PLACEMENT_NEXT = 39;
+
+const ST_PLANE_FAILURE = 80;
 
 const ST_GAME_END = 99;
 
@@ -85,6 +92,7 @@ const LOCATION_PLANE = 'plane';
 const CURRENT_ROUND = 'CURRENT_ROUND';
 const CURRENT_PHASE = 'CURRENT_PHASE';
 const ADDITIONAL_ACTIONS_ = 'ADDITIONAL_ACTIONS_';
+const FAILURE_REASON = 'FAILURE_REASON';
 
 
 /**

@@ -86,8 +86,8 @@ class PlaneManager  {
         if (this.game.instantaneousMode || forceInstant) {
             wrapper.style.height = `${newWrapperHeight}px`
         } else {
-            await delay(1000);
-            return wrapper.style.height = `${newWrapperHeight}px`;
+            await delay(ANIMATION_MS);
+            wrapper.style.height = `${newWrapperHeight}px`;
         }
     }
 
@@ -99,5 +99,10 @@ class PlaneManager  {
     public updateAltitude(value: number) {
         this.currentAltitude = value;
         return this.setApproachAndAltitude(this.currentApproach, value);
+    }
+
+    public updateAxis(axis: number) {
+        $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
+        return delay(ANIMATION_MS);
     }
 }

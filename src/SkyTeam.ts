@@ -7,7 +7,7 @@ declare const g_gamethemeurl;
 declare const g_replayFrom;
 declare const g_archive_mode;
 
-const ANIMATION_MS = 20000;
+const ANIMATION_MS = 1000;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 
 const delay = async (ms: number) => {
@@ -25,6 +25,7 @@ class SkyTeam implements SkyTeamGame {
 
     // UI elements
     private playerSetup: PlayerSetup;
+    private endGameInfo: EndGameInfo;
 
     // Managers
     public planeManager: PlaneManager;
@@ -47,6 +48,9 @@ class SkyTeam implements SkyTeamGame {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
+        // Init UI
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.endGameInfo = new EndGameInfo('st-end-game-info-wrapper');
 
     }
 
@@ -82,6 +86,9 @@ class SkyTeam implements SkyTeamGame {
         this.communicationInfoManager.setUp(data);
         this.actionSpaceManager.setUp(data);
 
+        // Setup UI
+        this.endGameInfo.setFailureReason(data.failureReason)
+
         this.setupNotifications();
         log( "Ending game setup" );
     }
@@ -106,7 +113,6 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private enteringPlayerSetup() {
-        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.playerSetup.setUp();
     }
 
@@ -296,6 +302,8 @@ class SkyTeam implements SkyTeamGame {
             ['tokenReceived', undefined],
             ['diceRolled', undefined],
             ['diePlaced', undefined],
+            ['planeAxisChanged', undefined],
+            ['planeFailure', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -342,6 +350,14 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diePlaced(args: NotifDiePlaced) {
         return this.actionSpaceManager.moveDieToActionSpace(args.die);
+    }
+
+    private notif_planeAxisChanged(args: NotifPlaneAxisChanged) {
+        return this.planeManager.updateAxis(args.axis);
+    }
+
+    private notif_planeFailure(args: NotifPlaneFailure) {
+        return this.endGameInfo.setFailureReason(args.failureReason);
     }
 
     public format_string_recursive(log: string, args: any) {

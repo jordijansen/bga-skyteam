@@ -44,4 +44,32 @@ class PlaneManager extends APP_DbObject
         // TODO filter out module spaces
         return SkyTeam::$instance->ACTION_SPACES;
     }
+
+    function resolveDicePlacement(Dice $die): bool
+    {
+        $plane = $this->get();
+        $actionSpace = $this->getAllActionSpaces()[$die->locationArg];
+        if ($actionSpace['type'] == ACTION_SPACE_AXIS) {
+            $otherAxisSpace = $die->locationArg == 'axis-1' ? 'axis-2' : 'axis-1';
+            $otherAxisSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherAxisSpace));
+            if (sizeof($otherAxisSpaceDice) > 0) {
+                $otherAxisSpaceDie = current($otherAxisSpaceDice);
+                $pilotValue = $die->locationArg == 'axis-1' ? $die->side : $otherAxisSpaceDie->side;
+                $copilotValue = $die->locationArg == 'axis-2' ? $die->side : $otherAxisSpaceDie->side;
+                $axisChange = $pilotValue - $copilotValue;
+                $plane->axis = $plane->axis + $axisChange;
+
+                SkyTeam::$instance->notifyAllPlayers( "planeAxisChanged", clienttranslate('The plane axis is changed to <b>${axis}</b>'), [
+                    'axis' => $plane->axis
+                ]);
+
+                if ($plane->axis >= 3 || $plane->axis <= -3) {
+                    SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
+                    SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                }
+            }
+        }
+        $this->save($plane);
+        return true;
+    }
 }

@@ -20,6 +20,4 @@ trait ArgsTrait
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId())
         ];
     }
-
-    
 }

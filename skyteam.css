@@ -346,6 +346,27 @@ body > .card {
   background-size: cover;
   transition: transform 1s ease-in-out;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-10"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-9"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-8"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-7"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-6"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-5"] {
+  transform: rotate(-75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-4"] {
+  transform: rotate(-75deg);
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-3"] {
   transform: rotate(-75deg);
 }
@@ -365,6 +386,27 @@ body > .card {
   transform: rotate(50deg);
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="3"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="4"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="5"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="6"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="7"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="8"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="9"] {
+  transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="10"] {
   transform: rotate(75deg);
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-aerodynamics-blue-marker, #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-aerodynamics-orange-marker {
@@ -844,6 +886,27 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   text-align: left;
   display: flex;
   gap: 25px;
+}
+
+#st-end-game-info-wrapper {
+  display: flex;
+  justify-content: center;
+}
+#st-end-game-info-wrapper .st-end-game-info-box {
+  width: 300px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  padding: 25px 50px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+#st-end-game-info-wrapper .st-end-game-info-box.failure {
+  background-color: #c13633;
+}
+#st-end-game-info-wrapper .st-end-game-info-box h1 {
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

@@ -49,7 +49,8 @@
     "src/managers/TokenManager.ts",
 
     "src/ui/PlayerSetup.ts",
+    "src/ui/EndGameInfo.ts",
 
-    "src/SkyTeam.ts",
+    "src/SkyTeam.ts"
   ]
 }

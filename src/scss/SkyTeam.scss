@@ -71,5 +71,26 @@ html, .mode_3d #game_play_area_background {
   }
 }
 
+#st-end-game-info-wrapper {
+  display: flex;
+  justify-content: center;
+  .st-end-game-info-box {
+    &.failure {
+      background-color: #c13633;
+    }
+    h1 {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    width: 300px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    padding: 25px 50px;
+    filter: drop-shadow(1px 1px 1px black);
+    -webkit-filter: drop-shadow(1px 1px 1px black);
+  }
+}
+
 
 

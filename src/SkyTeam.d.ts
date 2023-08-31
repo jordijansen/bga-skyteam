@@ -56,6 +56,7 @@ interface SkyTeamPlayer extends Player {
 }
 
 interface SkyTeamGameData extends GameData {
+    failureReason?: string;
     planeDice: Dice[];
     round: number,
     phase: 'setup' | 'strategy' | 'diceplacement',
@@ -71,6 +72,10 @@ interface SkyTeamGameData extends GameData {
 // ARGS
 interface DicePlacementSelectArgs {
     availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
+}
+
+interface PlaneFailureArgs {
+    failureReason: string
 }
 
 // NOTIFS
@@ -96,4 +101,12 @@ interface NotifDiceRolled {
 interface NotifDiePlaced {
     playerId: number,
     die: Dice
+}
+
+interface NotifPlaneAxisChanged {
+    axis: number;
+}
+
+interface NotifPlaneFailure {
+    failureReason: string
 }

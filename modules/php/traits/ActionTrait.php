@@ -105,7 +105,10 @@ trait ActionTrait
             'action_type' => $actionSpaces[$actionSpaceId]['type']
         ]);
 
-        $this->gamestate->nextState("");
+        $continue = $this->planeManager->resolveDicePlacement($die);
+        if ($continue) {
+            $this->gamestate->nextState("");
+        }
     }
 
 //    function undoLast() {

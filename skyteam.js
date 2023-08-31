@@ -2163,10 +2163,11 @@ var PlaneManager = /** @class */ (function () {
                         if (!(this.game.instantaneousMode || forceInstant)) return [3 /*break*/, 1];
                         wrapper.style.height = "".concat(newWrapperHeight, "px");
                         return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, delay(1000)];
+                    case 1: return [4 /*yield*/, delay(ANIMATION_MS)];
                     case 2:
                         _a.sent();
-                        return [2 /*return*/, wrapper.style.height = "".concat(newWrapperHeight, "px")];
+                        wrapper.style.height = "".concat(newWrapperHeight, "px");
+                        _a.label = 3;
                     case 3: return [2 /*return*/];
                 }
             });
@@ -2179,6 +2180,10 @@ var PlaneManager = /** @class */ (function () {
     PlaneManager.prototype.updateAltitude = function (value) {
         this.currentAltitude = value;
         return this.setApproachAndAltitude(this.currentApproach, value);
+    };
+    PlaneManager.prototype.updateAxis = function (axis) {
+        $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
+        return delay(ANIMATION_MS);
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
@@ -2393,8 +2398,38 @@ var PlayerSetup = /** @class */ (function () {
     };
     return PlayerSetup;
 }());
+var EndGameInfo = /** @class */ (function () {
+    function EndGameInfo(elementId) {
+        this.elementId = elementId;
+    }
+    EndGameInfo.prototype.setFailureReason = function (failureReason) {
+        if (failureReason) {
+            var element = $(this.elementId);
+            dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only');
+            return delay(5000);
+        }
+        return Promise.resolve();
+    };
+    EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
+        return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.getFailureReasonText(failureReason), "</p>\n                </div>");
+    };
+    EndGameInfo.prototype.getFailureReasonTitle = function (failureReason) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('Going into a spin');
+        }
+    };
+    EndGameInfo.prototype.getFailureReasonText = function (failureReason) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin and you immediately lose the game.');
+        }
+        return '';
+    };
+    return EndGameInfo;
+}());
 var _this = this;
-var ANIMATION_MS = 20000;
+var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -2418,6 +2453,9 @@ var SkyTeam = /** @class */ (function () {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
+        // Init UI
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.endGameInfo = new EndGameInfo('st-end-game-info-wrapper');
     }
     /*
         setup:
@@ -2446,6 +2484,8 @@ var SkyTeam = /** @class */ (function () {
         this.diceManager.setUp(data);
         this.communicationInfoManager.setUp(data);
         this.actionSpaceManager.setUp(data);
+        // Setup UI
+        this.endGameInfo.setFailureReason(data.failureReason);
         this.setupNotifications();
         log("Ending game setup");
     };
@@ -2466,7 +2506,6 @@ var SkyTeam = /** @class */ (function () {
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function () {
-        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.playerSetup.setUp();
     };
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
@@ -2641,6 +2680,8 @@ var SkyTeam = /** @class */ (function () {
             ['tokenReceived', undefined],
             ['diceRolled', undefined],
             ['diePlaced', undefined],
+            ['planeAxisChanged', undefined],
+            ['planeFailure', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2681,6 +2722,12 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_diePlaced = function (args) {
         return this.actionSpaceManager.moveDieToActionSpace(args.die);
+    };
+    SkyTeam.prototype.notif_planeAxisChanged = function (args) {
+        return this.planeManager.updateAxis(args.axis);
+    };
+    SkyTeam.prototype.notif_planeFailure = function (args) {
+        return this.endGameInfo.setFailureReason(args.failureReason);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
