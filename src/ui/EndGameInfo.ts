@@ -24,6 +24,10 @@ class EndGameInfo {
         switch (failureReason) {
             case 'failure-axis':
                 return _('Going into a spin');
+            case 'failure-collision':
+                return _('Collision');
+            case 'failure-overshoot':
+                return _('Overshoot');
         }
     }
 
@@ -31,6 +35,10 @@ class EndGameInfo {
         switch (failureReason) {
             case 'failure-axis':
                 return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin and you immediately lose the game.');
+            case 'failure-collision':
+                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision, and you’ve lost the game!');
+            case 'failure-overshoot':
+                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport, and you’ve lost the game!')
         }
         return '';
     }

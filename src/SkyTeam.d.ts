@@ -116,3 +116,7 @@ interface NotifPlaneAxisChanged {
 interface NotifPlaneFailure {
     failureReason: string
 }
+
+interface NotifPlaneApproachChanged {
+    approach: number
+}

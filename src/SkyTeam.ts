@@ -303,7 +303,8 @@ class SkyTeam implements SkyTeamGame {
             ['diceRolled', undefined],
             ['diePlaced', undefined],
             ['planeAxisChanged', undefined],
-            ['planeFailure', undefined]
+            ['planeFailure', undefined],
+            ['planeApproachChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -358,6 +359,10 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_planeFailure(args: NotifPlaneFailure) {
         return this.endGameInfo.setFailureReason(args.failureReason);
+    }
+
+    private notif_planeApproachChanged(args: NotifPlaneApproachChanged) {
+        return this.planeManager.updateApproach(args.approach);
     }
 
     public format_string_recursive(log: string, args: any) {

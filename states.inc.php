@@ -141,7 +141,17 @@ $gameStates = [
         "type" => "game",
         "action" => "stPlaneFailure",
         "transitions" => [
-            '' => ST_GAME_END
+            '' => 98
+        ]
+    ],
+
+    98 => [
+        "name" => "catchState",
+        "description" => clienttranslate('${actplayer} catch'),
+        "descriptionmyturn" => clienttranslate('${you} catch'),
+        "type" => "activeplayer",
+        "transitions" => [
+//            '' => ST_GAME_END
         ]
     ],
 ];

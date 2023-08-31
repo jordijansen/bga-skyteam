@@ -2420,12 +2420,20 @@ var EndGameInfo = /** @class */ (function () {
         switch (failureReason) {
             case 'failure-axis':
                 return _('Going into a spin');
+            case 'failure-collision':
+                return _('Collision');
+            case 'failure-overshoot':
+                return _('Overshoot');
         }
     };
     EndGameInfo.prototype.getFailureReasonText = function (failureReason) {
         switch (failureReason) {
             case 'failure-axis':
                 return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin and you immediately lose the game.');
+            case 'failure-collision':
+                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision, and you’ve lost the game!');
+            case 'failure-overshoot':
+                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport, and you’ve lost the game!');
         }
         return '';
     };
@@ -2684,7 +2692,8 @@ var SkyTeam = /** @class */ (function () {
             ['diceRolled', undefined],
             ['diePlaced', undefined],
             ['planeAxisChanged', undefined],
-            ['planeFailure', undefined]
+            ['planeFailure', undefined],
+            ['planeApproachChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2731,6 +2740,9 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_planeFailure = function (args) {
         return this.endGameInfo.setFailureReason(args.failureReason);
+    };
+    SkyTeam.prototype.notif_planeApproachChanged = function (args) {
+        return this.planeManager.updateApproach(args.approach);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

@@ -94,7 +94,6 @@ trait StateTrait
         }
     }
 
-
     function stPlaneFailure()
     {
         $this->notifyAllPlayers('planeFailure', clienttranslate('MAYDAY MAYDAY, something went horribly wrong...'), [

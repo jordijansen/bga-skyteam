@@ -47,6 +47,7 @@ class PlaneManager extends APP_DbObject
 
     function resolveDicePlacement(Dice $die): bool
     {
+        $continue = true;
         $plane = $this->get();
         $actionSpace = $this->getAllActionSpaces()[$die->locationArg];
         if ($actionSpace['type'] == ACTION_SPACE_AXIS) {
@@ -66,10 +67,51 @@ class PlaneManager extends APP_DbObject
                 if ($plane->axis >= 3 || $plane->axis <= -3) {
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                    $continue = false;
                 }
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_ENGINES) {
+            $otherEngineSpace = $die->locationArg == 'engines-1' ? 'engines-2' : 'engines-1';
+            $otherEngineSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherEngineSpace));
+            if (sizeof($otherEngineSpaceDice) > 0) {
+                $otherEngineSpaceDie = current($otherEngineSpaceDice);
+                $totalEngineValue = $die->side + $otherEngineSpaceDie->side;
+                $planeCollision = false;
+                if ($totalEngineValue < $plane->aerodynamicsBlue) {
+                    $advanceApproachSpaces = 0;
+                } else if ($totalEngineValue > $plane->aerodynamicsBlue && $totalEngineValue < $plane->aerodynamicsOrange) {
+                    $advanceApproachSpaces = 1;
+                    if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0) {
+                        $planeCollision = true;
+                    }
+                } else {
+                    $advanceApproachSpaces = 2;
+                    if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0 ||
+                        sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach + 1)) > 0) {
+                        $planeCollision = true;
+                    }
+                }
+
+                $plane->approach = $plane->approach + $advanceApproachSpaces;
+                SkyTeam::$instance->notifyAllPlayers( "planeApproachChanged", clienttranslate('The plane engines are at <b>${totalEngineValue}</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)'), [
+                    'totalEngineValue' => $totalEngineValue,
+                    'advanceApproachSpaces' => $advanceApproachSpaces,
+                    'approach' => $plane->approach
+                ]);
+
+                if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
+                    SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_OVERSHOOT);
+                    SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                    $continue = false;
+                } else if ($planeCollision) {
+                    SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_COLLISION);
+                    SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                    $continue = false;
+                }
+            }
+
         }
         $this->save($plane);
-        return true;
+        return $continue;
     }
 }

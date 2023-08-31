@@ -521,6 +521,14 @@ body > .card {
   top: 129px;
   right: 115px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #engines-1 {
+  top: 433px;
+  left: 180px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #engines-2 {
+  top: 433px;
+  right: 180px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;

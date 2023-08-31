@@ -28,6 +28,7 @@ const PHASE_STRATEGY = 'strategy';
 const PHASE_DICE_PLACEMENT = 'diceplacement';
 
 const ACTION_SPACE_AXIS = 'axis';
+const ACTION_SPACE_ENGINES = 'engines';
 const ACTION_SPACE_LANDING_GEAR = 'landing-gear';
 const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
@@ -39,6 +40,8 @@ const MANDATORY = 'mandatory';
  * Failure Reasons
  */
 const FAILURE_AXIS = 'failure-axis';
+const FAILURE_COLLISION = 'failure-collision';
+const FAILURE_OVERSHOOT = 'failure-overshoot';
 
 /**
  * Options
