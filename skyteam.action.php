@@ -69,6 +69,26 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function requestReroll()
+    {
+        self::setAjaxMode();
+
+        $this->game->requestReroll();
+
+        self::ajaxResponse();
+    }
+
+    public function rerollDice()
+    {
+        self::setAjaxMode();
+
+        $payload = self::getArg("payload", AT_json, true);
+        $this->validateJSonAlphaNum($payload, 'payload');
+        $this->game->rerollDice($payload['selectedDieIds']);
+
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

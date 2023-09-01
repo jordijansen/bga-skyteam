@@ -148,6 +148,67 @@ trait ActionTrait
         }
     }
 
+    function requestReroll()
+    {
+        if (!in_array(ACT_START_REROLL, $this->gamestate->state()['possibleactions'])) {
+            throw new BgaUserException('reroll not allowed');
+        }
+
+        $rerollTokens = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE));
+        if (sizeof($rerollTokens) < 1) {
+            throw new BgaUserException('No reroll tokens');
+        }
+
+        $rerollToken = current($rerollTokens);
+        $this->tokens->moveCard($rerollToken->id, LOCATION_RESERVE);
+        $rerollToken = Token::from($this->tokens->getCard($rerollToken->id));
+
+        $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL, $this->getActivePlayerId());
+        $this->notifyAllPlayers( "rerollTokenUsed", clienttranslate('${player_name} uses ${icon_tokens}, all players may re-roll dice'), [
+            'playerId' => intval($this->getCurrentPlayerId()),
+            'player_name' => $this->getPlayerName($this->getCurrentPlayerId()),
+            'token' =>  $rerollToken,
+            'icon_tokens' => [$rerollToken],
+        ]);
+
+        $this->gamestate->setAllPlayersMultiactive();
+        $this->gamestate->jumpToState(ST_REROLL_DICE);
+    }
+
+    function rerollDice($selectedDieIds)
+    {
+        $playerId = $this->getCurrentPlayerId();
+        $this->checkAction(ACT_REROLL);
+
+        if (isset($selectedDieIds) && is_array($selectedDieIds) && sizeof($selectedDieIds) > 0) {
+            $playerRole = $this->getPlayerRole($playerId);
+            $rolledDice = [];
+            foreach ($selectedDieIds as $selectedDieId) {
+                $die = Dice::from($this->dice->getCard($selectedDieId));
+                if ($die->location != LOCATION_PLAYER) {
+                    throw new BgaUserException('Only unused dice can be re-rolled');
+                } else if ($die->type != DICE_PLAYER || $die->typeArg != $playerRole) {
+                    throw new BgaUserException('You can only re-roll your own dice');
+                }
+
+                $die->rollDie();
+                $rolledDice[] = $die;
+            }
+
+            $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} rolls ${icon_dice}'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+                'dice' =>  $rolledDice,
+                'icon_dice' => $rolledDice
+            ]);
+        }
+
+        $this->gamestate->setPlayerNonMultiactive($playerId, '');
+        if (sizeof($this->gamestate->getActivePlayerList()) == 0) {
+            $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL));
+        }
+    }
+
 //    function undoLast() {
 //        $this->checkAction(ACT_UNDO);
 //

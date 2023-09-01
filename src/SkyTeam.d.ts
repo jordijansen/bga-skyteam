@@ -79,6 +79,7 @@ interface SkyTeamGameData extends GameData {
 
 // ARGS
 interface DicePlacementSelectArgs {
+    nrOfRerollAvailable: number;
     nrOfCoffeeAvailable: number;
     availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
 }
@@ -143,4 +144,8 @@ interface NotifPlaneBrakeChanged {
 
 interface NotifCoffeeUsed {
     tokens: Card[]
+}
+
+interface NotifRerollTokenUsed {
+    token: Card
 }

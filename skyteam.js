@@ -2624,10 +2624,18 @@ var SkyTeam = /** @class */ (function () {
             case 'dicePlacementSelect':
                 this.enteringDicePlacementSelect(args.args);
                 break;
+            case 'rerollDice':
+                this.enteringRerollDice();
+                break;
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function () {
         this.playerSetup.setUp();
+    };
+    SkyTeam.prototype.enteringRerollDice = function () {
+        if (this.isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('multiple');
+        }
     };
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
         var _this = this;
@@ -2670,7 +2678,24 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
+            case 'dicePlacementSelect':
+                this.leavingDicePlacementSelect();
+                break;
+            case 'rerollDice':
+                this.leavingRerollDice();
+                break;
         }
+    };
+    SkyTeam.prototype.leavingDicePlacementSelect = function () {
+        if (this.isCurrentPlayerActive()) {
+            this.actionSpaceManager.selectedActionSpaceId = null;
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
+            this.spendCoffee.destroy();
+        }
+    };
+    SkyTeam.prototype.leavingRerollDice = function () {
+        this.diceManager.setSelectionMode('none');
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).
@@ -2689,17 +2714,22 @@ var SkyTeam = /** @class */ (function () {
                     this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
+                case 'rerollDice':
+                    this.addActionButton('rerollDice', _("Reroll selected dice"), function () { return _this.rerollDice(); });
+                    break;
             }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
                 this.addActionButton('undoLast', _("Undo last"), function () { return _this.undoLast(); }, null, null, 'red');
                 this.addActionButton('undoAll', _("Undo all"), function () { return _this.undoAll(); }, null, null, 'red');
             }
         }
-        else {
-            if (!this.isReadOnly()) {
-                switch (stateName) {
-                    // CHANGE MULTIACTIVE STATE
-                }
+        if (!this.isReadOnly()) {
+            switch (stateName) {
+                case 'dicePlacementSelect':
+                    if (args.nrOfRerollAvailable > 0) {
+                        this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
+                    }
+                    break;
             }
         }
     };
@@ -2707,19 +2737,17 @@ var SkyTeam = /** @class */ (function () {
         this.takeAction('confirmReadyStrategy');
     };
     SkyTeam.prototype.confirmPlacement = function () {
-        var _this = this;
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         var diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
+        this.actionSpaceManager.selectedActionSpaceId = null;
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        this.diceManager.setSelectionMode('none', null);
+        this.spendCoffee.destroy();
         this.takeAction('confirmPlacement', {
             placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
-        }, function () {
-            _this.actionSpaceManager.selectedActionSpaceId = null;
-            _this.actionSpaceManager.setActionSpacesSelectable({}, null);
-            _this.diceManager.setSelectionMode('none', null);
-            _this.spendCoffee.destroy();
         });
     };
     SkyTeam.prototype.confirmPlayerSetup = function () {
@@ -2730,6 +2758,20 @@ var SkyTeam = /** @class */ (function () {
                 })
             });
         }
+    };
+    SkyTeam.prototype.requestReroll = function () {
+        var _this = this;
+        this.wrapInConfirm(function () {
+            _this.takeAction('requestReroll');
+        }, _('This action allows players to use a re-roll token to re-roll any number of their dice. This action cannot be undone.'));
+    };
+    SkyTeam.prototype.rerollDice = function () {
+        var _this = this;
+        var selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(function (die) { return die.id; });
+        this.wrapInConfirm(function () {
+            _this.diceManager.setSelectionMode('none');
+            _this.takeNoLockAction('rerollDice', { payload: JSON.stringify({ selectedDieIds: selectedDieIds }) });
+        }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }));
     };
     SkyTeam.prototype.undoLast = function () {
         this.takeNoLockAction('undoLast');
@@ -2819,6 +2861,7 @@ var SkyTeam = /** @class */ (function () {
             ['planeAerodynamicsChanged', undefined],
             ['planeBrakeChanged', undefined],
             ['coffeeUsed', undefined],
+            ['rerollTokenUsed', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2892,6 +2935,9 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_coffeeUsed = function (args) {
         return this.reserveManager.reserveCoffeeStock.addCards(args.tokens);
+    };
+    SkyTeam.prototype.notif_rerollTokenUsed = function (args) {
+        return this.reserveManager.reserveRerollStock.addCard(args.token);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

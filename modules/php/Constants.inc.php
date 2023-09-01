@@ -69,6 +69,8 @@ const ST_DICE_PLACEMENT_SELECT = 35;
 const ST_DICE_PLACEMENT_PLACE = 36;
 const ST_DICE_PLACEMENT_NEXT = 39;
 
+const ST_REROLL_DICE = 70;
+
 const ST_PLANE_FAILURE = 80;
 
 const ST_GAME_END = 99;
@@ -79,8 +81,8 @@ const ST_GAME_END = 99;
 const ACT_CONFIRM_PLAYER_SETUP = 'confirmPlayerSetup';
 const ACT_READY = 'ready';
 const ACT_DICE_PLACEMENT_SELECT = 'dicePlacementSelect';
-const ACT_DICE_PLACEMENT_PLACE = 'dicePlacementPlace';
-const ACT_DICE_PLACEMENT_NEXT = 'dicePlacementNext';
+const ACT_START_REROLL = 'startReroll';
+const ACT_REROLL = 'reroll';
 
 
 const ACT_UNDO = 'undo';
@@ -104,6 +106,7 @@ const CURRENT_ROUND = 'CURRENT_ROUND';
 const CURRENT_PHASE = 'CURRENT_PHASE';
 const ADDITIONAL_ACTIONS_ = 'ADDITIONAL_ACTIONS_';
 const FAILURE_REASON = 'FAILURE_REASON';
+const ACTIVE_PLAYER_AFTER_REROLL = 'ACTIVE_PLAYER_AFTER_REROLL';
 
 
 /**

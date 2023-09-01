@@ -109,11 +109,20 @@ class SkyTeam implements SkyTeamGame {
             case 'dicePlacementSelect':
                 this.enteringDicePlacementSelect(args.args);
                 break;
+            case 'rerollDice':
+                this.enteringRerollDice();
+                break;
         }
     }
 
     private enteringPlayerSetup() {
         this.playerSetup.setUp();
+    }
+
+    private enteringRerollDice() {
+        if ((this as any).isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('multiple');
+        }
     }
 
     private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
@@ -157,14 +166,32 @@ class SkyTeam implements SkyTeamGame {
         log( 'Leaving state: '+stateName );
 
         switch (stateName) {
+            case 'dicePlacementSelect':
+                this.leavingDicePlacementSelect()
+                break;
+            case 'rerollDice':
+                this.leavingRerollDice()
+                break;
         }
+    }
+
+    private leavingDicePlacementSelect() {
+        if ((this as any).isCurrentPlayerActive()) {
+            this.actionSpaceManager.selectedActionSpaceId = null;
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
+            this.spendCoffee.destroy();
+        }
+    }
+
+    private leavingRerollDice() {
+        this.diceManager.setSelectionMode('none');
     }
 
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).
     //
     public onUpdateActionButtons(stateName: string, args: any) {
-
         if ((this as any).isCurrentPlayerActive()) {
             switch (stateName) {
                 case 'playerSetup':
@@ -177,18 +204,23 @@ class SkyTeam implements SkyTeamGame {
                     (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
-
+                case 'rerollDice':
+                    (this as any).addActionButton('rerollDice', _("Reroll selected dice"), () => this.rerollDice());
+                    break;
             }
 
             if (args?.canCancelMoves) {
                 (this as any).addActionButton('undoLast', _("Undo last"), () => this.undoLast(), null, null, 'red');
                 (this as any).addActionButton('undoAll', _("Undo all"), () => this.undoAll(), null, null, 'red');
             }
-        } else {
-            if (!this.isReadOnly()) {
-                switch (stateName) {
-                    // CHANGE MULTIACTIVE STATE
-                }
+        }
+        if (!this.isReadOnly()) {
+            switch (stateName) {
+                case 'dicePlacementSelect':
+                    if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
+                        (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
+                    }
+                    break;
             }
         }
     }
@@ -202,13 +234,14 @@ class SkyTeam implements SkyTeamGame {
         const actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         const diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
+
+        this.actionSpaceManager.selectedActionSpaceId = null;
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        this.diceManager.setSelectionMode('none', null);
+        this.spendCoffee.destroy();
+
         this.takeAction('confirmPlacement', {
             placement: JSON.stringify({actionSpaceId, diceId, diceValue})
-        }, () => {
-            this.actionSpaceManager.selectedActionSpaceId = null;
-            this.actionSpaceManager.setActionSpacesSelectable({}, null);
-            this.diceManager.setSelectionMode('none', null);
-            this.spendCoffee.destroy();
         });
     }
 
@@ -220,6 +253,20 @@ class SkyTeam implements SkyTeamGame {
                 })
             })
         }
+    }
+
+    private requestReroll() {
+        this.wrapInConfirm(() => {
+            this.takeAction('requestReroll');
+        }, _('This action allows players to use a re-roll token to re-roll any number of their dice. This action cannot be undone.'))
+    }
+
+    private rerollDice() {
+        const selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(die => die.id);
+        this.wrapInConfirm(() => {
+            this.diceManager.setSelectionMode('none');
+            this.takeNoLockAction('rerollDice', {payload: JSON.stringify({selectedDieIds})});
+        }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }))
     }
 
     private undoLast() {
@@ -326,6 +373,7 @@ class SkyTeam implements SkyTeamGame {
             ['planeAerodynamicsChanged', undefined],
             ['planeBrakeChanged', undefined],
             ['coffeeUsed', undefined],
+            ['rerollTokenUsed', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -413,6 +461,10 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_coffeeUsed(args: NotifCoffeeUsed) {
         return this.reserveManager.reserveCoffeeStock.addCards(args.tokens);
+    }
+
+    private notif_rerollTokenUsed(args: NotifRerollTokenUsed) {
+        return this.reserveManager.reserveRerollStock.addCard(args.token);
     }
 
     public format_string_recursive(log: string, args: any) {

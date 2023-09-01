@@ -17,6 +17,7 @@ trait ArgsTrait
     function argDicePlacementSelect()
     {
         return [
+            'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId())
         ];

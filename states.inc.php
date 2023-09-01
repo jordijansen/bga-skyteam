@@ -120,7 +120,8 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argDicePlacementSelect",
         "possibleactions" => [
-            ACT_DICE_PLACEMENT_SELECT
+            ACT_DICE_PLACEMENT_SELECT,
+            ACT_START_REROLL
         ],
         "transitions" => [
             "" => ST_DICE_PLACEMENT_NEXT
@@ -134,6 +135,18 @@ $gameStates = [
         "transitions" => [
             'next' => ST_DICE_PLACEMENT_SELECT
         ]
+    ],
+    ST_REROLL_DICE => [
+        "name" => "rerollDice",
+        "description" => clienttranslate('Waiting for players to re-roll any number of dice'),
+        "descriptionmyturn" => clienttranslate('${you} may re-roll any number of dice'),
+        "type" => "multipleactiveplayer",
+        "possibleactions" => [
+            ACT_REROLL
+        ],
+        "transitions" => [
+            "" => ST_DICE_PLACEMENT_SELECT
+        ],
     ],
     ST_PLANE_FAILURE => [
         "name" => "planeFailure",
