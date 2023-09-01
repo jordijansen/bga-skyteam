@@ -1,6 +1,6 @@
 class EndGameInfo {
 
-    constructor(private elementId: string) {
+    constructor(private game: SkyTeamGame, private elementId: string) {
 
     }
 
@@ -8,7 +8,7 @@ class EndGameInfo {
         if (failureReason) {
             const element = $(this.elementId);
             dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only')
-            return delay(5000);
+            return this.game.delay(5000);
         }
         return Promise.resolve();
     }

@@ -513,99 +513,111 @@ body > .card {
   top: 37px;
   left: 29px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #axis-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #axis-1 {
   top: 129px;
   left: 116px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #axis-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #axis-2 {
   top: 129px;
   right: 115px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #engines-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #engines-1 {
   top: 433px;
   left: 180px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #engines-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #engines-2 {
   top: 433px;
   right: 180px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #radio-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #radio-1 {
   top: 115px;
   left: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #radio-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #radio-2 {
   top: 25px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #radio-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #radio-3 {
   top: 115px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #landing-gear-1 {
   top: 309px;
   left: 21px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #landing-gear-2 {
   top: 445px;
   left: 21px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #landing-gear-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #landing-gear-3 {
   top: 581px;
   left: 21px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #flaps-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #flaps-1 {
   top: 309px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #flaps-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #flaps-2 {
   top: 445px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #flaps-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #flaps-3 {
   top: 581px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-action-spaces #flaps-4 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #flaps-4 {
   top: 717px;
   right: 20px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #concentration-1 {
+  bottom: 28px;
+  left: 183px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #concentration-2 {
+  bottom: 28px;
+  left: 276px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #concentration-3 {
+  bottom: 28px;
+  left: 368px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-2 {
   top: 522px;
   left: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-landing-gear-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-3 {
   top: 658px;
   left: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-flaps-1 {
   top: 386px;
   right: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-flaps-2 {
   top: 522px;
   right: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-flaps-3 {
   top: 658px;
   right: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-flaps-4 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-flaps-4 {
   top: 794px;
   right: 18px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-1 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-brakes-1 {
   top: 690px;
   left: 179px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-2 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-brakes-2 {
   top: 690px;
   left: 272px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-switches #plane-switch-brakes-3 {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-brakes-3 {
   top: 690px;
   left: 365px;
 }

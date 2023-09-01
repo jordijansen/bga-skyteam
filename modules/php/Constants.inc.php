@@ -33,6 +33,8 @@ const ACTION_SPACE_RADIO = 'radio';
 const ACTION_SPACE_LANDING_GEAR = 'landing-gear';
 const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
+const ACTION_SPACE_CONCENTRATION = 'concentration';
+
 
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';

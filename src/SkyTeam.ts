@@ -48,7 +48,7 @@ class SkyTeam implements SkyTeamGame {
         // Init Modules
         // Init UI
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
-        this.endGameInfo = new EndGameInfo('st-end-game-info-wrapper');
+        this.endGameInfo = new EndGameInfo(this,'st-end-game-info-wrapper');
 
     }
 
@@ -322,7 +322,7 @@ class SkyTeam implements SkyTeamGame {
             ['planeApproachChanged', undefined],
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
-            ['planeAerodynamicsChanged', undefined],
+            ['planeAerodynamicsChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];

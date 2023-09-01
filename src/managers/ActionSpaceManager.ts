@@ -11,7 +11,7 @@ class ActionSpaceManager {
 
     public setUp(data: SkyTeamGameData) {
         Object.entries(data.actionSpaces).forEach(([id, space]) => {
-            console.log(id);
+            dojo.place(`<div id="${id}" class="st-action-space ${space.mandatory ? 'mandatory' : ''}"></div>`, $('st-action-spaces'))
             this.actionSpaces[id] = new LineStock<Dice>(this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', (event) => this.actionSpaceClicked(id, event))
         });

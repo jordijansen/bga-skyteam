@@ -101,7 +101,7 @@
             left: 29px;
           }
 
-          .st-action-spaces {
+          #st-action-spaces {
             #axis-1 { top: 129px; left: 116px; }
             #axis-2 { top: 129px; right: 115px; }
             #engines-1 {top: 433px; left: 180px;}
@@ -116,8 +116,11 @@
             #flaps-2 {top: 445px; right: 20px;}
             #flaps-3 {top: 581px; right: 20px;}
             #flaps-4 {top: 717px; right: 20px;}
+            #concentration-1 {bottom: 28px; left: 183px;}
+            #concentration-2 {bottom: 28px; left: 276px;}
+            #concentration-3 {bottom: 28px; left: 368px;}
           }
-          .st-plane-switches {
+          #st-plane-switches {
             #plane-switch-landing-gear-1 { top: 386px; left: 18px; }
             #plane-switch-landing-gear-2 { top: 522px; left: 18px; }
             #plane-switch-landing-gear-3 { top: 658px; left: 18px; }

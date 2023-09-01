@@ -163,6 +163,17 @@ class PlaneManager extends APP_DbObject
                     'aerodynamicsOrange' => $plane->aerodynamicsOrange
                 ]);
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_CONCENTRATION) {
+            $reserveCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, TOKEN_COFFEE, LOCATION_RESERVE));
+            // TODO CAN YOU TAKE THIS ACTION IF ALREADY AT 3?
+            if (sizeof($reserveCoffeeTokens) > 0) {
+                $coffeeToken = current ($reserveCoffeeTokens);
+                SkyTeam::$instance->tokens->moveCard($coffeeToken->id, LOCATION_AVAILABLE, sizeof($reserveCoffeeTokens));
+
+                SkyTeam::$instance->notifyAllPlayers( "tokenReceived", clienttranslate('Concentration: <b>1 coffee token</b> received'), [
+                    'token' => Token::from(SkyTeam::$instance->tokens->getCard($coffeeToken->id))
+                ]);
+            }
         }
         $this->save($plane);
         return $continue;

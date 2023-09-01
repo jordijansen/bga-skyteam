@@ -2111,7 +2111,7 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
         Object.values(data.plane.switches).forEach(function (planeSwitch) {
-            $("plane-switch-".concat(planeSwitch.id)).dataset.value = planeSwitch.value;
+            dojo.place("<div id=\"plane-switch-".concat(planeSwitch.id, "\" class=\"st-plane-switch-wrapper\" data-value=\"").concat(planeSwitch.value, "\"><div class=\"st-plane-switch token\"></div></div>"), $('st-plane-switches'));
         });
         var approachTokenStockSlots = Object.keys(data.approach.spaces).map(function (slotId) { return "st-approach-track-slot-".concat(slotId); }).reverse();
         this.approachTokenStock = new SlotStock(this.game.tokenManager, $('st-approach-track'), {
@@ -2256,7 +2256,7 @@ var ActionSpaceManager = /** @class */ (function () {
         var _this = this;
         Object.entries(data.actionSpaces).forEach(function (_a) {
             var id = _a[0], space = _a[1];
-            console.log(id);
+            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space ").concat(space.mandatory ? 'mandatory' : '', "\"></div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
         });
@@ -2422,14 +2422,15 @@ var PlayerSetup = /** @class */ (function () {
     return PlayerSetup;
 }());
 var EndGameInfo = /** @class */ (function () {
-    function EndGameInfo(elementId) {
+    function EndGameInfo(game, elementId) {
+        this.game = game;
         this.elementId = elementId;
     }
     EndGameInfo.prototype.setFailureReason = function (failureReason) {
         if (failureReason) {
             var element = $(this.elementId);
             dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only');
-            return delay(5000);
+            return this.game.delay(5000);
         }
         return Promise.resolve();
     };
@@ -2493,7 +2494,7 @@ var SkyTeam = /** @class */ (function () {
         // Init Modules
         // Init UI
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
-        this.endGameInfo = new EndGameInfo('st-end-game-info-wrapper');
+        this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
     }
     /*
         setup:
@@ -2732,7 +2733,7 @@ var SkyTeam = /** @class */ (function () {
             ['planeApproachChanged', undefined],
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
-            ['planeAerodynamicsChanged', undefined],
+            ['planeAerodynamicsChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];

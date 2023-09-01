@@ -28,7 +28,7 @@ class PlaneManager  {
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
 
         Object.values(data.plane.switches).forEach((planeSwitch) => {
-            $(`plane-switch-${planeSwitch.id}`).dataset.value = planeSwitch.value;
+            dojo.place(`<div id="plane-switch-${planeSwitch.id}" class="st-plane-switch-wrapper" data-value="${planeSwitch.value}"><div class="st-plane-switch token"></div></div>`, $('st-plane-switches'))
         })
 
         const approachTokenStockSlots = Object.keys(data.approach.spaces).map(slotId => `st-approach-track-slot-${slotId}`).reverse();
