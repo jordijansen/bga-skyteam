@@ -124,4 +124,9 @@ class PlaneManager  {
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = aerodynamicsOrange;
         return this.game.delay(ANIMATION_MS);
     }
+
+    public updateBrake(brake: number) {
+        $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = brake;
+        return this.game.delay(ANIMATION_MS);
+    }
 }

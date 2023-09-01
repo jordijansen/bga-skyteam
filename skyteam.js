@@ -2191,6 +2191,10 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = aerodynamicsOrange;
         return this.game.delay(ANIMATION_MS);
     };
+    PlaneManager.prototype.updateBrake = function (brake) {
+        $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = brake;
+        return this.game.delay(ANIMATION_MS);
+    };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
@@ -2733,7 +2737,8 @@ var SkyTeam = /** @class */ (function () {
             ['planeApproachChanged', undefined],
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
-            ['planeAerodynamicsChanged', undefined]
+            ['planeAerodynamicsChanged', undefined],
+            ['planeBrakeChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2801,6 +2806,9 @@ var SkyTeam = /** @class */ (function () {
             return this.planeManager.updateAerodynamicsOrange(args.aerodynamicsOrange);
         }
         return Promise.resolve();
+    };
+    SkyTeam.prototype.notif_planeBrakeChanged = function (args) {
+        return this.planeManager.updateBrake(args.brake);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

@@ -136,6 +136,6 @@ interface NotifPlaneAerodynamicsChanged {
     aerodynamicsOrange?: number
 }
 
-interface NotifCoffeeTokenReceived {
-    token: Card
+interface NotifPlaneBrakeChanged {
+    brake: number;
 }

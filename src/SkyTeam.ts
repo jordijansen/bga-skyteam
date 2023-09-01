@@ -322,7 +322,8 @@ class SkyTeam implements SkyTeamGame {
             ['planeApproachChanged', undefined],
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
-            ['planeAerodynamicsChanged', undefined]
+            ['planeAerodynamicsChanged', undefined],
+            ['planeBrakeChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -402,6 +403,10 @@ class SkyTeam implements SkyTeamGame {
             return this.planeManager.updateAerodynamicsOrange(args.aerodynamicsOrange);
         }
         return Promise.resolve();
+    }
+
+    private notif_planeBrakeChanged(args: NotifPlaneBrakeChanged) {
+        return this.planeManager.updateBrake(args.brake);
     }
 
     public format_string_recursive(log: string, args: any) {

@@ -153,9 +153,9 @@ class PlaneManager extends APP_DbObject
                 $switch->value = true;
                 $switch->save();
 
-                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Flap ${landingGearNumber}</b> deployed'), [
+                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Flap ${switchNumber}</b> deployed'), [
                     'planeSwitch' => $switch,
-                    'landingGearNumber' => str_replace(ACTION_SPACE_FLAPS.'-', '', $switch->id)
+                    'switchNumber' => str_replace(ACTION_SPACE_FLAPS.'-', '', $switch->id)
                 ]);
 
                 $plane->aerodynamicsOrange = $plane->aerodynamicsOrange + 1;
@@ -172,6 +172,28 @@ class PlaneManager extends APP_DbObject
 
                 SkyTeam::$instance->notifyAllPlayers( "tokenReceived", clienttranslate('Concentration: <b>1 coffee token</b> received'), [
                     'token' => Token::from(SkyTeam::$instance->tokens->getCard($coffeeToken->id))
+                ]);
+            }
+        } else if ($actionSpace['type'] == ACTION_SPACE_BRAKES) {
+            $switch = $plane->switches[$die->locationArg];
+            if (!$switch->value) {
+                $switch->value = true;
+                $switch->save();
+
+                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Brake ${switchNumber}</b> deployed'), [
+                    'planeSwitch' => $switch,
+                    'switchNumber' => str_replace(ACTION_SPACE_FLAPS.'-', '', $switch->id)
+                ]);
+
+                if ($plane->brake == 0) {
+                    $plane->brake = 2;
+                } else if ($plane->brake == 2) {
+                    $plane->brake = 4;
+                } else if ($plane->brake == 4) {
+                    $plane->brake = 6;
+                }
+                SkyTeam::$instance->notifyAllPlayers( "planeBrakeChanged", clienttranslate('Plane brakes marker (red) moves to <b>${brake}</b>'), [
+                    'brake' => $plane->brake
                 ]);
             }
         }

@@ -581,6 +581,18 @@ body > .card {
   bottom: 28px;
   left: 368px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #brakes-1 {
+  bottom: 177px;
+  left: 183px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #brakes-2 {
+  bottom: 177px;
+  left: 276px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #brakes-3 {
+  bottom: 177px;
+  left: 368px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
