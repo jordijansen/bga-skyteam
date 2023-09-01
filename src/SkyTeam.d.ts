@@ -149,3 +149,12 @@ interface NotifCoffeeUsed {
 interface NotifRerollTokenUsed {
     token: Card
 }
+
+interface NotifPlaneAltitudeChanged {
+    altitude: number;
+}
+
+interface NotifDiceReturnedToPlayer {
+    playerId: number,
+    dice: Dice[]
+}

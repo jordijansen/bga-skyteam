@@ -138,6 +138,8 @@ class SkyTeam implements SkyTeamGame {
             const die = selection[0];
             this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
             this.spendCoffee.initiate(die, args.nrOfCoffeeAvailable, (die) => this.onDicePlacementCoffeeSpend(args, die));
+        } else {
+            this.spendCoffee.initiate(null, 0, null);
         }
     }
 
@@ -158,6 +160,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private onDicePlacementCoffeeSpend(args: DicePlacementSelectArgs, die: Dice) {
+        dojo.addClass('confirmPlacement', 'disabled');
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
         this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
     }
@@ -373,7 +376,9 @@ class SkyTeam implements SkyTeamGame {
             ['planeAerodynamicsChanged', undefined],
             ['planeBrakeChanged', undefined],
             ['coffeeUsed', undefined],
-            ['rerollTokenUsed', undefined]
+            ['rerollTokenUsed', undefined],
+            ['planeAltitudeChanged', undefined],
+            ['diceReturnedToPlayer', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -465,6 +470,18 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_rerollTokenUsed(args: NotifRerollTokenUsed) {
         return this.reserveManager.reserveRerollStock.addCard(args.token);
+    }
+
+    private notif_planeAltitudeChanged(args: NotifPlaneAltitudeChanged) {
+        return this.planeManager.updateAltitude(args.altitude)
+    }
+
+    private notif_diceReturnedToPlayer(args: NotifDiceReturnedToPlayer) {
+        if (args.playerId == this.getPlayerId()) {
+            return this.diceManager.playerDiceStock.addCards(args.dice);
+        } else {
+            return this.diceManager.otherPlayerDiceStock.addCards(args.dice);
+        }
     }
 
     public format_string_recursive(log: string, args: any) {

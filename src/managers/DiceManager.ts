@@ -1,7 +1,10 @@
 class DiceManager extends CardManager<Dice> {
 
     private static readonly PLAYER_AREA = 'st-player-dice';
+    private static readonly OTHER_PLAYER_AREA = 'st-other-player-dice';
+
     public playerDiceStock: LineStock<Dice>;
+    public otherPlayerDiceStock: VoidStock<Dice>
     constructor(public game: SkyTeamGame) {
         super(game, {
             getId: (die) => `st-dice-${die.id}`,
@@ -24,6 +27,8 @@ class DiceManager extends CardManager<Dice> {
 
     public setUp(data: SkyTeamGameData) {
         this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {})
+        dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
+        this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
 
         const player = data.players[this.game.getPlayerId()];
         if (player && player.dice) {

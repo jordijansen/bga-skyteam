@@ -133,7 +133,8 @@ $gameStates = [
         "type" => "game",
         "action" => "stDicePlacementNext",
         "transitions" => [
-            'next' => ST_DICE_PLACEMENT_SELECT
+            'next' => ST_DICE_PLACEMENT_SELECT,
+            'endRound' => ST_END_OF_ROUND
         ]
     ],
     ST_REROLL_DICE => [
@@ -145,8 +146,17 @@ $gameStates = [
             ACT_REROLL
         ],
         "transitions" => [
-            "" => ST_DICE_PLACEMENT_SELECT
+            '' => ST_DICE_PLACEMENT_SELECT
         ],
+    ],
+    ST_END_OF_ROUND => [
+        "name" => "endOfRound",
+        "description" => clienttranslate('End of Round: decreasing altitude...'),
+        "type" => "game",
+        "action" => "stEndOfRound",
+        "transitions" => [
+            'start' => ST_START_ROUND
+        ]
     ],
     ST_PLANE_FAILURE => [
         "name" => "planeFailure",

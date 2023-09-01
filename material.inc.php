@@ -95,13 +95,13 @@ $this->ALTITUDE_TRACKS = [
         'categories' => [APPROACH_GREEN, APPROACH_YELLOW],
         'size' => 7,
         'spaces' => [
-            7 => [ROUND_START_PLAYER => PILOT],
-            6 => [ROUND_START_PLAYER => CO_PILOT],
-            5 => [ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
-            4 => [ROUND_START_PLAYER => CO_PILOT],
-            3 => [ROUND_START_PLAYER => PILOT],
-            2 => [ROUND_START_PLAYER => CO_PILOT],
-            1 => [ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
         ]
     ]
 ];

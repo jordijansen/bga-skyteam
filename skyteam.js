@@ -2110,6 +2110,8 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+        this.currentApproach = data.plane.approach;
+        this.currentAltitude = data.plane.altitude;
         Object.values(data.plane.switches).forEach(function (planeSwitch) {
             dojo.place("<div id=\"plane-switch-".concat(planeSwitch.id, "\" class=\"st-plane-switch-wrapper\" data-value=\"").concat(planeSwitch.value, "\"><div class=\"st-plane-switch token\"></div></div>"), $('st-plane-switches'));
         });
@@ -2340,7 +2342,10 @@ var DiceManager = /** @class */ (function (_super) {
         return _this;
     }
     DiceManager.prototype.setUp = function (data) {
+        var _this = this;
         this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {});
+        dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
+        this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         var player = data.players[this.game.getPlayerId()];
         if (player && player.dice) {
             this.playerDiceStock.addCards(player.dice);
@@ -2363,6 +2368,7 @@ var DiceManager = /** @class */ (function (_super) {
         }
     };
     DiceManager.PLAYER_AREA = 'st-player-dice';
+    DiceManager.OTHER_PLAYER_AREA = 'st-other-player-dice';
     return DiceManager;
 }(CardManager));
 var TokenManager = /** @class */ (function (_super) {
@@ -2477,7 +2483,7 @@ var SpendCoffee = /** @class */ (function () {
     SpendCoffee.prototype.initiate = function (die, nrOfCoffeeTokens, onCoffeeSpend) {
         var _this = this;
         var element = $(SpendCoffee.ELEMENT_ID);
-        this.destroy();
+        dojo.empty(element);
         if (this.currentDie) {
             this.currentDie.side = this.originalValue;
             this.game.diceManager.updateCardInformations(this.currentDie);
@@ -2517,6 +2523,7 @@ var SpendCoffee = /** @class */ (function () {
     SpendCoffee.prototype.destroy = function () {
         var element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
+        this.currentDie = null;
     };
     SpendCoffee.prototype.getCoffeeSpend = function () {
         return -Math.abs(this.currentDie.side - this.originalValue);
@@ -2652,6 +2659,9 @@ var SkyTeam = /** @class */ (function () {
             this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die_1, space); }, die_1.side);
             this.spendCoffee.initiate(die_1, args.nrOfCoffeeAvailable, function (die) { return _this.onDicePlacementCoffeeSpend(args, die); });
         }
+        else {
+            this.spendCoffee.initiate(null, 0, null);
+        }
     };
     SkyTeam.prototype.onDicePlacementActionSelected = function (args, die, space) {
         var _a;
@@ -2672,6 +2682,7 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.onDicePlacementCoffeeSpend = function (args, die) {
         var _this = this;
+        dojo.addClass('confirmPlacement', 'disabled');
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
         this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die, space); }, die.side);
     };
@@ -2861,7 +2872,9 @@ var SkyTeam = /** @class */ (function () {
             ['planeAerodynamicsChanged', undefined],
             ['planeBrakeChanged', undefined],
             ['coffeeUsed', undefined],
-            ['rerollTokenUsed', undefined]
+            ['rerollTokenUsed', undefined],
+            ['planeAltitudeChanged', undefined],
+            ['diceReturnedToPlayer', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2938,6 +2951,17 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_rerollTokenUsed = function (args) {
         return this.reserveManager.reserveRerollStock.addCard(args.token);
+    };
+    SkyTeam.prototype.notif_planeAltitudeChanged = function (args) {
+        return this.planeManager.updateAltitude(args.altitude);
+    };
+    SkyTeam.prototype.notif_diceReturnedToPlayer = function (args) {
+        if (args.playerId == this.getPlayerId()) {
+            return this.diceManager.playerDiceStock.addCards(args.dice);
+        }
+        else {
+            return this.diceManager.otherPlayerDiceStock.addCards(args.dice);
+        }
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

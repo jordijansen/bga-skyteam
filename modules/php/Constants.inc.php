@@ -21,6 +21,7 @@ const TOKEN_PLANE = 'plane';
 const TOKEN_REROLL = 'reroll';
 const TOKEN_COFFEE = 'coffee';
 
+const ALTITUDE_HEIGHT = 'altitudeHeight';
 const ROUND_START_PLAYER = 'startPlayer';
 
 const PHASE_SETUP = 'setup';
@@ -68,6 +69,8 @@ const ST_DICE_PLACEMENT_START = 30;
 const ST_DICE_PLACEMENT_SELECT = 35;
 const ST_DICE_PLACEMENT_PLACE = 36;
 const ST_DICE_PLACEMENT_NEXT = 39;
+
+const ST_END_OF_ROUND = 60;
 
 const ST_REROLL_DICE = 70;
 

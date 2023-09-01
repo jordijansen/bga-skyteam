@@ -12,7 +12,7 @@ class SpendCoffee {
 
     public initiate(die: Dice, nrOfCoffeeTokens: number, onCoffeeSpend: (die: Dice) => void) {
         const element = $(SpendCoffee.ELEMENT_ID);
-        this.destroy();
+        dojo.empty(element);
 
         if (this.currentDie) {
             this.currentDie.side = this.originalValue;
@@ -61,6 +61,8 @@ class SpendCoffee {
     public destroy() {
         const element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
+
+        this.currentDie = null;
     }
 
     public getCoffeeSpend() {

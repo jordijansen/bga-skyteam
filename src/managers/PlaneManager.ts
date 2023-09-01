@@ -27,6 +27,9 @@ class PlaneManager  {
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
 
+        this.currentApproach = data.plane.approach;
+        this.currentAltitude = data.plane.altitude;
+
         Object.values(data.plane.switches).forEach((planeSwitch) => {
             dojo.place(`<div id="plane-switch-${planeSwitch.id}" class="st-plane-switch-wrapper" data-value="${planeSwitch.value}"><div class="st-plane-switch token"></div></div>`, $('st-plane-switches'))
         })

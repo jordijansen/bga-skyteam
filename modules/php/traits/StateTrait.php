@@ -90,7 +90,7 @@ trait StateTrait
         if (sizeof($dice) > 0) {
             $this->gamestate->nextState('next');
         } else {
-            $this->gamestate->nextState('end');
+            $this->gamestate->nextState('endRound');
         }
     }
 
@@ -101,5 +101,48 @@ trait StateTrait
         ]);
 
         $this->gamestate->nextState('');
+    }
+
+    function stEndOfRound()
+    {
+        $altitudeTrack = $this->getAltitudeTrack();
+        $approachTrack = $this->getApproachTrack();
+
+        $plane = $this->planeManager->get();
+        $plane->altitude = $plane->altitude + 1;
+        $this->planeManager->save($plane);
+
+        $this->notifyAllPlayers( "planeAltitudeChanged", clienttranslate('The plane is decreasing altitude to <b>${altitudeHeight}</b>'), [
+            'altitudeHeight' => $altitudeTrack->spaces[$plane->altitude][ALTITUDE_HEIGHT],
+            'altitude' => $plane->altitude
+        ]);
+
+        $playerIds = $this->getPlayerIds();
+        foreach ($playerIds as $playerId) {
+            $playerRole = $this->getPlayerRole($playerId);
+            $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLANE));
+            foreach ($playerDice as $playerDie) {
+                $playerDie->setSide(1);
+            }
+            $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
+            $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER);
+            $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+                'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
+            ]);
+        }
+
+        if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
+            // The plane has landed, let's see if we're at the airport
+            if ($plane->approach == sizeof($approachTrack->spaces)) {
+                // START LAST ROUND
+            } else {
+                // The plane has landed, but not at the airport
+
+            }
+        } else {
+            $this->gamestate->nextState('start');
+        }
     }
 }
