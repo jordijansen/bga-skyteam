@@ -29,6 +29,12 @@ class Dice extends APP_GameClass {
         return $this->side;
     }
 
+    public function setSide($side)
+    {
+        $this->side = $side;
+        self::DbQuery("UPDATE dice SET card_side = $side WHERE card_id = $this->id");
+    }
+
     /**
      * @param $dbCards
      * @return Dice[]

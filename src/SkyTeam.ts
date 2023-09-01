@@ -24,6 +24,7 @@ class SkyTeam implements SkyTeamGame {
     // UI elements
     private playerSetup: PlayerSetup;
     private endGameInfo: EndGameInfo;
+    private spendCoffee: SpendCoffee;
 
     // Managers
     public planeManager: PlaneManager;
@@ -46,10 +47,6 @@ class SkyTeam implements SkyTeamGame {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
-        // Init UI
-        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
-        this.endGameInfo = new EndGameInfo(this,'st-end-game-info-wrapper');
-
     }
 
     /*
@@ -71,6 +68,7 @@ class SkyTeam implements SkyTeamGame {
 
         const maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last')
+        dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last')
 
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level')
@@ -85,6 +83,10 @@ class SkyTeam implements SkyTeamGame {
         this.actionSpaceManager.setUp(data);
 
         // Setup UI
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.endGameInfo = new EndGameInfo(this,'st-end-game-info-wrapper');
+        this.spendCoffee = new SpendCoffee(this,'st-custom-actions');
+
         this.endGameInfo.setFailureReason(data.failureReason)
 
         this.setupNotifications();
@@ -116,42 +118,39 @@ class SkyTeam implements SkyTeamGame {
 
     private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
         if ((this as any).isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args));
-            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args));
+            this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection));
         }
     }
 
-    private onDicePlacementSelectChange(args: DicePlacementSelectArgs) {
-        const selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
-        const selectedDice = this.diceManager.playerDiceStock.getSelection()
+    private onDicePlacementDiceSelected(args: DicePlacementSelectArgs, selection: Dice[]) {
+        dojo.addClass('confirmPlacement', 'disabled');
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        if (selection.length == 1) {
+            const die = selection[0];
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
+            this.spendCoffee.initiate(die, args.nrOfCoffeeAvailable, (die) => this.onDicePlacementCoffeeSpend(args, die));
+        }
+    }
+
+    private onDicePlacementActionSelected(args: DicePlacementSelectArgs, die: Dice, space: string) {
         document.querySelector('.st-dice-placeholder')?.remove();
-
-        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args));
-        this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args));
-
-        if (selectedDice && selectedDice.length === 1) {
-            const die = selectedDice[0];
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, () => this.onDicePlacementSelectChange(args), die.side)
-        }
-        if (selectedActionSpaceId) {
-            const actionSpace = this.gamedatas.actionSpaces[selectedActionSpaceId];
-            this.diceManager.setSelectionMode('single', () => this.onDicePlacementSelectChange(args), actionSpace.allowedValues && actionSpace.allowedValues.length > 0 ? actionSpace.allowedValues : []);
-        }
-
-        if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
-            const die = selectedDice[0];
+        if (space) {
             const dieElement = this.diceManager.getCardElement(die);
             const dieElementClonePlaceholder = dieElement.cloneNode(true) as any;
             dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
             dieElementClonePlaceholder.classList.add('st-dice-placeholder');
             dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
             dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
-            $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
-            console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
+            $(space).appendChild(dieElementClonePlaceholder);
             dojo.removeClass('confirmPlacement', 'disabled');
-        }  else {
+        } else {
             dojo.addClass('confirmPlacement', 'disabled');
         }
+    }
+
+    private onDicePlacementCoffeeSpend(args: DicePlacementSelectArgs, die: Dice) {
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
     }
 
     public onLeavingState(stateName: string) {
@@ -202,12 +201,14 @@ class SkyTeam implements SkyTeamGame {
         document.querySelector('.st-dice-placeholder')?.remove();
         const actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
+        const diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
         this.takeAction('confirmPlacement', {
-            placement: JSON.stringify({actionSpaceId, diceId})
+            placement: JSON.stringify({actionSpaceId, diceId, diceValue})
         }, () => {
             this.actionSpaceManager.selectedActionSpaceId = null;
             this.actionSpaceManager.setActionSpacesSelectable({}, null);
             this.diceManager.setSelectionMode('none', null);
+            this.spendCoffee.destroy();
         });
     }
 
@@ -323,7 +324,8 @@ class SkyTeam implements SkyTeamGame {
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
             ['planeAerodynamicsChanged', undefined],
-            ['planeBrakeChanged', undefined]
+            ['planeBrakeChanged', undefined],
+            ['coffeeUsed', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -409,6 +411,10 @@ class SkyTeam implements SkyTeamGame {
         return this.planeManager.updateBrake(args.brake);
     }
 
+    private notif_coffeeUsed(args: NotifCoffeeUsed) {
+        return this.reserveManager.reserveCoffeeStock.addCards(args.tokens);
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
@@ -416,9 +422,11 @@ class SkyTeam implements SkyTeamGame {
                     if (argKey.startsWith('token_') && typeof args[argKey] == 'string') {
                         args[argKey] = this.tokenIcon(args[argKey])
                     } else if (argKey.startsWith('icon_dice') && typeof args[argKey] == 'object') {
-                        console.log(args[argKey]);
                         const diceIcons = args[argKey].map((die: Dice) => this.diceIcon(die))
                         args[argKey] = diceIcons.join('');
+                    } else if (argKey.startsWith('icon_tokens') && typeof args[argKey] == 'object') {
+                        const tokenIcons = args[argKey].map((token: Card) => this.tokenIcon(token.type))
+                        args[argKey] = tokenIcons.join(' ');
                     }
                 })
             }
@@ -442,7 +450,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     public tokenIcon(type) {
-        return `<span class="st-token" data-type="${type}"></span>`
+        return `<span class="st-token token small" data-type="${type}"></span>`
     }
 
     public diceIcon(die: Dice) {

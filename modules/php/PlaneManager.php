@@ -120,17 +120,15 @@ class PlaneManager extends APP_DbObject
         } else if ($actionSpace['type'] == ACTION_SPACE_RADIO) {
             $spaceToTakePlaneFrom = $plane->approach + ($die->side - 1);
             $planeTokensInSpace = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_PLANE, null, LOCATION_APPROACH, $spaceToTakePlaneFrom));
-            $planeTokenRemoved = null;
             if (sizeof($planeTokensInSpace) > 0) {
                 $planeTokenRemoved = current($planeTokensInSpace);
                 SkyTeam::$instance->tokens->moveCard($planeTokenRemoved->id, LOCATION_RESERVE);
                 $planeTokenRemoved = Token::from(SkyTeam::$instance->tokens->getCard($planeTokenRemoved->id));
+                SkyTeam::$instance->notifyAllPlayers( "planeTokenRemoved", clienttranslate('Radio used to divert ${icon_tokens} from approach'), [
+                    'icon_tokens' => [$planeTokenRemoved],
+                    'plane' => $planeTokenRemoved
+                ]);
             }
-
-            SkyTeam::$instance->notifyAllPlayers( "planeTokenRemoved", clienttranslate('Radio used to divert <b>${nrOfPlanesRemoved}</b> plane(s) from approach'), [
-                'nrOfPlanesRemoved' => $planeTokenRemoved != null ? 1 : 0,
-                'plane' => $planeTokenRemoved
-            ]);
         } else if ($actionSpace['type'] == ACTION_SPACE_LANDING_GEAR) {
             $switch = $plane->switches[$die->locationArg];
             if (!$switch->value) {

@@ -4,6 +4,7 @@ namespace traits;
 
 use BgaUserException;
 use objects\Dice;
+use objects\Token;
 
 trait ActionTrait
 {
@@ -77,6 +78,7 @@ trait ActionTrait
         $playerRole = $this->getPlayerRole($playerId);
         $actionSpaceId = $placement['actionSpaceId'];
         $diceId = $placement['diceId'];
+        $diceValue = $placement['diceValue'];
 
         if (!isset($actionSpaceId) || !isset($diceId)) {
             throw new BgaUserException('Missing parameter for action confirmPlacement');
@@ -90,6 +92,33 @@ trait ActionTrait
         $die = Dice::from($this->dice->getCard($diceId));
         if (!isset($die) || $die->type != DICE_PLAYER || $die->typeArg != $playerRole) {
             throw new BgaUserException('Invalid dice supplied!');
+        }
+
+        $originalDie = clone $die;
+        if (isset($diceValue) && $diceValue != $originalDie->side) {
+            // Player has used coffee token(s)
+            $nrOfCoffeeTokensUsed = abs($die->side - $diceValue);
+            $coffeeTokensAvailable = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE));
+            if ($nrOfCoffeeTokensUsed > $coffeeTokensAvailable) {
+                throw new BgaUserException('Not enough coffee tokens');
+            }
+            if ($diceValue > 6 || $diceValue < 1) {
+                throw new BgaUserException('Can not modify above 6 or below 1');
+            }
+
+            $die->setSide($diceValue);
+            $coffeeTokenIdsUsed = array_map(fn($token) => $token->id, array_slice($coffeeTokensAvailable, 0, $nrOfCoffeeTokensUsed));
+            $this->tokens->moveCards($coffeeTokenIdsUsed, LOCATION_RESERVE);
+
+            $usedTokens = Token::fromArray($this->tokens->getCards($coffeeTokenIdsUsed));
+            $this->notifyAllPlayers( "coffeeUsed", clienttranslate('${player_name} uses ${icon_tokens} to change ${icon_dice_1} into ${icon_dice_2}'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+                'tokens' =>  $usedTokens,
+                'icon_tokens' => $usedTokens,
+                'icon_dice_1' => [$originalDie],
+                'icon_dice_2' => [$die]
+            ]);
         }
 
         $actionSpace = $actionSpaces[$actionSpaceId];

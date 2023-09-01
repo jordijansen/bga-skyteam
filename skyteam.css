@@ -741,6 +741,10 @@ body > .card {
   display: inline-block;
   vertical-align: middle;
 }
+.st-token.small {
+  height: 25px;
+  width: 25px;
+}
 .st-token[data-type=reroll] {
   background-position: 0 0;
 }
@@ -1046,6 +1050,11 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 #st-end-game-info-wrapper .st-end-game-info-box h1 {
   text-transform: uppercase;
   font-weight: bold;
+}
+
+#st-spend-coffee .bgabutton {
+  font-size: 25px;
+  margin: 0 5px;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

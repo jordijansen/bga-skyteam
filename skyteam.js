@@ -2267,6 +2267,8 @@ var ActionSpaceManager = /** @class */ (function () {
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
     };
     ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged, dieValue) {
+        var _a;
+        (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
         Object.entries(ids).filter(function (_a) {
@@ -2282,12 +2284,10 @@ var ActionSpaceManager = /** @class */ (function () {
         });
     };
     ActionSpaceManager.prototype.setAllActionSpacesUnselectable = function () {
-        var _this = this;
+        this.selectedActionSpaceId = null;
         Object.keys(this.actionSpaces).forEach(function (id) {
             var element = $(id);
-            if (_this.selectedActionSpaceId !== id) {
-                element.classList.remove('selected');
-            }
+            element.classList.remove('selected');
             element.classList.remove('selectable');
         });
     };
@@ -2301,7 +2301,7 @@ var ActionSpaceManager = /** @class */ (function () {
             target.classList.add('selectable');
             target.classList.remove('selected');
             this.selectedActionSpaceId = null;
-            this.onSelectedActionSpaceChanged();
+            this.onSelectedActionSpaceChanged(null);
         }
         else if (target.classList.contains('selectable')) {
             target.classList.add('selected');
@@ -2311,7 +2311,7 @@ var ActionSpaceManager = /** @class */ (function () {
                 $(this.selectedActionSpaceId).classList.add('selectable');
             }
             this.selectedActionSpaceId = target.id;
-            this.onSelectedActionSpaceChanged();
+            this.onSelectedActionSpaceChanged(target.id);
         }
         console.log('Selected: ' + this.selectedActionSpaceId);
     };
@@ -2464,6 +2464,83 @@ var EndGameInfo = /** @class */ (function () {
     };
     return EndGameInfo;
 }());
+var SpendCoffee = /** @class */ (function () {
+    function SpendCoffee(game, parentId) {
+        this.game = game;
+        this.parentId = parentId;
+        this.currentDie = null;
+        this.originalValue = 0;
+        this.minValue = 0;
+        this.maxValue = 0;
+        dojo.place("<div id=\"".concat(SpendCoffee.ELEMENT_ID, "\"></div>"), $(this.parentId));
+    }
+    SpendCoffee.prototype.initiate = function (die, nrOfCoffeeTokens, onCoffeeSpend) {
+        var _this = this;
+        var element = $(SpendCoffee.ELEMENT_ID);
+        this.destroy();
+        if (this.currentDie) {
+            this.currentDie.side = this.originalValue;
+            this.game.diceManager.updateCardInformations(this.currentDie);
+        }
+        if (nrOfCoffeeTokens > 0) {
+            this.currentDie = die;
+            this.originalValue = die.side;
+            this.minValue = Math.max(die.side - nrOfCoffeeTokens, 1);
+            this.maxValue = Math.min(die.side + nrOfCoffeeTokens, 6);
+            var content = '';
+            content += "<a id=\"st-spend-coffee-decrease\" class=\"bgabutton bgabutton_blue\">-1</a>";
+            content += "<a id=\"st-spend-coffee-total-cost\" class=\"bgabutton bgabutton_gray disabled\"></a>";
+            content += "<a id=\"st-spend-coffee-increase\" class=\"bgabutton bgabutton_blue\">+1</a>";
+            dojo.place(content, element);
+            this.updateButtonsDisabledState(die);
+            this.updateTotalCost();
+            var decreaseButton = $('st-spend-coffee-decrease');
+            dojo.connect(decreaseButton, 'onclick', function (event) {
+                dojo.stopEvent(event);
+                die.side = die.side - 1;
+                _this.updateButtonsDisabledState(die);
+                _this.updateTotalCost();
+                _this.game.diceManager.updateCardInformations(die);
+                onCoffeeSpend(die);
+            });
+            var increaseButton = $('st-spend-coffee-increase');
+            dojo.connect(increaseButton, 'onclick', function (event) {
+                dojo.stopEvent(event);
+                die.side = die.side + 1;
+                _this.updateButtonsDisabledState(die);
+                _this.updateTotalCost();
+                _this.game.diceManager.updateCardInformations(die);
+                onCoffeeSpend(die);
+            });
+        }
+    };
+    SpendCoffee.prototype.destroy = function () {
+        var element = $(SpendCoffee.ELEMENT_ID);
+        dojo.empty(element);
+    };
+    SpendCoffee.prototype.getCoffeeSpend = function () {
+        return -Math.abs(this.currentDie.side - this.originalValue);
+    };
+    SpendCoffee.prototype.updateTotalCost = function () {
+        var totalCost = $('st-spend-coffee-total-cost');
+        dojo.empty(totalCost);
+        dojo.place("<span>".concat(dojo.string.substitute(_("Cost: ${totalCost}"), { totalCost: this.getCoffeeSpend() }), " <span class=\"st-token small token\" data-type=\"coffee\"></span></span>"), totalCost);
+    };
+    SpendCoffee.prototype.updateButtonsDisabledState = function (die) {
+        var increaseButton = $('st-spend-coffee-increase');
+        var decreaseButton = $('st-spend-coffee-decrease');
+        increaseButton.classList.remove('disabled');
+        decreaseButton.classList.remove('disabled');
+        if (die.side == this.minValue) {
+            decreaseButton.classList.add('disabled');
+        }
+        if (die.side == this.maxValue) {
+            increaseButton.classList.add('disabled');
+        }
+    };
+    SpendCoffee.ELEMENT_ID = 'st-spend-coffee';
+    return SpendCoffee;
+}());
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
@@ -2496,9 +2573,6 @@ var SkyTeam = /** @class */ (function () {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         // Init Modules
-        // Init UI
-        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
-        this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
     }
     /*
         setup:
@@ -2517,6 +2591,7 @@ var SkyTeam = /** @class */ (function () {
         log('gamedatas', data);
         var maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last');
+        dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last');
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
@@ -2528,6 +2603,9 @@ var SkyTeam = /** @class */ (function () {
         this.communicationInfoManager.setUp(data);
         this.actionSpaceManager.setUp(data);
         // Setup UI
+        this.playerSetup = new PlayerSetup(this, 'st-player-setup');
+        this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
+        this.spendCoffee = new SpendCoffee(this, 'st-custom-actions');
         this.endGameInfo.setFailureReason(data.failureReason);
         this.setupNotifications();
         log("Ending game setup");
@@ -2554,41 +2632,40 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
         var _this = this;
         if (this.isCurrentPlayerActive()) {
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); });
-            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); });
+            this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); });
         }
     };
-    SkyTeam.prototype.onDicePlacementSelectChange = function (args) {
+    SkyTeam.prototype.onDicePlacementDiceSelected = function (args, selection) {
         var _this = this;
+        dojo.addClass('confirmPlacement', 'disabled');
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        if (selection.length == 1) {
+            var die_1 = selection[0];
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die_1, space); }, die_1.side);
+            this.spendCoffee.initiate(die_1, args.nrOfCoffeeAvailable, function (die) { return _this.onDicePlacementCoffeeSpend(args, die); });
+        }
+    };
+    SkyTeam.prototype.onDicePlacementActionSelected = function (args, die, space) {
         var _a;
-        var selectedActionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
-        var selectedDice = this.diceManager.playerDiceStock.getSelection();
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
-        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); });
-        this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); });
-        if (selectedDice && selectedDice.length === 1) {
-            var die = selectedDice[0];
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function () { return _this.onDicePlacementSelectChange(args); }, die.side);
-        }
-        if (selectedActionSpaceId) {
-            var actionSpace = this.gamedatas.actionSpaces[selectedActionSpaceId];
-            this.diceManager.setSelectionMode('single', function () { return _this.onDicePlacementSelectChange(args); }, actionSpace.allowedValues && actionSpace.allowedValues.length > 0 ? actionSpace.allowedValues : []);
-        }
-        if (selectedActionSpaceId && selectedDice && selectedDice.length === 1) {
-            var die = selectedDice[0];
+        if (space) {
             var dieElement = this.diceManager.getCardElement(die);
             var dieElementClonePlaceholder = dieElement.cloneNode(true);
             dieElementClonePlaceholder.id = dieElementClonePlaceholder.id + '-clone';
             dieElementClonePlaceholder.classList.add('st-dice-placeholder');
             dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
             dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
-            $(selectedActionSpaceId).appendChild(dieElementClonePlaceholder);
-            console.log(selectedActionSpaceId + '-' + selectedDice[0].id);
+            $(space).appendChild(dieElementClonePlaceholder);
             dojo.removeClass('confirmPlacement', 'disabled');
         }
         else {
             dojo.addClass('confirmPlacement', 'disabled');
         }
+    };
+    SkyTeam.prototype.onDicePlacementCoffeeSpend = function (args, die) {
+        var _this = this;
+        this.actionSpaceManager.setActionSpacesSelectable({}, null);
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die, space); }, die.side);
     };
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
@@ -2635,12 +2712,14 @@ var SkyTeam = /** @class */ (function () {
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
+        var diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
         this.takeAction('confirmPlacement', {
-            placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId })
+            placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
         }, function () {
             _this.actionSpaceManager.selectedActionSpaceId = null;
             _this.actionSpaceManager.setActionSpacesSelectable({}, null);
             _this.diceManager.setSelectionMode('none', null);
+            _this.spendCoffee.destroy();
         });
     };
     SkyTeam.prototype.confirmPlayerSetup = function () {
@@ -2738,7 +2817,8 @@ var SkyTeam = /** @class */ (function () {
             ['planeTokenRemoved', undefined],
             ['planeSwitchChanged', undefined],
             ['planeAerodynamicsChanged', undefined],
-            ['planeBrakeChanged', undefined]
+            ['planeBrakeChanged', undefined],
+            ['coffeeUsed', undefined],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2810,6 +2890,9 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_planeBrakeChanged = function (args) {
         return this.planeManager.updateBrake(args.brake);
     };
+    SkyTeam.prototype.notif_coffeeUsed = function (args) {
+        return this.reserveManager.reserveCoffeeStock.addCards(args.tokens);
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
         try {
@@ -2819,9 +2902,12 @@ var SkyTeam = /** @class */ (function () {
                         args[argKey] = _this.tokenIcon(args[argKey]);
                     }
                     else if (argKey.startsWith('icon_dice') && typeof args[argKey] == 'object') {
-                        console.log(args[argKey]);
                         var diceIcons = args[argKey].map(function (die) { return _this.diceIcon(die); });
                         args[argKey] = diceIcons.join('');
+                    }
+                    else if (argKey.startsWith('icon_tokens') && typeof args[argKey] == 'object') {
+                        var tokenIcons = args[argKey].map(function (token) { return _this.tokenIcon(token.type); });
+                        args[argKey] = tokenIcons.join(' ');
                     }
                 });
             }
@@ -2843,7 +2929,7 @@ var SkyTeam = /** @class */ (function () {
         return '';
     };
     SkyTeam.prototype.tokenIcon = function (type) {
-        return "<span class=\"st-token\" data-type=\"".concat(type, "\"></span>");
+        return "<span class=\"st-token token small\" data-type=\"".concat(type, "\"></span>");
     };
     SkyTeam.prototype.diceIcon = function (die) {
         return "<span class=\"st-dice\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");

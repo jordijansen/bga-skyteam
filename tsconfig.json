@@ -50,6 +50,7 @@
 
     "src/ui/PlayerSetup.ts",
     "src/ui/EndGameInfo.ts",
+    "src/ui/SpendCoffee.ts",
 
     "src/SkyTeam.ts"
   ]

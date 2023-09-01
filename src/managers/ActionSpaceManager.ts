@@ -3,7 +3,7 @@ class ActionSpaceManager {
 
     public selectedActionSpaceId: string = null;
     private actionSpaces: {[id: string]: LineStock<Dice>} = {}
-    private onSelectedActionSpaceChanged: () => void
+    private onSelectedActionSpaceChanged: (spaceId: string) => void
 
     constructor(private game: SkyTeamGame) {
 
@@ -19,7 +19,9 @@ class ActionSpaceManager {
         data.planeDice.forEach(die => this.moveDieToActionSpace(die));
     }
 
-    public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: () => void, dieValue?: number) {
+    public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: (spaceId: string) => void, dieValue?: number) {
+        document.querySelector('.st-dice-placeholder')?.remove();
+
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
 
         this.setAllActionSpacesUnselectable();
@@ -33,11 +35,10 @@ class ActionSpaceManager {
     }
 
     public setAllActionSpacesUnselectable() {
+        this.selectedActionSpaceId = null;
         Object.keys(this.actionSpaces).forEach(id => {
             const element = $(id);
-            if (this.selectedActionSpaceId !== id) {
-                element.classList.remove('selected');
-            }
+            element.classList.remove('selected');
             element.classList.remove('selectable');
         });
     }
@@ -53,7 +54,7 @@ class ActionSpaceManager {
              target.classList.add('selectable');
              target.classList.remove('selected');
             this.selectedActionSpaceId = null;
-            this.onSelectedActionSpaceChanged();
+            this.onSelectedActionSpaceChanged(null);
         } else if (target.classList.contains('selectable')) {
              target.classList.add('selected');
              target.classList.remove('selectable');
@@ -62,7 +63,7 @@ class ActionSpaceManager {
                  $(this.selectedActionSpaceId).classList.add('selectable');
              }
              this.selectedActionSpaceId = target.id;
-             this.onSelectedActionSpaceChanged();
+             this.onSelectedActionSpaceChanged(target.id);
          }
         console.log('Selected: ' + this.selectedActionSpaceId)
     }

@@ -79,6 +79,7 @@ interface SkyTeamGameData extends GameData {
 
 // ARGS
 interface DicePlacementSelectArgs {
+    nrOfCoffeeAvailable: number;
     availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
 }
 
@@ -138,4 +139,8 @@ interface NotifPlaneAerodynamicsChanged {
 
 interface NotifPlaneBrakeChanged {
     brake: number;
+}
+
+interface NotifCoffeeUsed {
+    tokens: Card[]
 }
