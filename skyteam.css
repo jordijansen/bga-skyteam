@@ -731,13 +731,30 @@ body > .card {
   position: absolute;
 }
 .st-action-space .st-action-space-mandatory-warning.bottom {
-  bottom: -26px;
+  bottom: -25px;
 }
 .st-action-space .st-action-space-mandatory-warning.left {
-  left: -26px;
+  left: -25px;
 }
 .st-action-space .st-action-space-mandatory-warning.right {
-  right: -28px;
+  right: -25px;
+}
+.st-action-space .st-action-space-help {
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.st-action-space .st-action-space-help.top {
+  top: -25px;
+}
+.st-action-space .st-action-space-help.right {
+  right: -24px;
+}
+.st-action-space .st-action-space-help.left {
+  left: -24px;
 }
 
 .st-plane-switch-wrapper {
@@ -1099,7 +1116,8 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   justify-content: center;
 }
-#st-end-game-info-wrapper .st-end-game-info-box {
+
+.st-end-game-info-box {
   background-color: #97c355;
   width: 300px;
   border-radius: 10px;
@@ -1109,10 +1127,10 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 }
-#st-end-game-info-wrapper .st-end-game-info-box.failure {
+.st-end-game-info-box.failure {
   background-color: #c13633;
 }
-#st-end-game-info-wrapper .st-end-game-info-box h1 {
+.st-end-game-info-box h1 {
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -1123,7 +1141,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 }
 
 .st-victory-conditions {
-  background-color: #97c355;
+  background: #97c355 !important;
   color: white;
   text-align: center;
   display: flex;
@@ -1134,9 +1152,9 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 2px 0;
   gap: 5px;
   border-top: 1px dotted white;
+  padding: 2px 5px;
 }
 .st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-letter {
   display: flex;
@@ -1164,6 +1182,15 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 #st-final-round-notice p {
   color: #c13633;
   text-decoration: underline;
+}
+
+.player-board {
+  background: linear-gradient(180deg, #f8f8f8, #e7e9e8);
+}
+.player-board .st-role-card-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

@@ -17,9 +17,19 @@ class ActionSpaceManager {
             } else if (id === 'engines-2') {
                 warningPlacement = 'right';
             }
-            dojo.place(`<div id="${id}" class="st-action-space is-empty">${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}</div>`, $('st-action-spaces'))
+            let helpPlacement = 'top';
+            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1') {
+                helpPlacement = 'left';
+            } else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
+                helpPlacement = 'right';
+            }
+            dojo.place(`<div id="${id}" class="st-action-space is-empty">
+                                ${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}
+                                <span id="${id}-help" class="st-action-space-help ${helpPlacement}"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+                             </div>`, $('st-action-spaces'))
             this.actionSpaces[id] = new LineStock<Dice>(this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', (event) => this.actionSpaceClicked(id, event))
+            dojo.connect($(`${id}-help`), 'onclick', (event) => this.game.helpDialogManager.showActionSpaceHelp(event, space))
         });
 
         data.planeDice.forEach(die => this.moveDieToActionSpace(die));

@@ -35,6 +35,7 @@ class SkyTeam implements SkyTeamGame {
     public tokenManager: TokenManager;
     public communicationInfoManager: CommunicationInfoManager;
     private actionSpaceManager: ActionSpaceManager;
+    public helpDialogManager: HelpDialogManager;
 
     // Modules
 
@@ -47,6 +48,7 @@ class SkyTeam implements SkyTeamGame {
         this.tokenManager = new TokenManager(this);
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
+        this.helpDialogManager = new HelpDialogManager(this);
         // Init Modules
     }
 
@@ -296,6 +298,33 @@ class SkyTeam implements SkyTeamGame {
 
     private setFinalRound() {
         dojo.place(`<p>${_('This is the final round!')}</p>`, $('st-final-round-notice'))
+    }
+
+    public getFailureReasonTitle(failureReason: string) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('Going into a spin');
+            case 'failure-collision':
+                return _('Collision');
+            case 'failure-overshoot':
+                return _('Overshoot');
+            case 'failure-crash-landed':
+                return _('Crash Landing');
+        }
+    }
+
+    public getFailureReasonText(failureReason: string) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin; you have lost the game!');
+            case 'failure-collision':
+                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision; you have lost the game!');
+            case 'failure-overshoot':
+                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!')
+            case 'failure-crash-landed':
+                return _('You have crash landed before reaching the airport; you have lost the game!');
+        }
+        return '';
     }
 
     private disableActionButtons() {

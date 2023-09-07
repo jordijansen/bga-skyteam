@@ -14,6 +14,7 @@ interface PlaneSwitch {
 }
 
 interface SkyTeamGame extends Game {
+    helpDialogManager: HelpDialogManager;
     diceManager: DiceManager;
     tokenManager: TokenManager;
     playerRoleManager: PlayerRoleManager;
@@ -25,6 +26,8 @@ interface SkyTeamGame extends Game {
     setTooltipToClass(className: string, html: string): void;
     formatWithIcons(description: string): string
     delay(ANIMATION_MS: number): Promise<void>;
+    getFailureReasonTitle(failureReason: string): string;
+    getFailureReasonText(failureReason: string): string;
 }
 
 interface Dice {

@@ -48,6 +48,16 @@ $this->PLANE_SWITCHES = [
     ACTION_SPACE_BRAKES.'-3',
 ];
 
+$this->ACTION_TYPES = [
+    ACTION_SPACE_AXIS => clienttranslate('axis'),
+    ACTION_SPACE_ENGINES => clienttranslate('engines'),
+    ACTION_SPACE_RADIO => clienttranslate('radio'),
+    ACTION_SPACE_LANDING_GEAR => clienttranslate('landing gear'),
+    ACTION_SPACE_FLAPS => clienttranslate('flaps'),
+    ACTION_SPACE_BRAKES => clienttranslate('brakes'),
+    ACTION_SPACE_CONCENTRATION => clienttranslate('concentration'),
+];
+
 $this->ACTION_SPACES = [
     ACTION_SPACE_AXIS.'-1' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [PILOT], MANDATORY => true],
     ACTION_SPACE_AXIS.'-2' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true],

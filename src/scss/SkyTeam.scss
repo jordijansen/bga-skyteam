@@ -79,23 +79,24 @@ html, .mode_3d #game_play_area_background {
 #st-end-game-info-wrapper {
   display: flex;
   justify-content: center;
-  .st-end-game-info-box {
-    background-color: $sky-team-green;
-    &.failure {
-      background-color: $sky-team-red;
-    }
-    h1 {
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-    width: 300px;
-    border-radius: 10px;
-    color: white;
-    text-align: center;
-    padding: 25px 50px;
-    filter: drop-shadow(1px 1px 1px black);
-    -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+
+.st-end-game-info-box {
+  background-color: $sky-team-green;
+  &.failure {
+    background-color: $sky-team-red;
   }
+  h1 {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  width: 300px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  padding: 25px 50px;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
 }
 
 #st-spend-coffee {
@@ -106,7 +107,7 @@ html, .mode_3d #game_play_area_background {
 }
 
 .st-victory-conditions {
-  background-color: $sky-team-green;
+  background: $sky-team-green !important;
   color: white;
   text-align: center;
   display: flex;
@@ -116,9 +117,9 @@ html, .mode_3d #game_play_area_background {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 2px 0;
     gap: 5px;
     border-top: 1px dotted white;
+    padding: 2px 5px;
     .st-victory-conditions-row-letter {
       display: flex;
       justify-content: center;
@@ -153,6 +154,16 @@ html, .mode_3d #game_play_area_background {
   p {
     color: $sky-team-red;
     text-decoration: underline;
+  }
+}
+
+.player-board {
+  background: linear-gradient(180deg,#f8f8f8,#e7e9e8);
+
+  .st-role-card-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
   }
 }
 

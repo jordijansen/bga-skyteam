@@ -47,6 +47,7 @@
     "src/managers/ActionSpaceManager.ts",
     "src/managers/DiceManager.ts",
     "src/managers/TokenManager.ts",
+    "src/managers/HelpDialogManager.ts",
 
     "src/ui/PlayerSetup.ts",
     "src/ui/EndGameInfo.ts",

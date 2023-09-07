@@ -2074,9 +2074,10 @@ var PlayerRoleManager = /** @class */ (function () {
     PlayerRoleManager.prototype.setUp = function (data) {
         var _this = this;
         Object.keys(data.players).forEach(function (playerId) {
+            dojo.place("<div id=\"st-role-card-wrapper-".concat(playerId, "\" class=\"st-role-card-wrapper\"></div>"), "player_board_".concat(playerId));
             var player = data.players[playerId];
             if (player.role) {
-                dojo.place(_this.createRoleCard(player.role), "player_board_".concat(playerId));
+                dojo.place(_this.createRoleCard(player.role), "st-role-card-wrapper-".concat(playerId));
             }
         });
     };
@@ -2091,7 +2092,7 @@ var PlayerRoleManager = /** @class */ (function () {
         dojo.place(this.createRoleCard(role), "st-role-card-".concat(role), 'replace');
         return this.game.animationManager.play(new BgaAttachWithAnimation({
             animation: new BgaSlideAnimation({ element: $("st-role-card-".concat(role)), transitionTimingFunction: 'ease-out' }),
-            attachElement: document.getElementById("player_board_".concat(playerId))
+            attachElement: document.getElementById("st-role-card-wrapper-".concat(playerId))
         }));
     };
     return PlayerRoleManager;
@@ -2298,9 +2299,17 @@ var ActionSpaceManager = /** @class */ (function () {
             else if (id === 'engines-2') {
                 warningPlacement = 'right';
             }
-            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space is-empty\">").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "</div>"), $('st-action-spaces'));
+            var helpPlacement = 'top';
+            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1') {
+                helpPlacement = 'left';
+            }
+            else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
+                helpPlacement = 'right';
+            }
+            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space is-empty\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
+            dojo.connect($("".concat(id, "-help")), 'onclick', function (event) { return _this.game.helpDialogManager.showActionSpaceHelp(event, space); });
         });
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
     };
@@ -2428,6 +2437,103 @@ var TokenManager = /** @class */ (function (_super) {
     TokenManager.COFFEE_RESERVE = 'st-coffee-reserve';
     return TokenManager;
 }(CardManager));
+var HelpDialogManager = /** @class */ (function () {
+    function HelpDialogManager(game) {
+        this.game = game;
+        this.dialogId = 'stHelpDialogId';
+    }
+    HelpDialogManager.prototype.showActionSpaceHelp = function (event, actionSpace) {
+        var _a;
+        dojo.stopEvent(event);
+        var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
+        html += actionSpace.mandatory ? "<p><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> ".concat(_('Mandatory, a die must be placed here each round'), "</p>") : '';
+        html += "<p>".concat(dojo.string.substitute(_('<b>Allowed role(s)</b>: ${roles}'), { roles: actionSpace.allowedRoles.map(function (role) { return _(role); }).join(', ') }), "</p>");
+        html += "<p>".concat(dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: actionSpace.allowedValues ? (_a = actionSpace.allowedValues) === null || _a === void 0 ? void 0 : _a.map(function (role) { return _(role); }).join(', ') : _('all values') }), "</p>");
+        html += "<p><i>".concat(this.getActionSpaceFlavorText(actionSpace.type), "</i></p>");
+        html += "<p>".concat(this.getActionSpaceDescription(actionSpace.type), "</p>");
+        html += "<br/><div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">";
+        html += "".concat(this.getActionSpaceFailure(actionSpace.type));
+        html += "".concat(this.getActionSpaceVictoryCondition(actionSpace.type));
+        html += "</div>";
+        html += "</div>";
+        this.showDialog(event, _(actionSpace.type).toUpperCase(), html);
+    };
+    HelpDialogManager.prototype.getActionSpaceFlavorText = function (type) {
+        switch (type) {
+            case 'axis':
+                return _('Manage your plane’s Axis during your approach. The Airplane tilts. Be careful not to go into a spin!');
+            case 'engines':
+                return _('Depending on the power you assigned to the engines, the Airplane will advance... or not!');
+            case 'radio':
+                return _('Communicate with the Control Tower to clear the traffic on your approach path.');
+            case 'landing-gear':
+                return _('Deploy the Landing Gear. Each piece of Landing Gear deployed increases the Airplane’s drag and wind resistance.');
+            case 'flaps':
+                return _('Deploy the flaps. Each flap extended increases the aircraft’s lift and wind resistance.');
+            case 'concentration':
+                return _('This is not the time to crack under pressure; concentrate and prepare your next manoeuvres.');
+            case 'brakes':
+                return _('Brake enough to bring the plane to a halt once it touches the runway.');
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.getActionSpaceDescription = function (type) {
+        switch (type) {
+            case 'axis':
+                return _('As soon as the second die is placed, compare the value of both dice: Do not move anything if both dice have the same number. If the dice show different numbers, turn the Airplane as many marks as the difference between the 2 dice. <b>Turn the Axis Arrow toward the player who played the highest die, and leave it there; do not reset the Axis to the starting point at the end of the round.</b>');
+            case 'engines':
+                return _('As soon as the second die is placed, add together the 2 dice played onto the Engine spaces; this is your speed. Then:<br/>If the sum is less than the weakest (blue) of the 2 Aerodynamics markers on the Speed Gauge, the Approach Track does not advance.<br/>If the sum is between the 2 Aerodynamics markers, the Approach Track advances one space.<br/>If the sum is greater than the highest (orange) of the 2 Aerodynamics markers, the Approach Track advances two space<br/><h3>WATCH OUT: The way you read your speed changes!</h3> During the final round, when playing the second engine die, instead of comparing your speed with the Aerodynamics markers, compare it WITH YOUR BRAKES.');
+            case 'radio':
+                return _('Play a dice here to remove a Airplane token from the space corresponding with the dice value. Counting from the Current Position upwards. Playing a die with value 1, removes an Airplane token from the Current Position.');
+            case 'landing-gear':
+                return _('Place a die respecting the number constraint. The order in which you deploy your Landing Gear is not important. If this is the first die you place here, the Switch below the space is activated (green light) and The Aerodynamics marker (blue) is moved one space. Playing on a space whose Switch is already showing green has no effect.');
+            case 'flaps':
+                return _('Place a die respecting the number constraint. Deploy the Flaps in order, from top to bottom. If this is the first die you place here, the Switch below the space is activated (green light) and The Aerodynamics marker (orange) is moved one space. Playing on a space whose Switch is already showing green has no effect.');
+            case 'concentration':
+                return _('Placing a die here will gain a Coffee token. You can never have more than 3 Coffee tokens. Any time you place a die you can spent Coffee tokens to increase/decrease the die value by 1. You can not change a 6 value into a 1 and vice versa.');
+            case 'brakes':
+                return _('Place a die respecting the number constraint. The brakes must be deployed in order, starting with the 2 space. If this is the first die you place here, the Switch below the space is activated (green light) and The Brakes marker (red) is moved. The Brakes only have an impact in the game’s final round. Playing on a space whose Switch is already showing green has no effect.');
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.getActionSpaceFailure = function (type) {
+        switch (type) {
+            case 'axis':
+                return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-axis'), "</h1></br>").concat(this.game.getFailureReasonText('failure-axis'), "</p></div>");
+            case 'engines':
+                return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div><div class=\"st-end-game-info-box failure\"><p><h1>").concat(this.game.getFailureReasonTitle('failure-overshoot'), "</h1></br>").concat(this.game.getFailureReasonText('failure-overshoot'), "</p></div>");
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.getActionSpaceVictoryCondition = function (type) {
+        switch (type) {
+            case 'axis':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'C' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['C'].description), "</p></div>");
+            case 'radio':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'A' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['A'].description), "</p></div>");
+            case 'landing-gear':
+            case 'flaps':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'B' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['B'].description), "</p></div>");
+            case 'brakes':
+            case 'engines':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'D' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['D'].description), "</p></div>");
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.showDialog = function (event, title, html) {
+        dojo.stopEvent(event);
+        this.dialog = new ebg.popindialog();
+        this.dialog.create(this.dialogId);
+        this.dialog.setTitle("<i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i> ".concat(_(title)));
+        this.dialog.setContent(html);
+        this.dialog.show();
+    };
+    return HelpDialogManager;
+}());
 var PlayerSetup = /** @class */ (function () {
     function PlayerSetup(game, elementId) {
         this.game = game;
@@ -2495,32 +2601,7 @@ var EndGameInfo = /** @class */ (function () {
         return this.game.delay(5000);
     };
     EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
-        return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.getFailureReasonText(failureReason), "</p>\n                </div>");
-    };
-    EndGameInfo.prototype.getFailureReasonTitle = function (failureReason) {
-        switch (failureReason) {
-            case 'failure-axis':
-                return _('Going into a spin');
-            case 'failure-collision':
-                return _('Collision');
-            case 'failure-overshoot':
-                return _('Overshoot');
-            case 'failure-crash-landed':
-                return _('Crash Landing');
-        }
-    };
-    EndGameInfo.prototype.getFailureReasonText = function (failureReason) {
-        switch (failureReason) {
-            case 'failure-axis':
-                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin; you have lost the game!');
-            case 'failure-collision':
-                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision; you have lost the game!');
-            case 'failure-overshoot':
-                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!');
-            case 'failure-crash-landed':
-                return _('You have crash landed before reaching the airport; you have lost the game!');
-        }
-        return '';
+        return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.game.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.game.getFailureReasonText(failureReason), "</p>\n                </div>");
     };
     return EndGameInfo;
 }());
@@ -2660,6 +2741,7 @@ var SkyTeam = /** @class */ (function () {
         this.tokenManager = new TokenManager(this);
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
+        this.helpDialogManager = new HelpDialogManager(this);
         // Init Modules
     }
     /*
@@ -2885,6 +2967,31 @@ var SkyTeam = /** @class */ (function () {
     ///////////////////////////////////////////////////
     SkyTeam.prototype.setFinalRound = function () {
         dojo.place("<p>".concat(_('This is the final round!'), "</p>"), $('st-final-round-notice'));
+    };
+    SkyTeam.prototype.getFailureReasonTitle = function (failureReason) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('Going into a spin');
+            case 'failure-collision':
+                return _('Collision');
+            case 'failure-overshoot':
+                return _('Overshoot');
+            case 'failure-crash-landed':
+                return _('Crash Landing');
+        }
+    };
+    SkyTeam.prototype.getFailureReasonText = function (failureReason) {
+        switch (failureReason) {
+            case 'failure-axis':
+                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin; you have lost the game!');
+            case 'failure-collision':
+                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision; you have lost the game!');
+            case 'failure-overshoot':
+                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!');
+            case 'failure-crash-landed':
+                return _('You have crash landed before reaching the airport; you have lost the game!');
+        }
+        return '';
     };
     SkyTeam.prototype.disableActionButtons = function () {
         var buttons = document.querySelectorAll('.action-button');

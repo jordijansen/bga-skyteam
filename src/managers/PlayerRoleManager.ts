@@ -4,10 +4,13 @@ class PlayerRoleManager  {
     }
 
     public setUp(data: SkyTeamGameData) {
+
+
         Object.keys(data.players).forEach(playerId => {
+            dojo.place(`<div id="st-role-card-wrapper-${playerId}" class="st-role-card-wrapper"></div>`, `player_board_${playerId}`)
             const player = data.players[playerId];
             if (player.role) {
-                dojo.place(this.createRoleCard(player.role), `player_board_${playerId}`);
+                dojo.place(this.createRoleCard(player.role), `st-role-card-wrapper-${playerId}`);
             }
         });
     }
@@ -27,7 +30,7 @@ class PlayerRoleManager  {
 
         return this.game.animationManager.play( new BgaAttachWithAnimation({
             animation: new BgaSlideAnimation({ element: $(`st-role-card-${role}`), transitionTimingFunction: 'ease-out' }),
-            attachElement: document.getElementById(`player_board_${playerId}`)
+            attachElement: document.getElementById(`st-role-card-wrapper-${playerId}`)
         }))
     }
 }
