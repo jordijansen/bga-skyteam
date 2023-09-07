@@ -25,6 +25,7 @@ class SkyTeam implements SkyTeamGame {
     private playerSetup: PlayerSetup;
     private endGameInfo: EndGameInfo;
     private spendCoffee: SpendCoffee;
+    private victoryConditions: VictoryConditions;
 
     // Managers
     public planeManager: PlaneManager;
@@ -69,6 +70,7 @@ class SkyTeam implements SkyTeamGame {
         const maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last')
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last')
+        dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last')
 
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level')
@@ -87,7 +89,15 @@ class SkyTeam implements SkyTeamGame {
         this.endGameInfo = new EndGameInfo(this,'st-end-game-info-wrapper');
         this.spendCoffee = new SpendCoffee(this,'st-custom-actions');
 
-        this.endGameInfo.setFailureReason(data.failureReason)
+        if (data.finalRound && !data.isLanded) {
+            this.setFinalRound();
+        }
+
+        if (data.isLanded) {
+            this.endGameInfo.setEndGameInfo(data.victoryConditions)
+        } else  {
+            this.endGameInfo.setFailureReason(data.failureReason)
+        }
 
         this.setupNotifications();
         log( "Ending game setup" );
@@ -284,6 +294,10 @@ class SkyTeam implements SkyTeamGame {
     //// Utility methods
     ///////////////////////////////////////////////////
 
+    private setFinalRound() {
+        dojo.place(`<p>${_('This is the final round!')}</p>`, $('st-final-round-notice'))
+    }
+
     private disableActionButtons() {
         const buttons = document.querySelectorAll('.action-button')
         buttons.forEach(button => {
@@ -378,7 +392,10 @@ class SkyTeam implements SkyTeamGame {
             ['coffeeUsed', undefined],
             ['rerollTokenUsed', undefined],
             ['planeAltitudeChanged', undefined],
-            ['diceReturnedToPlayer', undefined]
+            ['diceReturnedToPlayer', undefined],
+            ['victoryConditionsUpdated', 1],
+            ['planeLanded', undefined],
+            ['newRoundStarted', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -484,6 +501,20 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
+    private notif_victoryConditionsUpdated(args: NotifVictoryConditionsUpdated) {
+        this.victoryConditions.updateVictoryConditions(args.victoryConditions);
+    }
+
+    private notif_planeLanded(args: NotifPlaneLanded) {
+        return this.endGameInfo.setEndGameInfo(args.victoryConditions).then(() => Object.keys(this.gamedatas.players).forEach(playerId => this.setScore(Number(playerId), args.score)));
+    }
+
+    private notif_newRoundStarted(args: NotifNewRoundStarted) {
+        if (args.finalRound) {
+            this.setFinalRound();
+        }
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
@@ -496,6 +527,10 @@ class SkyTeam implements SkyTeamGame {
                     } else if (argKey.startsWith('icon_tokens') && typeof args[argKey] == 'object') {
                         const tokenIcons = args[argKey].map((token: Card) => this.tokenIcon(token.type))
                         args[argKey] = tokenIcons.join(' ');
+                    } else if (argKey.startsWith('icon_plane_marker') && typeof args[argKey] == 'string') {
+                        args[argKey] = this.planeMarkerIcon(args[argKey])
+                    } else if (argKey.startsWith('icon_switch') && typeof args[argKey] == 'number') {
+                        args[argKey] = this.switchIcon()
                     }
                 })
             }
@@ -507,7 +542,9 @@ class SkyTeam implements SkyTeamGame {
 
     public updatePlayerOrdering() {
         (this as any).inherited(arguments);
-        // Add custom panels
+        dojo.place(`<div id="st-victory-conditions-panel" class="player-board st-victory-conditions" style="height: auto;"></div>`, `player_boards`, 'first');
+        this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
+        this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);
     }
 
     public formatWithIcons(description) {
@@ -520,6 +557,14 @@ class SkyTeam implements SkyTeamGame {
 
     public tokenIcon(type) {
         return `<span class="st-token token small" data-type="${type}"></span>`
+    }
+
+    public planeMarkerIcon(type) {
+        return `<span class="st-plane-marker token small" data-type="${type}"></span>`
+    }
+
+    public switchIcon() {
+        return `<span class="st-plane-switch"></span>`
     }
 
     public diceIcon(die: Dice) {

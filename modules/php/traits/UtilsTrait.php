@@ -26,6 +26,31 @@ trait UtilsTrait
         return ReflectionUtils::rebuildAllPropertyValues($this->ALTITUDE_TRACKS[1], AltitudeTrack::class);
     }
 
+    function getVictoryConditions()
+    {
+        $BASE_GAME_CONDITIONS = [
+            VICTORY_A => ['letter' => VICTORY_A, 'description' => clienttranslate('There are no Airplane tokens on the Approach Track.')],
+            VICTORY_B => ['letter' => VICTORY_B, 'description' => clienttranslate('All your Flaps and Landing Gear Switches show the green light.')],
+            VICTORY_C => ['letter' => VICTORY_C, 'description' => clienttranslate('Your Airplane’s Axis is completely horizontal.')],
+            VICTORY_D => ['letter' => VICTORY_D, 'description' => clienttranslate('Your Speed is less than your Brakes when you placed your Engine dice.')],
+        ];
+        // TODO GET BASED ON SCENARIO/MODULES
+
+        return $BASE_GAME_CONDITIONS;
+    }
+
+    function isFinalRound()
+    {
+        $isFinalRound = $this->getGlobalVariable(FINAL_ROUND);
+        return isset($isFinalRound) && filter_var($isFinalRound, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    function isLanded()
+    {
+        $isLanded = $this->getGlobalVariable(PLANE_LANDED);
+        return isset($isLanded) && filter_var($isLanded, FILTER_VALIDATE_BOOLEAN);
+    }
+
     function getPlayerRole(int $playerId)
     {
         $playerColor = $this->getPlayerColor($playerId);

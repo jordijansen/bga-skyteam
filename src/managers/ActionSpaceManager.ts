@@ -11,7 +11,13 @@ class ActionSpaceManager {
 
     public setUp(data: SkyTeamGameData) {
         Object.entries(data.actionSpaces).forEach(([id, space]) => {
-            dojo.place(`<div id="${id}" class="st-action-space ${space.mandatory ? 'mandatory' : ''}"></div>`, $('st-action-spaces'))
+            let warningPlacement = 'bottom';
+            if (id === 'engines-1') {
+                warningPlacement = 'left';
+            } else if (id === 'engines-2') {
+                warningPlacement = 'right';
+            }
+            dojo.place(`<div id="${id}" class="st-action-space is-empty">${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}</div>`, $('st-action-spaces'))
             this.actionSpaces[id] = new LineStock<Dice>(this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', (event) => this.actionSpaceClicked(id, event))
         });

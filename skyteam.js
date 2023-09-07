@@ -2024,8 +2024,9 @@ function sortFunction() {
 }
 var determineBoardWidth = function () {
     var BASE_BOARD = 607;
-    // TODO ADD MODULES
-    return BASE_BOARD;
+    var COFFEE_RESERVE = 55 * 2;
+    // TODO MODULES
+    return BASE_BOARD + COFFEE_RESERVE;
 };
 var determineMaxZoomLevel = function () {
     var bodycoords = dojo.marginBox("zoom-overall");
@@ -2098,12 +2099,10 @@ var PlayerRoleManager = /** @class */ (function () {
 var PlaneManager = /** @class */ (function () {
     function PlaneManager(game) {
         this.game = game;
-        // TEMP
         this.currentApproach = 1;
         this.currentAltitude = 1;
     }
     PlaneManager.prototype.setUp = function (data) {
-        var _this = this;
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = data.plane.axis;
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
@@ -2144,9 +2143,6 @@ var PlaneManager = /** @class */ (function () {
         this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'available'; }));
         this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {});
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
-        // TEMP
-        dojo.connect($(PlaneManager.PLANE_ALTITUDE_TRACK), 'onclick', function () { return _this.updateAltitude(_this.currentAltitude + 1); });
-        dojo.connect($(PlaneManager.PLANE_APPROACH_TRACK), 'onclick', function () { return _this.updateApproach(_this.currentApproach + 1); });
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2210,9 +2206,9 @@ var ReserveManager = /** @class */ (function () {
         this.game = game;
     }
     ReserveManager.prototype.setUp = function (data) {
-        this.reserveCoffeeStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_COFFEE), { center: true });
-        this.reserveRerollStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_REROLL), { center: true });
-        this.reservePlaneStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_PLANE), { center: true });
+        this.reserveCoffeeStock = new LineStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_COFFEE), { center: true, direction: 'column' });
+        this.reserveRerollStock = new VoidStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_REROLL));
+        this.reservePlaneStock = new VoidStock(this.game.tokenManager, $(ReserveManager.TOKEN_RESERVE_PLANE));
         this.reserveCoffeeStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'reserve'; }));
         this.reserveRerollStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'reserve'; }));
         this.reservePlaneStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'reserve'; }));
@@ -2225,21 +2221,30 @@ var ReserveManager = /** @class */ (function () {
 var CommunicationInfoManager = /** @class */ (function () {
     function CommunicationInfoManager(game) {
         this.game = game;
+        this.currentCommunicationLevel = '';
+        this.dialog = null;
+        this.dialogId = 'st-communication-info-dialog';
     }
     CommunicationInfoManager.prototype.setUp = function (data) {
+        var _this = this;
         this.update(data.phase);
+        dojo.connect($(CommunicationInfoManager.ELEMENT_ID), 'onclick', function (event) { return _this.showMoreInfoDialog(event); });
     };
     CommunicationInfoManager.prototype.setCommunicationLimited = function () {
+        this.currentCommunicationLevel = 'limited';
         var element = $(CommunicationInfoManager.ELEMENT_ID);
         dojo.empty(element);
-        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only. You are not allowed to discuss the dice.'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i></h2>"), element);
-        dojo.place("<div class=\"st-communication-info-examples\">\n                            <div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C".concat(_('We really need to get rid of that plane token'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('Let’s make sure we advance 2 spaces.'), "\u201C</div>\n                            </div>\n                            <div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('If you get a 6, put it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Use your weakest die to do this action'), "\u201C</div>\n                            </div>\n                        </div>"), element);
+        dojo.removeClass(element, 'red');
+        dojo.addClass(element, 'green');
+        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only. You are not allowed to discuss the dice. Click for more info.'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i></h2>"), element);
     };
     CommunicationInfoManager.prototype.setCommunicationNotAllowed = function () {
+        this.currentCommunicationLevel = 'not-allowed';
         var element = $(CommunicationInfoManager.ELEMENT_ID);
         dojo.empty(element);
-        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication. Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
-        dojo.place("<div class=\"st-communication-info-examples\">\n                            <div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C".concat(_('Are you still there?'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('I need to step away for a minute, be right back'), "\u201C</div>\n                            </div>\n                            <div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('I have a 6 and I can use it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('What dice do you have?'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Remember the brakes!'), "\u201C</div>\n                            </div>\n                        </div>"), element);
+        dojo.removeClass(element, 'green');
+        dojo.addClass(element, 'red');
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication. Non-game communication is allowed. Click for more info.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
         if (newPhase == 'strategy') {
@@ -2247,6 +2252,30 @@ var CommunicationInfoManager = /** @class */ (function () {
         }
         else if (newPhase == 'diceplacement') {
             this.setCommunicationNotAllowed();
+        }
+    };
+    CommunicationInfoManager.prototype.showMoreInfoDialog = function (event) {
+        dojo.stopEvent(event);
+        this.dialog = new ebg.popindialog();
+        this.dialog.create(this.dialogId);
+        this.dialog.setTitle("<i class=\"fa fa-info-circle\" aria-hidden=\"true\"></i> ".concat(this.getDialogTitle()));
+        this.dialog.setContent(this.getDialogHtml());
+        this.dialog.show();
+    };
+    CommunicationInfoManager.prototype.getDialogTitle = function () {
+        switch (this.currentCommunicationLevel) {
+            case 'not-allowed':
+                return _('No communication. Non-game communication is allowed.');
+            case 'limited':
+                return _('Limited communication only. You are not allowed to discuss the dice.');
+        }
+    };
+    CommunicationInfoManager.prototype.getDialogHtml = function () {
+        switch (this.currentCommunicationLevel) {
+            case 'not-allowed':
+                return "<div class=\"st-communication-info-examples\">\n                            <p>".concat(_('In Sky Team, there are 2 ways to communicate: Verbally, during the strategy phase; and by placing your die during the Dice Placement phase.'), " ").concat(_('Currently we are in the Dice Placement phase.'), "</p>\n                            <div>\n                                <div><b>").concat(_('For example:'), "</b></div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('Are you still there?'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('I need to step away for a minute, be right back'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('I have a 6 and I can use it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('What dice do you have?'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Remember the brakes!'), "\u201C</div>\n                            </div>\n                        </div>");
+            case 'limited':
+                return "<div class=\"st-communication-info-examples\">\n                            <p>".concat(_('In Sky Team, there are 2 ways to communicate: Verbally, during the strategy phase; and by placing your die during the Dice Placement phase.'), " ").concat(_('Currently we are in the Strategy phase.'), "</p>\n                            <div>\n                                <div><b>").concat(_('For example:'), "</b></div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('We really need to get rid of that plane token'), "\u201C</div>\n                                <div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> \u201C").concat(_('Let’s make sure we advance 2 spaces.'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('If you get a 6, put it here'), "\u201C</div>\n                                <div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> \u201C").concat(_('Use your weakest die to do this action'), "\u201C</div>\n                            </div>\n                        </div>");
         }
     };
     CommunicationInfoManager.ELEMENT_ID = 'st-communication-info';
@@ -2262,7 +2291,14 @@ var ActionSpaceManager = /** @class */ (function () {
         var _this = this;
         Object.entries(data.actionSpaces).forEach(function (_a) {
             var id = _a[0], space = _a[1];
-            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space ").concat(space.mandatory ? 'mandatory' : '', "\"></div>"), $('st-action-spaces'));
+            var warningPlacement = 'bottom';
+            if (id === 'engines-1') {
+                warningPlacement = 'left';
+            }
+            else if (id === 'engines-2') {
+                warningPlacement = 'right';
+            }
+            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space is-empty\">").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "</div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
         });
@@ -2444,6 +2480,20 @@ var EndGameInfo = /** @class */ (function () {
         }
         return Promise.resolve();
     };
+    EndGameInfo.prototype.setEndGameInfo = function (victoryConditions) {
+        var element = $(this.elementId);
+        var failure = Object.values(victoryConditions).some(function (vc) { return vc.status === 'failed'; });
+        dojo.place("<div id=\"st-end-game-info-box\" class=\"st-end-game-info-box st-victory-conditions ".concat(failure ? 'failure' : 'success', "\"></div>"), element, 'only');
+        var endGameInfoElement = new VictoryConditions(this.game, 'st-end-game-info-box');
+        endGameInfoElement.updateVictoryConditions(victoryConditions);
+        if (!failure) {
+            dojo.place("<h2>".concat(_('Congratulations! The passengers burst into applause! You have landed smoothly, and you have won.'), "</h2>"), $('st-end-game-info-box'));
+        }
+        else {
+            dojo.place("<h2>".concat(_('Unfortunately, not all victory conditions were met, better luck next time pilots!'), "</h2>"), $('st-end-game-info-box'));
+        }
+        return this.game.delay(5000);
+    };
     EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
         return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.getFailureReasonText(failureReason), "</p>\n                </div>");
     };
@@ -2455,16 +2505,20 @@ var EndGameInfo = /** @class */ (function () {
                 return _('Collision');
             case 'failure-overshoot':
                 return _('Overshoot');
+            case 'failure-crash-landed':
+                return _('Crash Landing');
         }
     };
     EndGameInfo.prototype.getFailureReasonText = function (failureReason) {
         switch (failureReason) {
             case 'failure-axis':
-                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin and you immediately lose the game.');
+                return _('If the Axis Arrow reaches or goes past an X, the plane goes into a spin; you have lost the game!');
             case 'failure-collision':
-                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision, and you’ve lost the game!');
+                return _('If there are Airplane tokens in the Current Position space and you have to advance the Approach Track, you have had a collision; you have lost the game!');
             case 'failure-overshoot':
-                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport, and you’ve lost the game!');
+                return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!');
+            case 'failure-crash-landed':
+                return _('You have crash landed before reaching the airport; you have lost the game!');
         }
         return '';
     };
@@ -2548,6 +2602,33 @@ var SpendCoffee = /** @class */ (function () {
     SpendCoffee.ELEMENT_ID = 'st-spend-coffee';
     return SpendCoffee;
 }());
+var VictoryConditions = /** @class */ (function () {
+    function VictoryConditions(game, elementId) {
+        this.game = game;
+        this.elementId = elementId;
+    }
+    VictoryConditions.prototype.updateVictoryConditions = function (victoryConditions) {
+        var element = $(this.elementId);
+        dojo.empty(element);
+        var html = '<h3>FINAL TURN - VICTORY CONDITIONS</h3>';
+        for (var conditionLetter in victoryConditions) {
+            var victoryCondition = victoryConditions[conditionLetter];
+            html += "<div class=\"st-victory-conditions-row\">\n                        <div class=\"st-victory-conditions-row-letter\"><span>".concat(conditionLetter, "</span></div>\n                        <div class=\"st-victory-conditions-row-description\">").concat(_(victoryCondition.description), "</div>\n                        <div class=\"st-victory-conditions-row-status\">").concat(this.getIconForStatus(victoryCondition.status), "</div>\n                     </div>");
+        }
+        dojo.place(html, element);
+    };
+    VictoryConditions.prototype.getIconForStatus = function (status) {
+        switch (status) {
+            case "pending":
+                return '<i class="fa fa-clock-o" aria-hidden="true"></i>';
+            case "failed":
+                return '<i class="fa fa-times-circle-o" aria-hidden="true"></i>';
+            case 'success':
+                return '<i class="fa fa-check-circle-o" aria-hidden="true"></i>';
+        }
+    };
+    return VictoryConditions;
+}());
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
@@ -2599,6 +2680,7 @@ var SkyTeam = /** @class */ (function () {
         var maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last');
+        dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last');
         // Setup modules
         this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
@@ -2613,7 +2695,15 @@ var SkyTeam = /** @class */ (function () {
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
         this.spendCoffee = new SpendCoffee(this, 'st-custom-actions');
-        this.endGameInfo.setFailureReason(data.failureReason);
+        if (data.finalRound && !data.isLanded) {
+            this.setFinalRound();
+        }
+        if (data.isLanded) {
+            this.endGameInfo.setEndGameInfo(data.victoryConditions);
+        }
+        else {
+            this.endGameInfo.setFailureReason(data.failureReason);
+        }
         this.setupNotifications();
         log("Ending game setup");
     };
@@ -2793,6 +2883,9 @@ var SkyTeam = /** @class */ (function () {
     ///////////////////////////////////////////////////
     //// Utility methods
     ///////////////////////////////////////////////////
+    SkyTeam.prototype.setFinalRound = function () {
+        dojo.place("<p>".concat(_('This is the final round!'), "</p>"), $('st-final-round-notice'));
+    };
     SkyTeam.prototype.disableActionButtons = function () {
         var buttons = document.querySelectorAll('.action-button');
         buttons.forEach(function (button) {
@@ -2874,7 +2967,10 @@ var SkyTeam = /** @class */ (function () {
             ['coffeeUsed', undefined],
             ['rerollTokenUsed', undefined],
             ['planeAltitudeChanged', undefined],
-            ['diceReturnedToPlayer', undefined]
+            ['diceReturnedToPlayer', undefined],
+            ['victoryConditionsUpdated', 1],
+            ['planeLanded', undefined],
+            ['newRoundStarted', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -2963,6 +3059,18 @@ var SkyTeam = /** @class */ (function () {
             return this.diceManager.otherPlayerDiceStock.addCards(args.dice);
         }
     };
+    SkyTeam.prototype.notif_victoryConditionsUpdated = function (args) {
+        this.victoryConditions.updateVictoryConditions(args.victoryConditions);
+    };
+    SkyTeam.prototype.notif_planeLanded = function (args) {
+        var _this = this;
+        return this.endGameInfo.setEndGameInfo(args.victoryConditions).then(function () { return Object.keys(_this.gamedatas.players).forEach(function (playerId) { return _this.setScore(Number(playerId), args.score); }); });
+    };
+    SkyTeam.prototype.notif_newRoundStarted = function (args) {
+        if (args.finalRound) {
+            this.setFinalRound();
+        }
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
         try {
@@ -2979,6 +3087,12 @@ var SkyTeam = /** @class */ (function () {
                         var tokenIcons = args[argKey].map(function (token) { return _this.tokenIcon(token.type); });
                         args[argKey] = tokenIcons.join(' ');
                     }
+                    else if (argKey.startsWith('icon_plane_marker') && typeof args[argKey] == 'string') {
+                        args[argKey] = _this.planeMarkerIcon(args[argKey]);
+                    }
+                    else if (argKey.startsWith('icon_switch') && typeof args[argKey] == 'number') {
+                        args[argKey] = _this.switchIcon();
+                    }
                 });
             }
         }
@@ -2989,7 +3103,9 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.updatePlayerOrdering = function () {
         this.inherited(arguments);
-        // Add custom panels
+        dojo.place("<div id=\"st-victory-conditions-panel\" class=\"player-board st-victory-conditions\" style=\"height: auto;\"></div>", "player_boards", 'first');
+        this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
+        this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);
     };
     SkyTeam.prototype.formatWithIcons = function (description) {
         //@ts-ignore
@@ -3000,6 +3116,12 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.tokenIcon = function (type) {
         return "<span class=\"st-token token small\" data-type=\"".concat(type, "\"></span>");
+    };
+    SkyTeam.prototype.planeMarkerIcon = function (type) {
+        return "<span class=\"st-plane-marker token small\" data-type=\"".concat(type, "\"></span>");
+    };
+    SkyTeam.prototype.switchIcon = function () {
+        return "<span class=\"st-plane-switch\"></span>";
     };
     SkyTeam.prototype.diceIcon = function (die) {
         return "<span class=\"st-dice\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");

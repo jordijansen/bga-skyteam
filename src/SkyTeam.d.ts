@@ -55,12 +55,18 @@ interface ActionSpace {
     allowedValues?: number[],
     allowedRoles: SkyTeamPlayer['role'][],
     mandatory: boolean,
-    type: 'axis'
+    type: string
 }
 
 interface SkyTeamPlayer extends Player {
     role: 'pilot'|'co-pilot',
     dice: Dice[]
+}
+
+interface VictoryCondition {
+    letter: string,
+    description: string,
+    status: 'success' | 'pending' | 'failed'
 }
 
 interface SkyTeamGameData extends GameData {
@@ -74,7 +80,10 @@ interface SkyTeamGameData extends GameData {
     coffeeTokens: { [id: number]: Card };
     plane: Plane,
     approach: ApproachTrack,
-    altitude: AltitudeTrack
+    altitude: AltitudeTrack,
+    finalRound: boolean,
+    isLanded: boolean,
+    victoryConditions: {[conditionLetter: string]: VictoryCondition}
 }
 
 // ARGS
@@ -157,4 +166,18 @@ interface NotifPlaneAltitudeChanged {
 interface NotifDiceReturnedToPlayer {
     playerId: number,
     dice: Dice[]
+}
+
+interface NotifVictoryConditionsUpdated {
+    victoryConditions: {[conditionLetter: string]: VictoryCondition}
+}
+
+interface NotifPlaneLanded {
+    failure: boolean,
+    victoryConditions: {[conditionLetter: string]: VictoryCondition}
+    score: number
+}
+
+interface NotifNewRoundStarted {
+    finalRound: boolean
 }

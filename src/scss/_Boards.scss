@@ -135,10 +135,14 @@
             #plane-switch-brakes-2 { top: 690px; left: 272px; }
             #plane-switch-brakes-3 { top: 690px; left: 365px; }
           }
-        }
-
-        #st-token-reserves {
-          margin-top: 10px;
+          #st-token-reserves {
+            position: absolute;
+            bottom: 5px;
+            left: -55px;
+            .card {
+              position: unset;
+            }
+          }
         }
       }
     }
@@ -203,6 +207,24 @@
   &.selectable {
     @include selectable();
     animation: jj-pulse 2s infinite;
+  }
+
+  &.is-empty {
+    .st-action-space-mandatory-warning {
+      animation: jj-red-color-transition 2s infinite;
+    }
+  }
+  .st-action-space-mandatory-warning {
+    position: absolute;
+    &.bottom {
+      bottom: -26px;
+    }
+    &.left {
+      left: -26px;
+    }
+    &.right {
+      right: -28px;
+    }
   }
 }
 

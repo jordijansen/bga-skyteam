@@ -64,10 +64,15 @@ html, .mode_3d #game_play_area_background {
   align-items: center;
   flex-direction: column;
   text-align: center;
-  .st-communication-info-examples {
-    text-align: left;
-    display: flex;
-    gap: 25px;
+  cursor: pointer;
+  background-image: none;
+  color: white;
+
+  &.red {
+    background-color: $sky-team-red;
+  }
+  &.green {
+    background-color: $sky-team-green;
   }
 }
 
@@ -75,9 +80,9 @@ html, .mode_3d #game_play_area_background {
   display: flex;
   justify-content: center;
   .st-end-game-info-box {
-    background-color: #97c355;
+    background-color: $sky-team-green;
     &.failure {
-      background-color: #c13633;
+      background-color: $sky-team-red;
     }
     h1 {
       text-transform: uppercase;
@@ -100,5 +105,55 @@ html, .mode_3d #game_play_area_background {
   }
 }
 
+.st-victory-conditions {
+  background-color: $sky-team-green;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  .st-victory-conditions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px 0;
+    gap: 5px;
+    border-top: 1px dotted white;
+    .st-victory-conditions-row-letter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
+        background-color: white;
+        color: #97c355;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 5px;
+      }
+    }
+    .st-victory-conditions-row-description {
+      flex-grow: 1;
+      text-align: left;
+    }
+    .st-victory-conditions-row-status {
+      font-size: 25px;
+    }
+  }
+
+  &.failure {
+    .st-victory-conditions-row-letter {
+      span {
+        color: $sky-team-red;
+      }
+    }
+  }
+}
+
+#st-final-round-notice {
+  p {
+    color: $sky-team-red;
+    text-decoration: underline;
+  }
+}
 
 

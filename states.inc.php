@@ -155,7 +155,9 @@ $gameStates = [
         "type" => "game",
         "action" => "stEndOfRound",
         "transitions" => [
-            'start' => ST_START_ROUND
+            'start' => ST_START_ROUND,
+            'failure' => ST_PLANE_FAILURE,
+            'landed' => ST_PLANE_LANDED
         ]
     ],
     ST_PLANE_FAILURE => [
@@ -164,7 +166,16 @@ $gameStates = [
         "type" => "game",
         "action" => "stPlaneFailure",
         "transitions" => [
-            '' => 98
+            '' => ST_GAME_END
+        ]
+    ],
+    ST_PLANE_LANDED => [
+        "name" => "planeLanded",
+        "description" => clienttranslate('Landing the plane...'),
+        "type" => "game",
+        "action" => "stPlaneLanded",
+        "transitions" => [
+            '' => ST_GAME_END
         ]
     ],
 

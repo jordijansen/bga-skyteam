@@ -22,12 +22,17 @@ trait StateTrait
         $this->setGlobalVariable(CURRENT_ROUND, $newRoundNumber);
 
         $this->notifyAllPlayers("newRoundStarted", clienttranslate('Round (${roundNumber}/7) started'), [
-            'roundNumber' => $newRoundNumber
+            'roundNumber' => $newRoundNumber,
+            'finalRound' => $this->isFinalRound()
         ]);
 
         $this->setGlobalVariable(CURRENT_PHASE, PHASE_STRATEGY);
         $this->notifyAllPlayers("newPhaseStarted", clienttranslate('New phase: ${newPhase}'), [
             'newPhase' => PHASE_STRATEGY
+        ]);
+
+        $this->notifyAllPlayers( "victoryConditionsUpdated", '', [
+            'victoryConditions' => $this->planeManager->getVictoryConditionsResults()
         ]);
 
         // If there is a REROLL token in the current slot, move it to the available pile
@@ -45,6 +50,9 @@ trait StateTrait
         }
 
         $this->gamestate->setAllPlayersMultiactive();
+        foreach ($this->gamestate->getActivePlayerList() as $playerId) {
+            $this->giveExtraTime($playerId);
+        }
         $this->gamestate->nextState('');
     }
 
@@ -78,13 +86,14 @@ trait StateTrait
         $startPlayerId = $this->getPlayerIdForRole($startRole);
 
         $this->gamestate->changeActivePlayer($startPlayerId);
+        $this->giveExtraTime($startPlayerId);
         $this->gamestate->nextState('');
     }
 
     function stDicePlacementNext()
     {
         $this->activeNextPlayer();
-
+        $this->giveExtraTime($this->getActivePlayerId());
         $playerRole = $this->getPlayerRole($this->getActivePlayerId());
         $dice = Dice::fromArray($this->dice->getCardsOfTypeInLocation( DICE_PLAYER, $playerRole, LOCATION_PLAYER));
         if (sizeof($dice) > 0) {
@@ -103,46 +112,72 @@ trait StateTrait
         $this->gamestate->nextState('');
     }
 
-    function stEndOfRound()
+    function stPlaneLanded()
     {
-        $altitudeTrack = $this->getAltitudeTrack();
-        $approachTrack = $this->getApproachTrack();
-
-        $plane = $this->planeManager->get();
-        $plane->altitude = $plane->altitude + 1;
-        $this->planeManager->save($plane);
-
-        $this->notifyAllPlayers( "planeAltitudeChanged", clienttranslate('The plane is decreasing altitude to <b>${altitudeHeight}</b>'), [
-            'altitudeHeight' => $altitudeTrack->spaces[$plane->altitude][ALTITUDE_HEIGHT],
-            'altitude' => $plane->altitude
+        $results = $this->planeManager->getVictoryConditionsResults();
+        $failure = sizeof(array_filter($results, fn($victoryCondition) => $victoryCondition['status'] == 'failed')) > 0;
+        $score = $failure ? -1 : 1;
+        $this->notifyAllPlayers('planeLanded', clienttranslate('Plane landed'), [
+            "failure" => $failure,
+            "victoryConditions" => $results,
+            "score" => $score
         ]);
 
-        $playerIds = $this->getPlayerIds();
-        foreach ($playerIds as $playerId) {
-            $playerRole = $this->getPlayerRole($playerId);
-            $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLANE));
-            foreach ($playerDice as $playerDie) {
-                $playerDie->setSide(1);
-            }
-            $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
-            $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER);
-            $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
-                'playerId' => intval($playerId),
-                'player_name' => $this->getPlayerName($playerId),
-                'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
-            ]);
+        foreach ($this->getPlayerIds() as $playerId) {
+            $this->updatePlayerScore($playerId, $score);
         }
 
-        if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
-            // The plane has landed, let's see if we're at the airport
-            if ($plane->approach == sizeof($approachTrack->spaces)) {
-                // START LAST ROUND
-            } else {
-                // The plane has landed, but not at the airport
+        $this->setGlobalVariable(PLANE_LANDED, true);
 
-            }
+        $this->gamestate->nextState('');
+    }
+
+    function stEndOfRound()
+    {
+        if ($this->isFinalRound()) {
+            $this->gamestate->nextState('landed');
         } else {
-            $this->gamestate->nextState('start');
+            $altitudeTrack = $this->getAltitudeTrack();
+            $approachTrack = $this->getApproachTrack();
+
+            $plane = $this->planeManager->get();
+            $plane->altitude = $plane->altitude + 1;
+            $this->planeManager->save($plane);
+
+            $this->notifyAllPlayers( "planeAltitudeChanged", clienttranslate('The plane is decreasing altitude to <b>${altitudeHeight}</b>'), [
+                'altitudeHeight' => $altitudeTrack->spaces[$plane->altitude][ALTITUDE_HEIGHT],
+                'altitude' => $plane->altitude
+            ]);
+
+            $playerIds = $this->getPlayerIds();
+            foreach ($playerIds as $playerId) {
+                $playerRole = $this->getPlayerRole($playerId);
+                $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLANE));
+                foreach ($playerDice as $playerDie) {
+                    $playerDie->setSide(1);
+                }
+                $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
+                $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER);
+                $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
+                    'playerId' => intval($playerId),
+                    'player_name' => $this->getPlayerName($playerId),
+                    'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
+                ]);
+            }
+            if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
+                // The plane has landed, let's see if we're at the airport
+                if ($plane->approach == sizeof($approachTrack->spaces)) {
+                    // We're at the airport, start the last round
+                    $this->setGlobalVariable(FINAL_ROUND, true);
+                    $this->gamestate->nextState('start');
+                } else {
+                    // The plane has landed, but not at the airport -> crash
+                    $this->setGlobalVariable(FAILURE_REASON, FAILURE_CRASH_LANDED);
+                    $this->gamestate->nextState('failure');
+                }
+            } else {
+                $this->gamestate->nextState('start');
+            }
         }
     }
 }

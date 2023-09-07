@@ -40,7 +40,7 @@ const ACTION_SPACE_CONCENTRATION = 'concentration';
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';
 const MANDATORY = 'mandatory';
-const REQUIRES_DIE_IN = 'requiresDieIn';
+const REQUIRES_SWITCH_IN = 'requiresSwitchIn';
 
 /**
  * Failure Reasons
@@ -48,6 +48,15 @@ const REQUIRES_DIE_IN = 'requiresDieIn';
 const FAILURE_AXIS = 'failure-axis';
 const FAILURE_COLLISION = 'failure-collision';
 const FAILURE_OVERSHOOT = 'failure-overshoot';
+const FAILURE_CRASH_LANDED = 'failure-crash-landed';
+
+/**
+ * Victory Conditions
+ */
+const VICTORY_A = 'A';
+const VICTORY_B = 'B';
+const VICTORY_C = 'C';
+const VICTORY_D = 'D';
 
 /**
  * Options
@@ -75,6 +84,7 @@ const ST_END_OF_ROUND = 60;
 const ST_REROLL_DICE = 70;
 
 const ST_PLANE_FAILURE = 80;
+const ST_PLANE_LANDED = 85;
 
 const ST_GAME_END = 99;
 
@@ -110,6 +120,8 @@ const CURRENT_PHASE = 'CURRENT_PHASE';
 const ADDITIONAL_ACTIONS_ = 'ADDITIONAL_ACTIONS_';
 const FAILURE_REASON = 'FAILURE_REASON';
 const ACTIVE_PLAYER_AFTER_REROLL = 'ACTIVE_PLAYER_AFTER_REROLL';
+const FINAL_ROUND = 'FINAL_ROUND';
+const PLANE_LANDED = 'PLANE_LANDED';
 
 
 /**

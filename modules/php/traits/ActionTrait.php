@@ -126,8 +126,9 @@ trait ActionTrait
             throw new BgaUserException('Value not allowed');
         }
 
-        if (array_key_exists(REQUIRES_DIE_IN, $actionSpace) && sizeof(Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE, $actionSpace[REQUIRES_DIE_IN]))) == 0) {
-            throw new BgaUserException('Requires dice in other location');
+        $plane = $this->planeManager->get();
+        if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace) && !$plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
+            throw new BgaUserException('Requires switch in other location');
         }
 
         $this->dice->moveCard($die->id, LOCATION_PLANE, $actionSpaceId);
@@ -172,6 +173,9 @@ trait ActionTrait
         ]);
 
         $this->gamestate->setAllPlayersMultiactive();
+        foreach ($this->gamestate->getActivePlayerList() as $playerId) {
+            $this->giveExtraTime($playerId);
+        }
         $this->gamestate->jumpToState(ST_REROLL_DICE);
     }
 

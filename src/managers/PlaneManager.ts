@@ -1,6 +1,5 @@
 class PlaneManager  {
 
-    // TEMP
     private currentApproach = 1;
     private currentAltitude = 1;
 
@@ -65,13 +64,9 @@ class PlaneManager  {
         })
         this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(card => card.location === 'available'));
 
-
         this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {})
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(card => card.location === 'available'));
 
-        // TEMP
-        dojo.connect($(PlaneManager.PLANE_ALTITUDE_TRACK), 'onclick', () => this.updateAltitude(this.currentAltitude + 1))
-        dojo.connect($(PlaneManager.PLANE_APPROACH_TRACK), 'onclick', () => this.updateApproach(this.currentApproach + 1))
     }
 
     public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {

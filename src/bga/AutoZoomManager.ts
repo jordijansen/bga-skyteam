@@ -1,7 +1,8 @@
 const determineBoardWidth = () => {
     const BASE_BOARD = 607;
-    // TODO ADD MODULES
-    return BASE_BOARD;
+    const COFFEE_RESERVE = 55 * 2;
+    // TODO MODULES
+    return BASE_BOARD + COFFEE_RESERVE;
 }
 
 const determineMaxZoomLevel = () => {

@@ -301,6 +301,17 @@ body > .card {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
+@keyframes jj-red-color-transition {
+  0% {
+    color: #000;
+  }
+  70% {
+    color: #c13633;
+  }
+  100% {
+    color: #000;
+  }
+}
 @keyframes jj-pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
@@ -310,6 +321,17 @@ body > .card {
   }
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+@keyframes jj-red-color-transition {
+  0% {
+    color: #000;
+  }
+  70% {
+    color: #c13633;
+  }
+  100% {
+    color: #000;
   }
 }
 .st-board {
@@ -633,8 +655,13 @@ body > .card {
   top: 690px;
   left: 365px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-token-reserves {
-  margin-top: 10px;
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserves {
+  position: absolute;
+  bottom: 5px;
+  left: -55px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserves .card {
+  position: unset;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks {
   height: 700px;
@@ -697,6 +724,21 @@ body > .card {
   cursor: pointer;
   animation: jj-pulse 2s infinite;
 }
+.st-action-space.is-empty .st-action-space-mandatory-warning {
+  animation: jj-red-color-transition 2s infinite;
+}
+.st-action-space .st-action-space-mandatory-warning {
+  position: absolute;
+}
+.st-action-space .st-action-space-mandatory-warning.bottom {
+  bottom: -26px;
+}
+.st-action-space .st-action-space-mandatory-warning.left {
+  left: -26px;
+}
+.st-action-space .st-action-space-mandatory-warning.right {
+  right: -28px;
+}
 
 .st-plane-switch-wrapper {
   position: absolute;
@@ -722,6 +764,12 @@ body > .card {
   background-size: 300% auto;
   height: 40px;
   width: 25px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.st-plane-marker.small {
+  height: 32px;
+  width: 20px;
 }
 .st-plane-marker[data-type=aerodynamics-blue] {
   background-position: 0 0;
@@ -762,6 +810,8 @@ body > .card {
   background-image: url("img/skyteam-plane-switch.png");
   height: 33px;
   width: 33px;
+  display: inline-block;
+  vertical-align: middle;
   transition-property: left;
   transition-duration: 1s;
   transition-timing-function: ease-in-out;
@@ -776,6 +826,17 @@ body > .card {
   }
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+@keyframes jj-red-color-transition {
+  0% {
+    color: #000;
+  }
+  70% {
+    color: #c13633;
+  }
+  100% {
+    color: #000;
   }
 }
 .st-role-card {
@@ -1023,11 +1084,15 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   align-items: center;
   flex-direction: column;
   text-align: center;
+  cursor: pointer;
+  background-image: none;
+  color: white;
 }
-#st-communication-info .st-communication-info-examples {
-  text-align: left;
-  display: flex;
-  gap: 25px;
+#st-communication-info.red {
+  background-color: #c13633;
+}
+#st-communication-info.green {
+  background-color: #97c355;
 }
 
 #st-end-game-info-wrapper {
@@ -1055,6 +1120,50 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 #st-spend-coffee .bgabutton {
   font-size: 25px;
   margin: 0 5px;
+}
+
+.st-victory-conditions {
+  background-color: #97c355;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.st-victory-conditions .st-victory-conditions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2px 0;
+  gap: 5px;
+  border-top: 1px dotted white;
+}
+.st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-letter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-letter span {
+  background-color: white;
+  color: #97c355;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+}
+.st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-description {
+  flex-grow: 1;
+  text-align: left;
+}
+.st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-status {
+  font-size: 25px;
+}
+.st-victory-conditions.failure .st-victory-conditions-row-letter span {
+  color: #c13633;
+}
+
+#st-final-round-notice p {
+  color: #c13633;
+  text-decoration: underline;
 }
 
 /*# sourceMappingURL=skyteam.css.map */
