@@ -46,12 +46,24 @@ html, .mode_3d #game_play_area_background {
 
 }
 
-#st-player-dice {
+#st-player-dice-wrapper {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 10px 0;
+  #st-player-dice {
+    display: flex;
+    max-width: 1000px;
+    flex: 1;
+    &.pilot {
+      justify-content: start;
+    }
+    &.co-pilot {
+      justify-content: end;
+    }
+    gap: 10px;
+    margin: 10px;
+  }
 }
+
 
 #st-player-setup {
   display: flex;
@@ -59,20 +71,37 @@ html, .mode_3d #game_play_area_background {
   gap: 20px;
 }
 
-#st-communication-info {
+#st-communication-wrapper {
+  position: fixed;
+  bottom: 0;
+  height: 85px;
   display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  cursor: pointer;
-  background-image: none;
-  color: white;
+  justify-content: center;
+  width: 100%;
+  #st-communication-info {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    cursor: pointer;
+    background-image: none;
+    color: white;
 
-  &.red {
-    background-color: $sky-team-red;
-  }
-  &.green {
-    background-color: $sky-team-green;
+    margin-bottom: 0;
+    padding: 10px;
+    font-size: 24px;
+    border-radius: 10px 10px 0 0;
+    z-index: 1;
+    h2 {
+      font-size: 24px;
+    }
+
+    &.red {
+      background-color: $sky-team-red;
+    }
+    &.green {
+      background-color: $sky-team-green;
+    }
   }
 }
 
@@ -102,7 +131,19 @@ html, .mode_3d #game_play_area_background {
 #st-spend-coffee {
   .bgabutton {
     font-size: 25px;
-    margin: 0 5px;
+    box-shadow: 0 1px 0 #000;
+  }
+
+  #st-spend-coffee-decrease {
+    border-radius: 5px 0 0 5px;
+  }
+
+  #st-spend-coffee-total-cost {
+    border-radius: 0;
+  }
+
+  #st-spend-coffee-increase {
+    border-radius: 0 5px 5px 0;
   }
 }
 

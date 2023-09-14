@@ -107,10 +107,12 @@ trait ActionTrait
             }
 
             $die->setSide($diceValue);
-            $coffeeTokenIdsUsed = array_map(fn($token) => $token->id, array_slice($coffeeTokensAvailable, 0, $nrOfCoffeeTokensUsed));
-            $this->tokens->moveCards($coffeeTokenIdsUsed, LOCATION_RESERVE);
+            $coffeeTokensUsed = array_slice($coffeeTokensAvailable, 0, $nrOfCoffeeTokensUsed);
+            foreach ($coffeeTokensUsed as $coffeeToken) {
+                $this->tokens->moveCard($coffeeToken->id, LOCATION_RESERVE, $coffeeToken->locationArg);
+            }
 
-            $usedTokens = Token::fromArray($this->tokens->getCards($coffeeTokenIdsUsed));
+            $usedTokens = Token::fromArray($this->tokens->getCards(array_map(fn ($token) => $token->id, $coffeeTokensUsed)));
             $this->notifyAllPlayers( "coffeeUsed", clienttranslate('${player_name} uses ${icon_tokens} to change ${icon_dice_1} into ${icon_dice_2}'), [
                 'playerId' => intval($playerId),
                 'player_name' => $this->getPlayerName($playerId),

@@ -35,18 +35,20 @@ class PlaneManager extends APP_DbObject
         foreach ($this->getAllActionSpaces() as $actionSpaceId => $actionSpace) {
             $diceOnActionSpace = array_filter($diceAlreadyPlaced, fn($die) => $die->locationArg == $actionSpaceId);
 
-            if (in_array($playerRole, $actionSpace[ALLOWED_ROLES]) && sizeof($diceOnActionSpace) == 0) {
-                if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
-                    if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
+            if (!array_key_exists($actionSpaceId, $plane->switches) || !$plane->switches[$actionSpaceId]->value) {
+                if (in_array($playerRole, $actionSpace[ALLOWED_ROLES]) && sizeof($diceOnActionSpace) == 0) {
+                    if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
+                        if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
+                            $result[$actionSpaceId] = $actionSpace;
+                            if ($actionSpace[MANDATORY]) {
+                                $mandatoryResult[$actionSpaceId] = $actionSpace;
+                            }
+                        }
+                    } else {
                         $result[$actionSpaceId] = $actionSpace;
                         if ($actionSpace[MANDATORY]) {
                             $mandatoryResult[$actionSpaceId] = $actionSpace;
                         }
-                    }
-                } else {
-                    $result[$actionSpaceId] = $actionSpace;
-                    if ($actionSpace[MANDATORY]) {
-                        $mandatoryResult[$actionSpaceId] = $actionSpace;
                     }
                 }
             }
@@ -185,7 +187,7 @@ class PlaneManager extends APP_DbObject
             $reserveCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, TOKEN_COFFEE, LOCATION_RESERVE));
             if (sizeof($reserveCoffeeTokens) > 0) {
                 $coffeeToken = current ($reserveCoffeeTokens);
-                SkyTeam::$instance->tokens->moveCard($coffeeToken->id, LOCATION_AVAILABLE, sizeof($reserveCoffeeTokens));
+                SkyTeam::$instance->tokens->moveCard($coffeeToken->id, LOCATION_AVAILABLE, $coffeeToken->locationArg);
 
                 SkyTeam::$instance->notifyAllPlayers( "tokenReceived", clienttranslate('Concentration: ${icon_tokens} received'), [
                     'token' => Token::from(SkyTeam::$instance->tokens->getCard($coffeeToken->id)),

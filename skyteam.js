@@ -2237,7 +2237,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'red');
         dojo.addClass(element, 'green');
-        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only. You are not allowed to discuss the dice. Click for more info.'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i></h2>"), element);
+        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i><br/>").concat(_('You are not allowed to discuss the dice.'), "<br/></h2>"), element);
     };
     CommunicationInfoManager.prototype.setCommunicationNotAllowed = function () {
         this.currentCommunicationLevel = 'not-allowed';
@@ -2245,7 +2245,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
-        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication. Non-game communication is allowed. Click for more info.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication.<br/>Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
         if (newPhase == 'strategy') {
@@ -2306,7 +2306,7 @@ var ActionSpaceManager = /** @class */ (function () {
             else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
                 helpPlacement = 'right';
             }
-            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space is-empty\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
+            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
             dojo.connect($("".concat(id, "-help")), 'onclick', function (event) { return _this.game.helpDialogManager.showActionSpaceHelp(event, space); });
@@ -2339,7 +2339,10 @@ var ActionSpaceManager = /** @class */ (function () {
         });
     };
     ActionSpaceManager.prototype.moveDieToActionSpace = function (die) {
-        return this.actionSpaces[die.locationArg].addCard(die);
+        return this.actionSpaces[die.locationArg].addCard(die).then(function () { return $(die.locationArg).classList.add('st-action-space-occupied'); });
+    };
+    ActionSpaceManager.prototype.resetActionSpaceOccupied = function () {
+        document.querySelectorAll('.st-action-space-occupied').forEach(function (node) { return node.classList.remove('st-action-space-occupied'); });
     };
     ActionSpaceManager.prototype.actionSpaceClicked = function (id, event) {
         dojo.stopEvent(event);
@@ -2388,19 +2391,22 @@ var DiceManager = /** @class */ (function (_super) {
     }
     DiceManager.prototype.setUp = function (data) {
         var _this = this;
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {});
+        var element = $(DiceManager.PLAYER_AREA);
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: false });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         var player = data.players[this.game.getPlayerId()];
-        if (player && player.dice) {
-            this.playerDiceStock.addCards(player.dice);
+        if (player) {
+            if (player.dice) {
+                this.playerDiceStock.addCards(player.dice);
+            }
+            element.classList.add(player.role);
         }
     };
     DiceManager.prototype.updateCardInformations = function (die, settings) {
         _super.prototype.updateCardInformations.call(this, die, settings);
         var cardElement = this.getCardElement(die);
         cardElement.dataset['value'] = String(die.side);
-        console.log(die.side);
     };
     DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues) {
         if (this.playerDiceStock) {
@@ -2411,6 +2417,9 @@ var DiceManager = /** @class */ (function (_super) {
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
         }
+    };
+    DiceManager.prototype.toggleShowPlayerDice = function (show) {
+        $(DiceManager.PLAYER_AREA).style.display = show ? 'flex' : 'none';
     };
     DiceManager.PLAYER_AREA = 'st-player-dice';
     DiceManager.OTHER_PLAYER_AREA = 'st-other-player-dice';
@@ -2760,7 +2769,8 @@ var SkyTeam = /** @class */ (function () {
         log("Starting game setup");
         log('gamedatas', data);
         var maintitlebarContent = $('maintitlebar_content');
-        dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last');
+        dojo.place('<div id="st-communication-wrapper"><div id="st-communication-info"></div></div>', $('pagesection_gameview'), 'last');
+        dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last');
         // Setup modules
@@ -2800,6 +2810,9 @@ var SkyTeam = /** @class */ (function () {
             case 'playerSetup':
                 this.enteringPlayerSetup();
                 break;
+            case 'strategy':
+                this.enteringStrategy();
+                break;
             case 'dicePlacementSelect':
                 this.enteringDicePlacementSelect(args.args);
                 break;
@@ -2809,15 +2822,21 @@ var SkyTeam = /** @class */ (function () {
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function () {
+        this.diceManager.toggleShowPlayerDice(false);
         this.playerSetup.setUp();
     };
+    SkyTeam.prototype.enteringStrategy = function () {
+        this.diceManager.toggleShowPlayerDice(false);
+    };
     SkyTeam.prototype.enteringRerollDice = function () {
+        this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('multiple');
         }
     };
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
         var _this = this;
+        this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); });
         }
@@ -3113,6 +3132,7 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_diceRolled = function (args) {
         var _this = this;
+        this.diceManager.toggleShowPlayerDice(true);
         args.dice.forEach(function (die) { return _this.diceManager.updateCardInformations(die); });
         return Promise.resolve();
     };
@@ -3159,6 +3179,7 @@ var SkyTeam = /** @class */ (function () {
         return this.planeManager.updateAltitude(args.altitude);
     };
     SkyTeam.prototype.notif_diceReturnedToPlayer = function (args) {
+        this.actionSpaceManager.resetActionSpaceOccupied();
         if (args.playerId == this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCards(args.dice);
         }

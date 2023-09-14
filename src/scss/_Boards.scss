@@ -209,13 +209,15 @@
     animation: jj-pulse 2s infinite;
   }
 
-  &.is-empty {
+  &.st-action-space-occupied {
     .st-action-space-mandatory-warning {
-      animation: jj-red-color-transition 2s infinite;
+      animation: none;
     }
   }
+
   .st-action-space-mandatory-warning {
     position: absolute;
+    animation: jj-red-color-transition 2s infinite;
     &.bottom {
       bottom: -25px;
     }
@@ -243,6 +245,12 @@
     &.left {
       left: -24px;
     }
+  }
+}
+
+.help-buttons-disabled {
+  .st-action-space-help {
+    display: none;
   }
 }
 

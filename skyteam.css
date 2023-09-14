@@ -724,11 +724,12 @@ body > .card {
   cursor: pointer;
   animation: jj-pulse 2s infinite;
 }
-.st-action-space.is-empty .st-action-space-mandatory-warning {
-  animation: jj-red-color-transition 2s infinite;
+.st-action-space.st-action-space-occupied .st-action-space-mandatory-warning {
+  animation: none;
 }
 .st-action-space .st-action-space-mandatory-warning {
   position: absolute;
+  animation: jj-red-color-transition 2s infinite;
 }
 .st-action-space .st-action-space-mandatory-warning.bottom {
   bottom: -25px;
@@ -755,6 +756,10 @@ body > .card {
 }
 .st-action-space .st-action-space-help.left {
   left: -24px;
+}
+
+.help-buttons-disabled .st-action-space-help {
+  display: none;
 }
 
 .st-plane-switch-wrapper {
@@ -1083,11 +1088,22 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   padding: 0 !important;
 }
 
-#st-player-dice {
+#st-player-dice-wrapper {
   display: flex;
   justify-content: center;
+}
+#st-player-dice-wrapper #st-player-dice {
+  display: flex;
+  max-width: 1000px;
+  flex: 1;
   gap: 10px;
-  margin: 10px 0;
+  margin: 10px;
+}
+#st-player-dice-wrapper #st-player-dice.pilot {
+  justify-content: start;
+}
+#st-player-dice-wrapper #st-player-dice.co-pilot {
+  justify-content: end;
 }
 
 #st-player-setup {
@@ -1096,7 +1112,15 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   gap: 20px;
 }
 
-#st-communication-info {
+#st-communication-wrapper {
+  position: fixed;
+  bottom: 0;
+  height: 85px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+#st-communication-wrapper #st-communication-info {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -1104,11 +1128,19 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   cursor: pointer;
   background-image: none;
   color: white;
+  margin-bottom: 0;
+  padding: 10px;
+  font-size: 24px;
+  border-radius: 10px 10px 0 0;
+  z-index: 1;
 }
-#st-communication-info.red {
+#st-communication-wrapper #st-communication-info h2 {
+  font-size: 24px;
+}
+#st-communication-wrapper #st-communication-info.red {
   background-color: #c13633;
 }
-#st-communication-info.green {
+#st-communication-wrapper #st-communication-info.green {
   background-color: #97c355;
 }
 
@@ -1137,7 +1169,16 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 
 #st-spend-coffee .bgabutton {
   font-size: 25px;
-  margin: 0 5px;
+  box-shadow: 0 1px 0 #000;
+}
+#st-spend-coffee #st-spend-coffee-decrease {
+  border-radius: 5px 0 0 5px;
+}
+#st-spend-coffee #st-spend-coffee-total-cost {
+  border-radius: 0;
+}
+#st-spend-coffee #st-spend-coffee-increase {
+  border-radius: 0 5px 5px 0;
 }
 
 .st-victory-conditions {

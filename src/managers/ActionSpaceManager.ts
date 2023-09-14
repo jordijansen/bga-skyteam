@@ -23,7 +23,7 @@ class ActionSpaceManager {
             } else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
                 helpPlacement = 'right';
             }
-            dojo.place(`<div id="${id}" class="st-action-space is-empty">
+            dojo.place(`<div id="${id}" class="st-action-space">
                                 ${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}
                                 <span id="${id}-help" class="st-action-space-help ${helpPlacement}"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                              </div>`, $('st-action-spaces'))
@@ -60,7 +60,11 @@ class ActionSpaceManager {
     }
 
     public moveDieToActionSpace(die: Dice) {
-        return this.actionSpaces[die.locationArg].addCard(die);
+        return this.actionSpaces[die.locationArg].addCard(die).then(() => $(die.locationArg).classList.add('st-action-space-occupied'));
+    }
+
+    public resetActionSpaceOccupied() {
+        document.querySelectorAll('.st-action-space-occupied').forEach(node => node.classList.remove('st-action-space-occupied'))
     }
 
     private actionSpaceClicked(id, event) {

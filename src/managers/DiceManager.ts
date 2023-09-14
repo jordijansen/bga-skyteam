@@ -26,13 +26,18 @@ class DiceManager extends CardManager<Dice> {
     }
 
     public setUp(data: SkyTeamGameData) {
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), {})
+        const element = $(DiceManager.PLAYER_AREA);
+
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: false})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
 
         const player = data.players[this.game.getPlayerId()];
-        if (player && player.dice) {
-            this.playerDiceStock.addCards(player.dice);
+        if (player) {
+            if (player.dice) {
+                this.playerDiceStock.addCards(player.dice);
+            }
+            element.classList.add(player.role);
         }
     }
 
@@ -40,7 +45,6 @@ class DiceManager extends CardManager<Dice> {
         super.updateCardInformations(die, settings);
         const cardElement = this.getCardElement(die);
         cardElement.dataset['value'] = String(die.side);
-        console.log(die.side);
     }
 
     public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[]) {
@@ -52,5 +56,9 @@ class DiceManager extends CardManager<Dice> {
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
         }
+    }
+
+    public toggleShowPlayerDice(show: boolean) {
+        $(DiceManager.PLAYER_AREA).style.display = show ? 'flex' : 'none';
     }
 }

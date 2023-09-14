@@ -70,7 +70,8 @@ class SkyTeam implements SkyTeamGame {
         log('gamedatas', data);
 
         const maintitlebarContent = $('maintitlebar_content');
-        dojo.place('<div id="st-player-dice"></div>', maintitlebarContent, 'last')
+        dojo.place('<div id="st-communication-wrapper"><div id="st-communication-info"></div></div>', $('pagesection_gameview'), 'last')
+        dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last')
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last')
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last')
 
@@ -118,6 +119,9 @@ class SkyTeam implements SkyTeamGame {
             case 'playerSetup':
                 this.enteringPlayerSetup();
                 break;
+            case 'strategy':
+                this.enteringStrategy();
+                break;
             case 'dicePlacementSelect':
                 this.enteringDicePlacementSelect(args.args);
                 break;
@@ -128,16 +132,23 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private enteringPlayerSetup() {
+        this.diceManager.toggleShowPlayerDice(false);
         this.playerSetup.setUp();
     }
 
+    private enteringStrategy() {
+        this.diceManager.toggleShowPlayerDice(false);
+    }
+
     private enteringRerollDice() {
+        this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('multiple');
         }
     }
 
     private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
+        this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection));
         }
@@ -465,6 +476,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_diceRolled(args: NotifDiceRolled) {
+        this.diceManager.toggleShowPlayerDice(true);
         args.dice.forEach(die => this.diceManager.updateCardInformations(die));
         return Promise.resolve();
     }
@@ -523,6 +535,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_diceReturnedToPlayer(args: NotifDiceReturnedToPlayer) {
+        this.actionSpaceManager.resetActionSpaceOccupied();
         if (args.playerId == this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCards(args.dice);
         } else {

@@ -23,6 +23,19 @@
  * !! It is not a good idea to modify this file when a game is running !!
  *
  */
+require_once(__DIR__.'/modules/php/Constants.inc.php');
+
+$game_preferences = [
+    PREF_SHOW_HELP_ICONS => [
+        'name' => totranslate('Show ? buttons'),
+        'needReload' => true, // after user changes this preference game interface would auto-reload
+        'values' => [
+            PREF_SHOW_HELP_ICONS_ENABLED_ID => ['name' => totranslate( 'Enabled' ), 'cssPref' => 'help-buttons-enabled'],
+            PREF_SHOW_HELP_ICONS_DISABLED_ID => ['name' => totranslate( 'Disabled' ), 'cssPref' => 'help-buttons-disabled'],
+        ],
+        'default' => 1
+    ],
+];
 
 $game_options = array(
 

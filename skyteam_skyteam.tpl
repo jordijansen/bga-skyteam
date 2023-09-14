@@ -26,7 +26,6 @@
 -->
 
 <div id="st-game">
-    <div id="st-communication-info" class="whiteblock"></div>
     <div id="st-player-setup" class="whiteblock"></div>
     <div id="st-end-game-info-wrapper" class="whiteblock"></div>
     <div id="st-game-boards-wrapper">

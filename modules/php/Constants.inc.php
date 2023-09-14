@@ -62,6 +62,11 @@ const VICTORY_D = 'D';
  * Options
  */
 
+const PREF_SHOW_HELP_ICONS = 100;
+const PREF_SHOW_HELP_ICONS_ENABLED_ID = 1;
+const PREF_SHOW_HELP_ICONS_DISABLED_ID = 2;
+
+
 
 /**
  * State
