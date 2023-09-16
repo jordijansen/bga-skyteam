@@ -346,7 +346,7 @@ body > .card {
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper {
   width: 607px;
-  height: 1500px;
+  height: 1550px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper {
   position: absolute;
@@ -518,17 +518,17 @@ body > .card {
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-1] {
   position: absolute;
   bottom: 80px;
-  left: 50px;
+  left: 52px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-2] {
   position: absolute;
-  bottom: 22px;
-  left: 50px;
+  bottom: 25px;
+  left: 52px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-3] {
   position: absolute;
-  bottom: 22px;
-  left: 112px;
+  bottom: 25px;
+  left: 114px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-reroll {
   position: absolute;
@@ -805,8 +805,8 @@ body > .card {
 
 .st-token {
   background-image: url("img/skyteam-tokens.png");
-  height: 50px;
-  width: 50px;
+  height: 45px;
+  width: 45px;
   background-size: 300% auto;
   display: inline-block;
   vertical-align: middle;
@@ -1048,21 +1048,25 @@ body > .card {
 
 .st-approach {
   background-image: url("img/skyteam-approach-tracks.png");
-  background-size: 300% auto;
+  background-size: 400% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 }
 .st-approach[data-type="1"] {
-  height: 718px;
+  height: 720px;
   background-position: 0 0;
 }
 .st-approach[data-type="2"] {
-  height: 621px;
-  background-position: 50% 0;
+  height: 818px;
+  background-position: 33.33333% 0;
 }
 .st-approach[data-type="3"] {
-  height: 812px;
+  height: 818px;
+  background-position: 66.66666% 0;
+}
+.st-approach[data-type="4"] {
+  height: 528px;
   background-position: 100% 0;
 }
 
@@ -1168,8 +1172,9 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 }
 
 #st-spend-coffee .bgabutton {
-  font-size: 25px;
+  font-size: 30px;
   box-shadow: 0 1px 0 #000;
+  height: 30px;
 }
 #st-spend-coffee #st-spend-coffee-decrease {
   border-radius: 5px 0 0 5px;

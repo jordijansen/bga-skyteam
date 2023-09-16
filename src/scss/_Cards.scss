@@ -137,12 +137,13 @@
 
 .st-approach {
   background-image: url('img/skyteam-approach-tracks.png');
-  background-size: 300% auto;
+  background-size: 400% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 
-  &[data-type="1"] { height: 718px; background-position: 0 0; }
-  &[data-type="2"] { height: 621px; background-position: 50% 0; }
-  &[data-type="3"] { height: 812px; background-position: 100% 0; }
+  &[data-type="1"] { height: 720px; background-position: 0 0; }
+  &[data-type="2"] { height: 818px; background-position: 33.33333% 0; }
+  &[data-type="3"] { height: 818px; background-position: 66.66666% 0; }
+  &[data-type="4"] { height: 528px; background-position: 100% 0; }
 }

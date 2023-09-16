@@ -42,6 +42,7 @@ require_once('modules/php/objects/PlaneSwitch.php');
 require_once('modules/php/objects/Dice.php');
 require_once('modules/php/objects/ApproachTrack.php');
 require_once('modules/php/objects/AltitudeTrack.php');
+require_once('modules/php/objects/Scenario.php');
 
 require_once('modules/php/commands/CommandManager.php');
 require_once('modules/php/commands/BaseCommand.php');
@@ -92,9 +93,10 @@ class SkyTeam extends Table
         //  the corresponding ID in gameoptions.inc.php.
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
-        
-        self::initGameStateLabels( array( 
-        ) );
+
+        self::initGameStateLabels( array(
+            SCENARIO_OPTION => SCENARIO_OPTION_ID,
+        ));
 
         self::$instance = $this;
 

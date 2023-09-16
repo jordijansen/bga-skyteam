@@ -10,7 +10,7 @@ const PILOT_PLAYER_COLOR = '365ea5';
 const CO_PILOT_PLAYER_COLOR = 'fba919';
 
 const DICE_PLAYER = 'player';
-const DICE_WEATHER = 'weather';
+const DICE_TRAFFIC = 'traffic';
 
 const APPROACH_GREEN = 'green';
 const APPROACH_YELLOW = 'yellow';
@@ -20,6 +20,8 @@ const APPROACH_BLACK = 'black';
 const TOKEN_PLANE = 'plane';
 const TOKEN_REROLL = 'reroll';
 const TOKEN_COFFEE = 'coffee';
+
+const ALLOWED_AXIS = 'allowedAxis';
 
 const ALTITUDE_HEIGHT = 'altitudeHeight';
 const ROUND_START_PLAYER = 'startPlayer';
@@ -65,6 +67,17 @@ const VICTORY_D = 'D';
 const PREF_SHOW_HELP_ICONS = 100;
 const PREF_SHOW_HELP_ICONS_ENABLED_ID = 1;
 const PREF_SHOW_HELP_ICONS_DISABLED_ID = 2;
+
+
+const SCENARIO_OPTION_ID = 100;
+const SCENARIO_OPTION = 'scenario';
+
+/**
+ * Modules
+ */
+const MODULE_TRAFFIC = 'traffic';
+const MODULE_TURNS = 'turns';
+
 
 
 
@@ -127,6 +140,25 @@ const FAILURE_REASON = 'FAILURE_REASON';
 const ACTIVE_PLAYER_AFTER_REROLL = 'ACTIVE_PLAYER_AFTER_REROLL';
 const FINAL_ROUND = 'FINAL_ROUND';
 const PLANE_LANDED = 'PLANE_LANDED';
+
+/**
+ * Approaches
+ */
+const APPROACH_GREEN_YUL_MONTREAL = 1;
+const APPROACH_GREEN_HND_HANEDA = 2;
+const APPROACH_YELLOW_KUL_KUALA_LUMPUR = 3;
+const APPROACH_RED_TGU_TONCONTIN = 4;
+
+/**
+ * Altitude
+ */
+const ALTITUDE_GREEN_YELLOW = 1;
+const ALTITUDE_RED_BLACK = 2;
+
+/**
+ * Scenarios
+ */
+
 
 
 /**

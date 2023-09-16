@@ -11,8 +11,8 @@ class TokenManager  extends CardManager<Card> {
             },
             setupFrontDiv: (token: Card, div: HTMLElement) => {
             },
-            cardWidth: 50,
-            cardHeight: 50
+            cardWidth: 45,
+            cardHeight: 45
         })
     }
 }

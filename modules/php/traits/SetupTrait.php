@@ -70,7 +70,7 @@ trait SetupTrait
         $dice = [];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => PILOT, 'nbr' => 4];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => CO_PILOT, 'nbr' => 4];
-        $dice[] = ['type' => DICE_WEATHER, 'type_arg' => '', 'nbr' => 1];
+        $dice[] = ['type' => DICE_TRAFFIC, 'type_arg' => '', 'nbr' => 3];
 
         $this->dice->createCards($dice, LOCATION_DECK);
     }

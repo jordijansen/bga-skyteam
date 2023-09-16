@@ -2437,8 +2437,8 @@ var TokenManager = /** @class */ (function (_super) {
             },
             setupFrontDiv: function (token, div) {
             },
-            cardWidth: 50,
-            cardHeight: 50
+            cardWidth: 45,
+            cardHeight: 45
         }) || this;
         _this.game = game;
         return _this;
@@ -2638,9 +2638,9 @@ var SpendCoffee = /** @class */ (function () {
             this.minValue = Math.max(die.side - nrOfCoffeeTokens, 1);
             this.maxValue = Math.min(die.side + nrOfCoffeeTokens, 6);
             var content = '';
-            content += "<a id=\"st-spend-coffee-decrease\" class=\"bgabutton bgabutton_blue\">-1</a>";
+            content += "<a id=\"st-spend-coffee-decrease\" class=\"bgabutton bgabutton_blue\"> <i class=\"fa fa-minus\" aria-hidden=\"true\"></i> </a>";
             content += "<a id=\"st-spend-coffee-total-cost\" class=\"bgabutton bgabutton_gray disabled\"></a>";
-            content += "<a id=\"st-spend-coffee-increase\" class=\"bgabutton bgabutton_blue\">+1</a>";
+            content += "<a id=\"st-spend-coffee-increase\" class=\"bgabutton bgabutton_blue\"> <i class=\"fa fa-plus\" aria-hidden=\"true\"></i> </a>";
             dojo.place(content, element);
             this.updateButtonsDisabledState(die);
             this.updateTotalCost();

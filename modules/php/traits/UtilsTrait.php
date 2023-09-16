@@ -2,6 +2,7 @@
 
 namespace traits;
 
+use managers\objects\Scenario;
 use objects\AltitudeTrack;
 use utils\ReflectionUtils;
 use objects\ApproachTrack;
@@ -14,7 +15,7 @@ trait UtilsTrait
     function getApproachTrack()
     {
         // TODO GET BASED ON SCENARIO
-        return ReflectionUtils::rebuildAllPropertyValues($this->APPROACH_TRACKS[1], ApproachTrack::class);
+        return ReflectionUtils::rebuildAllPropertyValues($this->APPROACH_TRACKS[$this->getScenario()->approach], ApproachTrack::class);
     }
 
     /**
@@ -22,8 +23,15 @@ trait UtilsTrait
      */
     function getAltitudeTrack()
     {
-        // TODO GET BASED ON SCENARIO
-        return ReflectionUtils::rebuildAllPropertyValues($this->ALTITUDE_TRACKS[1], AltitudeTrack::class);
+        return ReflectionUtils::rebuildAllPropertyValues($this->ALTITUDE_TRACKS[$this->getScenario()->altitude], AltitudeTrack::class);
+    }
+
+    /**
+     * @return Scenario
+     */
+    function getScenario()
+    {
+        return ReflectionUtils::rebuildAllPropertyValues($this->SCENARIOS[$this->getGameStateValue(SCENARIO_OPTION)], Scenario::class);
     }
 
     function getVictoryConditions()

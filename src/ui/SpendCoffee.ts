@@ -27,9 +27,9 @@ class SpendCoffee {
 
             let content = '';
 
-            content += `<a id="st-spend-coffee-decrease" class="bgabutton bgabutton_blue">-1</a>`;
+            content += `<a id="st-spend-coffee-decrease" class="bgabutton bgabutton_blue"> <i class="fa fa-minus" aria-hidden="true"></i> </a>`;
             content += `<a id="st-spend-coffee-total-cost" class="bgabutton bgabutton_gray disabled"></a>`;
-            content += `<a id="st-spend-coffee-increase" class="bgabutton bgabutton_blue">+1</a>`;
+            content += `<a id="st-spend-coffee-increase" class="bgabutton bgabutton_blue"> <i class="fa fa-plus" aria-hidden="true"></i> </a>`;
 
             dojo.place(content, element);
 

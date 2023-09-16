@@ -82,8 +82,8 @@ $this->ACTION_SPACES = [
 ];
 
 $this->APPROACH_TRACKS = [
-    1 => [
-        'type' => 1,
+    APPROACH_GREEN_YUL_MONTREAL => [
+        'type' => APPROACH_GREEN_YUL_MONTREAL,
         'category' => APPROACH_GREEN,
         'name' => 'YUL Montreal-Trudeau',
         'size' => 7,
@@ -96,12 +96,41 @@ $this->APPROACH_TRACKS = [
             2 => [],
             1 => [],
         ]
+    ],
+    APPROACH_GREEN_HND_HANEDA => [
+        'type' => APPROACH_GREEN_HND_HANEDA,
+        'category' => APPROACH_GREEN,
+        'name' => 'HND Haneda',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 2],
+            6 => [ALLOWED_AXIS => [-2, -1, 0]],
+            5 => [ALLOWED_AXIS => [-2, -1], TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2],
+            3 => [ALLOWED_AXIS => [-1, 0], TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ]
+];
+
+$this->SCENARIOS = [
+    APPROACH_GREEN_YUL_MONTREAL => [
+        'approach' => APPROACH_GREEN_YUL_MONTREAL,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => []
+    ],
+    APPROACH_GREEN_HND_HANEDA => [
+        'approach' => APPROACH_GREEN_HND_HANEDA,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS]
     ]
 ];
 
 $this->ALTITUDE_TRACKS = [
-    1 => [
-        'type' => 1,
+    ALTITUDE_GREEN_YELLOW => [
+        'type' => ALTITUDE_GREEN_YELLOW,
         'categories' => [APPROACH_GREEN, APPROACH_YELLOW],
         'size' => 7,
         'spaces' => [
