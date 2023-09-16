@@ -38,6 +38,8 @@ class SkyTeam implements SkyTeamGame {
     public helpDialogManager: HelpDialogManager;
 
     // Modules
+    private alwaysFixTopActions: boolean;
+    private alwaysFixTopActionsMaximum: number;
 
     constructor() {
         // Init Managers
@@ -66,6 +68,8 @@ class SkyTeam implements SkyTeamGame {
     */
 
     public setup(data: SkyTeamGameData) {
+        this.setAlwaysFixTopActions();
+
         log( "Starting game setup" );
         log('gamedatas', data);
 
@@ -321,6 +325,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('Overshoot');
             case 'failure-crash-landed':
                 return _('Crash Landing');
+            case 'failure-turn':
+                return _('Turn Failure');
         }
     }
 
@@ -334,6 +340,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!')
             case 'failure-crash-landed':
                 return _('You have crash landed before reaching the airport; you have lost the game!');
+            case 'failure-turn':
+                return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.')
         }
         return '';
     }
@@ -398,6 +406,38 @@ class SkyTeam implements SkyTeamGame {
             await Promise.resolve();
         } else {
             await new Promise(resolve => setTimeout(resolve, ms))
+        }
+    }
+
+    public setAlwaysFixTopActions(alwaysFixed = true, maximum = 30) {
+        this.alwaysFixTopActions = alwaysFixed;
+        this.alwaysFixTopActionsMaximum = maximum;
+        this.adaptStatusBar();
+    }
+
+    public adaptStatusBar() {
+        (this as any).inherited(arguments);
+
+        if (this.alwaysFixTopActions) {
+            const afterTitleElem = document.getElementById('after-page-title');
+            const titleElem = document.getElementById('page-title');
+            //@ts-ignore
+            let zoom = getComputedStyle(titleElem).zoom;
+            if (!zoom) {
+                zoom = 1;
+            }
+
+            const titleRect = afterTitleElem.getBoundingClientRect();
+            if (titleRect.top < 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
+                const afterTitleRect = afterTitleElem.getBoundingClientRect();
+                titleElem.classList.add('fixed-page-title');
+                titleElem.style.width = ((afterTitleRect.width - 10) / zoom) + 'px';
+                afterTitleElem.style.height = titleRect.height + 'px';
+            } else {
+                titleElem.classList.remove('fixed-page-title');
+                titleElem.style.width = 'auto';
+                afterTitleElem.style.height = '0px';
+            }
         }
     }
 

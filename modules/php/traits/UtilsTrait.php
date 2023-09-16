@@ -34,6 +34,11 @@ trait UtilsTrait
         return ReflectionUtils::rebuildAllPropertyValues($this->SCENARIOS[$this->getGameStateValue(SCENARIO_OPTION)], Scenario::class);
     }
 
+    function isModuleActive($module): bool
+    {
+        return in_array($module, $this->getScenario()->modules);
+    }
+
     function getVictoryConditions()
     {
         $BASE_GAME_CONDITIONS = [

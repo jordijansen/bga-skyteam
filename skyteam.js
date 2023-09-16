@@ -2722,7 +2722,6 @@ var VictoryConditions = /** @class */ (function () {
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
-    // Modules
     function SkyTeam() {
         var _this = this;
         this.delay = function (ms) { return __awaiter(_this, void 0, void 0, function () {
@@ -2766,6 +2765,7 @@ var SkyTeam = /** @class */ (function () {
         "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
     */
     SkyTeam.prototype.setup = function (data) {
+        this.setAlwaysFixTopActions();
         log("Starting game setup");
         log('gamedatas', data);
         var maintitlebarContent = $('maintitlebar_content');
@@ -2997,6 +2997,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('Overshoot');
             case 'failure-crash-landed':
                 return _('Crash Landing');
+            case 'failure-turn':
+                return _('Turn Failure');
         }
     };
     SkyTeam.prototype.getFailureReasonText = function (failureReason) {
@@ -3009,6 +3011,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('If the airport is in the Current Position space and you have to advance the Approach Track, you have overshot the airport; you have lost the game!');
             case 'failure-crash-landed':
                 return _('You have crash landed before reaching the airport; you have lost the game!');
+            case 'failure-turn':
+                return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.');
         }
         return '';
     };
@@ -3061,6 +3065,37 @@ var SkyTeam = /** @class */ (function () {
         }
         else {
             runnable();
+        }
+    };
+    SkyTeam.prototype.setAlwaysFixTopActions = function (alwaysFixed, maximum) {
+        if (alwaysFixed === void 0) { alwaysFixed = true; }
+        if (maximum === void 0) { maximum = 30; }
+        this.alwaysFixTopActions = alwaysFixed;
+        this.alwaysFixTopActionsMaximum = maximum;
+        this.adaptStatusBar();
+    };
+    SkyTeam.prototype.adaptStatusBar = function () {
+        this.inherited(arguments);
+        if (this.alwaysFixTopActions) {
+            var afterTitleElem = document.getElementById('after-page-title');
+            var titleElem = document.getElementById('page-title');
+            //@ts-ignore
+            var zoom = getComputedStyle(titleElem).zoom;
+            if (!zoom) {
+                zoom = 1;
+            }
+            var titleRect = afterTitleElem.getBoundingClientRect();
+            if (titleRect.top < 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
+                var afterTitleRect = afterTitleElem.getBoundingClientRect();
+                titleElem.classList.add('fixed-page-title');
+                titleElem.style.width = ((afterTitleRect.width - 10) / zoom) + 'px';
+                afterTitleElem.style.height = titleRect.height + 'px';
+            }
+            else {
+                titleElem.classList.remove('fixed-page-title');
+                titleElem.style.width = 'auto';
+                afterTitleElem.style.height = '0px';
+            }
         }
     };
     ///////////////////////////////////////////////////

@@ -50,6 +50,7 @@ const REQUIRES_SWITCH_IN = 'requiresSwitchIn';
 const FAILURE_AXIS = 'failure-axis';
 const FAILURE_COLLISION = 'failure-collision';
 const FAILURE_OVERSHOOT = 'failure-overshoot';
+const FAILURE_TURN = 'failure-turn';
 const FAILURE_CRASH_LANDED = 'failure-crash-landed';
 
 /**

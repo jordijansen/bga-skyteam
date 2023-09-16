@@ -78,6 +78,7 @@ html, .mode_3d #game_play_area_background {
   display: flex;
   justify-content: center;
   width: 100%;
+  z-index: 2;
   #st-communication-info {
     display: flex;
     align-items: center;
@@ -91,7 +92,6 @@ html, .mode_3d #game_play_area_background {
     padding: 10px;
     font-size: 24px;
     border-radius: 10px 10px 0 0;
-    z-index: 1;
     h2 {
       font-size: 24px;
     }

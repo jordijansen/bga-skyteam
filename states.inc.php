@@ -166,7 +166,7 @@ $gameStates = [
         "type" => "game",
         "action" => "stPlaneFailure",
         "transitions" => [
-            '' => ST_GAME_END
+            '' => 98
         ]
     ],
     ST_PLANE_LANDED => [

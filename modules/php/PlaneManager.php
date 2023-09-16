@@ -102,6 +102,7 @@ class PlaneManager extends APP_DbObject
                     $otherEngineSpaceDie = current($otherEngineSpaceDice);
                     $totalEngineValue = $die->side + $otherEngineSpaceDie->side;
                     $planeCollision = false;
+                    $planeTurnFailure = false;
                     if ($totalEngineValue < $plane->aerodynamicsBlue) {
                         $advanceApproachSpaces = 0;
                     } else if ($totalEngineValue >= $plane->aerodynamicsBlue && $totalEngineValue < $plane->aerodynamicsOrange) {
@@ -117,14 +118,32 @@ class PlaneManager extends APP_DbObject
                         }
                     }
 
-                    $plane->approach = $plane->approach + $advanceApproachSpaces;
-                    SkyTeam::$instance->notifyAllPlayers( "planeApproachChanged", clienttranslate('The plane engines are at <b>${totalEngineValue}</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)'), [
+                    SkyTeam::$instance->notifyAllPlayers( "gameLog", clienttranslate('The plane engines are at <b>${totalEngineValue}</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)'), [
                         'totalEngineValue' => $totalEngineValue,
-                        'advanceApproachSpaces' => $advanceApproachSpaces,
-                        'approach' => $plane->approach
+                        'advanceApproachSpaces' => $advanceApproachSpaces
                     ]);
 
-                    if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
+                    for ($i = 1; $i <= $advanceApproachSpaces; $i++) {
+                        $currentApproachSpace = SkyTeam::$instance->getApproachTrack()->spaces[$plane->approach];
+                        if (SkyTeam::$instance->isModuleActive(MODULE_TURNS) && array_key_exists(ALLOWED_AXIS, $currentApproachSpace)) {
+                            // The current approach track space has turn requirements, checking now to see if they are in the allowed axis range.
+                            if (!in_array($plane->axis, $currentApproachSpace[ALLOWED_AXIS])) {
+                                $planeTurnFailure = true;
+                                break;
+                            }
+                        }
+
+                        $plane->approach = $plane->approach + 1;
+                        SkyTeam::$instance->notifyAllPlayers( "planeApproachChanged", '', [
+                            'approach' => $plane->approach
+                        ]);
+                    }
+
+                    if ($planeTurnFailure) {
+                        SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_TURN);
+                        SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                        $continue = false;
+                    } else if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
                         SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_OVERSHOOT);
                         SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                         $continue = false;
