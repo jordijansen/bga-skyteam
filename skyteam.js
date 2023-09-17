@@ -2121,7 +2121,8 @@ var PlaneManager = /** @class */ (function () {
             mapCardToSlot: function (card) { return "st-approach-track-slot-".concat(card.locationArg); },
             gap: '1px',
             direction: 'column',
-            center: false
+            center: false,
+            wrap: "wrap"
         });
         this.approachTokenStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'approach'; }));
         var altitudeTokenStockSlots = Object.keys(data.altitude.spaces).map(function (slotId) { return "st-altitude-track-slot-".concat(slotId); }).reverse();
@@ -2395,6 +2396,8 @@ var DiceManager = /** @class */ (function (_super) {
         this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: false });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
+        this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
+        this.trafficDiceStock.addCards(data.trafficDice);
         var player = data.players[this.game.getPlayerId()];
         if (player) {
             if (player.dice) {
@@ -2423,6 +2426,7 @@ var DiceManager = /** @class */ (function (_super) {
     };
     DiceManager.PLAYER_AREA = 'st-player-dice';
     DiceManager.OTHER_PLAYER_AREA = 'st-other-player-dice';
+    DiceManager.TRAFFIC_DICE = 'st-traffic-dice-stock';
     return DiceManager;
 }(CardManager));
 var TokenManager = /** @class */ (function (_super) {
@@ -2443,7 +2447,6 @@ var TokenManager = /** @class */ (function (_super) {
         _this.game = game;
         return _this;
     }
-    TokenManager.COFFEE_RESERVE = 'st-coffee-reserve';
     return TokenManager;
 }(CardManager));
 var HelpDialogManager = /** @class */ (function () {
@@ -3131,7 +3134,9 @@ var SkyTeam = /** @class */ (function () {
             ['diceReturnedToPlayer', undefined],
             ['victoryConditionsUpdated', 1],
             ['planeLanded', undefined],
-            ['newRoundStarted', 1]
+            ['newRoundStarted', 1],
+            ['trafficDieRolled', undefined],
+            ['trafficDiceReturned', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3234,6 +3239,15 @@ var SkyTeam = /** @class */ (function () {
             this.setFinalRound();
         }
     };
+    SkyTeam.prototype.notif_trafficDieRolled = function (args) {
+        var _this = this;
+        return this.diceManager.trafficDiceStock.addCard(__assign(__assign({}, args.trafficDie), { side: args.trafficDie.side == 1 ? 6 : 1 }))
+            .then(function () { return _this.diceManager.updateCardInformations(args.trafficDie); })
+            .then(function () { return _this.planeManager.approachTokenStock.addCard(args.planeToken, { fromElement: $(DiceManager.TRAFFIC_DICE) }); });
+    };
+    SkyTeam.prototype.notif_trafficDiceReturned = function () {
+        this.diceManager.trafficDiceStock.removeAll();
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
         try {
@@ -3287,7 +3301,7 @@ var SkyTeam = /** @class */ (function () {
         return "<span class=\"st-plane-switch\"></span>";
     };
     SkyTeam.prototype.diceIcon = function (die) {
-        return "<span class=\"st-dice\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");
+        return "<span class=\"st-dice small\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");
     };
     return SkyTeam;
 }());

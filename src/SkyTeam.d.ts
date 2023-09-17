@@ -75,6 +75,7 @@ interface VictoryCondition {
 interface SkyTeamGameData extends GameData {
     failureReason?: string;
     planeDice: Dice[];
+    trafficDice: Dice[];
     round: number,
     phase: 'setup' | 'strategy' | 'diceplacement',
     actionSpaces: {[actionSpaceId: string]: ActionSpace}
@@ -183,4 +184,9 @@ interface NotifPlaneLanded {
 
 interface NotifNewRoundStarted {
     finalRound: boolean
+}
+
+interface NotifTrafficDieRolled {
+    trafficDie: Dice,
+    planeToken: Card
 }

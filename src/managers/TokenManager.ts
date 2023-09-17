@@ -1,6 +1,5 @@
 class TokenManager  extends CardManager<Card> {
 
-    private static readonly COFFEE_RESERVE = 'st-coffee-reserve';
     constructor(public game: SkyTeamGame) {
         super(game, {
             getId: (token) => `st-token-${token.id}`,

@@ -475,7 +475,9 @@ class SkyTeam implements SkyTeamGame {
             ['diceReturnedToPlayer', undefined],
             ['victoryConditionsUpdated', 1],
             ['planeLanded', undefined],
-            ['newRoundStarted', 1]
+            ['newRoundStarted', 1],
+            ['trafficDieRolled', undefined],
+            ['trafficDiceReturned', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -597,6 +599,16 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
+    private notif_trafficDieRolled(args: NotifTrafficDieRolled) {
+        return this.diceManager.trafficDiceStock.addCard({...args.trafficDie, side: args.trafficDie.side == 1 ? 6 : 1})
+            .then(() => this.diceManager.updateCardInformations(args.trafficDie))
+            .then(() => this.planeManager.approachTokenStock.addCard(args.planeToken, {fromElement: $(DiceManager.TRAFFIC_DICE)}));
+    }
+
+    private notif_trafficDiceReturned() {
+        this.diceManager.trafficDiceStock.removeAll();
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
@@ -650,7 +662,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     public diceIcon(die: Dice) {
-        return `<span class="st-dice" data-type="${die.typeArg}" data-value="${die.side}">
+        return `<span class="st-dice small" data-type="${die.typeArg}" data-value="${die.side}">
                     <span class="side" data-side="1"></span>
                     <span class="side" data-side="2"></span>
                     <span class="side" data-side="3"></span>

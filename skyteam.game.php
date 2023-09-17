@@ -162,6 +162,8 @@ class SkyTeam extends Table
 
         $result['planeDice'] = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE));
 
+        $result['trafficDice'] = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_TRAFFIC));
+
         $result['failureReason'] = $this->getGlobalVariable(FAILURE_REASON);
 
         $result['finalRound'] = $this->isFinalRound();

@@ -44,6 +44,15 @@
   display: inline-block;
   vertical-align: middle;
 
+  &.small {
+    width: 25px;
+    height: 25px;
+    .side {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
   &.st-dice-placeholder {
     box-shadow: none !important;
     outline: none !important;
@@ -113,7 +122,7 @@
     [data-side="6"] { background-position: 100% 50%;}
   }
 
-  &[data-type="weather"] {
+  &[data-type="traffic"] {
     [data-side="1"] { background-position: 0 100%;}
     [data-side="2"] { background-position: 20% 100%;}
     [data-side="3"] { background-position: 40% 100%;}

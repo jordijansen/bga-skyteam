@@ -129,6 +129,7 @@ const LOCATION_ALTITUDE = 'altitude';
 const LOCATION_AVAILABLE = 'available';
 const LOCATION_PLAYER = 'player';
 const LOCATION_PLANE = 'plane';
+const LOCATION_TRAFFIC = 'traffic';
 
 
 /**

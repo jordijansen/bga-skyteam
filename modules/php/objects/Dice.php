@@ -35,6 +35,22 @@ class Dice extends APP_GameClass {
         self::DbQuery("UPDATE dice SET card_side = $side WHERE card_id = $this->id");
     }
 
+    public function getTrafficDieValue()
+    {
+        switch ($this->side) {
+            case 1:
+                return 2;
+            case 2:
+            case 3:
+                return 3;
+            case 4:
+            case 5:
+                return 4;
+            case 6:
+                return 5;
+        }
+    }
+
     /**
      * @param $dbCards
      * @return Dice[]
@@ -48,6 +64,8 @@ class Dice extends APP_GameClass {
     {
         return new Dice($dbCard);
     }
+
+
 
 
 }

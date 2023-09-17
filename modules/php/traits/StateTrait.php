@@ -49,6 +49,31 @@ trait StateTrait
             }
         }
 
+        // If there are TRAFFIC dice in the current slot, roll them and add planes
+        $approachTrackSpace = $this->getApproachTrack()->spaces[$plane->approach];
+        if ($this->isModuleActive(MODULE_TRAFFIC) && array_key_exists(DICE_TRAFFIC, $approachTrackSpace)) {
+            $trafficDice = Dice::fromArray($this->dice->pickCardsForLocation($approachTrackSpace[DICE_TRAFFIC], LOCATION_DECK, LOCATION_TRAFFIC));
+            foreach ($trafficDice as $trafficDie) {
+                $trafficDie->rollDie();
+                $approachSpaceToAddTokenTo = $plane->approach + ($trafficDie->getTrafficDieValue() - 1);
+                $approachSpaceToAddTokenTo = min($approachSpaceToAddTokenTo, $this->getApproachTrack()->size);
+
+                $planeTokensInReserve = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_PLANE, TOKEN_PLANE, LOCATION_RESERVE));
+                if (sizeof($planeTokensInReserve) > 0) {
+                    $planeTokenInReserve = current($planeTokensInReserve);
+                    $this->tokens->moveCard($planeTokenInReserve->id, LOCATION_APPROACH, $approachSpaceToAddTokenTo);
+
+                    $this->notifyAllPlayers("trafficDieRolled", clienttranslate('Traffic die rolls ${icon_dice}: a ${token_1} is added to space ${approachSpace} on the approach'), [
+                        'trafficDie' => $trafficDie,
+                        'planeToken' => Token::from($this->tokens->getCard($planeTokenInReserve->id)),
+                        'approachSpace' => $approachSpaceToAddTokenTo,
+                        'icon_dice' => [$trafficDie],
+                        'token_1' => TOKEN_PLANE,
+                    ]);
+                }
+            }
+        }
+
         $this->gamestate->setAllPlayersMultiactive();
         foreach ($this->gamestate->getActivePlayerList() as $playerId) {
             $this->giveExtraTime($playerId);
@@ -134,6 +159,10 @@ trait StateTrait
 
     function stEndOfRound()
     {
+        $trafficDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_TRAFFIC));
+        $this->dice->moveCards(array_map(fn($die) => $die->id, $trafficDice), LOCATION_DECK);
+        $this->notifyAllPlayers("trafficDiceReturned", '', []);
+
         if ($this->isFinalRound()) {
             $this->gamestate->nextState('landed');
         } else {

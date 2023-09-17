@@ -70,7 +70,7 @@ trait SetupTrait
         $dice = [];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => PILOT, 'nbr' => 4];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => CO_PILOT, 'nbr' => 4];
-        $dice[] = ['type' => DICE_TRAFFIC, 'type_arg' => '', 'nbr' => 3];
+        $dice[] = ['type' => DICE_TRAFFIC, 'type_arg' => DICE_TRAFFIC, 'nbr' => 3];
 
         $this->dice->createCards($dice, LOCATION_DECK);
     }
@@ -83,12 +83,17 @@ trait SetupTrait
         $coffeeTokens = [['type' => TOKEN_COFFEE, 'type_arg' => TOKEN_COFFEE, 'nbr' => 3]];
         $this->tokens->createCards($coffeeTokens, LOCATION_RESERVE);
 
+        $planesCreated = 0;
         foreach ($approachTrack->spaces as $spaceId => $space) {
             if (array_key_exists(TOKEN_PLANE, $space) && $space[TOKEN_PLANE] > 0) {
                 $planeTokens = [['type' => TOKEN_PLANE, 'type_arg' => TOKEN_PLANE, 'nbr' => $space[TOKEN_PLANE]]];
                 $this->tokens->createCards($planeTokens, LOCATION_APPROACH, $spaceId);
+                $planesCreated = $planesCreated + $space[TOKEN_PLANE];
             }
         }
+
+        $planeTokens = [['type' => TOKEN_PLANE, 'type_arg' => TOKEN_PLANE, 'nbr' => 12 - $planesCreated]];
+        $this->tokens->createCards($planeTokens, LOCATION_RESERVE);
 
         foreach ($altitudeTrack->spaces as $spaceId => $space) {
             if (array_key_exists(TOKEN_REROLL, $space) && $space[TOKEN_REROLL] > 0) {

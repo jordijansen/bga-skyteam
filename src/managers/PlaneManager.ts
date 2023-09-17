@@ -9,7 +9,7 @@ class PlaneManager  {
     private static readonly PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     private static readonly PLANE_ALTITUDE_TRACK = 'st-altitude-track';
     private static readonly PLANE_APPROACH_TRACK = 'st-approach-track';
-    private approachTokenStock: SlotStock<Card>;
+    public approachTokenStock: SlotStock<Card>;
     private altitudeTokenStock: SlotStock<Card>;
     public coffeeTokenStock: SlotStock<Card>;
     public rerollTokenStock: AllVisibleDeck<Card>;
@@ -39,7 +39,8 @@ class PlaneManager  {
             mapCardToSlot: card => `st-approach-track-slot-${card.locationArg}`,
             gap: '1px',
             direction: 'column',
-            center: false
+            center: false,
+            wrap: "wrap"
         })
         this.approachTokenStock.addCards(Object.values(data.planeTokens).filter(card => card.location === 'approach'));
 
