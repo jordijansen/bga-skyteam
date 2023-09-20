@@ -9,6 +9,7 @@ interface Game {
     onUpdateActionButtons: (stateName: string, args: any) => void;
     setupNotifications: () => void;
     format_string_recursive: (log: string, args: any) => void;
+    prefs?: {[prefId: number]: {value: number}}
 }
 
 interface Notif<T> {

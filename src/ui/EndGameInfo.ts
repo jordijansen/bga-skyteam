@@ -8,6 +8,7 @@ class EndGameInfo {
         if (failureReason) {
             const element = $(this.elementId);
             dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only')
+            element.scrollIntoView({block: 'center', behavior: 'smooth'});
             return this.game.delay(5000);
         }
         return Promise.resolve();
@@ -27,7 +28,7 @@ class EndGameInfo {
         } else {
             dojo.place(`<h2>${_('Unfortunately, not all victory conditions were met, better luck next time pilots!')}</h2>`, $('st-end-game-info-box'))
         }
-
+        element.scrollIntoView({block: 'center', behavior: 'smooth'});
         return this.game.delay(5000);
     }
 

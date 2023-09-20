@@ -1,7 +1,7 @@
 class ReserveManager  {
     private static readonly TOKEN_RESERVE_COFFEE = 'st-token-reserve-coffee';
-    private static readonly TOKEN_RESERVE_PLANE = 'st-token-reserve-coffee';
-    private static readonly TOKEN_RESERVE_REROLL = 'st-token-reserve-coffee';
+    private static readonly TOKEN_RESERVE_PLANE = 'st-token-reserve-plane';
+    private static readonly TOKEN_RESERVE_REROLL = 'st-token-reserve-reroll';
     public reserveCoffeeStock: LineStock<Card>;
     public reserveRerollStock: VoidStock<Card>;
     public reservePlaneStock: VoidStock<Card>;

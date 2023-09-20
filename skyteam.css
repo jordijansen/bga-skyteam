@@ -517,17 +517,17 @@ body > .card {
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-1] {
   position: absolute;
-  bottom: 80px;
+  bottom: 84px;
   left: 52px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-2] {
   position: absolute;
-  bottom: 25px;
+  bottom: 27px;
   left: 52px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-coffee [data-slot-id=st-available-coffee-3] {
   position: absolute;
-  bottom: 25px;
+  bottom: 27px;
   left: 114px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-reroll {
@@ -655,20 +655,25 @@ body > .card {
   top: 690px;
   left: 365px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserves {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-coffee {
   position: absolute;
   bottom: 5px;
   left: -55px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserves .card {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-coffee .card {
   position: unset;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-plane, #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-reroll {
+  top: -50px;
+  position: absolute;
+  left: -600px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-traffic-dice-stock {
-  width: 170px;
+  width: 202px;
   height: 50px;
   position: absolute;
-  top: -60px;
-  left: -73px;
+  top: -68px;
+  left: -102px;
   justify-content: end;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks {
@@ -709,6 +714,7 @@ body > .card {
   justify-content: center;
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:nth-child(1) {
   margin-top: 36px;
@@ -827,6 +833,8 @@ body > .card {
   background-position: 0 0;
 }
 .st-token[data-type=coffee] {
+  width: 47px;
+  height: 42px;
   background-position: 50% 0;
 }
 .st-token[data-type=plane] {
@@ -906,8 +914,8 @@ body > .card {
 }
 
 .st-dice {
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   transform-style: preserve-3d;
   transition: transform 1s;
   margin: 2px;
@@ -940,8 +948,8 @@ body > .card {
 .st-dice .side {
   position: absolute;
   border-radius: 5px;
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   text-align: center;
   line-height: 2em;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.6274509804);
@@ -1119,12 +1127,6 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   gap: 10px;
   margin: 10px;
 }
-#st-player-dice-wrapper #st-player-dice.pilot {
-  justify-content: start;
-}
-#st-player-dice-wrapper #st-player-dice.co-pilot {
-  justify-content: end;
-}
 
 #st-player-setup {
   display: flex;
@@ -1135,7 +1137,6 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 #st-communication-wrapper {
   position: fixed;
   bottom: 0;
-  height: 85px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -1149,12 +1150,18 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   cursor: pointer;
   background-image: none;
   color: white;
+  position: relative;
   margin-bottom: 0;
-  padding: 10px;
-  font-size: 24px;
+  padding: 0 10px;
   border-radius: 10px 10px 0 0;
 }
 #st-communication-wrapper #st-communication-info h2 {
+  font-size: 18px;
+}
+#st-communication-wrapper #st-communication-info #st-communication-info-dialog-close-button {
+  position: absolute;
+  right: 5px;
+  top: 5px;
   font-size: 24px;
 }
 #st-communication-wrapper #st-communication-info.red {
@@ -1209,6 +1216,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  padding: 0;
 }
 .st-victory-conditions .st-victory-conditions-row {
   display: flex;
@@ -1217,6 +1225,15 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   gap: 5px;
   border-top: 1px dotted white;
   padding: 2px 5px;
+}
+.st-victory-conditions .st-victory-conditions-row.success {
+  background: #97c355 !important;
+}
+.st-victory-conditions .st-victory-conditions-row.failure {
+  background: #c13633 !important;
+}
+.st-victory-conditions .st-victory-conditions-row.pending {
+  background: gray !important;
 }
 .st-victory-conditions .st-victory-conditions-row .st-victory-conditions-row-letter {
   display: flex;

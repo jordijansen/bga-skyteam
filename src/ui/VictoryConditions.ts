@@ -12,7 +12,7 @@ class VictoryConditions {
 
         for (let conditionLetter in victoryConditions) {
             const victoryCondition = victoryConditions[conditionLetter];
-            html += `<div class="st-victory-conditions-row">
+            html += `<div class="st-victory-conditions-row ${victoryCondition.status}">
                         <div class="st-victory-conditions-row-letter"><span>${conditionLetter}</span></div>
                         <div class="st-victory-conditions-row-description">${_(victoryCondition.description)}</div>
                         <div class="st-victory-conditions-row-status">${this.getIconForStatus(victoryCondition.status)}</div>

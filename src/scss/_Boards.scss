@@ -90,9 +90,9 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            [data-slot-id="st-available-coffee-1"] {position:absolute; bottom: 80px; left: 52px;}
-            [data-slot-id="st-available-coffee-2"] {position:absolute; bottom: 25px; left: 52px;}
-            [data-slot-id="st-available-coffee-3"] {position:absolute; bottom: 25px; left: 114px;}
+            [data-slot-id="st-available-coffee-1"] {position:absolute; bottom: 84px; left: 52px;}
+            [data-slot-id="st-available-coffee-2"] {position:absolute; bottom: 27px; left: 52px;}
+            [data-slot-id="st-available-coffee-3"] {position:absolute; bottom: 27px; left: 114px;}
           }
 
           #st-available-reroll {
@@ -135,7 +135,7 @@
             #plane-switch-brakes-2 { top: 690px; left: 272px; }
             #plane-switch-brakes-3 { top: 690px; left: 365px; }
           }
-          #st-token-reserves {
+          #st-token-reserve-coffee {
             position: absolute;
             bottom: 5px;
             left: -55px;
@@ -143,12 +143,17 @@
               position: unset;
             }
           }
+          #st-token-reserve-plane, #st-token-reserve-reroll {
+            top: -50px;
+            position: absolute;
+            left: -600px;
+          }
           #st-traffic-dice-stock {
-            width: 170px;
+            width: 202px;
             height: 50px;
             position: absolute;
-            top: -60px;
-            left: -73px;
+            top: -68px;
+            left: -102px;
             justify-content: end;
           }
         }
@@ -192,6 +197,7 @@
           justify-content: center;
           align-items: center;
           display: flex;
+          flex-wrap: wrap;
           &:nth-child(1) {
             margin-top: 36px;
           }

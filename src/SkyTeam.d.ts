@@ -87,7 +87,8 @@ interface SkyTeamGameData extends GameData {
     altitude: AltitudeTrack,
     finalRound: boolean,
     isLanded: boolean,
-    victoryConditions: {[conditionLetter: string]: VictoryCondition}
+    victoryConditions: {[conditionLetter: string]: VictoryCondition},
+    scenario: {modules: 'traffic' | 'turns'}
 }
 
 // ARGS

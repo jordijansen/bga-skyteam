@@ -105,7 +105,7 @@ class PlaneManager extends APP_DbObject
                     $planeTurnFailure = false;
                     if ($totalEngineValue < $plane->aerodynamicsBlue) {
                         $advanceApproachSpaces = 0;
-                    } else if ($totalEngineValue >= $plane->aerodynamicsBlue && $totalEngineValue < $plane->aerodynamicsOrange) {
+                    } else if ($totalEngineValue >= $plane->aerodynamicsBlue && $totalEngineValue <= $plane->aerodynamicsOrange) {
                         $advanceApproachSpaces = 1;
                         if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0) {
                             $planeCollision = true;

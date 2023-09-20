@@ -23,15 +23,15 @@ class DiceManager extends CardManager<Dice> {
                     div.appendChild(sideDiv);
                 });
             },
-            cardWidth: 50,
-            cardHeight: 50
+            cardWidth: 58,
+            cardHeight: 58
         })
     }
 
     public setUp(data: SkyTeamGameData) {
         const element = $(DiceManager.PLAYER_AREA);
 
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: false})
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: true})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
         this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), {})
@@ -43,7 +43,6 @@ class DiceManager extends CardManager<Dice> {
             if (player.dice) {
                 this.playerDiceStock.addCards(player.dice);
             }
-            element.classList.add(player.role);
         }
     }
 

@@ -1,14 +1,18 @@
-const determineBoardWidth = () => {
+const determineBoardWidth = (game: SkyTeamGame) => {
     const BASE_BOARD = 607;
     const COFFEE_RESERVE = 55 * 2;
-    // TODO MODULES
+    const TRAFFIC_DICE = 110 * 2;
+
+    if (game.gamedatas.scenario.modules.includes('traffic')) {
+        return BASE_BOARD + TRAFFIC_DICE;
+    }
     return BASE_BOARD + COFFEE_RESERVE;
 }
 
-const determineMaxZoomLevel = () => {
+const determineMaxZoomLevel = (game: SkyTeamGame) => {
     const bodycoords = dojo.marginBox("zoom-overall");
     const contentWidth = bodycoords.w;
-    const rowWidth = determineBoardWidth();
+    const rowWidth = determineBoardWidth(game);
 
     return contentWidth / rowWidth;
 }
@@ -26,14 +30,14 @@ const getZoomLevels = (maxZoomLevels: number) => {
 
 class AutoZoomManager extends ZoomManager {
 
-    constructor(elementId: string, localStorageKey: string) {
+    constructor(game: SkyTeamGame, elementId: string, localStorageKey: string) {
         const storedZoomLevel = localStorage.getItem(localStorageKey);
-        const maxZoomLevel = determineMaxZoomLevel();
+        const maxZoomLevel = determineMaxZoomLevel(game);
         if (storedZoomLevel && Number(storedZoomLevel) > maxZoomLevel) {
             localStorage.removeItem(localStorageKey);
         }
 
-        const zoomLevels = getZoomLevels(determineMaxZoomLevel());
+        const zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
         super({
             element: document.getElementById(elementId),
             smooth: true,

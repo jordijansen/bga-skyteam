@@ -169,6 +169,7 @@ class SkyTeam extends Table
         $result['finalRound'] = $this->isFinalRound();
         $result['isLanded'] = $this->isLanded();
         $result['victoryConditions'] = $this->planeManager->getVictoryConditionsResults();
+        $result['scenario'] = $this->getScenario();
         return $result;
     }
     /*

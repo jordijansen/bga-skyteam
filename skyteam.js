@@ -2022,16 +2022,19 @@ function sortFunction() {
         return 0;
     };
 }
-var determineBoardWidth = function () {
+var determineBoardWidth = function (game) {
     var BASE_BOARD = 607;
     var COFFEE_RESERVE = 55 * 2;
-    // TODO MODULES
+    var TRAFFIC_DICE = 110 * 2;
+    if (game.gamedatas.scenario.modules.includes('traffic')) {
+        return BASE_BOARD + TRAFFIC_DICE;
+    }
     return BASE_BOARD + COFFEE_RESERVE;
 };
-var determineMaxZoomLevel = function () {
+var determineMaxZoomLevel = function (game) {
     var bodycoords = dojo.marginBox("zoom-overall");
     var contentWidth = bodycoords.w;
-    var rowWidth = determineBoardWidth();
+    var rowWidth = determineBoardWidth(game);
     return contentWidth / rowWidth;
 };
 var getZoomLevels = function (maxZoomLevels) {
@@ -2046,13 +2049,13 @@ var getZoomLevels = function (maxZoomLevels) {
 };
 var AutoZoomManager = /** @class */ (function (_super) {
     __extends(AutoZoomManager, _super);
-    function AutoZoomManager(elementId, localStorageKey) {
+    function AutoZoomManager(game, elementId, localStorageKey) {
         var storedZoomLevel = localStorage.getItem(localStorageKey);
-        var maxZoomLevel = determineMaxZoomLevel();
+        var maxZoomLevel = determineMaxZoomLevel(game);
         if (storedZoomLevel && Number(storedZoomLevel) > maxZoomLevel) {
             localStorage.removeItem(localStorageKey);
         }
-        var zoomLevels = getZoomLevels(determineMaxZoomLevel());
+        var zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
         return _super.call(this, {
             element: document.getElementById(elementId),
             smooth: true,
@@ -2122,7 +2125,6 @@ var PlaneManager = /** @class */ (function () {
             gap: '1px',
             direction: 'column',
             center: false,
-            wrap: "wrap"
         });
         this.approachTokenStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'approach'; }));
         var altitudeTokenStockSlots = Object.keys(data.altitude.spaces).map(function (slotId) { return "st-altitude-track-slot-".concat(slotId); }).reverse();
@@ -2216,8 +2218,8 @@ var ReserveManager = /** @class */ (function () {
         this.reservePlaneStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'reserve'; }));
     };
     ReserveManager.TOKEN_RESERVE_COFFEE = 'st-token-reserve-coffee';
-    ReserveManager.TOKEN_RESERVE_PLANE = 'st-token-reserve-coffee';
-    ReserveManager.TOKEN_RESERVE_REROLL = 'st-token-reserve-coffee';
+    ReserveManager.TOKEN_RESERVE_PLANE = 'st-token-reserve-plane';
+    ReserveManager.TOKEN_RESERVE_REROLL = 'st-token-reserve-reroll';
     return ReserveManager;
 }());
 var CommunicationInfoManager = /** @class */ (function () {
@@ -2226,6 +2228,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         this.currentCommunicationLevel = '';
         this.dialog = null;
         this.dialogId = 'st-communication-info-dialog';
+        this.closeButtonId = 'st-communication-info-dialog-close-button';
     }
     CommunicationInfoManager.prototype.setUp = function (data) {
         var _this = this;
@@ -2238,7 +2241,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'red');
         dojo.addClass(element, 'green');
-        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i><br/>").concat(_('You are not allowed to discuss the dice.'), "<br/></h2>"), element);
+        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i><br/>").concat(_('You are not allowed to discuss the dice.'), "<br/></h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
     };
     CommunicationInfoManager.prototype.setCommunicationNotAllowed = function () {
         this.currentCommunicationLevel = 'not-allowed';
@@ -2246,15 +2249,29 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
-        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication.<br/>Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2>"), element);
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication.<br/>Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
-        if (newPhase == 'strategy') {
-            this.setCommunicationLimited();
+        var _this = this;
+        if (this.game.prefs[101].value == 1 || this.game.prefs[101].value == 2) {
+            if (newPhase == 'strategy') {
+                this.setCommunicationLimited();
+            }
+            else if (newPhase == 'diceplacement') {
+                this.setCommunicationNotAllowed();
+            }
+            if (this.game.prefs[101].value == 2) {
+                this.game.delay(10000).then(function () { return _this.hideBanner(); });
+            }
+            dojo.connect($(this.closeButtonId), 'onclick', function (event) {
+                dojo.stopEvent(event);
+                _this.hideBanner();
+            });
         }
-        else if (newPhase == 'diceplacement') {
-            this.setCommunicationNotAllowed();
-        }
+    };
+    CommunicationInfoManager.prototype.hideBanner = function () {
+        var element = $(CommunicationInfoManager.ELEMENT_ID);
+        dojo.empty(element);
     };
     CommunicationInfoManager.prototype.showMoreInfoDialog = function (event) {
         dojo.stopEvent(event);
@@ -2384,8 +2401,8 @@ var DiceManager = /** @class */ (function (_super) {
                     div.appendChild(sideDiv);
                 });
             },
-            cardWidth: 50,
-            cardHeight: 50
+            cardWidth: 58,
+            cardHeight: 58
         }) || this;
         _this.game = game;
         return _this;
@@ -2393,7 +2410,7 @@ var DiceManager = /** @class */ (function (_super) {
     DiceManager.prototype.setUp = function (data) {
         var _this = this;
         var element = $(DiceManager.PLAYER_AREA);
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: false });
+        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: true });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
@@ -2403,7 +2420,6 @@ var DiceManager = /** @class */ (function (_super) {
             if (player.dice) {
                 this.playerDiceStock.addCards(player.dice);
             }
-            element.classList.add(player.role);
         }
     };
     DiceManager.prototype.updateCardInformations = function (die, settings) {
@@ -2594,6 +2610,7 @@ var EndGameInfo = /** @class */ (function () {
         if (failureReason) {
             var element = $(this.elementId);
             dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only');
+            element.scrollIntoView({ block: 'center', behavior: 'smooth' });
             return this.game.delay(5000);
         }
         return Promise.resolve();
@@ -2610,6 +2627,7 @@ var EndGameInfo = /** @class */ (function () {
         else {
             dojo.place("<h2>".concat(_('Unfortunately, not all victory conditions were met, better luck next time pilots!'), "</h2>"), $('st-end-game-info-box'));
         }
+        element.scrollIntoView({ block: 'center', behavior: 'smooth' });
         return this.game.delay(5000);
     };
     EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
@@ -2673,12 +2691,12 @@ var SpendCoffee = /** @class */ (function () {
         this.currentDie = null;
     };
     SpendCoffee.prototype.getCoffeeSpend = function () {
-        return -Math.abs(this.currentDie.side - this.originalValue);
+        return Math.abs(this.currentDie.side - this.originalValue);
     };
     SpendCoffee.prototype.updateTotalCost = function () {
         var totalCost = $('st-spend-coffee-total-cost');
         dojo.empty(totalCost);
-        dojo.place("<span>".concat(dojo.string.substitute(_("Cost: ${totalCost}"), { totalCost: this.getCoffeeSpend() }), " <span class=\"st-token small token\" data-type=\"coffee\"></span></span>"), totalCost);
+        dojo.place("<span>".concat(dojo.string.substitute(_("Use: ${totalCost}"), { totalCost: this.getCoffeeSpend() }), " <span class=\"st-token small token\" data-type=\"coffee\"></span></span>"), totalCost);
     };
     SpendCoffee.prototype.updateButtonsDisabledState = function (die) {
         var increaseButton = $('st-spend-coffee-increase');
@@ -2706,7 +2724,7 @@ var VictoryConditions = /** @class */ (function () {
         var html = '<h3>FINAL TURN - VICTORY CONDITIONS</h3>';
         for (var conditionLetter in victoryConditions) {
             var victoryCondition = victoryConditions[conditionLetter];
-            html += "<div class=\"st-victory-conditions-row\">\n                        <div class=\"st-victory-conditions-row-letter\"><span>".concat(conditionLetter, "</span></div>\n                        <div class=\"st-victory-conditions-row-description\">").concat(_(victoryCondition.description), "</div>\n                        <div class=\"st-victory-conditions-row-status\">").concat(this.getIconForStatus(victoryCondition.status), "</div>\n                     </div>");
+            html += "<div class=\"st-victory-conditions-row ".concat(victoryCondition.status, "\">\n                        <div class=\"st-victory-conditions-row-letter\"><span>").concat(conditionLetter, "</span></div>\n                        <div class=\"st-victory-conditions-row-description\">").concat(_(victoryCondition.description), "</div>\n                        <div class=\"st-victory-conditions-row-status\">").concat(this.getIconForStatus(victoryCondition.status), "</div>\n                     </div>");
         }
         dojo.place(html, element);
     };
@@ -2777,7 +2795,7 @@ var SkyTeam = /** @class */ (function () {
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last');
         // Setup modules
-        this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level');
+        this.zoomManager = new AutoZoomManager(this, 'st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
         // Setup Managers
         this.playerRoleManager.setUp(data);
@@ -3190,7 +3208,7 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_planeTokenRemoved = function (args) {
         if (args.plane) {
-            return this.reserveManager.reservePlaneStock.addCard(args.plane);
+            return this.reserveManager.reservePlaneStock.addCard(args.plane, {});
         }
         return Promise.resolve();
     };

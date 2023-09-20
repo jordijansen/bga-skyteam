@@ -2,12 +2,15 @@
 BGA adaptation for Sky Team
 
 TODO:
+- The preferences is the place for toggling help symbols, I would recommend leaving it as is
 
-
-DONE:
-- is it really usefull to see the plane token removed? And the reroll token used? Why should we see them at the bottom ?
-- and so, if we store the coffee token on the left of the cockpit (and not behind) we can have a bigger image/ view of the cockpit. A bit more comfortable.
-- the "no communication" banner takes a lot of space on top of the screen AND is here during the briefing phase. I would suggest to put in in a square on the left or right of the tracks and to change it during the briefing phase to reflect the rules. (red title "no communication" during dice placement and green title "limited communication" during the briefing phase)
-
-
+Changelog:
+- I've made the communcation banner smaller, added a close button to it and a preference with 3 options: always visible, auto hide after 10 seconds & always hidden
+- Spend coffee now shows "Use: 1" instead of "Cost: 1". I do not recommend moving the buttons to one side as that will make them really close together and that hurts the mobile experience.
+- Resized the coffee tokens to actual size
+- Made dice bigger
+- If you win or lose the game, your screen is now scrolled to the end game info box
+- The victory conditions rows now change background based on their status (completed: green, pending: gray, failure: red (only end of the game))
+- Removed plane tokens are now moved to the left offscreen
+- Fixed moving two spaces or one space if the value of the engine dice are equal to the orange marker.
 

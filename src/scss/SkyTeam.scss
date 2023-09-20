@@ -53,12 +53,6 @@ html, .mode_3d #game_play_area_background {
     display: flex;
     max-width: 1000px;
     flex: 1;
-    &.pilot {
-      justify-content: start;
-    }
-    &.co-pilot {
-      justify-content: end;
-    }
     gap: 10px;
     margin: 10px;
   }
@@ -74,7 +68,6 @@ html, .mode_3d #game_play_area_background {
 #st-communication-wrapper {
   position: fixed;
   bottom: 0;
-  height: 85px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -87,12 +80,18 @@ html, .mode_3d #game_play_area_background {
     cursor: pointer;
     background-image: none;
     color: white;
-
+    position: relative;
     margin-bottom: 0;
-    padding: 10px;
-    font-size: 24px;
+    padding: 0 10px;
     border-radius: 10px 10px 0 0;
     h2 {
+      font-size: 18px;
+    }
+
+    #st-communication-info-dialog-close-button {
+      position: absolute;
+      right: 5px;
+      top: 5px;
       font-size: 24px;
     }
 
@@ -155,6 +154,7 @@ html, .mode_3d #game_play_area_background {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  padding: 0;
   .st-victory-conditions-row {
     display: flex;
     justify-content: space-between;
@@ -162,6 +162,15 @@ html, .mode_3d #game_play_area_background {
     gap: 5px;
     border-top: 1px dotted white;
     padding: 2px 5px;
+    &.success {
+      background: $sky-team-green !important;
+    }
+    &.failure {
+      background: $sky-team-red !important;
+    }
+    &.pending {
+      background: gray !important;
+    }
     .st-victory-conditions-row-letter {
       display: flex;
       justify-content: center;

@@ -44,11 +44,9 @@
                     <div id="st-available-reroll"></div>
                     <div id="st-action-spaces"></div>
                     <div id="st-plane-switches"></div>
-                    <div id="st-token-reserves">
-                        <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
-                        <div id="st-token-reserve-plane" class="st-token-reserve"></div>
-                        <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
-                    </div>
+                    <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
+                    <div id="st-token-reserve-plane" class="st-token-reserve"></div>
+                    <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
                 </div>
             </div>

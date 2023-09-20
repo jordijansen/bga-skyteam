@@ -40,7 +40,6 @@ class PlaneManager  {
             gap: '1px',
             direction: 'column',
             center: false,
-            wrap: "wrap"
         })
         this.approachTokenStock.addCards(Object.values(data.planeTokens).filter(card => card.location === 'approach'));
 

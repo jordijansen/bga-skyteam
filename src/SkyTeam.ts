@@ -80,7 +80,7 @@ class SkyTeam implements SkyTeamGame {
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last')
 
         // Setup modules
-        this.zoomManager = new AutoZoomManager('st-game', 'st-zoom-level')
+        this.zoomManager = new AutoZoomManager(this, 'st-game', 'st-zoom-level')
         this.animationManager = new AnimationManager(this, {duration: ANIMATION_MS})
 
         // Setup Managers
@@ -541,7 +541,7 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_planeTokenRemoved(args: NotifPlaneTokenRemoved) {
         if (args.plane) {
-            return this.reserveManager.reservePlaneStock.addCard(args.plane);
+            return this.reserveManager.reservePlaneStock.addCard(args.plane, {});
         }
         return Promise.resolve();
     }

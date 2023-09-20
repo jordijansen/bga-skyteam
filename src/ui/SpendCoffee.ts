@@ -66,13 +66,13 @@ class SpendCoffee {
     }
 
     public getCoffeeSpend() {
-        return -Math.abs(this.currentDie.side - this.originalValue);
+        return Math.abs(this.currentDie.side - this.originalValue);
     }
 
     private updateTotalCost() {
         const totalCost = $('st-spend-coffee-total-cost');
         dojo.empty(totalCost);
-        dojo.place(`<span>${dojo.string.substitute(_("Cost: ${totalCost}"), { totalCost: this.getCoffeeSpend() })} <span class="st-token small token" data-type="coffee"></span></span>`, totalCost)
+        dojo.place(`<span>${dojo.string.substitute(_("Use: ${totalCost}"), { totalCost: this.getCoffeeSpend() })} <span class="st-token small token" data-type="coffee"></span></span>`, totalCost)
     }
 
     private updateButtonsDisabledState(die: Dice) {

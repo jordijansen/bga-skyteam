@@ -34,7 +34,11 @@
   display: inline-block;
   vertical-align: middle;
   &[data-type="reroll"] {background-position: 0 0;}
-  &[data-type="coffee"] {background-position: 50% 0;}
+  &[data-type="coffee"] {
+    width: 47px;
+    height: 42px;
+    background-position: 50% 0;
+  }
   &[data-type="plane"] {background-position: 100% 0;}
   .card-sides {
     .card-side {

@@ -35,6 +35,16 @@ $game_preferences = [
         ],
         'default' => 1
     ],
+    PREF_SHOW_COMMUNICATION_BANNER => [
+        'name' => totranslate('Communication reminder banner'),
+        'needReload' => true, // after user changes this preference game interface would auto-reload
+        'values' => [
+            PREF_SHOW_COMMUNICATION_BANNER_ALWAYS => ['name' => totranslate( 'Always visible' ), 'cssPref' => 'communication-banner-visible'],
+            PREF_SHOW_COMMUNICATION_BANNER_AUTO_HIDE => ['name' => totranslate( 'Auto hide after 10 seconds' ), 'cssPref' => 'communication-banner-auto-hide'],
+            PREF_SHOW_COMMUNICATION_BANNER_HIDE => ['name' => totranslate( 'Always hidden' ), 'cssPref' => 'communication-banner-hidden'],
+        ],
+        'default' => 1
+    ],
 ];
 
 $game_options = [
