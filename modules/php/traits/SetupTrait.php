@@ -45,6 +45,7 @@ trait SetupTrait
 
         $this->setGlobalVariable(CURRENT_ROUND, 0);
         $this->setGlobalVariable(CURRENT_PHASE, PHASE_SETUP);
+        $this->setGlobalVariable(PLAYERS_THAT_USED_ADAPTATION, []);
 
         $this->setInitialPlaneParameters();
         $this->createDice();

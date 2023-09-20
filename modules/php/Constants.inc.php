@@ -107,6 +107,7 @@ const ST_DICE_PLACEMENT_NEXT = 39;
 const ST_END_OF_ROUND = 60;
 
 const ST_REROLL_DICE = 70;
+const ST_FLIP_DIE = 71;
 
 const ST_PLANE_FAILURE = 80;
 const ST_PLANE_LANDED = 85;
@@ -121,6 +122,7 @@ const ACT_READY = 'ready';
 const ACT_DICE_PLACEMENT_SELECT = 'dicePlacementSelect';
 const ACT_START_REROLL = 'startReroll';
 const ACT_REROLL = 'reroll';
+const ACT_FLIP = 'flip';
 
 
 const ACT_UNDO = 'undo';
@@ -149,6 +151,7 @@ const ACTIVE_PLAYER_AFTER_REROLL = 'ACTIVE_PLAYER_AFTER_REROLL';
 const FINAL_ROUND = 'FINAL_ROUND';
 const PLANE_LANDED = 'PLANE_LANDED';
 const REROLL_DICE_AMOUNT = 'REROLL_DICE_AMOUNT';
+const PLAYERS_THAT_USED_ADAPTATION = 'PLAYERS_THAT_USED_ADAPTATION';
 
 /**
  * Approaches

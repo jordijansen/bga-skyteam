@@ -151,6 +151,18 @@ $gameStates = [
             '' => ST_DICE_PLACEMENT_SELECT
         ],
     ],
+    ST_FLIP_DIE => [
+        "name" => "flipDie",
+        "description" => clienttranslate('${actplayer} uses Adaptation and may flip one die to its opposite side'),
+        "descriptionmyturn" => clienttranslate('${you} used Adaptation and may flip one die to its opposite side'),
+        "type" => "activeplayer",
+        "possibleactions" => [
+            ACT_FLIP
+        ],
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_SELECT
+        ],
+    ],
     ST_END_OF_ROUND => [
         "name" => "endOfRound",
         "description" => clienttranslate('End of Round: decreasing altitude...'),

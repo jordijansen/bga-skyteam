@@ -134,6 +134,8 @@ class SkyTeam implements SkyTeamGame {
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
                 break;
+            case 'flipDie':
+                this.enteringFlipDie();
         }
     }
 
@@ -156,6 +158,13 @@ class SkyTeam implements SkyTeamGame {
                     this.diceManager.playerDiceStock.setSelectableCards(this.diceManager.playerDiceStock.getCards());
                 }
             });
+        }
+    }
+
+    private enteringFlipDie() {
+        this.diceManager.toggleShowPlayerDice(true);
+        if ((this as any).isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('single');
         }
     }
 
@@ -248,9 +257,17 @@ class SkyTeam implements SkyTeamGame {
                 case 'dicePlacementSelect':
                     (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
                     dojo.addClass('confirmPlacement', 'disabled');
+
+                    if ((args as DicePlacementSelectArgs).canActivateAdaptation) {
+                        (this as any).addActionButton('useAdaptation', _("Use Special Ability: Adaptation"), () => this.requestAdaptation(), null, null, 'gray');
+                    }
                     break;
                 case 'rerollDice':
                     (this as any).addActionButton('rerollDice', _("Reroll selected dice"), () => this.rerollDice());
+                    break;
+                case 'flipDie':
+                    (this as any).addActionButton('rerollDice', _("Flip selected die"), () => this.flipDie());
+                    (this as any).addActionButton('cancel', _("Cancel"), () => this.cancelAdaptation(), null, null, 'gray');
                     break;
             }
 
@@ -315,12 +332,37 @@ class SkyTeam implements SkyTeamGame {
         }, _('This action allows players to use a re-roll token to re-roll any number of their dice. This action cannot be undone.'))
     }
 
+    private requestAdaptation() {
+        this.takeAction('requestAdaptation');
+    }
+
+    private cancelAdaptation() {
+        this.diceManager.setSelectionMode('none');
+        this.takeAction('cancelAdaptation');
+    }
+
     private rerollDice() {
         const selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(die => die.id);
         this.wrapInConfirm(() => {
             this.diceManager.setSelectionMode('none');
             this.takeNoLockAction('rerollDice', {payload: JSON.stringify({selectedDieIds})});
         }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }))
+    }
+
+    private flipDie() {
+        const selectedDice = this.diceManager.playerDiceStock.getSelection();
+        if (selectedDice.length !== 1) {
+            (this as any).showMessage(_("You need to select a die to flip"), 'error')
+            return;
+        }
+        const selectedDie = selectedDice[0];
+        const selectedDieId = selectedDie.id;
+
+        this.wrapInConfirm(() => {
+            this.diceManager.setSelectionMode('none');
+            this.takeNoLockAction('flipDie', {payload: JSON.stringify({selectedDieId})});
+        }, dojo.string.substitute(_('Do you want to flip ${originalDie} to ${newDie}? This action cannot be undone.'), { originalDie: this.diceIcon(selectedDie), newDie: this.diceIcon({...selectedDie, side: 7 - selectedDie.side}) }))
+
     }
 
     private undoLast() {
@@ -700,5 +742,4 @@ class SkyTeam implements SkyTeamGame {
                     <span class="side" data-side="6"></span>
                </span>`;
     }
-
 }

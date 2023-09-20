@@ -78,6 +78,24 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function requestAdaptation()
+    {
+        self::setAjaxMode();
+
+        $this->game->requestAdaptation();
+
+        self::ajaxResponse();
+    }
+
+    public function cancelAdaptation()
+    {
+        self::setAjaxMode();
+
+        $this->game->cancelAdaptation();
+
+        self::ajaxResponse();
+    }
+
     public function rerollDice()
     {
         self::setAjaxMode();
@@ -85,6 +103,17 @@ class action_skyteam extends APP_GameAction
         $payload = self::getArg("payload", AT_json, true);
         $this->validateJSonAlphaNum($payload, 'payload');
         $this->game->rerollDice($payload['selectedDieIds']);
+
+        self::ajaxResponse();
+    }
+
+    public function flipDie()
+    {
+        self::setAjaxMode();
+
+        $payload = self::getArg("payload", AT_json, true);
+        $this->validateJSonAlphaNum($payload, 'payload');
+        $this->game->flipDie($payload['selectedDieId']);
 
         self::ajaxResponse();
     }

@@ -106,7 +106,8 @@ interface SkyTeamGameData extends GameData {
 interface DicePlacementSelectArgs {
     nrOfRerollAvailable: number;
     nrOfCoffeeAvailable: number;
-    availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
+    availableActionSpaces: {[actionSpaceId: string]: ActionSpace};
+    canActivateAdaptation: boolean;
 }
 
 interface PlayerSetupArgs {

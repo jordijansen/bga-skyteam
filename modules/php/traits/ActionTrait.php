@@ -196,6 +196,22 @@ trait ActionTrait
         $this->gamestate->jumpToState(ST_REROLL_DICE);
     }
 
+    function requestAdaptation()
+    {
+        $adaptationActive = $this->isSpecialAbilityActive(ADAPTATION);
+        $adaptationActive = $adaptationActive && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+        if (!$adaptationActive) {
+            throw new BgaUserException('You cant use adaptation');
+        }
+
+        $this->gamestate->jumpToState(ST_FLIP_DIE);
+    }
+
+    function cancelAdaptation()
+    {
+        $this->gamestate->nextState('');
+    }
+
     function rerollDice($selectedDieIds)
     {
         $playerId = $this->getCurrentPlayerId();
@@ -228,6 +244,45 @@ trait ActionTrait
         if (sizeof($this->gamestate->getActivePlayerList()) == 0) {
             $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL));
         }
+    }
+
+    function flipDie($selectedDieId)
+    {
+        $playerId = $this->getActivePlayerId();
+        $playerRole = $this->getPlayerRole($playerId);
+        $this->checkAction(ACT_FLIP);
+
+        $playersThatUsedAdaptation = $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION);
+
+        $adaptationActive = $this->isSpecialAbilityActive(ADAPTATION);
+        $adaptationActive = $adaptationActive && !in_array($this->getCurrentPlayerId(), $playersThatUsedAdaptation);
+        if (!$adaptationActive) {
+            throw new BgaUserException('You cant use adaptation');
+        }
+
+        $originalDice = Dice::from($this->dice->getCard($selectedDieId));
+        if ($originalDice->type != DICE_PLAYER || $originalDice->typeArg != $playerRole || $originalDice->location != LOCATION_PLAYER) {
+            throw new BgaUserException('Unknown die or not owned by you');
+        }
+
+        $updatedDice = Dice::from($this->dice->getCard($selectedDieId));
+        $updatedDice->setSide(7 - $originalDice->side);
+
+        $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} uses Adaptation'), [
+            'playerId' => intval($playerId),
+            'player_name' => $this->getPlayerName($playerId),
+        ]);
+
+        $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} flips ${icon_dice_1} to ${icon_dice_2}'), [
+            'playerId' => intval($playerId),
+            'player_name' => $this->getPlayerName($playerId),
+            'dice' =>  [$updatedDice],
+            'icon_dice_1' => [$originalDice],
+            'icon_dice_2' => [$updatedDice]
+        ]);
+
+        $this->setGlobalVariable(PLAYERS_THAT_USED_ADAPTATION, [...$playersThatUsedAdaptation, $playerId]);
+        $this->gamestate->nextState('');
     }
 
 //    function undoLast() {

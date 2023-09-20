@@ -2902,6 +2902,8 @@ var SkyTeam = /** @class */ (function () {
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
                 break;
+            case 'flipDie':
+                this.enteringFlipDie();
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function (args) {
@@ -2923,6 +2925,12 @@ var SkyTeam = /** @class */ (function () {
                     _this.diceManager.playerDiceStock.setSelectableCards(_this.diceManager.playerDiceStock.getCards());
                 }
             });
+        }
+    };
+    SkyTeam.prototype.enteringFlipDie = function () {
+        this.diceManager.toggleShowPlayerDice(true);
+        if (this.isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('single');
         }
     };
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
@@ -3012,9 +3020,16 @@ var SkyTeam = /** @class */ (function () {
                 case 'dicePlacementSelect':
                     this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
                     dojo.addClass('confirmPlacement', 'disabled');
+                    if (args.canActivateAdaptation) {
+                        this.addActionButton('useAdaptation', _("Use Special Ability: Adaptation"), function () { return _this.requestAdaptation(); }, null, null, 'gray');
+                    }
                     break;
                 case 'rerollDice':
                     this.addActionButton('rerollDice', _("Reroll selected dice"), function () { return _this.rerollDice(); });
+                    break;
+                case 'flipDie':
+                    this.addActionButton('rerollDice', _("Flip selected die"), function () { return _this.flipDie(); });
+                    this.addActionButton('cancel', _("Cancel"), function () { return _this.cancelAdaptation(); }, null, null, 'gray');
                     break;
             }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
@@ -3071,6 +3086,13 @@ var SkyTeam = /** @class */ (function () {
             _this.takeAction('requestReroll');
         }, _('This action allows players to use a re-roll token to re-roll any number of their dice. This action cannot be undone.'));
     };
+    SkyTeam.prototype.requestAdaptation = function () {
+        this.takeAction('requestAdaptation');
+    };
+    SkyTeam.prototype.cancelAdaptation = function () {
+        this.diceManager.setSelectionMode('none');
+        this.takeAction('cancelAdaptation');
+    };
     SkyTeam.prototype.rerollDice = function () {
         var _this = this;
         var selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(function (die) { return die.id; });
@@ -3078,6 +3100,20 @@ var SkyTeam = /** @class */ (function () {
             _this.diceManager.setSelectionMode('none');
             _this.takeNoLockAction('rerollDice', { payload: JSON.stringify({ selectedDieIds: selectedDieIds }) });
         }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }));
+    };
+    SkyTeam.prototype.flipDie = function () {
+        var _this = this;
+        var selectedDice = this.diceManager.playerDiceStock.getSelection();
+        if (selectedDice.length !== 1) {
+            this.showMessage(_("You need to select a die to flip"), 'error');
+            return;
+        }
+        var selectedDie = selectedDice[0];
+        var selectedDieId = selectedDie.id;
+        this.wrapInConfirm(function () {
+            _this.diceManager.setSelectionMode('none');
+            _this.takeNoLockAction('flipDie', { payload: JSON.stringify({ selectedDieId: selectedDieId }) });
+        }, dojo.string.substitute(_('Do you want to flip ${originalDie} to ${newDie}? This action cannot be undone.'), { originalDie: this.diceIcon(selectedDie), newDie: this.diceIcon(__assign(__assign({}, selectedDie), { side: 7 - selectedDie.side })) }));
     };
     SkyTeam.prototype.undoLast = function () {
         this.takeNoLockAction('undoLast');

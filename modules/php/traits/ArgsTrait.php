@@ -28,10 +28,14 @@ trait ArgsTrait
 
     function argDicePlacementSelect()
     {
+        $adaptationActive = $this->isSpecialAbilityActive(ADAPTATION);
+        $adaptationActive = $adaptationActive && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+
         return [
             'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
-            'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId())
+            'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId()),
+            'canActivateAdaptation' => $adaptationActive
         ];
     }
 
