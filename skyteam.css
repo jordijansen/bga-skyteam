@@ -827,15 +827,15 @@ body > .card {
 
 .st-token {
   background-image: url("img/skyteam-tokens.png");
-  height: 45px;
   width: 45px;
+  height: 45px;
   background-size: 300% auto;
   display: inline-block;
   vertical-align: middle;
 }
 .st-token.small {
-  height: 25px;
   width: 25px;
+  height: 25px;
 }
 .st-token[data-type=reroll] {
   background-position: 0 0;
@@ -844,6 +844,10 @@ body > .card {
   width: 47px;
   height: 42px;
   background-position: 50% 0;
+}
+.st-token[data-type=coffee].small {
+  width: 27px;
+  height: 25px;
 }
 .st-token[data-type=plane] {
   background-position: 100% 0;
@@ -1261,9 +1265,9 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 }
 
 #st-spend-coffee .bgabutton {
-  font-size: 30px;
+  font-size: 25px;
   box-shadow: 0 1px 0 #000;
-  height: 30px;
+  height: 25px;
 }
 #st-spend-coffee #st-spend-coffee-decrease {
   border-radius: 5px 0 0 5px;

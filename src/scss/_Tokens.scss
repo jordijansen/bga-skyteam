@@ -23,12 +23,12 @@
 
 .st-token {
   background-image: url('img/skyteam-tokens.png');
-  height: 45px;
   width: 45px;
+  height: 45px;
 
   &.small {
-    height: 25px;
     width: 25px;
+    height: 25px;
   }
   background-size: 300% auto;
   display: inline-block;
@@ -38,6 +38,10 @@
     width: 47px;
     height: 42px;
     background-position: 50% 0;
+    &.small {
+      width: 27px;
+      height: 25px;
+    }
   }
   &[data-type="plane"] {background-position: 100% 0;}
   .card-sides {

@@ -86,6 +86,20 @@ class PlaneManager extends APP_DbObject
                     'axis' => $plane->axis
                 ]);
 
+                if ($pilotValue == $copilotValue && SkyTeam::$instance->isSpecialAbilityActive(CONTROL)) {
+                    // Gain a COFFEE token if both Axis values are equal.
+                    $availableCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_RESERVE));
+                    if (sizeof($availableCoffeeTokens) > 0) {
+                        $availableCoffeeToken = current($availableCoffeeTokens);
+                        SkyTeam::$instance->tokens->moveCard($availableCoffeeToken->id, LOCATION_AVAILABLE, $availableCoffeeToken->locationArg);
+
+                        SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Players receive ${token_1} (Special Ability: Control)'), [
+                            'token_1' => TOKEN_COFFEE,
+                            'token' => Token::from(SkyTeam::$instance->tokens->getCard($availableCoffeeToken->id))
+                        ]);
+                    }
+                }
+
                 if ($plane->axis >= 3 || $plane->axis <= -3) {
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
@@ -141,9 +155,9 @@ class PlaneManager extends APP_DbObject
 
                     if ($die->side == $otherEngineSpaceDie->side && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
                         // Gain a REROLL token if both Engine values are equal.
-                        $availableRerollTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
-                        if (sizeof($availableRerollTokens) > 0) {
-                            $availableRerollToken = current($availableRerollTokens);
+                        $availableCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
+                        if (sizeof($availableCoffeeTokens) > 0) {
+                            $availableRerollToken = current($availableCoffeeTokens);
                             SkyTeam::$instance->tokens->moveCard($availableRerollToken->id, LOCATION_AVAILABLE);
 
                             SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Players receive ${token_1} (Special Ability: Mastery)'), [
