@@ -49,6 +49,7 @@ trait SetupTrait
         $this->setInitialPlaneParameters();
         $this->createDice();
         $this->createTokens();
+        $this->createSpecialAbilities();
 
         $this->activeNextPlayer();
     }
@@ -73,6 +74,15 @@ trait SetupTrait
         $dice[] = ['type' => DICE_TRAFFIC, 'type_arg' => DICE_TRAFFIC, 'nbr' => 3];
 
         $this->dice->createCards($dice, LOCATION_DECK);
+    }
+
+    private function createSpecialAbilities()
+    {
+        $cards = [];
+        foreach ($this->SPECIAL_ABILITIES as $type => $specialAbility) {
+            $cards[] = ['type' => $type, 'type_arg' => $type, 'nbr' => 1];
+        }
+        $this->specialAbilities->createCards($cards, LOCATION_DECK);
     }
 
     private function createTokens()

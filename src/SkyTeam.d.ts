@@ -19,6 +19,7 @@ interface SkyTeamGame extends Game {
     tokenManager: TokenManager;
     playerRoleManager: PlayerRoleManager;
     animationManager: AnimationManager,
+    specialAbilityCardManager: SpecialAbilityCardManager,
     gamedatas: SkyTeamGameData;
     getPlayerId(): number;
     getPlayer(playerId: number): SkyTeamPlayer;
@@ -37,6 +38,15 @@ interface Dice {
     side: number,
     location: string,
     locationArg: string
+}
+
+interface SpecialAbilityCard {
+    id: number,
+    type: number,
+    location: string,
+    locationArg: number,
+    name: string,
+    description: string
 }
 
 interface ApproachTrack {
@@ -88,7 +98,8 @@ interface SkyTeamGameData extends GameData {
     finalRound: boolean,
     isLanded: boolean,
     victoryConditions: {[conditionLetter: string]: VictoryCondition},
-    scenario: {modules: 'traffic' | 'turns'}
+    scenario: {nrOfSpecialAbilities?: number, modules: 'traffic' | 'turns'}
+    chosenSpecialAbilities: SpecialAbilityCard[]
 }
 
 // ARGS
@@ -98,8 +109,13 @@ interface DicePlacementSelectArgs {
     availableActionSpaces: {[actionSpaceId: string]: ActionSpace}
 }
 
-interface PlaneFailureArgs {
-    failureReason: string
+interface PlayerSetupArgs {
+    nrOfSpecialAbilitiesToSelect: number,
+    specialAbilities: SpecialAbilityCard[]
+}
+
+interface RerollDiceArgs {
+    maxNumberOfDice: number
 }
 
 // NOTIFS
@@ -111,6 +127,10 @@ interface NotifPlayerRoleAssigned {
     roleColor: string;
     role: string;
     dice: Dice[]
+}
+
+interface NotifSpecialAbilitiesSelected {
+    cards: SpecialAbilityCard[]
 }
 
 interface NotifTokenReceived {

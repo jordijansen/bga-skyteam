@@ -13,6 +13,7 @@ class PlaneManager  {
     private altitudeTokenStock: SlotStock<Card>;
     public coffeeTokenStock: SlotStock<Card>;
     public rerollTokenStock: AllVisibleDeck<Card>;
+    public specialAbilityCardStock: LineStock<SpecialAbilityCard>
 
     constructor(private game: SkyTeamGame) {
 
@@ -67,6 +68,8 @@ class PlaneManager  {
         this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {})
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(card => card.location === 'available'));
 
+        this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), {direction: 'column'})
+        this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
     }
 
     public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {

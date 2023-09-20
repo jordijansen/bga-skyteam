@@ -357,6 +357,14 @@ body > .card {
   width: 607px;
   height: 850px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-main-board-right {
+  position: absolute;
+  right: -278px;
+  top: 0;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-main-board-right #st-main-board-special-abilities .card {
+  left: 5px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator {
   background-image: url("img/skyteam-axis-indicator.png");
   width: 190px;
@@ -882,7 +890,7 @@ body > .card {
   background-size: 200% auto;
   border-radius: 10px;
   width: 200px;
-  height: 159px;
+  height: 132px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
   display: flex;
@@ -911,6 +919,59 @@ body > .card {
 .st-role-card.selectable {
   outline: 6px rgba(80, 200, 255, 0.75) solid;
   cursor: pointer;
+}
+
+.st-special-ability {
+  background-image: url("img/skyteam-special-abilities.jpg");
+  background-size: 300% auto;
+}
+.st-special-ability[data-type="1"] {
+  background-position: 0 0;
+}
+.st-special-ability[data-type="2"] {
+  background-position: 50% 0;
+}
+.st-special-ability[data-type="3"] {
+  background-position: 100% 0;
+}
+.st-special-ability[data-type="4"] {
+  background-position: 0 100%;
+}
+.st-special-ability[data-type="5"] {
+  background-position: 50% 100%;
+}
+.st-special-ability[data-type="6"] {
+  background-position: 100% 100%;
+}
+
+.st-special-ability-card {
+  display: inline-block;
+  position: relative;
+  border-radius: 10px;
+  width: 278px;
+  height: 183px;
+}
+.st-special-ability-card .card-sides .card-side {
+  border-radius: 10px;
+  width: 278px;
+  height: 183px;
+  text-align: center;
+}
+.st-special-ability-card .card-sides .card-side h1 {
+  color: #a3def3;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-top: 13px;
+  font-weight: bold;
+}
+.st-special-ability-card .card-sides .card-side p {
+  color: #38569b;
+  padding: 10px 15px;
+  font-size: 11px;
+}
+.st-special-ability-card .card-sides .card-side > * {
+  pointer-events: none;
+  user-select: none;
 }
 
 .st-dice {
@@ -1130,8 +1191,13 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 
 #st-player-setup {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+#st-player-setup #st-player-setup-role-cards {
+  display: flex;
+  gap: 18px;
 }
 
 #st-communication-wrapper {

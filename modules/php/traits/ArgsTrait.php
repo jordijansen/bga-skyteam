@@ -2,6 +2,8 @@
 
 namespace traits;
 
+use managers\objects\SpecialAbilityCard;
+
 trait ArgsTrait
 {
 
@@ -14,12 +16,29 @@ trait ArgsTrait
         game state.
     */
 
+    function argPlayerSetup()
+    {
+        $specialAbilities = $this->isModuleActive(MODULE_SPECIAL_ABILITIES);
+        $nrOfSpecialAbilitiesToSelect = $specialAbilities ? $this->getScenario()->nrOfSpecialAbilities : 0;
+        return [
+            'specialAbilities' => $specialAbilities ? SpecialAbilityCard::fromArray($this->specialAbilities->getCardsInLocation(LOCATION_DECK)) : [],
+            'nrOfSpecialAbilitiesToSelect' => $nrOfSpecialAbilitiesToSelect
+        ];
+    }
+
     function argDicePlacementSelect()
     {
         return [
             'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId())
+        ];
+    }
+
+    function argRerollDice()
+    {
+        return [
+          'maxNumberOfDice' => $this->getGlobalVariable(REROLL_DICE_AMOUNT)
         ];
     }
 }

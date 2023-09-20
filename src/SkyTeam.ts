@@ -36,6 +36,7 @@ class SkyTeam implements SkyTeamGame {
     public communicationInfoManager: CommunicationInfoManager;
     private actionSpaceManager: ActionSpaceManager;
     public helpDialogManager: HelpDialogManager;
+    public specialAbilityCardManager: SpecialAbilityCardManager;
 
     // Modules
     private alwaysFixTopActions: boolean;
@@ -51,6 +52,7 @@ class SkyTeam implements SkyTeamGame {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
+        this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
     }
 
@@ -121,7 +123,7 @@ class SkyTeam implements SkyTeamGame {
 
         switch (stateName) {
             case 'playerSetup':
-                this.enteringPlayerSetup();
+                this.enteringPlayerSetup(args.args);
                 break;
             case 'strategy':
                 this.enteringStrategy();
@@ -130,24 +132,30 @@ class SkyTeam implements SkyTeamGame {
                 this.enteringDicePlacementSelect(args.args);
                 break;
             case 'rerollDice':
-                this.enteringRerollDice();
+                this.enteringRerollDice(args.args);
                 break;
         }
     }
 
-    private enteringPlayerSetup() {
+    private enteringPlayerSetup(args: PlayerSetupArgs) {
         this.diceManager.toggleShowPlayerDice(false);
-        this.playerSetup.setUp();
+        this.playerSetup.setUp(args);
     }
 
     private enteringStrategy() {
         this.diceManager.toggleShowPlayerDice(false);
     }
 
-    private enteringRerollDice() {
+    private enteringRerollDice(args: RerollDiceArgs) {
         this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('multiple');
+            this.diceManager.setSelectionMode('multiple', selection => {
+                if (selection.length == args.maxNumberOfDice) {
+                    this.diceManager.playerDiceStock.setSelectableCards(selection);
+                } else {
+                    this.diceManager.playerDiceStock.setSelectableCards(this.diceManager.playerDiceStock.getCards());
+                }
+            });
         }
     }
 
@@ -196,6 +204,9 @@ class SkyTeam implements SkyTeamGame {
         log( 'Leaving state: '+stateName );
 
         switch (stateName) {
+            case 'playerSetup':
+                this.leavingPlayerSetup();
+                break;
             case 'dicePlacementSelect':
                 this.leavingDicePlacementSelect()
                 break;
@@ -203,6 +214,10 @@ class SkyTeam implements SkyTeamGame {
                 this.leavingRerollDice()
                 break;
         }
+    }
+
+    private leavingPlayerSetup() {
+        this.playerSetup.destroy();
     }
 
     private leavingDicePlacementSelect() {
@@ -225,7 +240,7 @@ class SkyTeam implements SkyTeamGame {
         if ((this as any).isCurrentPlayerActive()) {
             switch (stateName) {
                 case 'playerSetup':
-                    (this as any).addActionButton('confirmPlayerSetup', _("Confirm"), () => this.confirmPlayerSetup());
+                    (this as any).addActionButton('confirmPlayerSetup', _("Confirm"), () => this.confirmPlayerSetup(args as PlayerSetupArgs));
                     break;
                 case 'strategy':
                     (this as any).addActionButton('confirmReadyStrategy', _("I'm Ready"), () => this.confirmReadyStrategy());
@@ -275,14 +290,23 @@ class SkyTeam implements SkyTeamGame {
         });
     }
 
-    private confirmPlayerSetup() {
-        if (this.playerSetup.selectedRole) {
-            this.takeAction('confirmPlayerSetup', {
-                settings: JSON.stringify({
-                    activePlayerRole: this.playerSetup.selectedRole
-                })
-            })
+    private confirmPlayerSetup(args: PlayerSetupArgs) {
+        if (!this.playerSetup.selectedRole) {
+            (this as any).showMessage(_("You need to select a role"), 'error')
+            return;
         }
+
+        if (this.playerSetup.selectedSpecialAbilities.length != args.nrOfSpecialAbilitiesToSelect) {
+            (this as any).showMessage(_("You need to select a special ability card(s)"), 'error')
+            return;
+        }
+
+        this.takeAction('confirmPlayerSetup', {
+            settings: JSON.stringify({
+                activePlayerRole: this.playerSetup.selectedRole,
+                specialAbilityCardIds: this.playerSetup.selectedSpecialAbilities.map(card => card.id)
+            })
+        })
     }
 
     private requestReroll() {
@@ -459,6 +483,7 @@ class SkyTeam implements SkyTeamGame {
         const notifs = [
             ['newPhaseStarted', 1],
             ['playerRoleAssigned', undefined],
+            ['specialAbilitiesSelected', undefined],
             ['tokenReceived', undefined],
             ['diceRolled', undefined],
             ['diePlaced', undefined],
@@ -477,7 +502,7 @@ class SkyTeam implements SkyTeamGame {
             ['planeLanded', undefined],
             ['newRoundStarted', 1],
             ['trafficDieRolled', undefined],
-            ['trafficDiceReturned', 1]
+            ['trafficDiceReturned', 1],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -506,6 +531,10 @@ class SkyTeam implements SkyTeamGame {
             this.diceManager.playerDiceStock.addCards(args.dice)
         }
         return promise;
+    }
+
+    private notif_specialAbilitiesSelected(args: NotifSpecialAbilitiesSelected) {
+        return this.planeManager.specialAbilityCardStock.addCards(args.cards);
     }
 
     private notif_tokenReceived(args: NotifTokenReceived) {

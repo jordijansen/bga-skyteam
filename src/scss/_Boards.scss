@@ -24,6 +24,17 @@
           width: 607px;
           height: 850px;
 
+          #st-main-board-right {
+            position: absolute;
+            right: -$special-ability-card-width;
+            top: 0;
+            #st-main-board-special-abilities {
+              .card {
+                left: 5px;
+              }
+            }
+          }
+
           #st-plane-axis-indicator {
             background-image: url('img/skyteam-axis-indicator.png');
             width: 190px;

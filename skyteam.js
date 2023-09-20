@@ -2026,6 +2026,11 @@ var determineBoardWidth = function (game) {
     var BASE_BOARD = 607;
     var COFFEE_RESERVE = 55 * 2;
     var TRAFFIC_DICE = 110 * 2;
+    var WIND_PANEL = 280.5 * 2;
+    if (game.gamedatas.scenario.modules.includes('special-abilities') || game.gamedatas.scenario.modules.includes('wind')) {
+        console.log(BASE_BOARD + WIND_PANEL);
+        return BASE_BOARD + WIND_PANEL;
+    }
     if (game.gamedatas.scenario.modules.includes('traffic')) {
         return BASE_BOARD + TRAFFIC_DICE;
     }
@@ -2147,6 +2152,8 @@ var PlaneManager = /** @class */ (function () {
         this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'available'; }));
         this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {});
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
+        this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
+        this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2465,6 +2472,33 @@ var TokenManager = /** @class */ (function (_super) {
     }
     return TokenManager;
 }(CardManager));
+var SpecialAbilityCardManager = /** @class */ (function (_super) {
+    __extends(SpecialAbilityCardManager, _super);
+    function SpecialAbilityCardManager(game) {
+        var _this = _super.call(this, game, {
+            getId: function (card) { return "st-special-ability-card-".concat(card.id); },
+            setupDiv: function (card, div) {
+                div.classList.add('st-special-ability-card');
+            },
+            setupFrontDiv: function (card, div) {
+                div.classList.add('st-special-ability');
+                div.dataset.type = card.type + '';
+                dojo.empty(div);
+                var name = document.createElement('h1');
+                name.textContent = _(card.name);
+                div.appendChild(name);
+                var description = document.createElement('p');
+                description.innerHTML = _(card.description);
+                div.appendChild(description);
+            },
+            cardWidth: 240,
+            cardHeight: 158
+        }) || this;
+        _this.game = game;
+        return _this;
+    }
+    return SpecialAbilityCardManager;
+}(CardManager));
 var HelpDialogManager = /** @class */ (function () {
     function HelpDialogManager(game) {
         this.game = game;
@@ -2566,15 +2600,42 @@ var PlayerSetup = /** @class */ (function () {
     function PlayerSetup(game, elementId) {
         this.game = game;
         this.elementId = elementId;
+        this.roleCardsElementId = 'st-player-setup-role-cards';
+        this.specialAbilityCardsElementId = 'st-player-setup-special-abilities';
         this.selectedRole = null;
+        this.selectedSpecialAbilities = [];
     }
-    PlayerSetup.prototype.setUp = function () {
+    PlayerSetup.prototype.destroy = function () {
+        dojo.empty($(this.elementId));
+    };
+    PlayerSetup.prototype.setUp = function (args) {
+        var _this = this;
+        dojo.place("<h2>".concat(_('Select Role'), "</h2>"), this.elementId);
+        dojo.place("<div id=\"".concat(this.roleCardsElementId, "\"></div>"), this.elementId);
         this.createRoleCard('pilot');
         this.createRoleCard('co-pilot');
+        if (args.specialAbilities && args.specialAbilities.length > 0) {
+            dojo.place("<h2>".concat(dojo.string.substitute(_('Select ${nr} Special Ability Card(s)'), { nr: args.nrOfSpecialAbilitiesToSelect }), "</h2>"), this.elementId);
+            dojo.place("<div id=\"".concat(this.specialAbilityCardsElementId, "\"></div>"), this.elementId);
+            this.specialAbilityCardsStock = new LineStock(this.game.specialAbilityCardManager, $(this.specialAbilityCardsElementId), { wrap: 'wrap', gap: '18px' });
+            this.specialAbilityCardsStock.addCards(args.specialAbilities);
+            if (this.game.isCurrentPlayerActive()) {
+                this.specialAbilityCardsStock.setSelectionMode('multiple');
+                this.specialAbilityCardsStock.onSelectionChange = function (selection) {
+                    if (selection.length == args.nrOfSpecialAbilitiesToSelect) {
+                        _this.specialAbilityCardsStock.setSelectableCards(selection);
+                    }
+                    else {
+                        _this.specialAbilityCardsStock.setSelectableCards(_this.specialAbilityCardsStock.getCards());
+                    }
+                    _this.selectedSpecialAbilities = selection;
+                };
+            }
+        }
     };
     PlayerSetup.prototype.createRoleCard = function (role) {
         var _this = this;
-        dojo.place(this.game.playerRoleManager.createRoleCard(role), this.elementId);
+        dojo.place(this.game.playerRoleManager.createRoleCard(role), this.roleCardsElementId);
         if (this.game.isCurrentPlayerActive()) {
             var element = document.getElementById("st-role-card-".concat(role));
             element.classList.add('selectable');
@@ -2771,6 +2832,7 @@ var SkyTeam = /** @class */ (function () {
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
+        this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
     }
     /*
@@ -2829,7 +2891,7 @@ var SkyTeam = /** @class */ (function () {
         log('Entering state: ' + stateName, args.args);
         switch (stateName) {
             case 'playerSetup':
-                this.enteringPlayerSetup();
+                this.enteringPlayerSetup(args.args);
                 break;
             case 'strategy':
                 this.enteringStrategy();
@@ -2838,21 +2900,29 @@ var SkyTeam = /** @class */ (function () {
                 this.enteringDicePlacementSelect(args.args);
                 break;
             case 'rerollDice':
-                this.enteringRerollDice();
+                this.enteringRerollDice(args.args);
                 break;
         }
     };
-    SkyTeam.prototype.enteringPlayerSetup = function () {
+    SkyTeam.prototype.enteringPlayerSetup = function (args) {
         this.diceManager.toggleShowPlayerDice(false);
-        this.playerSetup.setUp();
+        this.playerSetup.setUp(args);
     };
     SkyTeam.prototype.enteringStrategy = function () {
         this.diceManager.toggleShowPlayerDice(false);
     };
-    SkyTeam.prototype.enteringRerollDice = function () {
+    SkyTeam.prototype.enteringRerollDice = function (args) {
+        var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('multiple');
+            this.diceManager.setSelectionMode('multiple', function (selection) {
+                if (selection.length == args.maxNumberOfDice) {
+                    _this.diceManager.playerDiceStock.setSelectableCards(selection);
+                }
+                else {
+                    _this.diceManager.playerDiceStock.setSelectableCards(_this.diceManager.playerDiceStock.getCards());
+                }
+            });
         }
     };
     SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
@@ -2901,6 +2971,9 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
+            case 'playerSetup':
+                this.leavingPlayerSetup();
+                break;
             case 'dicePlacementSelect':
                 this.leavingDicePlacementSelect();
                 break;
@@ -2908,6 +2981,9 @@ var SkyTeam = /** @class */ (function () {
                 this.leavingRerollDice();
                 break;
         }
+    };
+    SkyTeam.prototype.leavingPlayerSetup = function () {
+        this.playerSetup.destroy();
     };
     SkyTeam.prototype.leavingDicePlacementSelect = function () {
         if (this.isCurrentPlayerActive()) {
@@ -2928,7 +3004,7 @@ var SkyTeam = /** @class */ (function () {
         if (this.isCurrentPlayerActive()) {
             switch (stateName) {
                 case 'playerSetup':
-                    this.addActionButton('confirmPlayerSetup', _("Confirm"), function () { return _this.confirmPlayerSetup(); });
+                    this.addActionButton('confirmPlayerSetup', _("Confirm"), function () { return _this.confirmPlayerSetup(args); });
                     break;
                 case 'strategy':
                     this.addActionButton('confirmReadyStrategy', _("I'm Ready"), function () { return _this.confirmReadyStrategy(); });
@@ -2973,14 +3049,21 @@ var SkyTeam = /** @class */ (function () {
             placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
         });
     };
-    SkyTeam.prototype.confirmPlayerSetup = function () {
-        if (this.playerSetup.selectedRole) {
-            this.takeAction('confirmPlayerSetup', {
-                settings: JSON.stringify({
-                    activePlayerRole: this.playerSetup.selectedRole
-                })
-            });
+    SkyTeam.prototype.confirmPlayerSetup = function (args) {
+        if (!this.playerSetup.selectedRole) {
+            this.showMessage(_("You need to select a role"), 'error');
+            return;
         }
+        if (this.playerSetup.selectedSpecialAbilities.length != args.nrOfSpecialAbilitiesToSelect) {
+            this.showMessage(_("You need to select a special ability card(s)"), 'error');
+            return;
+        }
+        this.takeAction('confirmPlayerSetup', {
+            settings: JSON.stringify({
+                activePlayerRole: this.playerSetup.selectedRole,
+                specialAbilityCardIds: this.playerSetup.selectedSpecialAbilities.map(function (card) { return card.id; })
+            })
+        });
     };
     SkyTeam.prototype.requestReroll = function () {
         var _this = this;
@@ -3136,6 +3219,7 @@ var SkyTeam = /** @class */ (function () {
         var notifs = [
             ['newPhaseStarted', 1],
             ['playerRoleAssigned', undefined],
+            ['specialAbilitiesSelected', undefined],
             ['tokenReceived', undefined],
             ['diceRolled', undefined],
             ['diePlaced', undefined],
@@ -3154,7 +3238,7 @@ var SkyTeam = /** @class */ (function () {
             ['planeLanded', undefined],
             ['newRoundStarted', 1],
             ['trafficDieRolled', undefined],
-            ['trafficDiceReturned', 1]
+            ['trafficDiceReturned', 1],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3178,6 +3262,9 @@ var SkyTeam = /** @class */ (function () {
             this.diceManager.playerDiceStock.addCards(args.dice);
         }
         return promise;
+    };
+    SkyTeam.prototype.notif_specialAbilitiesSelected = function (args) {
+        return this.planeManager.specialAbilityCardStock.addCards(args.cards);
     };
     SkyTeam.prototype.notif_tokenReceived = function (args) {
         if (args.token.type == 'reroll') {

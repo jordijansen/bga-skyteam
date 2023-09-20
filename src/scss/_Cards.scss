@@ -7,7 +7,7 @@
   background-size: 200% auto;
   border-radius: 10px;
   width: 200px;
-  height: 159px;
+  height: 132px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
   display: flex;
@@ -32,6 +32,54 @@
   }
   &.selectable {
     @include selectable();
+  }
+}
+
+.st-special-ability {
+  background-image: url('img/skyteam-special-abilities.jpg');
+  background-size: 300% auto;
+
+  &[data-type="1"] {background-position: 0 0;}
+  &[data-type="2"] {background-position: 50% 0;}
+  &[data-type="3"] {background-position: 100% 0;}
+  &[data-type="4"] {background-position: 0 100%;}
+  &[data-type="5"] {background-position: 50% 100%;}
+  &[data-type="6"] {background-position: 100% 100%;}
+
+}
+
+.st-special-ability-card {
+  display: inline-block;
+  position: relative;
+  border-radius: 10px;
+  width: $special-ability-card-width;
+  height: $special-ability-card-height;
+
+  .card-sides {
+    .card-side {
+      border-radius: 10px;
+      width: $special-ability-card-width;
+      height: $special-ability-card-height;
+      text-align: center;
+      h1 {
+        color: #a3def3;
+        text-transform: uppercase;
+        font-size: 16px;
+        margin-top: 13px;
+        font-weight: bold;
+      }
+
+      p {
+        color: #38569b;
+        padding: 10px 15px;
+        font-size: 11px;
+      }
+
+      &>* {
+        pointer-events: none;
+        user-select: none;
+      }
+    }
   }
 }
 

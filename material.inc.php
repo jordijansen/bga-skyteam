@@ -112,6 +112,22 @@ $this->APPROACH_TRACKS = [
             2 => [TOKEN_PLANE => 1],
             1 => [DICE_TRAFFIC => 2],
         ]
+    ],
+    APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
+        'type' => APPROACH_YELLOW_KUL_KUALA_LUMPUR,
+        'category' => APPROACH_YELLOW,
+        'name' => 'KUL Kuala Lumpur',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            6 => [TOKEN_PLANE => 1],
+            5 => [ALLOWED_AXIS => [1, 2]],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1], DICE_TRAFFIC => 1],
+            3 => [TOKEN_PLANE => 1],
+            2 => [ALLOWED_AXIS => [1, 2]],
+            1 => [DICE_TRAFFIC => 2],
+        ]
     ]
 ];
 
@@ -125,6 +141,12 @@ $this->SCENARIOS = [
         'approach' => APPROACH_GREEN_HND_HANEDA,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS]
+    ],
+    APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
+        'approach' => APPROACH_YELLOW_KUL_KUALA_LUMPUR,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
     ]
 ];
 
@@ -143,6 +165,15 @@ $this->ALTITUDE_TRACKS = [
             1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
         ]
     ]
+];
+
+$this->SPECIAL_ABILITIES = [
+    ANTICIPATION => ['name' => clienttranslate('Anticipation'), 'description' => clienttranslate('Each round, before placing their 1st die, the First Player may choose to reroll one of their dice.')],
+    ADAPTATION => ['name' => clienttranslate('Adaptation'), 'description' => clienttranslate('Once per game, each player can turn one of their unplayed dice to its opposite face.')],
+    MASTERY => ['name' => clienttranslate('Mastery'), 'description' => clienttranslate('If you play 2 dice with the same value on the <b>ENGINES</b>, immediately gain <b>a Reroll token</b> (only if a token is available).')],
+    SYNCHRONISATION => ['name' => clienttranslate('Synchronisation'), 'description' => clienttranslate('If you have placed at least one die on Landing Gear and one die on Flaps, immediately roll the Traffic die. Place it on any empty space on the Control Panel regardless of its colour. Apply the effect of the Traffic die as if it were a normal die. It counts as an extra action for this turn.')],
+    WORKING_TOGETHER => ['name' => clienttranslate('Working Together'), 'description' => clienttranslate('Once per round, at any time, a player may place one of their dice onto this Skill. The other player MUST also place one of their dice on this skill (if they have one available). The players swap the values of the 2 dice, then take them back.')],
+    CONTROL => ['name' => clienttranslate('Control'), 'description' => clienttranslate('If you play 2 dice of the same value on the <b>AXIS</b>, immediately gain a Coffee token.')],
 ];
 
 

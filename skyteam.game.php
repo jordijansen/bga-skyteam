@@ -18,6 +18,7 @@
 
 use actions\ActionManager;
 use commands\CommandManager;
+use managers\objects\SpecialAbilityCard;
 use managers\PlayerManager;
 use managers\PlaneManager;
 use objects\Dice;
@@ -43,6 +44,7 @@ require_once('modules/php/objects/Dice.php');
 require_once('modules/php/objects/ApproachTrack.php');
 require_once('modules/php/objects/AltitudeTrack.php');
 require_once('modules/php/objects/Scenario.php');
+require_once('modules/php/objects/SpecialAbilityCard.php');
 
 require_once('modules/php/commands/CommandManager.php');
 require_once('modules/php/commands/BaseCommand.php');
@@ -83,6 +85,7 @@ class SkyTeam extends Table
 
     public Deck $dice;
     public Deck $tokens;
+    public Deck $specialAbilities;
 
     function __construct( )
 	{
@@ -105,6 +108,9 @@ class SkyTeam extends Table
 
         $this->tokens = self::getNew("module.common.deck");
         $this->tokens->init('token');
+
+        $this->specialAbilities = self::getNew("module.common.deck");
+        $this->specialAbilities->init('special_ability');
 
         $this->commandManager = new CommandManager();
         $this->playerManager = new PlayerManager();
@@ -170,6 +176,9 @@ class SkyTeam extends Table
         $result['isLanded'] = $this->isLanded();
         $result['victoryConditions'] = $this->planeManager->getVictoryConditionsResults();
         $result['scenario'] = $this->getScenario();
+
+        $result['chosenSpecialAbilities'] = SpecialAbilityCard::fromArray($this->specialAbilities->getCardsInLocation(LOCATION_AVAILABLE));
+
         return $result;
     }
     /*

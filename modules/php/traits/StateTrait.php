@@ -110,9 +110,15 @@ trait StateTrait
         $startRole = $this->getAltitudeTrack()->spaces[$plane->altitude][ROUND_START_PLAYER];
         $startPlayerId = $this->getPlayerIdForRole($startRole);
 
-        $this->gamestate->changeActivePlayer($startPlayerId);
         $this->giveExtraTime($startPlayerId);
-        $this->gamestate->nextState('');
+        if ($this->isSpecialAbilityActive(ANTICIPATION)) {
+            $this->setGlobalVariable(REROLL_DICE_AMOUNT, 1);
+            $this->gamestate->setPlayersMultiactive([$startPlayerId], ST_REROLL_DICE, true);
+            $this->gamestate->jumpToState(ST_REROLL_DICE);
+        } else {
+            $this->gamestate->changeActivePlayer($startPlayerId);
+            $this->gamestate->nextState('');
+        }
     }
 
     function stDicePlacementNext()

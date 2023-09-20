@@ -82,6 +82,8 @@ const SCENARIO_OPTION = 'scenario';
  */
 const MODULE_TRAFFIC = 'traffic';
 const MODULE_TURNS = 'turns';
+const MODULE_KEROSENE = 'kerosene';
+const MODULE_SPECIAL_ABILITIES = 'special-abilities';
 
 
 
@@ -146,6 +148,7 @@ const FAILURE_REASON = 'FAILURE_REASON';
 const ACTIVE_PLAYER_AFTER_REROLL = 'ACTIVE_PLAYER_AFTER_REROLL';
 const FINAL_ROUND = 'FINAL_ROUND';
 const PLANE_LANDED = 'PLANE_LANDED';
+const REROLL_DICE_AMOUNT = 'REROLL_DICE_AMOUNT';
 
 /**
  * Approaches
@@ -162,8 +165,14 @@ const ALTITUDE_GREEN_YELLOW = 1;
 const ALTITUDE_RED_BLACK = 2;
 
 /**
- * Scenarios
+ * Special Abilities
  */
+const ANTICIPATION = 1;
+const ADAPTATION = 2;
+const MASTERY = 3;
+const SYNCHRONISATION = 4;
+const WORKING_TOGETHER = 5;
+const CONTROL = 6;
 
 
 

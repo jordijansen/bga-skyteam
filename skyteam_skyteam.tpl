@@ -48,6 +48,10 @@
                     <div id="st-token-reserve-plane" class="st-token-reserve"></div>
                     <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
+                    <!-- MODULE BOARDS -->
+                    <div id="st-main-board-right">
+                        <div id="st-main-board-special-abilities"></div>
+                    </div>
                 </div>
             </div>
         </div>

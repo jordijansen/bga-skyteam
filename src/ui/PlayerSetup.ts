@@ -1,20 +1,50 @@
 class PlayerSetup {
 
-    public selectedRole = null;
+    private roleCardsElementId = 'st-player-setup-role-cards';
+    private specialAbilityCardsElementId = 'st-player-setup-special-abilities';
 
-    constructor(private game: SkyTeamGame, private elementId: string) {
+    public selectedRole = null;
+    public selectedSpecialAbilities = [];
+    private specialAbilityCardsStock: LineStock<SpecialAbilityCard>;
+
+    constructor(private game: SkyTeamGame, private elementId: string,) {
 
     }
 
-    public setUp() {
+    public destroy() {
+        dojo.empty($(this.elementId))
+    }
+
+    public setUp(args: PlayerSetupArgs) {
+        dojo.place(`<h2>${_('Select Role')}</h2>`, this.elementId)
+        dojo.place(`<div id="${this.roleCardsElementId}"></div>`, this.elementId)
+
         this.createRoleCard('pilot');
         this.createRoleCard('co-pilot');
 
+        if (args.specialAbilities && args.specialAbilities.length > 0) {
+            dojo.place(`<h2>${dojo.string.substitute(_('Select ${nr} Special Ability Card(s)'), { nr: args.nrOfSpecialAbilitiesToSelect })}</h2>`, this.elementId)
+            dojo.place(`<div id="${this.specialAbilityCardsElementId}"></div>`, this.elementId)
 
+            this.specialAbilityCardsStock = new LineStock(this.game.specialAbilityCardManager, $(this.specialAbilityCardsElementId), {wrap: 'wrap', gap: '18px'});
+            this.specialAbilityCardsStock.addCards(args.specialAbilities);
+
+            if ((this.game as any).isCurrentPlayerActive()) {
+                this.specialAbilityCardsStock.setSelectionMode('multiple');
+                this.specialAbilityCardsStock.onSelectionChange = (selection) => {
+                    if (selection.length == args.nrOfSpecialAbilitiesToSelect) {
+                        this.specialAbilityCardsStock.setSelectableCards(selection);
+                    } else {
+                        this.specialAbilityCardsStock.setSelectableCards(this.specialAbilityCardsStock.getCards());
+                    }
+                    this.selectedSpecialAbilities = selection;
+                }
+            }
+        }
     }
 
     private createRoleCard(role: string) {
-        dojo.place(this.game.playerRoleManager.createRoleCard(role), this.elementId)
+        dojo.place(this.game.playerRoleManager.createRoleCard(role), this.roleCardsElementId)
 
         if ((this.game as any).isCurrentPlayerActive()) {
             const element = document.getElementById(`st-role-card-${role}`);
@@ -41,9 +71,6 @@ class PlayerSetup {
         otherElement.classList.remove('selected');
         dojo.destroy(`st-role-card-playername-${otherPlayer.id}`)
         dojo.place(`<p id="st-role-card-playername-${otherPlayer.id}">${otherPlayer.name}</p>`, otherElement)
-
-
-
 
         this.selectedRole = role;
     }

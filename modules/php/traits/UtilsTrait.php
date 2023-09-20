@@ -34,6 +34,11 @@ trait UtilsTrait
         return ReflectionUtils::rebuildAllPropertyValues($this->SCENARIOS[$this->getGameStateValue(SCENARIO_OPTION)], Scenario::class);
     }
 
+    function isSpecialAbilityActive($specialAbility)
+    {
+        return sizeof($this->specialAbilities->getCardsOfTypeInLocation($specialAbility, null, LOCATION_AVAILABLE))  == 1;
+    }
+
     function isModuleActive($module): bool
     {
         return in_array($module, $this->getScenario()->modules);

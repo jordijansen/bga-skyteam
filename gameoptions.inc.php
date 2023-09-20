@@ -62,6 +62,11 @@ $game_options = [
                 'name' => totranslate('Green: HND - Haneda'),
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Turns. With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
                 'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
+                'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You are right to be concerned about Malaysia’s electrical storms... Keep your plane in line between the storm masses. It will be a bumpy landing in Kuala Lumpur.'),
+                'nobeginner' => true,
             ]
         ]
     ]

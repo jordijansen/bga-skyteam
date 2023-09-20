@@ -61,8 +61,13 @@ html, .mode_3d #game_play_area_background {
 
 #st-player-setup {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  #st-player-setup-role-cards {
+    display: flex;
+    gap: 18px;
+  }
 }
 
 #st-communication-wrapper {

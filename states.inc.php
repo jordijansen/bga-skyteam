@@ -75,6 +75,7 @@ $gameStates = [
         "name" => "playerSetup",
         "description" => clienttranslate('${actplayer} confirm roles'),
         "descriptionmyturn" => clienttranslate('${you} must confirm roles'),
+        "args" => "argPlayerSetup",
         "type" => "activeplayer",
         "possibleactions" => [
             ACT_CONFIRM_PLAYER_SETUP
@@ -139,9 +140,10 @@ $gameStates = [
     ],
     ST_REROLL_DICE => [
         "name" => "rerollDice",
-        "description" => clienttranslate('Waiting for players to re-roll any number of dice'),
-        "descriptionmyturn" => clienttranslate('${you} may re-roll any number of dice'),
+        "description" => clienttranslate('Waiting for players to re-roll dice'),
+        "descriptionmyturn" => clienttranslate('${you} may re-roll dice (max ${maxNumberOfDice})'),
         "type" => "multipleactiveplayer",
+        "args" => "argRerollDice",
         "possibleactions" => [
             ACT_REROLL
         ],

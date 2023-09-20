@@ -3,6 +3,7 @@
 namespace traits;
 
 use BgaUserException;
+use managers\objects\SpecialAbilityCard;
 use objects\Dice;
 use objects\Token;
 
@@ -56,6 +57,19 @@ trait ActionTrait
             'dice' =>  Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $otherPlayerRole, LOCATION_PLAYER))
         ]);
 
+        if ($this->isModuleActive(MODULE_SPECIAL_ABILITIES)) {
+            $selectedSpecialAbilities = $settings['specialAbilityCardIds'];
+            $cards = SpecialAbilityCard::fromArray($this->specialAbilities->getCards($selectedSpecialAbilities));
+
+            if (sizeof($cards) != $this->getScenario()->nrOfSpecialAbilities) {
+                throw new BgaUserException('Not enough abilities selected');
+            }
+
+            $this->specialAbilities->moveCards($selectedSpecialAbilities, LOCATION_AVAILABLE);
+            $this->notifyAllPlayers( 'specialAbilitiesSelected', clienttranslate('Special abilities selected'), [
+                'cards' => SpecialAbilityCard::fromArray($this->specialAbilities->getCards($selectedSpecialAbilities))
+            ]);
+        }
         $this->gamestate->nextState('');
     }
 
@@ -178,6 +192,7 @@ trait ActionTrait
         foreach ($this->gamestate->getActivePlayerList() as $playerId) {
             $this->giveExtraTime($playerId);
         }
+        $this->setGlobalVariable(REROLL_DICE_AMOUNT, 4);
         $this->gamestate->jumpToState(ST_REROLL_DICE);
     }
 

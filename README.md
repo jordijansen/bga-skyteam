@@ -3,6 +3,7 @@ BGA adaptation for Sky Team
 
 TODO:
 - The preferences is the place for toggling help symbols, I would recommend leaving it as is
+- If no placement, confirm end turn
 
 Changelog:
 - I've made the communcation banner smaller, added a close button to it and a preference with 3 options: always visible, auto hide after 10 seconds & always hidden
