@@ -139,6 +139,20 @@ class PlaneManager extends APP_DbObject
                         ]);
                     }
 
+                    if ($die->side == $otherEngineSpaceDie->side && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
+                        // Gain a REROLL token if both Engine values are equal.
+                        $availableRerollTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
+                        if (sizeof($availableRerollTokens) > 0) {
+                            $availableRerollToken = current($availableRerollTokens);
+                            SkyTeam::$instance->tokens->moveCard($availableRerollToken->id, LOCATION_AVAILABLE);
+
+                            SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Players receive ${token_1} (Special Ability: Mastery)'), [
+                                'token_1' => TOKEN_REROLL,
+                                'token' => Token::from(SkyTeam::$instance->tokens->getCard($availableRerollToken->id))
+                            ]);
+                        }
+                    }
+
                     if ($planeTurnFailure) {
                         SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_TURN);
                         SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);

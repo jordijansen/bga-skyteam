@@ -106,11 +106,15 @@ trait SetupTrait
         $planeTokens = [['type' => TOKEN_PLANE, 'type_arg' => TOKEN_PLANE, 'nbr' => 12 - $planesCreated]];
         $this->tokens->createCards($planeTokens, LOCATION_RESERVE);
 
+        $rerollCreated = 0;
         foreach ($altitudeTrack->spaces as $spaceId => $space) {
             if (array_key_exists(TOKEN_REROLL, $space) && $space[TOKEN_REROLL] > 0) {
                 $rerollTokens = [['type' => TOKEN_REROLL, 'type_arg' => TOKEN_REROLL, 'nbr' => $space[TOKEN_REROLL]]];
                 $this->tokens->createCards($rerollTokens, LOCATION_ALTITUDE, $spaceId);
+                $rerollCreated = $rerollCreated + $space[TOKEN_REROLL];
             }
         }
+        $rerollTokens = [['type' => TOKEN_REROLL, 'type_arg' => TOKEN_REROLL, 'nbr' => 3 - $rerollCreated]];
+        $this->tokens->createCards($rerollTokens, LOCATION_RESERVE);
     }
 }
