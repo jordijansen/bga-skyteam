@@ -2430,15 +2430,23 @@ var DiceManager = /** @class */ (function (_super) {
         }
     };
     DiceManager.prototype.updateCardInformations = function (die, settings) {
-        _super.prototype.updateCardInformations.call(this, die, settings);
-        var cardElement = this.getCardElement(die);
-        cardElement.dataset['value'] = String(die.side);
+        if (this.getCardElement(die)) {
+            _super.prototype.updateCardInformations.call(this, die, settings);
+            var cardElement = this.getCardElement(die);
+            cardElement.dataset['value'] = String(die.side);
+        }
+        else {
+            this.playerDiceStock.addCard(die);
+        }
     };
-    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues) {
+    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes) {
         if (this.playerDiceStock) {
             var selectableDice = this.playerDiceStock.getCards();
             if (allowedValues && allowedValues.length > 0) {
-                selectableDice = selectableDice.filter(function (die) { return allowedValues.includes(die.side); });
+                selectableDice = selectableDice.filter(function (die) { return allowedValues.includes(die.value); });
+            }
+            if (allowedDieTypes && allowedDieTypes.length > 0) {
+                selectableDice = selectableDice.filter(function (die) { return allowedDieTypes.includes(die.type); });
             }
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
@@ -2897,7 +2905,8 @@ var SkyTeam = /** @class */ (function () {
                 this.enteringStrategy();
                 break;
             case 'dicePlacementSelect':
-                this.enteringDicePlacementSelect(args.args);
+            case 'performSynchronisation':
+                this.enteringDicePlacementSelect(args.args, stateName === 'performSynchronisation');
                 break;
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
@@ -2941,11 +2950,11 @@ var SkyTeam = /** @class */ (function () {
             this.diceManager.setSelectionMode('single');
         }
     };
-    SkyTeam.prototype.enteringDicePlacementSelect = function (args) {
+    SkyTeam.prototype.enteringDicePlacementSelect = function (args, trafficDieOnly) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); });
+            this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); }, [], trafficDieOnly ? ['traffic'] : []);
         }
     };
     SkyTeam.prototype.onDicePlacementDiceSelected = function (args, selection) {
@@ -2954,7 +2963,7 @@ var SkyTeam = /** @class */ (function () {
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
         if (selection.length == 1) {
             var die_1 = selection[0];
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die_1, space); }, die_1.side);
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die_1, space); }, die_1.value);
             this.spendCoffee.initiate(die_1, args.nrOfCoffeeAvailable, function (die) { return _this.onDicePlacementCoffeeSpend(args, die); });
         }
         else {
@@ -3046,6 +3055,11 @@ var SkyTeam = /** @class */ (function () {
                     if (!swapDiceArgs.firstDie) {
                         this.addActionButton('cancel', _("Cancel"), function () { return _this.cancelSwap(); }, null, null, 'gray');
                     }
+                    break;
+                case 'performSynchronisation':
+                    this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
+                    dojo.addClass('confirmPlacement', 'disabled');
+                    break;
             }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
                 this.addActionButton('undoLast', _("Undo last"), function () { return _this.undoLast(); }, null, null, 'red');

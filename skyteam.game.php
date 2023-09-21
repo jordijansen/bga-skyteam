@@ -148,7 +148,7 @@ class SkyTeam extends Table
         foreach($result['players'] as $playerId => &$player) {
             $player['role'] = $this->getPlayerRole($playerId);
             if ($current_player_id == $playerId) {
-                $player['dice'] =  Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $player['role'], LOCATION_PLAYER));
+                $player['dice'] =  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
             }
         }
 

@@ -61,4 +61,13 @@ trait ArgsTrait
             'firstDie' => $firstDie
         ];
     }
+
+    function argSynchronisation()
+    {
+        $trafficDie = Dice::from($this->dice->getCard($this->getGlobalVariable(SYNCHRONISATION_DIE_ID)));
+        return [
+            'trafficDie' => $trafficDie,
+            'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId(), true),
+        ];
+    }
 }

@@ -24,29 +24,29 @@ class PlaneManager extends APP_DbObject
         return Plane::from(self::getObjectFromDB("SELECT * FROM plane WHERE id = 1"));
     }
 
-    function getAvailableActionSpaces($playerId): array
+    function getAvailableActionSpaces($playerId, $ignoreRoleRestrictions = false): array
     {
         $playerRole = SkyTeam::$instance->getPlayerRole($playerId);
         $result = [];
         $mandatoryResult = [];
         $plane = $this->get();
-        $remainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLAYER));
+        $remainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
         $diceAlreadyPlaced = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE));
         foreach ($this->getAllActionSpaces() as $actionSpaceId => $actionSpace) {
             $diceOnActionSpace = array_filter($diceAlreadyPlaced, fn($die) => $die->locationArg == $actionSpaceId);
 
             if (!array_key_exists($actionSpaceId, $plane->switches) || !$plane->switches[$actionSpaceId]->value) {
-                if (in_array($playerRole, $actionSpace[ALLOWED_ROLES]) && sizeof($diceOnActionSpace) == 0) {
+                if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES])) && sizeof($diceOnActionSpace) == 0) {
                     if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
                         if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
                             $result[$actionSpaceId] = $actionSpace;
-                            if ($actionSpace[MANDATORY]) {
+                            if ($actionSpace[MANDATORY] && !$ignoreRoleRestrictions) {
                                 $mandatoryResult[$actionSpaceId] = $actionSpace;
                             }
                         }
                     } else {
                         $result[$actionSpaceId] = $actionSpace;
-                        if ($actionSpace[MANDATORY]) {
+                        if ($actionSpace[MANDATORY] && !$ignoreRoleRestrictions) {
                             $mandatoryResult[$actionSpaceId] = $actionSpace;
                         }
                     }

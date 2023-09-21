@@ -178,6 +178,19 @@ $gameStates = [
             '' => ST_DICE_PLACEMENT_SELECT
         ],
     ],
+    ST_SYNCHRONISATION => [
+        "name" => "performSynchronisation",
+        "description" => clienttranslate('${actplayer} must use Special Ability: Synchronisation'),
+        "descriptionmyturn" => clienttranslate('${you} must use Special Ability: Synchronisation'),
+        "type" => "activeplayer",
+        "args" => "argSynchronisation",
+        "possibleactions" => [
+            ACT_SYNCHRONISATION
+        ],
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_NEXT
+        ],
+    ],
     ST_END_OF_ROUND => [
         "name" => "endOfRound",
         "description" => clienttranslate('End of Round: decreasing altitude...'),

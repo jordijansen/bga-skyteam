@@ -129,7 +129,8 @@ class SkyTeam implements SkyTeamGame {
                 this.enteringStrategy();
                 break;
             case 'dicePlacementSelect':
-                this.enteringDicePlacementSelect(args.args);
+            case 'performSynchronisation':
+                this.enteringDicePlacementSelect(args.args, stateName === 'performSynchronisation');
                 break;
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
@@ -177,10 +178,10 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
-    private enteringDicePlacementSelect(args: DicePlacementSelectArgs) {
+    private enteringDicePlacementSelect(args: DicePlacementSelectArgs, trafficDieOnly: boolean) {
         this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection));
+            this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection), [], trafficDieOnly ? ['traffic'] : []);
         }
     }
 
@@ -189,7 +190,7 @@ class SkyTeam implements SkyTeamGame {
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
         if (selection.length == 1) {
             const die = selection[0];
-            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
+            this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.value);
             this.spendCoffee.initiate(die, args.nrOfCoffeeAvailable, (die) => this.onDicePlacementCoffeeSpend(args, die));
         } else {
             this.spendCoffee.initiate(null, 0, null);
@@ -285,7 +286,11 @@ class SkyTeam implements SkyTeamGame {
                     if (!swapDiceArgs.firstDie) {
                         (this as any).addActionButton('cancel', _("Cancel"), () => this.cancelSwap(), null, null, 'gray');
                     }
-
+                    break;
+                case 'performSynchronisation':
+                    (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
+                    dojo.addClass('confirmPlacement', 'disabled');
+                    break;
             }
 
             if (args?.canCancelMoves) {

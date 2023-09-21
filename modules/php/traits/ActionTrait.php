@@ -35,9 +35,11 @@ trait ActionTrait
 
         $this->reloadPlayersBasicInfos();
 
-        $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, null, LOCATION_DECK));
-        $playerDiceIds = array_map(fn($dice) => $dice->id, $playerDice);
-        $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER);
+        $pilotDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, PILOT, LOCATION_DECK));
+        $coPilotDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, CO_PILOT, LOCATION_DECK));
+
+        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $pilotDice), LOCATION_PLAYER, $activePlayerRole == PILOT ? $activePlayerId : $otherPlayerId);
+        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $coPilotDice), LOCATION_PLAYER, $activePlayerRole == CO_PILOT ? $activePlayerId : $otherPlayerId);
 
         $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${role}</b>'), [
             'i18n' => ['roleName'],
@@ -45,7 +47,7 @@ trait ActionTrait
             'player_name' => $this->getPlayerName($activePlayerId),
             'role' => $activePlayerRole,
             'roleColor' => $activePlayerIdColor,
-            'dice' =>  Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $activePlayerRole, LOCATION_PLAYER))
+            'dice' =>  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $activePlayerId))
         ]);
 
         $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${role}</b>'), [
@@ -54,7 +56,7 @@ trait ActionTrait
             'player_name' => $this->getPlayerName($otherPlayerId),
             'role' => $activePlayerRole == PILOT ? CO_PILOT : PILOT,
             'roleColor' => $otherPlayerIdColor,
-            'dice' =>  Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $otherPlayerRole, LOCATION_PLAYER))
+            'dice' =>  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $otherPlayerId))
         ]);
 
         if ($this->isModuleActive(MODULE_SPECIAL_ABILITIES)) {
@@ -89,7 +91,6 @@ trait ActionTrait
     function confirmPlacement($placement)
     {
         $playerId = $this->getActivePlayerId();
-        $playerRole = $this->getPlayerRole($playerId);
         $actionSpaceId = $placement['actionSpaceId'];
         $diceId = $placement['diceId'];
         $diceValue = $placement['diceValue'];
@@ -98,14 +99,14 @@ trait ActionTrait
             throw new BgaUserException('Missing parameter for action confirmPlacement');
         }
 
-        $actionSpaces = $this->planeManager->getAvailableActionSpaces($playerId);
-        if (!array_key_exists($actionSpaceId, $actionSpaces)) {
-            throw new BgaUserException('Action space not available.');
+        $die = Dice::from($this->dice->getCard($diceId));
+        if (!isset($die) || $die->location != LOCATION_PLAYER || $die->locationArg != $playerId) {
+            throw new BgaUserException('Invalid dice supplied!');
         }
 
-        $die = Dice::from($this->dice->getCard($diceId));
-        if (!isset($die) || $die->type != DICE_PLAYER || $die->typeArg != $playerRole) {
-            throw new BgaUserException('Invalid dice supplied!');
+        $actionSpaces = $this->planeManager->getAvailableActionSpaces($playerId, $die->type == 'traffic');
+        if (!array_key_exists($actionSpaceId, $actionSpaces)) {
+            throw new BgaUserException('Action space not available.');
         }
 
         $originalDie = clone $die;
@@ -161,6 +162,28 @@ trait ActionTrait
 
         $continue = $this->planeManager->resolveDicePlacement($die);
         if ($continue) {
+            if ($this->isSpecialAbilityActive(SYNCHRONISATION) && !$this->getGlobalVariable(SYNCHRONISATION_ACTIVATED)) {
+                $nrOfDiceOnLandingGear = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'landing-gear%'"));
+                $nrOfDiceOnFlaps = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'flaps%'"));
+                if ($nrOfDiceOnFlaps > 0 && $nrOfDiceOnLandingGear > 0) {
+                    $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, true);
+
+                    $trafficDice = Dice::fromArray($this->dice->pickCardsForLocation(1, LOCATION_DECK, LOCATION_PLAYER, $playerId));
+                    $trafficDie = current($trafficDice);
+                    $trafficDie->rollDie();
+
+                    $this->notifyPlayer($playerId, "diceRolled", '', [
+                        'playerId' => intval($playerId),
+                        'player_name' => $this->getPlayerName($playerId),
+                        'dice' =>  [$trafficDie],
+                    ]);
+
+                    $this->setGlobalVariable(SYNCHRONISATION_DIE_ID, $trafficDie->id);
+                    $this->gamestate->jumpToState(ST_SYNCHRONISATION);
+                    return;
+                }
+            }
+
             $this->gamestate->nextState("");
         }
     }
@@ -246,14 +269,11 @@ trait ActionTrait
         $this->checkAction(ACT_REROLL);
 
         if (isset($selectedDieIds) && is_array($selectedDieIds) && sizeof($selectedDieIds) > 0) {
-            $playerRole = $this->getPlayerRole($playerId);
             $rolledDice = [];
             foreach ($selectedDieIds as $selectedDieId) {
                 $die = Dice::from($this->dice->getCard($selectedDieId));
-                if ($die->location != LOCATION_PLAYER) {
+                if ($die->location != LOCATION_PLAYER || $die->locationArg != $playerId) {
                     throw new BgaUserException('Only unused dice can be re-rolled');
-                } else if ($die->type != DICE_PLAYER || $die->typeArg != $playerRole) {
-                    throw new BgaUserException('You can only re-roll your own dice');
                 }
 
                 $die->rollDie();
@@ -277,7 +297,6 @@ trait ActionTrait
     function flipDie($selectedDieId)
     {
         $playerId = $this->getActivePlayerId();
-        $playerRole = $this->getPlayerRole($playerId);
         $this->checkAction(ACT_FLIP);
 
         $playersThatUsedAdaptation = $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION);
@@ -289,7 +308,7 @@ trait ActionTrait
         }
 
         $originalDice = Dice::from($this->dice->getCard($selectedDieId));
-        if ($originalDice->type != DICE_PLAYER || $originalDice->typeArg != $playerRole || $originalDice->location != LOCATION_PLAYER) {
+        if ($originalDice->location != LOCATION_PLAYER || $originalDice->locationArg != $playerId) {
             throw new BgaUserException('Unknown die or not owned by you');
         }
 
@@ -329,7 +348,7 @@ trait ActionTrait
         }
 
         $die = Dice::from($this->dice->getCard($selectedDieId));
-        if ($die->type != DICE_PLAYER || $die->typeArg != $playerRole || $die->location != LOCATION_PLAYER) {
+        if ($die->location != LOCATION_PLAYER || $die->locationArg != $playerId) {
             throw new BgaUserException('Unknown die or not owned by you');
         }
 

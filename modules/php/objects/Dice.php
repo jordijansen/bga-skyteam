@@ -10,6 +10,7 @@ class Dice extends APP_GameClass {
     public string $location;
     public string $locationArg;
     public int $side;
+    public int $value;
 
 
     public function __construct($dbCard)
@@ -20,6 +21,7 @@ class Dice extends APP_GameClass {
         $this->location = $dbCard['card_location'] ?? $dbCard['location'];
         $this->locationArg = $dbCard['card_location_arg'] ?? $dbCard['location_arg'];
         $this->side = self::getUniqueValueFromDB('SELECT card_side FROM dice WHERE card_id = '.$this->id);
+        $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
     }
 
     public function rollDie(): int

@@ -94,13 +94,12 @@ trait StateTrait
         // Roll the player dice, and notify only the player of the results
         $playerIds = $this->getPlayerIds();
         foreach ($playerIds as $playerId) {
-            $playerRole = $this->getPlayerRole($playerId);
-            $dice = Dice::fromArray($this->dice->getCardsOfTypeInLocation( DICE_PLAYER, $playerRole, LOCATION_PLAYER));
+            $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
             foreach ($dice as $die) {
                 $die->rollDie();
             }
 
-            $dice = Dice::fromArray($this->dice->getCardsOfTypeInLocation( DICE_PLAYER, $playerRole, LOCATION_PLAYER));
+            $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
             $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} rolls ${icon_dice}'), [
                 'playerId' => intval($playerId),
                 'player_name' => $this->getPlayerName($playerId),
@@ -128,8 +127,7 @@ trait StateTrait
     {
         $this->activeNextPlayer();
         $this->giveExtraTime($this->getActivePlayerId());
-        $playerRole = $this->getPlayerRole($this->getActivePlayerId());
-        $dice = Dice::fromArray($this->dice->getCardsOfTypeInLocation( DICE_PLAYER, $playerRole, LOCATION_PLAYER));
+        $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $this->getActivePlayerId()));
         if (sizeof($dice) > 0) {
             $this->gamestate->nextState('next');
         } else {
@@ -195,13 +193,17 @@ trait StateTrait
                     $playerDie->setSide(1);
                 }
                 $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
-                $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER);
+                $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER, $playerId);
                 $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
                     'playerId' => intval($playerId),
                     'player_name' => $this->getPlayerName($playerId),
                     'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
                 ]);
             }
+
+            // Remove remaining dice (traffic die if used with synchronisation)
+            $this->dice->moveAllCardsInLocation(LOCATION_PLANE, LOCATION_DECK);
+
             if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
                 // The plane has landed, let's see if we're at the airport
                 if ($plane->approach == sizeof($approachTrack->spaces)) {

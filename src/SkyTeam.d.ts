@@ -36,6 +36,7 @@ interface Dice {
     type: 'player' | 'weather',
     typeArg: 'pilot' | 'co-pilot',
     side: number,
+    value: number,
     location: string,
     locationArg: string
 }

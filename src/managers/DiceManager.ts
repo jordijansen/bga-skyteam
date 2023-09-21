@@ -47,16 +47,23 @@ class DiceManager extends CardManager<Dice> {
     }
 
     public override updateCardInformations(die: Dice, settings?: Omit<FlipCardSettings, 'updateData'>): void {
-        super.updateCardInformations(die, settings);
-        const cardElement = this.getCardElement(die);
-        cardElement.dataset['value'] = String(die.side);
+        if (this.getCardElement(die)) {
+            super.updateCardInformations(die, settings);
+            const cardElement = this.getCardElement(die);
+            cardElement.dataset['value'] = String(die.side);
+        } else {
+            this.playerDiceStock.addCard(die);
+        }
     }
 
-    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[]) {
+    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[]) {
         if (this.playerDiceStock) {
             let  selectableDice = this.playerDiceStock.getCards();
             if (allowedValues && allowedValues.length > 0) {
-                selectableDice = selectableDice.filter(die => allowedValues.includes(die.side))
+                selectableDice = selectableDice.filter(die => allowedValues.includes(die.value))
+            }
+            if (allowedDieTypes && allowedDieTypes.length > 0) {
+                selectableDice = selectableDice.filter(die => allowedDieTypes.includes(die.type))
             }
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
