@@ -11,9 +11,10 @@ class Plane extends APP_GameClass {
     public int $brake;
     public int $approach;
     public int $altitude;
+    public int $kerosene;
     public array $switches;
 
-    public function __construct($axis, $aerodynamicsBlue, $aerodynamicsOrange, $brake, $approach, $altitude)
+    public function __construct($axis, $aerodynamicsBlue, $aerodynamicsOrange, $brake, $approach, $altitude, $kerosene)
     {
         $this->axis = $axis;
         $this->aerodynamicsBlue = $aerodynamicsBlue;
@@ -21,6 +22,7 @@ class Plane extends APP_GameClass {
         $this->brake = $brake;
         $this->approach = $approach;
         $this->altitude = $altitude;
+        $this->kerosene = $kerosene;
         $this->switches = PlaneSwitch::fromArray(self::getCollectionFromDB('SELECT * FROM plane_switch'));
     }
 
@@ -30,6 +32,7 @@ class Plane extends APP_GameClass {
             intval($dbCard['aerodynamics_orange']),
             intval($dbCard['brake']),
             intval($dbCard['approach']),
-            intval($dbCard['altitude']));
+            intval($dbCard['altitude']),
+            intval($dbCard['kerosene']));
     }
 }

@@ -21,6 +21,19 @@
   &[data-type="brakes-red"] {background-position: 100% 0;}
 }
 
+.st-kerosene-marker {
+  background-image: url("img/skyteam-kerosene-marker.png");
+  background-size: cover;
+  height: 54px;
+  width: 39px;
+  &.small {
+    height: 32px;
+    width: 23px;
+  }
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .st-token {
   background-image: url('img/skyteam-tokens.png');
   width: 45px;

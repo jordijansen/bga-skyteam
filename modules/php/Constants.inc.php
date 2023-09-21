@@ -37,12 +37,14 @@ const ACTION_SPACE_LANDING_GEAR = 'landing-gear';
 const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
 const ACTION_SPACE_CONCENTRATION = 'concentration';
+const ACTION_SPACE_KEROSENE = 'kerosene';
 
 
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';
 const MANDATORY = 'mandatory';
 const REQUIRES_SWITCH_IN = 'requiresSwitchIn';
+const MODULE = 'module';
 
 /**
  * Failure Reasons
@@ -52,6 +54,8 @@ const FAILURE_COLLISION = 'failure-collision';
 const FAILURE_OVERSHOOT = 'failure-overshoot';
 const FAILURE_TURN = 'failure-turn';
 const FAILURE_CRASH_LANDED = 'failure-crash-landed';
+const FAILURE_KEROSENE = 'failure-kerosene';
+
 
 /**
  * Victory Conditions
@@ -163,6 +167,7 @@ const WORKING_TOGETHER_ACTIVATED = 'WORKING_TOGETHER_ACTIVATED';
 const SWAP_DICE_FIRST_DIE = 'SWAP_DICE_FIRST_DIE';
 const SYNCHRONISATION_ACTIVATED = 'SYNCHRONISATION_ACTIVATED';
 const SYNCHRONISATION_DIE_ID = 'SYNCHRONISATION_DIE_ID';
+const KEROSENE_ACTIVATED = 'KEROSENE_ACTIVATED';
 
 /**
  * Approaches

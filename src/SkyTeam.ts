@@ -446,6 +446,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('Crash Landing');
             case 'failure-turn':
                 return _('Turn Failure');
+            case 'failure-kerosene':
+                return _('Ran out of Kerosene');
         }
     }
 
@@ -461,6 +463,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('You have crash landed before reaching the airport; you have lost the game!');
             case 'failure-turn':
                 return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.')
+            case 'failure-kerosene':
+                return _('At any time during the game, even in the final round, if you hit the X space on the Kerosene track, you have run out of kerosene and you’ve lost the game!')
         }
         return '';
     }
@@ -598,6 +602,8 @@ class SkyTeam implements SkyTeamGame {
             ['newRoundStarted', 1],
             ['trafficDieRolled', undefined],
             ['trafficDiceReturned', 1],
+            ['planeKeroseneChanged', 1],
+            ['diceRemoved', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -733,6 +739,14 @@ class SkyTeam implements SkyTeamGame {
         this.diceManager.trafficDiceStock.removeAll();
     }
 
+    private notif_planeKeroseneChanged(args: NotifPlaneKeroseneChanged) {
+        return this.planeManager.updateKerosene(args.kerosene);
+    }
+
+    private notif_diceRemoved(args: NotifDiceRemoved) {
+        this.actionSpaceManager.removeDice(args.dice);
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
@@ -749,6 +763,8 @@ class SkyTeam implements SkyTeamGame {
                         args[argKey] = this.planeMarkerIcon(args[argKey])
                     } else if (argKey.startsWith('icon_switch') && typeof args[argKey] == 'number') {
                         args[argKey] = this.switchIcon()
+                    } else if (argKey.startsWith('icon_kerosene_marker')  && typeof args[argKey] == 'string') {
+                        args[argKey] = this.keroseneMarkerIcon()
                     }
                 })
             }
@@ -782,7 +798,11 @@ class SkyTeam implements SkyTeamGame {
     }
 
     public switchIcon() {
-        return `<span class="st-plane-switch"></span>`
+        return `<span class="st-plane-switch small"></span>`
+    }
+
+    public keroseneMarkerIcon() {
+        return `<span class="st-kerosene-marker small"></span>`
     }
 
     public diceIcon(die: Dice, additionalStyle: string = '') {

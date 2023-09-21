@@ -8,32 +8,61 @@
   border-radius: 10px;
 }
 
+#st-main-board-left {
+  position: absolute;
+  left: 0;
+  height: 850px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+  #st-kerosene-board {
+    background-image: url("img/skyteam-kerosene-board.jpg");
+    width: 118px;
+    height: 637px;
+    #st-kerosene-marker {
+      position: absolute;
+      bottom: 27px;
+      left: 51px;
+      transition-property: bottom;
+      transition-duration: 1s;
+      transition-timing-function: ease-in-out;
+      @for $row from 0 through 20 {
+        &[data-value="#{$row}"] { bottom: 27px + (($row + 1) * 21.71428px); }
+      }
+    }
+  }
+  #st-token-reserve-coffee {
+    padding-bottom: 10px;
+    padding-right: 10px;
+  }
+}
+
+#st-main-board-right {
+  height: 850px;
+  position: absolute;
+  left: 118px + 607px;
+}
+
 #st-game {
   #st-game-boards-wrapper {
     display: flex;
     justify-content: center;
 
     #st-main-board-wrapper {
-      width: 607px;
+      width: 1000px;
       height: 1550px;
       #st-plane-board-wrapper {
         position: absolute;
         z-index: 2;
+        display: flex;
+        justify-content: center;
         #st-main-board {
           background-image: url("img/skyteam-main-board.png");
           width: 607px;
           height: 850px;
-
-          #st-main-board-right {
-            position: absolute;
-            right: -$special-ability-card-width;
-            top: 0;
-            #st-main-board-special-abilities {
-              .card {
-                left: 5px;
-              }
-            }
-          }
+          position: absolute;
+          left: 118px;
 
           #st-plane-axis-indicator {
             background-image: url('img/skyteam-axis-indicator.png');
@@ -133,6 +162,7 @@
             #brakes-1 {bottom: 177px; left: 183px;}
             #brakes-2 {bottom: 177px; left: 276px;}
             #brakes-3 {bottom: 177px; left: 368px;}
+            #kerosene {left: -88px; top: 26px;}
           }
           #st-plane-switches {
             #plane-switch-landing-gear-1 { top: 386px; left: 18px; }
@@ -145,14 +175,6 @@
             #plane-switch-brakes-1 { top: 690px; left: 179px; }
             #plane-switch-brakes-2 { top: 690px; left: 272px; }
             #plane-switch-brakes-3 { top: 690px; left: 365px; }
-          }
-          #st-token-reserve-coffee {
-            position: absolute;
-            bottom: 5px;
-            left: -55px;
-            .card {
-              position: unset;
-            }
           }
           #st-token-reserve-plane, #st-token-reserve-reroll {
             top: -50px;
@@ -180,7 +202,7 @@
       #st-altitude-track {
         position: absolute;
         z-index: 1;
-        left: 333px;
+        left: 451px;
         transition-property: bottom;
         transition-duration: 1s;
         transition-timing-function: ease-in-out;
@@ -199,7 +221,7 @@
       #st-approach-track {
         position: absolute;
         z-index: 1;
-        left: 104px;
+        left: 222px;
         transition-property: bottom;
         transition-duration: 1s;
         transition-timing-function: ease-in-out;

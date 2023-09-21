@@ -13,9 +13,9 @@ class PlaneManager extends APP_DbObject
     function save(Plane $plane)
     {
         self::DbQuery("REPLACE INTO plane 
-                            (id, axis, aerodynamics_blue, aerodynamics_orange, brake, approach, altitude)
+                            (id, axis, aerodynamics_blue, aerodynamics_orange, brake, approach, altitude, kerosene)
                           VALUES
-                            (1, $plane->axis, $plane->aerodynamicsBlue, $plane->aerodynamicsOrange, $plane->brake, $plane->approach, $plane->altitude);"
+                            (1, $plane->axis, $plane->aerodynamicsBlue, $plane->aerodynamicsOrange, $plane->brake, $plane->approach, $plane->altitude, $plane->kerosene);"
         );
     }
 
@@ -63,8 +63,9 @@ class PlaneManager extends APP_DbObject
 
     function getAllActionSpaces(): array
     {
-        // TODO filter out module spaces
-        return SkyTeam::$instance->ACTION_SPACES;
+        return array_filter(SkyTeam::$instance->ACTION_SPACES, function($value, $key){
+            return !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     function resolveDicePlacement(Dice $die): bool
@@ -264,6 +265,23 @@ class PlaneManager extends APP_DbObject
                     'brake' => $plane->brake,
                     'icon_plane_marker' => 'brakes-red'
                 ]);
+            }
+        } else if ($actionSpace['type'] == ACTION_SPACE_KEROSENE) {
+            if (SkyTeam::$instance->isModuleActive(MODULE_KEROSENE)) {
+                $plane->kerosene = $plane->kerosene - $die->value;
+
+                SkyTeam::$instance->notifyAllPlayers( "planeKeroseneChanged", clienttranslate('Kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
+                    'kerosene' => $plane->kerosene,
+                    'icon_kerosene_marker' => 'kerosene_marker'
+                ]);
+
+                SkyTeam::$instance->setGlobalVariable(KEROSENE_ACTIVATED, true);
+
+                if ($plane->kerosene < 0) {
+                    SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_KEROSENE);
+                    SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                    $continue = false;
+                }
             }
         }
 

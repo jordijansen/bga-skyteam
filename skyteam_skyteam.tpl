@@ -35,6 +35,12 @@
                 <div id="st-approach-track" class="st-approach"></div>
             </div>
             <div id="st-plane-board-wrapper">
+                <div id="st-main-board-left">
+                    <div id="st-kerosene-board" class="st-board">
+                        <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
+                    </div>
+                    <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
+                </div>
                 <div id="st-main-board" class="st-board">
                     <div id="st-plane-axis-indicator" class="token"></div>
                     <div id="st-plane-aerodynamics-blue-marker" class="st-plane-marker token" data-type="aerodynamics-blue"></div>
@@ -44,14 +50,13 @@
                     <div id="st-available-reroll"></div>
                     <div id="st-action-spaces"></div>
                     <div id="st-plane-switches"></div>
-                    <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
                     <div id="st-token-reserve-plane" class="st-token-reserve"></div>
                     <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
                     <!-- MODULE BOARDS -->
-                    <div id="st-main-board-right">
-                        <div id="st-main-board-special-abilities"></div>
-                    </div>
+                </div>
+                <div id="st-main-board-right">
+                    <div id="st-main-board-special-abilities"></div>
                 </div>
             </div>
         </div>

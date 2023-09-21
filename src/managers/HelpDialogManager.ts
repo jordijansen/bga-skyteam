@@ -39,6 +39,8 @@ class HelpDialogManager {
                 return _('This is not the time to crack under pressure; concentrate and prepare your next manoeuvres.');
             case 'brakes':
                 return _('Brake enough to bring the plane to a halt once it touches the runway.');
+            case 'kerosene':
+                return _('Manage your fuel and land your plane before going dry!');
             default:
                 return '';
         }
@@ -60,6 +62,8 @@ class HelpDialogManager {
                 return _('Placing a die here will gain a Coffee token. You can never have more than 3 Coffee tokens. Any time you place a die you can spent Coffee tokens to increase/decrease the die value by 1. You can not change a 6 value into a 1 and vice versa.');
             case 'brakes':
                 return _('Place a die respecting the number constraint. The brakes must be deployed in order, starting with the 2 space. If this is the first die you place here, the Switch below the space is activated (green light) and The Brakes marker (red) is moved. The Brakes only have an impact in the game’s final round. Playing on a space whose Switch is already showing green has no effect.');
+            case 'kerosene':
+                return _('Placing a die here will reduce the Kerosene level by a number of spaces equal to the die value. If no die is placed here at the end of the round, the Kerosene level is lowered by 6.');
             default:
                 return '';
         }
@@ -71,6 +75,8 @@ class HelpDialogManager {
                 return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-axis')}</h1></br>${this.game.getFailureReasonText('failure-axis')}</p></div>`
             case 'engines':
                 return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-collision')}</h1></br>${this.game.getFailureReasonText('failure-collision')}</p></div><div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-overshoot')}</h1></br>${this.game.getFailureReasonText('failure-overshoot')}</p></div>`
+            case 'kerosene':
+                return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-kerosene')}</h1></br>${this.game.getFailureReasonText('failure-kerosene')}</p></div>`
             default:
                 return '';
         }

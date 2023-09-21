@@ -2023,18 +2023,21 @@ function sortFunction() {
     };
 }
 var determineBoardWidth = function (game) {
-    var BASE_BOARD = 607;
-    var COFFEE_RESERVE = 55 * 2;
-    var TRAFFIC_DICE = 110 * 2;
-    var WIND_PANEL = 280.5 * 2;
-    if (game.gamedatas.scenario.modules.includes('special-abilities') || game.gamedatas.scenario.modules.includes('wind')) {
-        console.log(BASE_BOARD + WIND_PANEL);
-        return BASE_BOARD + WIND_PANEL;
-    }
-    if (game.gamedatas.scenario.modules.includes('traffic')) {
-        return BASE_BOARD + TRAFFIC_DICE;
-    }
-    return BASE_BOARD + COFFEE_RESERVE;
+    // const BASE_BOARD = 607;
+    // const COFFEE_RESERVE = 55 * 2;
+    // const TRAFFIC_DICE = 110 * 2;
+    // const WIND_PANEL = 280.5 * 2;
+    //
+    // if (game.gamedatas.scenario.modules.includes('special-abilities') || game.gamedatas.scenario.modules.includes('wind')) {
+    //     console.log(BASE_BOARD + WIND_PANEL)
+    //     return BASE_BOARD + WIND_PANEL;
+    // }
+    //
+    // if (game.gamedatas.scenario.modules.includes('traffic')) {
+    //     return BASE_BOARD + TRAFFIC_DICE;
+    // }
+    // return BASE_BOARD + COFFEE_RESERVE;
+    return 1000;
 };
 var determineMaxZoomLevel = function (game) {
     var bodycoords = dojo.marginBox("zoom-overall");
@@ -2116,6 +2119,7 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
+        $(PlaneManager.KEROSENE_MARKER).dataset.value = data.plane.kerosene;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
         this.currentApproach = data.plane.approach;
@@ -2154,6 +2158,9 @@ var PlaneManager = /** @class */ (function () {
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
+        if (!data.scenario.modules.includes('kerosene')) {
+            $('st-kerosene-board').style.visibility = 'hidden';
+        }
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2204,10 +2211,15 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = brake;
         return this.game.delay(ANIMATION_MS);
     };
+    PlaneManager.prototype.updateKerosene = function (kerosene) {
+        $(PlaneManager.KEROSENE_MARKER).dataset.value = kerosene;
+        return this.game.delay(ANIMATION_MS);
+    };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
     PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
+    PlaneManager.KEROSENE_MARKER = 'st-kerosene-marker';
     PlaneManager.PLANE_ALTITUDE_TRACK = 'st-altitude-track';
     PlaneManager.PLANE_APPROACH_TRACK = 'st-approach-track';
     return PlaneManager;
@@ -2368,6 +2380,14 @@ var ActionSpaceManager = /** @class */ (function () {
     };
     ActionSpaceManager.prototype.resetActionSpaceOccupied = function () {
         document.querySelectorAll('.st-action-space-occupied').forEach(function (node) { return node.classList.remove('st-action-space-occupied'); });
+    };
+    ActionSpaceManager.prototype.removeDice = function (dice) {
+        var _this = this;
+        dice.forEach(function (die) { return Object.values(_this.actionSpaces).forEach(function (stock) {
+            if (stock.contains(die)) {
+                stock.removeCard(die);
+            }
+        }); });
     };
     ActionSpaceManager.prototype.actionSpaceClicked = function (id, event) {
         dojo.stopEvent(event);
@@ -2544,6 +2564,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('This is not the time to crack under pressure; concentrate and prepare your next manoeuvres.');
             case 'brakes':
                 return _('Brake enough to bring the plane to a halt once it touches the runway.');
+            case 'kerosene':
+                return _('Manage your fuel and land your plane before going dry!');
             default:
                 return '';
         }
@@ -2564,6 +2586,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Placing a die here will gain a Coffee token. You can never have more than 3 Coffee tokens. Any time you place a die you can spent Coffee tokens to increase/decrease the die value by 1. You can not change a 6 value into a 1 and vice versa.');
             case 'brakes':
                 return _('Place a die respecting the number constraint. The brakes must be deployed in order, starting with the 2 space. If this is the first die you place here, the Switch below the space is activated (green light) and The Brakes marker (red) is moved. The Brakes only have an impact in the game’s final round. Playing on a space whose Switch is already showing green has no effect.');
+            case 'kerosene':
+                return _('Placing a die here will reduce the Kerosene level by a number of spaces equal to the die value. If no die is placed here at the end of the round, the Kerosene level is lowered by 6.');
             default:
                 return '';
         }
@@ -2574,6 +2598,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-axis'), "</h1></br>").concat(this.game.getFailureReasonText('failure-axis'), "</p></div>");
             case 'engines':
                 return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div><div class=\"st-end-game-info-box failure\"><p><h1>").concat(this.game.getFailureReasonTitle('failure-overshoot'), "</h1></br>").concat(this.game.getFailureReasonText('failure-overshoot'), "</p></div>");
+            case 'kerosene':
+                return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-kerosene'), "</h1></br>").concat(this.game.getFailureReasonText('failure-kerosene'), "</p></div>");
             default:
                 return '';
         }
@@ -3196,6 +3222,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('Crash Landing');
             case 'failure-turn':
                 return _('Turn Failure');
+            case 'failure-kerosene':
+                return _('Ran out of Kerosene');
         }
     };
     SkyTeam.prototype.getFailureReasonText = function (failureReason) {
@@ -3210,6 +3238,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('You have crash landed before reaching the airport; you have lost the game!');
             case 'failure-turn':
                 return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.');
+            case 'failure-kerosene':
+                return _('At any time during the game, even in the final round, if you hit the X space on the Kerosene track, you have run out of kerosene and you’ve lost the game!');
         }
         return '';
     };
@@ -3332,6 +3362,8 @@ var SkyTeam = /** @class */ (function () {
             ['newRoundStarted', 1],
             ['trafficDieRolled', undefined],
             ['trafficDiceReturned', 1],
+            ['planeKeroseneChanged', 1],
+            ['diceRemoved', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3446,6 +3478,12 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_trafficDiceReturned = function () {
         this.diceManager.trafficDiceStock.removeAll();
     };
+    SkyTeam.prototype.notif_planeKeroseneChanged = function (args) {
+        return this.planeManager.updateKerosene(args.kerosene);
+    };
+    SkyTeam.prototype.notif_diceRemoved = function (args) {
+        this.actionSpaceManager.removeDice(args.dice);
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
         try {
@@ -3467,6 +3505,9 @@ var SkyTeam = /** @class */ (function () {
                     }
                     else if (argKey.startsWith('icon_switch') && typeof args[argKey] == 'number') {
                         args[argKey] = _this.switchIcon();
+                    }
+                    else if (argKey.startsWith('icon_kerosene_marker') && typeof args[argKey] == 'string') {
+                        args[argKey] = _this.keroseneMarkerIcon();
                     }
                 });
             }
@@ -3496,7 +3537,10 @@ var SkyTeam = /** @class */ (function () {
         return "<span class=\"st-plane-marker token small\" data-type=\"".concat(type, "\"></span>");
     };
     SkyTeam.prototype.switchIcon = function () {
-        return "<span class=\"st-plane-switch\"></span>";
+        return "<span class=\"st-plane-switch small\"></span>";
+    };
+    SkyTeam.prototype.keroseneMarkerIcon = function () {
+        return "<span class=\"st-kerosene-marker small\"></span>";
     };
     SkyTeam.prototype.diceIcon = function (die, additionalStyle) {
         if (additionalStyle === void 0) { additionalStyle = ''; }

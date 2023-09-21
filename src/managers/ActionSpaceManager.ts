@@ -67,6 +67,14 @@ class ActionSpaceManager {
         document.querySelectorAll('.st-action-space-occupied').forEach(node => node.classList.remove('st-action-space-occupied'))
     }
 
+    public removeDice(dice: Dice[]) {
+        dice.forEach(die => Object.values(this.actionSpaces).forEach(stock => {
+            if (stock.contains(die)) {
+                stock.removeCard(die);
+            }
+        }))
+    }
+
     private actionSpaceClicked(id, event) {
         dojo.stopEvent(event);
         const target = $(id);

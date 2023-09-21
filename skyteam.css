@@ -340,30 +340,122 @@ body > .card {
   border-radius: 10px;
 }
 
+#st-main-board-left {
+  position: absolute;
+  left: 0;
+  height: 850px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+}
+#st-main-board-left #st-kerosene-board {
+  background-image: url("img/skyteam-kerosene-board.jpg");
+  width: 118px;
+  height: 637px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker {
+  position: absolute;
+  bottom: 27px;
+  left: 51px;
+  transition-property: bottom;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="0"] {
+  bottom: 48.71428px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="1"] {
+  bottom: 70.42856px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="2"] {
+  bottom: 92.14284px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="3"] {
+  bottom: 113.85712px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="4"] {
+  bottom: 135.5714px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="5"] {
+  bottom: 157.28568px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="6"] {
+  bottom: 178.99996px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="7"] {
+  bottom: 200.71424px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="8"] {
+  bottom: 222.42852px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="9"] {
+  bottom: 244.1428px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="10"] {
+  bottom: 265.85708px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="11"] {
+  bottom: 287.57136px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="12"] {
+  bottom: 309.28564px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="13"] {
+  bottom: 330.99992px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="14"] {
+  bottom: 352.7142px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="15"] {
+  bottom: 374.42848px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="16"] {
+  bottom: 396.14276px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="17"] {
+  bottom: 417.85704px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="18"] {
+  bottom: 439.57132px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="19"] {
+  bottom: 461.2856px;
+}
+#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="20"] {
+  bottom: 482.99988px;
+}
+#st-main-board-left #st-token-reserve-coffee {
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+
+#st-main-board-right {
+  height: 850px;
+  position: absolute;
+  left: 725px;
+}
+
 #st-game #st-game-boards-wrapper {
   display: flex;
   justify-content: center;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper {
-  width: 607px;
+  width: 1000px;
   height: 1550px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper {
   position: absolute;
   z-index: 2;
+  display: flex;
+  justify-content: center;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board {
   background-image: url("img/skyteam-main-board.png");
   width: 607px;
   height: 850px;
-}
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-main-board-right {
   position: absolute;
-  right: -278px;
-  top: 0;
-}
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-main-board-right #st-main-board-special-abilities .card {
-  left: 5px;
+  left: 118px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator {
   background-image: url("img/skyteam-axis-indicator.png");
@@ -623,6 +715,10 @@ body > .card {
   bottom: 177px;
   left: 368px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #kerosene {
+  left: -88px;
+  top: 26px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
@@ -663,14 +759,6 @@ body > .card {
   top: 690px;
   left: 365px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-coffee {
-  position: absolute;
-  bottom: 5px;
-  left: -55px;
-}
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-coffee .card {
-  position: unset;
-}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-plane, #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-reroll {
   top: -50px;
   position: absolute;
@@ -694,7 +782,7 @@ body > .card {
 #st-game #st-game-boards-wrapper #st-main-board-tracks #st-altitude-track {
   position: absolute;
   z-index: 1;
-  left: 333px;
+  left: 451px;
   transition-property: bottom;
   transition-duration: 1s;
   transition-timing-function: ease-in-out;
@@ -712,7 +800,7 @@ body > .card {
 #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track {
   position: absolute;
   z-index: 1;
-  left: 104px;
+  left: 222px;
   transition-property: bottom;
   transition-duration: 1s;
   transition-timing-function: ease-in-out;
@@ -823,6 +911,19 @@ body > .card {
 }
 .st-plane-marker[data-type=brakes-red] {
   background-position: 100% 0;
+}
+
+.st-kerosene-marker {
+  background-image: url("img/skyteam-kerosene-marker.png");
+  background-size: cover;
+  height: 54px;
+  width: 39px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.st-kerosene-marker.small {
+  height: 32px;
+  width: 23px;
 }
 
 .st-token {

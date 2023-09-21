@@ -76,6 +76,7 @@ trait StateTrait
 
         $this->setGlobalVariable(WORKING_TOGETHER_ACTIVATED, false);
         $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, false);
+        $this->setGlobalVariable(KEROSENE_ACTIVATED, false);
 
         $this->gamestate->setAllPlayersMultiactive();
         foreach ($this->gamestate->getActivePlayerList() as $playerId) {
@@ -166,6 +167,23 @@ trait StateTrait
 
     function stEndOfRound()
     {
+        if ($this->isModuleActive(MODULE_KEROSENE) && !$this->getGlobalVariable(KEROSENE_ACTIVATED)) {
+            $plane = $this->planeManager->get();
+            $plane->kerosene = $plane->kerosene - 6;
+            $this->planeManager->save($plane);
+
+            $this->notifyAllPlayers( "planeKeroseneChanged", clienttranslate('Kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
+                'kerosene' => $plane->kerosene,
+                'icon_kerosene_marker' => 'kerosene_marker'
+            ]);
+
+            if ($plane->kerosene < 0) {
+                $this->setGlobalVariable(FAILURE_REASON, FAILURE_KEROSENE);
+                $this->gamestate->nextState('failure');
+                return;
+            }
+        }
+
         $trafficDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_TRAFFIC));
         $this->dice->moveCards(array_map(fn($die) => $die->id, $trafficDice), LOCATION_DECK);
         $this->notifyAllPlayers("trafficDiceReturned", '', []);
@@ -202,7 +220,14 @@ trait StateTrait
             }
 
             // Remove remaining dice (traffic die if used with synchronisation)
-            $this->dice->moveAllCardsInLocation(LOCATION_PLANE, LOCATION_DECK);
+            $remainingDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE));
+            if (sizeof($remainingDice) > 0) {
+                $remainingDiceIds = array_map(fn($die) => $die->id, $remainingDice);
+                $this->dice->moveCards($remainingDiceIds, LOCATION_DECK);
+                $this->notifyAllPlayers('diceRemoved', '', [
+                    'dice' => Dice::fromArray($this->dice->getCards($remainingDiceIds))
+                ]);
+            }
 
             if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
                 // The plane has landed, let's see if we're at the airport
