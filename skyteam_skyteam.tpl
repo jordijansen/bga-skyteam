@@ -56,6 +56,9 @@
                     <!-- MODULE BOARDS -->
                 </div>
                 <div id="st-main-board-right">
+                    <div id="st-winds-board" class="st-board">
+                        <div id="st-winds-plane" class="st-winds-plane token" data-value="0"></div>
+                    </div>
                     <div id="st-main-board-special-abilities"></div>
                 </div>
             </div>

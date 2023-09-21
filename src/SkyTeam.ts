@@ -603,7 +603,8 @@ class SkyTeam implements SkyTeamGame {
             ['trafficDieRolled', undefined],
             ['trafficDiceReturned', 1],
             ['planeKeroseneChanged', 1],
-            ['diceRemoved', 1]
+            ['diceRemoved', 1],
+            ['windChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -745,6 +746,10 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRemoved(args: NotifDiceRemoved) {
         this.actionSpaceManager.removeDice(args.dice);
+    }
+
+    private notif_windChanged(args: NotifWindChanged) {
+        return this.planeManager.updateWind(args.wind);
     }
 
     public format_string_recursive(log: string, args: any) {

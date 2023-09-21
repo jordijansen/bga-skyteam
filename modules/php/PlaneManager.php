@@ -13,9 +13,9 @@ class PlaneManager extends APP_DbObject
     function save(Plane $plane)
     {
         self::DbQuery("REPLACE INTO plane 
-                            (id, axis, aerodynamics_blue, aerodynamics_orange, brake, approach, altitude, kerosene)
+                            (id, axis, aerodynamics_blue, aerodynamics_orange, brake, approach, altitude, kerosene, wind)
                           VALUES
-                            (1, $plane->axis, $plane->aerodynamicsBlue, $plane->aerodynamicsOrange, $plane->brake, $plane->approach, $plane->altitude, $plane->kerosene);"
+                            (1, $plane->axis, $plane->aerodynamicsBlue, $plane->aerodynamicsOrange, $plane->brake, $plane->approach, $plane->altitude, $plane->kerosene, $plane->wind);"
         );
     }
 
@@ -105,6 +105,13 @@ class PlaneManager extends APP_DbObject
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                     $continue = false;
+                } else if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                    $plane->wind = $plane->wind + $plane->axis;
+                    SkyTeam::$instance->notifyAllPlayers( "windChanged", clienttranslate('The wind changed by ${axis} clicks, new wind modifier is <b>${windModifier}</b>'), [
+                        'axis' => $plane->axis,
+                        'wind' => $plane->wind,
+                        'windModifier' => $plane->getWindModifier() > 0 ? '+'.$plane->getWindModifier() : $plane->getWindModifier()
+                    ]);
                 }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_ENGINES) {
@@ -116,11 +123,17 @@ class PlaneManager extends APP_DbObject
                 if (sizeof($otherEngineSpaceDice) > 0) {
                     $otherEngineSpaceDie = current($otherEngineSpaceDice);
                     $totalEngineValue = $die->side + $otherEngineSpaceDie->side;
+                    $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
+                    if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                        $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
+                        $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue} (wind modifier: ${windModifier})</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)');
+                    }
+
                     $planeCollision = false;
                     $planeTurnFailure = false;
                     if ($totalEngineValue < $plane->aerodynamicsBlue) {
                         $advanceApproachSpaces = 0;
-                    } else if ($totalEngineValue >= $plane->aerodynamicsBlue && $totalEngineValue <= $plane->aerodynamicsOrange) {
+                    } else if ($totalEngineValue <= $plane->aerodynamicsOrange) {
                         $advanceApproachSpaces = 1;
                         if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0) {
                             $planeCollision = true;
@@ -133,9 +146,10 @@ class PlaneManager extends APP_DbObject
                         }
                     }
 
-                    SkyTeam::$instance->notifyAllPlayers( "gameLog", clienttranslate('The plane engines are at <b>${totalEngineValue}</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)'), [
+                    SkyTeam::$instance->notifyAllPlayers( "gameLog", $logMessage, [
                         'totalEngineValue' => $totalEngineValue,
-                        'advanceApproachSpaces' => $advanceApproachSpaces
+                        'advanceApproachSpaces' => $advanceApproachSpaces,
+                        'windModifier' => $plane->getWindModifier() > 0 ? '+'.$plane->getWindModifier() : $plane->getWindModifier()
                     ]);
 
                     for ($i = 1; $i <= $advanceApproachSpaces; $i++) {
@@ -328,6 +342,9 @@ class PlaneManager extends APP_DbObject
                     $dice2 = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, 'engines-2'));
                     if (sizeof($dice1) == 1 && sizeof($dice2) == 1) {
                         $totalEngineValue = current($dice1)->side + current($dice2)->side;
+                        if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                            $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
+                        }
                         if ($totalEngineValue < $plane->brake) {
                             $victoryCondition['status'] = 'success';
                         }

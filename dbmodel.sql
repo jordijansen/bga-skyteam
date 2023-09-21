@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `plane` (
     `approach` int(11) unsigned NOT NULL,
     `altitude` int(11) unsigned NOT NULL,
     `kerosene` int(11) NOT NULL,
+    `wind` int(11) unsigned NOT NULL,
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

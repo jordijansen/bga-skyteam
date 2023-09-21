@@ -129,6 +129,19 @@ $this->APPROACH_TRACKS = [
             2 => [ALLOWED_AXIS => [1, 2]],
             1 => [DICE_TRAFFIC => 2],
         ]
+    ],
+    APPROACH_RED_TGU_TONCONTIN => [
+        'type' => APPROACH_RED_TGU_TONCONTIN,
+        'category' => APPROACH_RED,
+        'name' => 'TGU Toncontin',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 2, ALLOWED_AXIS => [-1, 0]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
     ]
 ];
 
@@ -148,6 +161,12 @@ $this->SCENARIOS = [
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_RED_TGU_TONCONTIN => [
+        'approach' => APPROACH_RED_TGU_TONCONTIN,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
     ]
 ];
 
@@ -160,6 +179,20 @@ $this->ALTITUDE_TRACKS = [
             7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
             6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT],
             5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
+    ],
+    ALTITUDE_RED_BLACK => [
+        'type' => ALTITUDE_RED_BLACK,
+        'categories' => [APPROACH_RED, APPROACH_BLACK],
+        'size' => 7,
+        'spaces' => [
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT],
             4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT],
             3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT],
             2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT],

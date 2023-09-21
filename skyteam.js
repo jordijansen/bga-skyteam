@@ -2120,6 +2120,7 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
         $(PlaneManager.KEROSENE_MARKER).dataset.value = data.plane.kerosene;
+        $(PlaneManager.WINDS_PLANE).dataset.value = data.plane.wind;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
         this.currentApproach = data.plane.approach;
@@ -2215,11 +2216,16 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.KEROSENE_MARKER).dataset.value = kerosene;
         return this.game.delay(ANIMATION_MS);
     };
+    PlaneManager.prototype.updateWind = function (wind) {
+        $(PlaneManager.WINDS_PLANE).dataset.value = wind;
+        return this.game.delay(ANIMATION_MS);
+    };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
     PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     PlaneManager.KEROSENE_MARKER = 'st-kerosene-marker';
+    PlaneManager.WINDS_PLANE = 'st-winds-plane';
     PlaneManager.PLANE_ALTITUDE_TRACK = 'st-altitude-track';
     PlaneManager.PLANE_APPROACH_TRACK = 'st-approach-track';
     return PlaneManager;
@@ -2268,7 +2274,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
-        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication.<br/>Non-game communication is allowed.'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i></h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i><br/>").concat(_('Non-game communication is allowed.'), "</h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
         var _this = this;
@@ -3363,7 +3369,8 @@ var SkyTeam = /** @class */ (function () {
             ['trafficDieRolled', undefined],
             ['trafficDiceReturned', 1],
             ['planeKeroseneChanged', 1],
-            ['diceRemoved', 1]
+            ['diceRemoved', 1],
+            ['windChanged', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3483,6 +3490,9 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_diceRemoved = function (args) {
         this.actionSpaceManager.removeDice(args.dice);
+    };
+    SkyTeam.prototype.notif_windChanged = function (args) {
+        return this.planeManager.updateWind(args.wind);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

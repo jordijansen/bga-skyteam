@@ -434,6 +434,81 @@ body > .card {
   height: 850px;
   position: absolute;
   left: 725px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#st-main-board-right #st-winds-board {
+  background-image: url("img/skyteam-winds-board.png");
+  width: 278px;
+  height: 278px;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#st-main-board-right #st-winds-board #st-winds-plane {
+  transition: transform 1s ease-in-out;
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="0"] {
+  transform: rotate(0deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="1"] {
+  transform: rotate(18deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="2"] {
+  transform: rotate(36deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="3"] {
+  transform: rotate(54deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="4"] {
+  transform: rotate(72deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="5"] {
+  transform: rotate(90deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="6"] {
+  transform: rotate(108deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="7"] {
+  transform: rotate(126deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="8"] {
+  transform: rotate(144deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="9"] {
+  transform: rotate(162deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="10"] {
+  transform: rotate(180deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="11"] {
+  transform: rotate(198deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="12"] {
+  transform: rotate(216deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="13"] {
+  transform: rotate(234deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="14"] {
+  transform: rotate(252deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="15"] {
+  transform: rotate(270deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="16"] {
+  transform: rotate(288deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="17"] {
+  transform: rotate(306deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="18"] {
+  transform: rotate(324deg);
+}
+#st-main-board-right #st-winds-board #st-winds-plane[data-value="19"] {
+  transform: rotate(342deg);
 }
 
 #st-game #st-game-boards-wrapper {
@@ -924,6 +999,15 @@ body > .card {
 .st-kerosene-marker.small {
   height: 32px;
   width: 23px;
+}
+
+.st-winds-plane {
+  background-image: url("img/skyteam-winds-plane.png");
+  background-size: cover;
+  height: 183px;
+  width: 172px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .st-token {

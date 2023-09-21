@@ -6,6 +6,7 @@ interface Plane {
     aerodynamicsOrange: number,
     brake: number,
     kerosene: number,
+    wind: number,
     switches: {[id: string]: PlaneSwitch}
 }
 
@@ -226,4 +227,8 @@ interface NotifPlaneKeroseneChanged {
 
 interface NotifDiceRemoved {
     dice: Dice[]
+}
+
+interface NotifWindChanged {
+    wind: number;
 }

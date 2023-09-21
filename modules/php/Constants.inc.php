@@ -87,6 +87,7 @@ const SCENARIO_OPTION = 'scenario';
 const MODULE_TRAFFIC = 'traffic';
 const MODULE_TURNS = 'turns';
 const MODULE_KEROSENE = 'kerosene';
+const MODULE_WINDS = 'winds';
 const MODULE_SPECIAL_ABILITIES = 'special-abilities';
 
 

@@ -57,7 +57,7 @@ trait SetupTrait
 
     private function setInitialPlaneParameters()
     {
-        $this->planeManager->save(new Plane(0, 4, 8, 0, 1, 1, 20));
+        $this->planeManager->save(new Plane(0, 4, 8, 0, 1, 1, 20, 10));
         $query = 'INSERT INTO plane_switch (id, value) VALUES ';
         $queryValues = [];
         foreach ($this->PLANE_SWITCHES as $i => $planeSwitch) {

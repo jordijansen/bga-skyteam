@@ -8,6 +8,7 @@ class PlaneManager  {
     private static readonly PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
     private static readonly PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     private static readonly KEROSENE_MARKER = 'st-kerosene-marker';
+    private static readonly WINDS_PLANE = 'st-winds-plane';
     private static readonly PLANE_ALTITUDE_TRACK = 'st-altitude-track';
     private static readonly PLANE_APPROACH_TRACK = 'st-approach-track';
     public approachTokenStock: SlotStock<Card>;
@@ -26,6 +27,7 @@ class PlaneManager  {
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
         $(PlaneManager.PLANE_BRAKE_MARKER).dataset.value = data.plane.brake;
         $(PlaneManager.KEROSENE_MARKER).dataset.value = data.plane.kerosene;
+        $(PlaneManager.WINDS_PLANE).dataset.value = data.plane.wind;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
 
@@ -139,6 +141,11 @@ class PlaneManager  {
 
     public updateKerosene(kerosene: number) {
         $(PlaneManager.KEROSENE_MARKER).dataset.value = kerosene;
+        return this.game.delay(ANIMATION_MS);
+    }
+
+    public updateWind(wind: number) {
+        $(PlaneManager.WINDS_PLANE).dataset.value = wind;
         return this.game.delay(ANIMATION_MS);
     }
 }

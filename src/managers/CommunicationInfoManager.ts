@@ -37,7 +37,7 @@ class CommunicationInfoManager  {
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
 
-        dojo.place(`<h2><i class="fa fa-ban" aria-hidden="true"></i> ${_('No communication.<br/>Non-game communication is allowed.')} <i class="fa fa-ban" aria-hidden="true"></i></h2><i id="${this.closeButtonId}" class="fa fa-times" aria-hidden="true"></i>`, element)
+        dojo.place(`<h2><i class="fa fa-ban" aria-hidden="true"></i> ${_('No communication')} <i class="fa fa-ban" aria-hidden="true"></i><br/>${_('Non-game communication is allowed.')}</h2><i id="${this.closeButtonId}" class="fa fa-times" aria-hidden="true"></i>`, element)
     }
 
     public update(newPhase: SkyTeamGameData['phase']) {

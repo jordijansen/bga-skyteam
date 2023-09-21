@@ -67,6 +67,11 @@ $game_options = [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You are right to be concerned about Malaysia’s electrical storms... Keep your plane in line between the storm masses. It will be a bumpy landing in Kuala Lumpur.'),
                 'nobeginner' => true,
+            ],
+            APPROACH_RED_TGU_TONCONTIN => [
+                'name' => totranslate('Red: TGU Toncontín'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & 2 Special Abilities. When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
+                'nobeginner' => true,
             ]
         ]
     ]

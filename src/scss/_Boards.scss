@@ -42,6 +42,25 @@
   height: 850px;
   position: absolute;
   left: 118px + 607px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  #st-winds-board {
+    background-image: url("img/skyteam-winds-board.png");
+    width: 278px;
+    height: 278px;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    #st-winds-plane {
+      transition: transform 1s ease-in-out;
+      @for $i from 0 through 19 {
+        &[data-value="#{$i}"] { transform: rotate($i * 18deg); }
+      }
+    }
+  }
 }
 
 #st-game {
