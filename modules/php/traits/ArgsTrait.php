@@ -3,6 +3,7 @@
 namespace traits;
 
 use managers\objects\SpecialAbilityCard;
+use objects\Dice;
 
 trait ArgsTrait
 {
@@ -28,14 +29,18 @@ trait ArgsTrait
 
     function argDicePlacementSelect()
     {
-        $adaptationActive = $this->isSpecialAbilityActive(ADAPTATION);
-        $adaptationActive = $adaptationActive && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+        $canActivateAdaptation = $this->isSpecialAbilityActive(ADAPTATION);
+        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+
+        $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
+        $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED);
 
         return [
             'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId()),
-            'canActivateAdaptation' => $adaptationActive
+            'canActivateAdaptation' => $canActivateAdaptation,
+            'canActivateWorkingTogether' => $canActivateWorkingTogether
         ];
     }
 
@@ -43,6 +48,17 @@ trait ArgsTrait
     {
         return [
           'maxNumberOfDice' => $this->getGlobalVariable(REROLL_DICE_AMOUNT)
+        ];
+    }
+
+    function argSwapDice()
+    {
+        $firstDie = $this->getGlobalVariable(SWAP_DICE_FIRST_DIE);
+        if (isset($firstDie)) {
+            $firstDie = Dice::from($this->dice->getCard($firstDie));
+        }
+        return [
+            'firstDie' => $firstDie
         ];
     }
 }

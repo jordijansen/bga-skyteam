@@ -108,6 +108,7 @@ interface DicePlacementSelectArgs {
     nrOfCoffeeAvailable: number;
     availableActionSpaces: {[actionSpaceId: string]: ActionSpace};
     canActivateAdaptation: boolean;
+    canActivateWorkingTogether: boolean;
 }
 
 interface PlayerSetupArgs {
@@ -117,6 +118,10 @@ interface PlayerSetupArgs {
 
 interface RerollDiceArgs {
     maxNumberOfDice: number
+}
+
+interface SwapDiceArgs {
+    firstDie: Dice
 }
 
 // NOTIFS

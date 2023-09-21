@@ -2904,6 +2904,8 @@ var SkyTeam = /** @class */ (function () {
                 break;
             case 'flipDie':
                 this.enteringFlipDie();
+            case 'swapDice':
+                this.enteringSwapDice();
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function (args) {
@@ -2928,6 +2930,12 @@ var SkyTeam = /** @class */ (function () {
         }
     };
     SkyTeam.prototype.enteringFlipDie = function () {
+        this.diceManager.toggleShowPlayerDice(true);
+        if (this.isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('single');
+        }
+    };
+    SkyTeam.prototype.enteringSwapDice = function () {
         this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('single');
@@ -3031,6 +3039,13 @@ var SkyTeam = /** @class */ (function () {
                     this.addActionButton('rerollDice', _("Flip selected die"), function () { return _this.flipDie(); });
                     this.addActionButton('cancel', _("Cancel"), function () { return _this.cancelAdaptation(); }, null, null, 'gray');
                     break;
+                case 'swapDice':
+                    var swapDiceArgs = args;
+                    var SwapDieButtonText = swapDiceArgs.firstDie ? "<span>".concat(dojo.string.substitute(_("Swap selected die value with ${die}"), { die: this.diceIcon(swapDiceArgs.firstDie, 'margin-left: -9px; margin-right: 9px;') }), "</span>") : _('Swap selected die value');
+                    this.addActionButton('swapDie', SwapDieButtonText, function () { return _this.swapDie(args.firstDie); });
+                    if (!swapDiceArgs.firstDie) {
+                        this.addActionButton('cancel', _("Cancel"), function () { return _this.cancelSwap(); }, null, null, 'gray');
+                    }
             }
             if (args === null || args === void 0 ? void 0 : args.canCancelMoves) {
                 this.addActionButton('undoLast', _("Undo last"), function () { return _this.undoLast(); }, null, null, 'red');
@@ -3042,6 +3057,9 @@ var SkyTeam = /** @class */ (function () {
                 case 'dicePlacementSelect':
                     if (args.nrOfRerollAvailable > 0) {
                         this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
+                    }
+                    if (args.canActivateWorkingTogether) {
+                        this.addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), function () { return _this.requestSwap(); }, null, null, 'gray');
                     }
                     break;
             }
@@ -3089,9 +3107,16 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.requestAdaptation = function () {
         this.takeAction('requestAdaptation');
     };
+    SkyTeam.prototype.requestSwap = function () {
+        this.takeAction('requestSwap');
+    };
     SkyTeam.prototype.cancelAdaptation = function () {
         this.diceManager.setSelectionMode('none');
         this.takeAction('cancelAdaptation');
+    };
+    SkyTeam.prototype.cancelSwap = function () {
+        this.diceManager.setSelectionMode('none');
+        this.takeAction('cancelSwap');
     };
     SkyTeam.prototype.rerollDice = function () {
         var _this = this;
@@ -3114,6 +3139,24 @@ var SkyTeam = /** @class */ (function () {
             _this.diceManager.setSelectionMode('none');
             _this.takeNoLockAction('flipDie', { payload: JSON.stringify({ selectedDieId: selectedDieId }) });
         }, dojo.string.substitute(_('Do you want to flip ${originalDie} to ${newDie}? This action cannot be undone.'), { originalDie: this.diceIcon(selectedDie), newDie: this.diceIcon(__assign(__assign({}, selectedDie), { side: 7 - selectedDie.side })) }));
+    };
+    SkyTeam.prototype.swapDie = function (firstDie) {
+        var _this = this;
+        var selectedDice = this.diceManager.playerDiceStock.getSelection();
+        if (selectedDice.length !== 1) {
+            this.showMessage(_("You need to select a die to swap"), 'error');
+            return;
+        }
+        var selectedDie = selectedDice[0];
+        var selectedDieId = selectedDie.id;
+        var confirmText = dojo.string.substitute(_('Do you want to swap ${die}? This action cannot be undone.'), { die: this.diceIcon(selectedDie) });
+        if (firstDie) {
+            confirmText = dojo.string.substitute(_('Do you want to swap the values of ${die} and ${firstDie}? This action cannot be undone.'), { die: this.diceIcon(selectedDie), firstDie: this.diceIcon(firstDie) });
+        }
+        this.wrapInConfirm(function () {
+            _this.diceManager.setSelectionMode('none');
+            _this.takeNoLockAction('swapDie', { payload: JSON.stringify({ selectedDieId: selectedDieId }) });
+        }, confirmText);
     };
     SkyTeam.prototype.undoLast = function () {
         this.takeNoLockAction('undoLast');
@@ -3441,8 +3484,9 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.switchIcon = function () {
         return "<span class=\"st-plane-switch\"></span>";
     };
-    SkyTeam.prototype.diceIcon = function (die) {
-        return "<span class=\"st-dice small\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");
+    SkyTeam.prototype.diceIcon = function (die, additionalStyle) {
+        if (additionalStyle === void 0) { additionalStyle = ''; }
+        return "<span class=\"st-dice small\" data-type=\"".concat(die.typeArg, "\" data-value=\"").concat(die.side, "\" style=\"").concat(additionalStyle, "\">\n                    <span class=\"side\" data-side=\"1\"></span>\n                    <span class=\"side\" data-side=\"2\"></span>\n                    <span class=\"side\" data-side=\"3\"></span>\n                    <span class=\"side\" data-side=\"4\"></span>\n                    <span class=\"side\" data-side=\"5\"></span>\n                    <span class=\"side\" data-side=\"6\"></span>\n               </span>");
     };
     return SkyTeam;
 }());

@@ -122,7 +122,9 @@ $gameStates = [
         "args" => "argDicePlacementSelect",
         "possibleactions" => [
             ACT_DICE_PLACEMENT_SELECT,
-            ACT_START_REROLL
+            ACT_START_REROLL,
+            ACT_START_FLIP,
+            ACT_START_SWAP
         ],
         "transitions" => [
             "" => ST_DICE_PLACEMENT_NEXT
@@ -140,7 +142,7 @@ $gameStates = [
     ],
     ST_REROLL_DICE => [
         "name" => "rerollDice",
-        "description" => clienttranslate('Waiting for players to re-roll dice'),
+        "description" => clienttranslate('Waiting for player to re-roll dice'),
         "descriptionmyturn" => clienttranslate('${you} may re-roll dice (max ${maxNumberOfDice})'),
         "type" => "multipleactiveplayer",
         "args" => "argRerollDice",
@@ -158,6 +160,19 @@ $gameStates = [
         "type" => "activeplayer",
         "possibleactions" => [
             ACT_FLIP
+        ],
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_SELECT
+        ],
+    ],
+    ST_SWAP_DICE => [
+        "name" => "swapDice",
+        "description" => clienttranslate('Waiting for player to swap a die'),
+        "descriptionmyturn" => clienttranslate('${you} must select a die to swap values for'),
+        "type" => "multipleactiveplayer",
+        "args" => "argSwapDice",
+        "possibleactions" => [
+            ACT_SWAP
         ],
         "transitions" => [
             '' => ST_DICE_PLACEMENT_SELECT

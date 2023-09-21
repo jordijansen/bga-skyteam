@@ -136,6 +136,8 @@ class SkyTeam implements SkyTeamGame {
                 break;
             case 'flipDie':
                 this.enteringFlipDie();
+            case 'swapDice':
+                this.enteringSwapDice();
         }
     }
 
@@ -162,6 +164,13 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private enteringFlipDie() {
+        this.diceManager.toggleShowPlayerDice(true);
+        if ((this as any).isCurrentPlayerActive()) {
+            this.diceManager.setSelectionMode('single');
+        }
+    }
+
+    private enteringSwapDice() {
         this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
             this.diceManager.setSelectionMode('single');
@@ -269,6 +278,14 @@ class SkyTeam implements SkyTeamGame {
                     (this as any).addActionButton('rerollDice', _("Flip selected die"), () => this.flipDie());
                     (this as any).addActionButton('cancel', _("Cancel"), () => this.cancelAdaptation(), null, null, 'gray');
                     break;
+                case 'swapDice':
+                    const swapDiceArgs = args as SwapDiceArgs;
+                    const SwapDieButtonText = swapDiceArgs.firstDie ? `<span>${dojo.string.substitute(_("Swap selected die value with ${die}"), { die: this.diceIcon(swapDiceArgs.firstDie, 'margin-left: -9px; margin-right: 9px;') })}</span>` : _('Swap selected die value');
+                    (this as any).addActionButton('swapDie', SwapDieButtonText, () => this.swapDie(args.firstDie));
+                    if (!swapDiceArgs.firstDie) {
+                        (this as any).addActionButton('cancel', _("Cancel"), () => this.cancelSwap(), null, null, 'gray');
+                    }
+
             }
 
             if (args?.canCancelMoves) {
@@ -281,6 +298,9 @@ class SkyTeam implements SkyTeamGame {
                 case 'dicePlacementSelect':
                     if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
                         (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
+                    }
+                    if ((args as DicePlacementSelectArgs).canActivateWorkingTogether) {
+                        (this as any).addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), () => this.requestSwap(), null, null, 'gray');
                     }
                     break;
             }
@@ -336,9 +356,18 @@ class SkyTeam implements SkyTeamGame {
         this.takeAction('requestAdaptation');
     }
 
+    private requestSwap() {
+        this.takeAction('requestSwap');
+    }
+
     private cancelAdaptation() {
         this.diceManager.setSelectionMode('none');
         this.takeAction('cancelAdaptation');
+    }
+
+    private cancelSwap() {
+        this.diceManager.setSelectionMode('none');
+        this.takeAction('cancelSwap');
     }
 
     private rerollDice() {
@@ -362,7 +391,26 @@ class SkyTeam implements SkyTeamGame {
             this.diceManager.setSelectionMode('none');
             this.takeNoLockAction('flipDie', {payload: JSON.stringify({selectedDieId})});
         }, dojo.string.substitute(_('Do you want to flip ${originalDie} to ${newDie}? This action cannot be undone.'), { originalDie: this.diceIcon(selectedDie), newDie: this.diceIcon({...selectedDie, side: 7 - selectedDie.side}) }))
+    }
 
+    private swapDie(firstDie) {
+        const selectedDice = this.diceManager.playerDiceStock.getSelection();
+        if (selectedDice.length !== 1) {
+            (this as any).showMessage(_("You need to select a die to swap"), 'error')
+            return;
+        }
+        const selectedDie = selectedDice[0];
+        const selectedDieId = selectedDie.id;
+
+        let confirmText = dojo.string.substitute(_('Do you want to swap ${die}? This action cannot be undone.'), { die: this.diceIcon(selectedDie) });
+        if (firstDie) {
+            confirmText = dojo.string.substitute(_('Do you want to swap the values of ${die} and ${firstDie}? This action cannot be undone.'), { die: this.diceIcon(selectedDie), firstDie: this.diceIcon(firstDie) });
+        }
+
+        this.wrapInConfirm(() => {
+            this.diceManager.setSelectionMode('none');
+            this.takeNoLockAction('swapDie', {payload: JSON.stringify({selectedDieId})});
+        }, confirmText)
     }
 
     private undoLast() {
@@ -732,8 +780,8 @@ class SkyTeam implements SkyTeamGame {
         return `<span class="st-plane-switch"></span>`
     }
 
-    public diceIcon(die: Dice) {
-        return `<span class="st-dice small" data-type="${die.typeArg}" data-value="${die.side}">
+    public diceIcon(die: Dice, additionalStyle: string = '') {
+        return `<span class="st-dice small" data-type="${die.typeArg}" data-value="${die.side}" style="${additionalStyle}">
                     <span class="side" data-side="1"></span>
                     <span class="side" data-side="2"></span>
                     <span class="side" data-side="3"></span>

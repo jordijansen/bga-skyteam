@@ -74,6 +74,9 @@ trait StateTrait
             }
         }
 
+        $this->setGlobalVariable(WORKING_TOGETHER_ACTIVATED, false);
+        $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, false);
+
         $this->gamestate->setAllPlayersMultiactive();
         foreach ($this->gamestate->getActivePlayerList() as $playerId) {
             $this->giveExtraTime($playerId);

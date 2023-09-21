@@ -198,18 +198,46 @@ trait ActionTrait
 
     function requestAdaptation()
     {
-        $adaptationActive = $this->isSpecialAbilityActive(ADAPTATION);
-        $adaptationActive = $adaptationActive && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
-        if (!$adaptationActive) {
+        if (!in_array(ACT_START_FLIP, $this->gamestate->state()['possibleactions'])) {
+            throw new BgaUserException('flip not allowed');
+        }
+
+        $canActivateAdaptation = $this->isSpecialAbilityActive(ADAPTATION);
+        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+        if (!$canActivateAdaptation) {
             throw new BgaUserException('You cant use adaptation');
         }
 
         $this->gamestate->jumpToState(ST_FLIP_DIE);
     }
 
+    function requestSwap()
+    {
+        if (!in_array(ACT_START_SWAP, $this->gamestate->state()['possibleactions'])) {
+            throw new BgaUserException('swap not allowed');
+        }
+
+        $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
+        $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED);
+        if (!$canActivateWorkingTogether) {
+            throw new BgaUserException('You cant use Working Together');
+        }
+
+        $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_SWAP, $this->getActivePlayerId());
+
+        $this->gamestate->setPlayersMultiactive([$this->getCurrentPlayerId()], ST_SWAP_DICE, true);
+        $this->gamestate->jumpToState(ST_SWAP_DICE);
+    }
+
     function cancelAdaptation()
     {
         $this->gamestate->nextState('');
+    }
+
+    function cancelSwap()
+    {
+        $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_SWAP));
+        $this->gamestate->setAllPlayersNonMultiactive('');
     }
 
     function rerollDice($selectedDieIds)
@@ -283,6 +311,65 @@ trait ActionTrait
 
         $this->setGlobalVariable(PLAYERS_THAT_USED_ADAPTATION, [...$playersThatUsedAdaptation, $playerId]);
         $this->gamestate->nextState('');
+    }
+
+    function swapDie($selectedDieId)
+    {
+        $playerId = $this->getCurrentPlayerId();
+        $playerRole = $this->getPlayerRole($playerId);
+        $this->checkAction(ACT_SWAP);
+
+        if (!in_array($playerId, $this->gamestate->getActivePlayerList())) {
+            throw new BgaUserException('Player not active');
+        }
+
+        $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
+        if (!$canActivateWorkingTogether) {
+            throw new BgaUserException('You cant use Working Together');
+        }
+
+        $die = Dice::from($this->dice->getCard($selectedDieId));
+        if ($die->type != DICE_PLAYER || $die->typeArg != $playerRole || $die->location != LOCATION_PLAYER) {
+            throw new BgaUserException('Unknown die or not owned by you');
+        }
+
+        $this->setGlobalVariable(WORKING_TOGETHER_ACTIVATED, true);
+        $firstDie = $this->getGlobalVariable(SWAP_DICE_FIRST_DIE);
+        if (isset($firstDie)) {
+            // This is the second dice being selected
+            $firstDie = Dice::from($this->dice->getCard($firstDie));
+
+            $dieValue = $die->side;
+            $firstDieValue = $firstDie->side;
+
+            $die->setSide($firstDieValue);
+            $firstDie->setSide($dieValue);
+
+            $this->notifyAllPlayers("gameLog", clienttranslate('Working Together: dice are swapped, their new values are ${icon_dice_1} and ${icon_dice_2}'), [
+                'icon_dice_1' => [$firstDie],
+                'icon_dice_2' => [$die]
+            ]);
+
+            $this->notifyPlayer($playerId, "diceRolled", '', [
+                'dice' =>  [$die],
+            ]);
+
+            $otherPlayerId = $this->getPlayerIdForRole($playerRole == 'pilot' ? 'co-pilot' : 'pilot');
+            $this->notifyPlayer($otherPlayerId, "diceRolled", '', [
+                'dice' =>  [$firstDie],
+            ]);
+            $this->deleteGlobalVariable(SWAP_DICE_FIRST_DIE);
+
+            $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_SWAP));
+            $this->gamestate->setAllPlayersNonMultiactive('');
+        } else {
+            // This is the first dice being selected
+            $this->setGlobalVariable(SWAP_DICE_FIRST_DIE, $die->id);
+
+            $otherPlayerId = $this->getPlayerIdForRole($playerRole == 'pilot' ? 'co-pilot' : 'pilot');
+            $this->gamestate->setPlayersMultiactive([$otherPlayerId], ST_SWAP_DICE, true);
+            $this->gamestate->jumpToState(ST_SWAP_DICE);
+        }
     }
 
 //    function undoLast() {
