@@ -78,8 +78,8 @@ class PlaneManager extends APP_DbObject
             $otherAxisSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherAxisSpace));
             if (sizeof($otherAxisSpaceDice) > 0) {
                 $otherAxisSpaceDie = current($otherAxisSpaceDice);
-                $pilotValue = $die->locationArg == 'axis-1' ? $die->side : $otherAxisSpaceDie->side;
-                $copilotValue = $die->locationArg == 'axis-2' ? $die->side : $otherAxisSpaceDie->side;
+                $pilotValue = $die->locationArg == 'axis-1' ? $die->value : $otherAxisSpaceDie->value;
+                $copilotValue = $die->locationArg == 'axis-2' ? $die->value : $otherAxisSpaceDie->value;
                 $axisChange = $copilotValue - $pilotValue;
                 $plane->axis = $plane->axis + $axisChange;
 
@@ -122,7 +122,7 @@ class PlaneManager extends APP_DbObject
                 $otherEngineSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherEngineSpace));
                 if (sizeof($otherEngineSpaceDice) > 0) {
                     $otherEngineSpaceDie = current($otherEngineSpaceDice);
-                    $totalEngineValue = $die->side + $otherEngineSpaceDie->side;
+                    $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                     $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                     if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                         $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
@@ -168,7 +168,7 @@ class PlaneManager extends APP_DbObject
                         ]);
                     }
 
-                    if ($die->side == $otherEngineSpaceDie->side && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
+                    if ($die->value == $otherEngineSpaceDie->value && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
                         // Gain a REROLL token if both Engine values are equal.
                         $availableCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
                         if (sizeof($availableCoffeeTokens) > 0) {
@@ -198,7 +198,7 @@ class PlaneManager extends APP_DbObject
                 }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_RADIO) {
-            $spaceToTakePlaneFrom = $plane->approach + ($die->side - 1);
+            $spaceToTakePlaneFrom = $plane->approach + ($die->value - 1);
             $planeTokensInSpace = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_PLANE, null, LOCATION_APPROACH, $spaceToTakePlaneFrom));
             if (sizeof($planeTokensInSpace) > 0) {
                 $planeTokenRemoved = current($planeTokensInSpace);
@@ -341,7 +341,7 @@ class PlaneManager extends APP_DbObject
                     $dice1 = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, 'engines-1'));
                     $dice2 = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, 'engines-2'));
                     if (sizeof($dice1) == 1 && sizeof($dice2) == 1) {
-                        $totalEngineValue = current($dice1)->side + current($dice2)->side;
+                        $totalEngineValue = current($dice1)->value + current($dice2)->value;
                         if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                         }

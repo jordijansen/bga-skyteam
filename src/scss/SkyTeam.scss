@@ -12,6 +12,8 @@
 
 @import '../../node_modules/bga-zoom/bga-zoom';
 @import '../../node_modules/bga-cards/bga-cards';
+@import '../../node_modules/bga-help/bga-help';
+
 @import 'Variables';
 @import 'Boards';
 @import 'Tokens';
@@ -221,6 +223,10 @@ html, .mode_3d #game_play_area_background {
     justify-content: center;
     margin: 10px 0;
   }
+}
+
+#popin_stWelcomeDialogId {
+  background: lightgrey;
 }
 
 

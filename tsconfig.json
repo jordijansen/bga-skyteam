@@ -54,6 +54,7 @@
     "src/ui/EndGameInfo.ts",
     "src/ui/SpendCoffee.ts",
     "src/ui/VictoryConditions.ts",
+    "src/ui/WelcomeDialog.ts",
 
     "src/SkyTeam.ts"
   ]

@@ -78,6 +78,9 @@ class PlaneManager  {
         if(!data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
+        if(!data.scenario.modules.includes('winds')) {
+            $('st-winds-board').style.display = 'none';
+        }
     }
 
     public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {

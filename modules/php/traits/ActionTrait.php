@@ -110,9 +110,9 @@ trait ActionTrait
         }
 
         $originalDie = clone $die;
-        if (isset($diceValue) && $diceValue != $originalDie->side) {
+        if (isset($diceValue) && $diceValue != $originalDie->value) {
             // Player has used coffee token(s)
-            $nrOfCoffeeTokensUsed = abs($die->side - $diceValue);
+            $nrOfCoffeeTokensUsed = abs($die->value - $diceValue);
             $coffeeTokensAvailable = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE));
             if ($nrOfCoffeeTokensUsed > $coffeeTokensAvailable) {
                 throw new BgaUserException('Not enough coffee tokens');
@@ -139,7 +139,7 @@ trait ActionTrait
         }
 
         $actionSpace = $actionSpaces[$actionSpaceId];
-        if (array_key_exists(ALLOWED_VALUES, $actionSpace) && !in_array($die->side, $actionSpace[ALLOWED_VALUES])) {
+        if (array_key_exists(ALLOWED_VALUES, $actionSpace) && !in_array($die->value, $actionSpace[ALLOWED_VALUES])) {
             throw new BgaUserException('Value not allowed');
         }
 
@@ -288,9 +288,13 @@ trait ActionTrait
             ]);
         }
 
-        $this->gamestate->setPlayerNonMultiactive($playerId, '');
-        if (sizeof($this->gamestate->getActivePlayerList()) == 0) {
+        $lastPlayer = sizeof($this->gamestate->getActivePlayerList()) == 1;
+
+        if ($lastPlayer) {
             $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL));
+            $this->gamestate->jumpToState(ST_DICE_PLACEMENT_SELECT);
+        } else {
+            $this->gamestate->setPlayerNonMultiactive($playerId, '');
         }
     }
 
@@ -358,8 +362,8 @@ trait ActionTrait
             // This is the second dice being selected
             $firstDie = Dice::from($this->dice->getCard($firstDie));
 
-            $dieValue = $die->side;
-            $firstDieValue = $firstDie->side;
+            $dieValue = $die->value;
+            $firstDieValue = $firstDie->value;
 
             $die->setSide($firstDieValue);
             $firstDie->setSide($dieValue);

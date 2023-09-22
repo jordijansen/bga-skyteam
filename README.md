@@ -2,16 +2,15 @@
 BGA adaptation for Sky Team
 
 TODO:
-- The preferences is the place for toggling help symbols, I would recommend leaving it as is
 - If no placement, confirm end turn
 
-Changelog:
-- I've made the communcation banner smaller, added a close button to it and a preference with 3 options: always visible, auto hide after 10 seconds & always hidden
-- Spend coffee now shows "Use: 1" instead of "Cost: 1". I do not recommend moving the buttons to one side as that will make them really close together and that hurts the mobile experience.
-- Resized the coffee tokens to actual size
-- Made dice bigger
-- If you win or lose the game, your screen is now scrolled to the end game info box
-- The victory conditions rows now change background based on their status (completed: green, pending: gray, failure: red (only end of the game))
-- Removed plane tokens are now moved to the left offscreen
-- Fixed moving two spaces or one space if the value of the engine dice are equal to the orange marker.
+Changes:
+- Fix welcome screen toggle checkbox
+- Add some room between board and special ability cards
+- Make correct player active after using the Anticipation ability.
+- Hide adaptation button if already used by the player this game
+- Fixed anticipation traffic die value calculation (fixes axis error)
+- Hide winds module panel if not active
+- Hide dice when returned to players (fixes not showing 1 value dice temporarily)
+- 
 

@@ -290,6 +290,99 @@ body > .card {
   top: calc((var(--height) + var(--shift)) * var(--order));
 }
 
+#bga-help_buttons {
+  position: fixed;
+  bottom: 12px;
+  left: 5px;
+  display: flex;
+  gap: 10px;
+  z-index: 949;
+  align-items: flex-end;
+}
+
+.bga-help_button {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 3px 5px 5px 0px rgb(0, 0, 0);
+}
+
+.bga-help_popin-button {
+  --background: black;
+  --color: white;
+  font-weight: bold;
+  font-size: 28pt;
+  background: var(--background);
+  color: var(--color);
+}
+
+.bga-help_expandable-button {
+  overflow: hidden;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: width 0.5s, height 0.5s, border-radius 0.5s;
+  display: grid;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}
+
+.bga-help_expandable-button .bga-help_folded-content {
+  grid-row: 1;
+  grid-column: 1;
+  opacity: 1;
+  width: 50px;
+  height: 50px;
+}
+
+.bga-help_expandable-button .bga-help_unfolded-content {
+  grid-row: 1;
+  grid-column: 1;
+  opacity: 0;
+}
+
+.bga-help_expandable-button[data-folded=false] {
+  width: var(--expanded-width);
+  height: var(--expanded-height);
+  border-radius: var(--expanded-radius);
+}
+
+.bga-help_expandable-button[data-folded=false] .bga-help_folded-content {
+  opacity: 0;
+}
+
+.bga-help_expandable-button[data-folded=false] .bga-help_unfolded-content {
+  opacity: 1;
+}
+
+/* we show help button if user has no mouse ( = no tooltips) */
+@media (hover: hover) {
+  #bga-help_buttons {
+    bottom: 5px;
+  }
+}
+#popin_bgaHelpDialog_contents {
+  max-width: 100vw;
+  overflow-x: auto;
+}
+
+#popin_bgaHelpDialog {
+  --background-color: white;
+  background: var(--background-color);
+  background-repeat: repeat;
+  max-width: 100vw;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+#help-dialog-content {
+  width: 520px;
+  max-width: 35rem;
+  max-height: calc(80vh - 80px);
+  overflow: auto;
+}
+
 @keyframes jj-pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
@@ -509,6 +602,9 @@ body > .card {
 }
 #st-main-board-right #st-winds-board #st-winds-plane[data-value="19"] {
   transform: rotate(342deg);
+}
+#st-main-board-right #st-main-board-special-abilities {
+  margin-left: 10px;
 }
 
 #st-game #st-game-boards-wrapper {
@@ -1525,6 +1621,10 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   justify-content: center;
   margin: 10px 0;
+}
+
+#popin_stWelcomeDialogId {
+  background: lightgrey;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

@@ -26,6 +26,7 @@ class SkyTeam implements SkyTeamGame {
     private endGameInfo: EndGameInfo;
     private spendCoffee: SpendCoffee;
     private victoryConditions: VictoryConditions;
+    public welcomeDialog: WelcomeDialog;
 
     // Managers
     public planeManager: PlaneManager;
@@ -97,6 +98,8 @@ class SkyTeam implements SkyTeamGame {
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.endGameInfo = new EndGameInfo(this,'st-end-game-info-wrapper');
         this.spendCoffee = new SpendCoffee(this,'st-custom-actions');
+        this.welcomeDialog = new WelcomeDialog(this);
+        this.welcomeDialog.showDialog()
 
         if (data.finalRound && !data.isLanded) {
             this.setFinalRound();
@@ -708,6 +711,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_diceReturnedToPlayer(args: NotifDiceReturnedToPlayer) {
+        this.diceManager.toggleShowPlayerDice(false);
         this.actionSpaceManager.resetActionSpaceOccupied();
         if (args.playerId == this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCards(args.dice);

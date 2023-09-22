@@ -2162,6 +2162,9 @@ var PlaneManager = /** @class */ (function () {
         if (!data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
+        if (!data.scenario.modules.includes('winds')) {
+            $('st-winds-board').style.display = 'none';
+        }
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2841,6 +2844,58 @@ var VictoryConditions = /** @class */ (function () {
     };
     return VictoryConditions;
 }());
+var WelcomeDialog = /** @class */ (function () {
+    function WelcomeDialog(game) {
+        var _this = this;
+        this.game = game;
+        this.checked = false;
+        this.localStorageKey = 'skyteam-welcome-dialog';
+        this.dialogId = 'stWelcomeDialogId';
+        dojo.place('<div id="bga-help_buttons"><button class="bga-help_button bga-help_popin-button">?</button></div>', $('left-side'));
+        dojo.connect($('bga-help_buttons'), 'click', function () { return _this.showDialog(true); });
+    }
+    WelcomeDialog.prototype.showDialog = function (force) {
+        var _this = this;
+        if (force === void 0) { force = false; }
+        this.checked = localStorage.getItem(this.localStorageKey) === 'hide';
+        if (!this.checked || force) {
+            this.dialog = new ebg.popindialog();
+            this.dialog.create(this.dialogId);
+            this.dialog.setTitle("<i class=\"fa fa-plane\" aria-hidden=\"true\"></i> ".concat(_('Welcome to Sky Team!')));
+            this.dialog.setContent(this.createContent());
+            this.dialog.show();
+            $('welcome-dialog-hide-checkbox').checked = this.checked ? 'checked' : undefined;
+            dojo.connect($('welcome-dialog-hide'), 'click', function (event) {
+                _this.checked = !_this.checked;
+                if (_this.checked) {
+                    console.log("Checkbox is checked..");
+                    $('welcome-dialog-hide-checkbox').checked = 'checked';
+                    localStorage.setItem(_this.localStorageKey, 'hide');
+                }
+                else {
+                    console.log("Checkbox is not checked..");
+                    $('welcome-dialog-hide-checkbox').checked = undefined;
+                    localStorage.setItem(_this.localStorageKey, 'show');
+                }
+            });
+        }
+    };
+    WelcomeDialog.prototype.createContent = function () {
+        var html = '';
+        html += "<div style=\"display: flex; justify-content: center;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-logo.png\" width=\"100%\" style=\"max-width: 300px;\"></img></div>");
+        html += "<p>".concat(_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! You’ll need to communicate with the Control Tower to make sure your approach is free of air traffic, adjust your speed to not overshoot the airport, level your plane in order to land square with the ground, deploy your flaps to increase lift and allow you to descend more steeply, deploy your landing gear to ensure a safe landing, and finally engage the brakes to slow the plane once you\'ve landed. Cooperation and nerves of steel are all it takes to succeed!'), "</p>");
+        html += "<h1>".concat(_('Communications'), "</h1>");
+        html += "<p>".concat(_('In Sky Team, there are 2 ways to communicate: Verbally, before rolling the dice; and by placing your die during the Dice Placement phase without talking. While nothing restricts you from talking during the dice placement phase, talking and discussing strategy is against the intended nature of the game. Watch out for the communication banner during the game to know when you are allowed to communicate verbally. You can also click on the banners for more info.'), "</p>");
+        html += "<img src=\"".concat(g_gamethemeurl, "/img/skyteam-welcome-comms-banners.png\" width=\"100%\"></img>");
+        html += "<h1>".concat(_('Preferences'), "</h1>");
+        html += "<p>".concat(_('Once you are familiar with the game you can hide the communications banner and/or help buttons to have a cleaner interface. Go to the preferences panel through the BGA menu.'), "</p>");
+        html += "<h3 style=\"text-align: center\">".concat(_('Enjoy Sky Team!'), "</br>Le Scorpion Masque</h3>");
+        html += "</br>";
+        html += "<label id=\"welcome-dialog-hide\" for=\"welcome-dialog-hide-checkbox\" style=\"cursor: pointer;\"><input id=\"welcome-dialog-hide-checkbox\" type=\"checkbox\"> ".concat(_('Do not show this Welcome Screen when opening the game (you can always access it through the ? in the bottom left corner)'), "</label>");
+        return html;
+    };
+    return WelcomeDialog;
+}());
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
@@ -2910,6 +2965,8 @@ var SkyTeam = /** @class */ (function () {
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
         this.spendCoffee = new SpendCoffee(this, 'st-custom-actions');
+        this.welcomeDialog = new WelcomeDialog(this);
+        this.welcomeDialog.showDialog();
         if (data.finalRound && !data.isLanded) {
             this.setFinalRound();
         }
@@ -3456,6 +3513,7 @@ var SkyTeam = /** @class */ (function () {
         return this.planeManager.updateAltitude(args.altitude);
     };
     SkyTeam.prototype.notif_diceReturnedToPlayer = function (args) {
+        this.diceManager.toggleShowPlayerDice(false);
         this.actionSpaceManager.resetActionSpaceOccupied();
         if (args.playerId == this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCards(args.dice);

@@ -115,6 +115,7 @@ trait StateTrait
 
         $this->giveExtraTime($startPlayerId);
         if ($this->isSpecialAbilityActive(ANTICIPATION)) {
+            $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL, $startPlayerId);
             $this->setGlobalVariable(REROLL_DICE_AMOUNT, 1);
             $this->gamestate->setPlayersMultiactive([$startPlayerId], ST_REROLL_DICE, true);
             $this->gamestate->jumpToState(ST_REROLL_DICE);

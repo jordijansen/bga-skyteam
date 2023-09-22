@@ -27,6 +27,7 @@ class Dice extends APP_GameClass {
     public function rollDie(): int
     {
         $this->side = bga_rand(1, 6);
+        $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
         self::DbQuery("UPDATE dice SET card_side = $this->side WHERE card_id = $this->id");
         return $this->side;
     }
@@ -34,6 +35,7 @@ class Dice extends APP_GameClass {
     public function setSide($side)
     {
         $this->side = $side;
+        $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
         self::DbQuery("UPDATE dice SET card_side = $side WHERE card_id = $this->id");
     }
 

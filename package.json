@@ -16,7 +16,8 @@
   "dependencies": {
     "bga-cards": "thoun/bga-cards#2.1.0",
     "bga-animations": "thoun/bga-animations#1.1.0",
-    "bga-zoom": "thoun/bga-zoom#0.2.0"
+    "bga-zoom": "thoun/bga-zoom#0.2.0",
+    "bga-help": "thoun/bga-help#1.0.0"
   },
   "devDependencies": {
     "sass": "^1.63.6",
