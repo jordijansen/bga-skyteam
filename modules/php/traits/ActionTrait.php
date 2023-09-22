@@ -93,7 +93,7 @@ trait ActionTrait
         $playerId = $this->getActivePlayerId();
         $actionSpaceId = $placement['actionSpaceId'];
         $diceId = $placement['diceId'];
-        $diceValue = $placement['diceValue'];
+        $diceSide = $placement['diceValue'];
 
         if (!isset($actionSpaceId) || !isset($diceId)) {
             throw new BgaUserException('Missing parameter for action confirmPlacement');
@@ -110,18 +110,19 @@ trait ActionTrait
         }
 
         $originalDie = clone $die;
-        if (isset($diceValue) && $diceValue != $originalDie->value) {
+        if (isset($diceSide) && $diceSide != $originalDie->side) {
+            $die->setSide($diceSide);
+
             // Player has used coffee token(s)
-            $nrOfCoffeeTokensUsed = abs($die->value - $diceValue);
+            $nrOfCoffeeTokensUsed = abs($originalDie->value - $die->value);
             $coffeeTokensAvailable = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE));
             if ($nrOfCoffeeTokensUsed > $coffeeTokensAvailable) {
                 throw new BgaUserException('Not enough coffee tokens');
             }
-            if ($diceValue > 6 || $diceValue < 1) {
+            if ($diceSide > 6 || $diceSide < 1) {
                 throw new BgaUserException('Can not modify above 6 or below 1');
             }
 
-            $die->setSide($diceValue);
             $coffeeTokensUsed = array_slice($coffeeTokensAvailable, 0, $nrOfCoffeeTokensUsed);
             foreach ($coffeeTokensUsed as $coffeeToken) {
                 $this->tokens->moveCard($coffeeToken->id, LOCATION_RESERVE, $coffeeToken->locationArg);

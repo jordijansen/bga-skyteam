@@ -68,6 +68,8 @@ trait ArgsTrait
         return [
             'trafficDie' => $trafficDie,
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId(), true),
+            'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
+            'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
         ];
     }
 }

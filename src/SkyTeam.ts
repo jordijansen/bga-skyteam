@@ -219,7 +219,7 @@ class SkyTeam implements SkyTeamGame {
     private onDicePlacementCoffeeSpend(args: DicePlacementSelectArgs, die: Dice) {
         dojo.addClass('confirmPlacement', 'disabled');
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
-        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.side);
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, (space) => this.onDicePlacementActionSelected(args, die, space), die.value);
     }
 
     public onLeavingState(stateName: string) {

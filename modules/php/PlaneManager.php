@@ -131,7 +131,7 @@ class PlaneManager extends APP_DbObject
 
                     $planeCollision = false;
                     $planeTurnFailure = false;
-                    if ($totalEngineValue < $plane->aerodynamicsBlue) {
+                    if ($totalEngineValue <= $plane->aerodynamicsBlue) {
                         $advanceApproachSpaces = 0;
                     } else if ($totalEngineValue <= $plane->aerodynamicsOrange) {
                         $advanceApproachSpaces = 1;

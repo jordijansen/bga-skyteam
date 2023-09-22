@@ -3,6 +3,7 @@ class SpendCoffee {
     private static readonly ELEMENT_ID = 'st-spend-coffee';
 
     public currentDie = null;
+    private originalSide = 0;
     private originalValue = 0;
     private minValue = 0;
     private maxValue = 0;
@@ -15,15 +16,17 @@ class SpendCoffee {
         dojo.empty(element);
 
         if (this.currentDie) {
-            this.currentDie.side = this.originalValue;
+            this.currentDie.side = this.originalSide;
+            this.currentDie.value = this.originalValue;
             this.game.diceManager.updateCardInformations(this.currentDie);
         }
 
         if (nrOfCoffeeTokens > 0) {
             this.currentDie = die;
-            this.originalValue = die.side;
-            this.minValue = Math.max(die.side - nrOfCoffeeTokens, 1);
-            this.maxValue = Math.min(die.side + nrOfCoffeeTokens, 6);
+            this.originalSide = die.side;
+            this.originalValue = die.value;
+            this.minValue = Math.max(die.value - nrOfCoffeeTokens, die.type === 'traffic' ? 2 : 1);
+            this.maxValue = Math.min(die.value + nrOfCoffeeTokens,  die.type === 'traffic' ? 5 : 6);
 
             let content = '';
 
@@ -39,7 +42,8 @@ class SpendCoffee {
             const decreaseButton = $('st-spend-coffee-decrease');
             dojo.connect(decreaseButton, 'onclick', (event) => {
                 dojo.stopEvent(event);
-                die.side = die.side - 1;
+                die.value = die.value - 1;
+                die.side = this.determineNewSide(die);
                 this.updateButtonsDisabledState(die);
                 this.updateTotalCost();
                 this.game.diceManager.updateCardInformations(die);
@@ -49,7 +53,8 @@ class SpendCoffee {
             const increaseButton = $('st-spend-coffee-increase');
             dojo.connect(increaseButton, 'onclick', (event) => {
                 dojo.stopEvent(event);
-                die.side = die.side + 1;
+                die.value = die.value + 1;
+                die.side = this.determineNewSide(die);
                 this.updateButtonsDisabledState(die);
                 this.updateTotalCost();
                 this.game.diceManager.updateCardInformations(die);
@@ -66,7 +71,7 @@ class SpendCoffee {
     }
 
     public getCoffeeSpend() {
-        return Math.abs(this.currentDie.side - this.originalValue);
+        return Math.abs(this.currentDie.value - this.originalValue);
     }
 
     private updateTotalCost() {
@@ -81,11 +86,27 @@ class SpendCoffee {
         increaseButton.classList.remove('disabled');
         decreaseButton.classList.remove('disabled');
 
-        if (die.side == this.minValue) {
+        if (die.value == this.minValue) {
             decreaseButton.classList.add('disabled');
         }
-        if (die.side == this.maxValue) {
+        if (die.value == this.maxValue) {
             increaseButton.classList.add('disabled');
+        }
+    }
+
+    private determineNewSide(die: Dice) {
+        if (die.type !== "traffic") {
+            return die.value;
+        } else {
+            if (die.value === 2) {
+                return 1;
+            } else if (die.value === 3) {
+                return 2;
+            } else if (die.value === 4) {
+                return 4;
+            } else if (die.value === 5) {
+                return 6;
+            }
         }
     }
 }

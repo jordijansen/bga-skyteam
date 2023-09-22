@@ -2744,6 +2744,7 @@ var SpendCoffee = /** @class */ (function () {
         this.game = game;
         this.parentId = parentId;
         this.currentDie = null;
+        this.originalSide = 0;
         this.originalValue = 0;
         this.minValue = 0;
         this.maxValue = 0;
@@ -2754,14 +2755,16 @@ var SpendCoffee = /** @class */ (function () {
         var element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
         if (this.currentDie) {
-            this.currentDie.side = this.originalValue;
+            this.currentDie.side = this.originalSide;
+            this.currentDie.value = this.originalValue;
             this.game.diceManager.updateCardInformations(this.currentDie);
         }
         if (nrOfCoffeeTokens > 0) {
             this.currentDie = die;
-            this.originalValue = die.side;
-            this.minValue = Math.max(die.side - nrOfCoffeeTokens, 1);
-            this.maxValue = Math.min(die.side + nrOfCoffeeTokens, 6);
+            this.originalSide = die.side;
+            this.originalValue = die.value;
+            this.minValue = Math.max(die.value - nrOfCoffeeTokens, die.type === 'traffic' ? 2 : 1);
+            this.maxValue = Math.min(die.value + nrOfCoffeeTokens, die.type === 'traffic' ? 5 : 6);
             var content = '';
             content += "<a id=\"st-spend-coffee-decrease\" class=\"bgabutton bgabutton_blue\"> <i class=\"fa fa-minus\" aria-hidden=\"true\"></i> </a>";
             content += "<a id=\"st-spend-coffee-total-cost\" class=\"bgabutton bgabutton_gray disabled\"></a>";
@@ -2772,7 +2775,8 @@ var SpendCoffee = /** @class */ (function () {
             var decreaseButton = $('st-spend-coffee-decrease');
             dojo.connect(decreaseButton, 'onclick', function (event) {
                 dojo.stopEvent(event);
-                die.side = die.side - 1;
+                die.value = die.value - 1;
+                die.side = _this.determineNewSide(die);
                 _this.updateButtonsDisabledState(die);
                 _this.updateTotalCost();
                 _this.game.diceManager.updateCardInformations(die);
@@ -2781,7 +2785,8 @@ var SpendCoffee = /** @class */ (function () {
             var increaseButton = $('st-spend-coffee-increase');
             dojo.connect(increaseButton, 'onclick', function (event) {
                 dojo.stopEvent(event);
-                die.side = die.side + 1;
+                die.value = die.value + 1;
+                die.side = _this.determineNewSide(die);
                 _this.updateButtonsDisabledState(die);
                 _this.updateTotalCost();
                 _this.game.diceManager.updateCardInformations(die);
@@ -2795,7 +2800,7 @@ var SpendCoffee = /** @class */ (function () {
         this.currentDie = null;
     };
     SpendCoffee.prototype.getCoffeeSpend = function () {
-        return Math.abs(this.currentDie.side - this.originalValue);
+        return Math.abs(this.currentDie.value - this.originalValue);
     };
     SpendCoffee.prototype.updateTotalCost = function () {
         var totalCost = $('st-spend-coffee-total-cost');
@@ -2807,11 +2812,30 @@ var SpendCoffee = /** @class */ (function () {
         var decreaseButton = $('st-spend-coffee-decrease');
         increaseButton.classList.remove('disabled');
         decreaseButton.classList.remove('disabled');
-        if (die.side == this.minValue) {
+        if (die.value == this.minValue) {
             decreaseButton.classList.add('disabled');
         }
-        if (die.side == this.maxValue) {
+        if (die.value == this.maxValue) {
             increaseButton.classList.add('disabled');
+        }
+    };
+    SpendCoffee.prototype.determineNewSide = function (die) {
+        if (die.type !== "traffic") {
+            return die.value;
+        }
+        else {
+            if (die.value === 2) {
+                return 1;
+            }
+            else if (die.value === 3) {
+                return 2;
+            }
+            else if (die.value === 4) {
+                return 4;
+            }
+            else if (die.value === 5) {
+                return 6;
+            }
         }
     };
     SpendCoffee.ELEMENT_ID = 'st-spend-coffee';
@@ -3080,7 +3104,7 @@ var SkyTeam = /** @class */ (function () {
         var _this = this;
         dojo.addClass('confirmPlacement', 'disabled');
         this.actionSpaceManager.setActionSpacesSelectable({}, null);
-        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die, space); }, die.side);
+        this.actionSpaceManager.setActionSpacesSelectable(args.availableActionSpaces, function (space) { return _this.onDicePlacementActionSelected(args, die, space); }, die.value);
     };
     SkyTeam.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);

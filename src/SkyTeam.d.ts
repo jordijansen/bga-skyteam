@@ -35,7 +35,7 @@ interface SkyTeamGame extends Game {
 
 interface Dice {
     id: number,
-    type: 'player' | 'weather',
+    type: 'player' | 'weather' | 'traffic',
     typeArg: 'pilot' | 'co-pilot',
     side: number,
     value: number,
