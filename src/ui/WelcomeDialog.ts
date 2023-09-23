@@ -22,6 +22,7 @@ class WelcomeDialog {
             $('welcome-dialog-hide-checkbox').checked = this.checked ? 'checked' : undefined;
 
             dojo.connect($('welcome-dialog-hide'), 'click', (event) => {
+                dojo.stopEvent(event);
                 this.checked = !this.checked;
                 if (this.checked) {
                     console.log("Checkbox is checked..");

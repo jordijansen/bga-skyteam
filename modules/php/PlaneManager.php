@@ -345,7 +345,7 @@ class PlaneManager extends APP_DbObject
                         if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                         }
-                        if ($totalEngineValue < $plane->brake) {
+                        if ($totalEngineValue <= $plane->brake) {
                             $victoryCondition['status'] = 'success';
                         }
                     }

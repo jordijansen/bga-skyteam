@@ -19,6 +19,12 @@
 @import 'Tokens';
 @import 'Cards';
 
+@media screen and (max-device-width: 480px){
+  body{
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
 .bga-cards_selectable-card {
   .card-side {
     @include selectable();
@@ -172,7 +178,7 @@ html, .mode_3d #game_play_area_background {
     &.success {
       background: $sky-team-green !important;
     }
-    &.failure {
+    &.failed {
       background: $sky-team-red !important;
     }
     &.pending {

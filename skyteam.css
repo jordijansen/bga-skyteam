@@ -446,6 +446,7 @@ body > .card {
   background-image: url("img/skyteam-kerosene-board.jpg");
   width: 118px;
   height: 637px;
+  position: relative;
 }
 #st-main-board-left #st-kerosene-board #st-kerosene-marker {
   position: absolute;
@@ -1440,6 +1441,11 @@ body > .card {
   background-position: 100% 0;
 }
 
+@media screen and (max-device-width: 480px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+}
 .bga-cards_selectable-card .card-side {
   outline: 6px rgba(80, 200, 255, 0.75) solid;
   cursor: pointer;
@@ -1580,7 +1586,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 .st-victory-conditions .st-victory-conditions-row.success {
   background: #97c355 !important;
 }
-.st-victory-conditions .st-victory-conditions-row.failure {
+.st-victory-conditions .st-victory-conditions-row.failed {
   background: #c13633 !important;
 }
 .st-victory-conditions .st-victory-conditions-row.pending {

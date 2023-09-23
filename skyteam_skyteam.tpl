@@ -24,7 +24,6 @@
     
     Please REMOVE this comment before publishing your game on BGA
 -->
-
 <div id="st-game">
     <div id="st-player-setup" class="whiteblock"></div>
     <div id="st-end-game-info-wrapper" class="whiteblock"></div>
