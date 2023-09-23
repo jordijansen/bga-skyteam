@@ -116,6 +116,7 @@ trait StateTrait
         $this->giveExtraTime($startPlayerId);
         if ($this->isSpecialAbilityActive(ANTICIPATION)) {
             $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL, $startPlayerId);
+            $this->setGlobalVariable(ACTIVE_STATE_AFTER_REROLL, ST_DICE_PLACEMENT_SELECT);
             $this->setGlobalVariable(REROLL_DICE_AMOUNT, 1);
             $this->gamestate->setPlayersMultiactive([$startPlayerId], ST_REROLL_DICE, true);
             $this->gamestate->jumpToState(ST_REROLL_DICE);
@@ -164,6 +165,42 @@ trait StateTrait
         $this->setGlobalVariable(PLANE_LANDED, true);
 
         $this->gamestate->nextState('');
+    }
+
+    function stSynchronisationStart()
+    {
+        $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, true);
+
+        $playerId = $this->getPlayerIdForRole('co-pilot');
+        $trafficDice = Dice::fromArray($this->dice->pickCardsForLocation(1, LOCATION_DECK, LOCATION_PLAYER, $playerId));
+        $trafficDie = current($trafficDice);
+        $trafficDie->rollDie();
+
+        $copilotPlayerId = $this->getPlayerIdForRole('co-pilot');
+
+        $this->notifyPlayer($copilotPlayerId, "diceRolled", '', [
+            'playerId' => intval($copilotPlayerId),
+            'player_name' => $this->getPlayerName($copilotPlayerId),
+            'dice' =>  [$trafficDie],
+        ]);
+
+        $this->setGlobalVariable(SYNCHRONISATION_DIE_ID, $trafficDie->id);
+
+        $this->gamestate->changeActivePlayer($playerId);
+        $this->gamestate->nextState('');
+    }
+
+    function stSynchronisationEnd()
+    {
+        $playerId = $this->getGlobalVariable(ACTIVE_PLAYER_AFTER_SYNCHRONISATION);
+        $this->gamestate->changeActivePlayer($playerId);
+        $this->gamestate->nextState('');
+    }
+
+    function stRerollDiceEnd()
+    {
+        $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL));
+        $this->gamestate->jumpToState($this->getGlobalVariable(ACTIVE_STATE_AFTER_REROLL));
     }
 
     function stEndOfRound()

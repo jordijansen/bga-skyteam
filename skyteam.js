@@ -3182,6 +3182,7 @@ var SkyTeam = /** @class */ (function () {
         if (!this.isReadOnly()) {
             switch (stateName) {
                 case 'dicePlacementSelect':
+                case 'performSynchronisation':
                     if (args.nrOfRerollAvailable > 0) {
                         this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
                     }

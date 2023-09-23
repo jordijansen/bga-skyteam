@@ -167,20 +167,9 @@ trait ActionTrait
                 $nrOfDiceOnLandingGear = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'landing-gear%'"));
                 $nrOfDiceOnFlaps = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'flaps%'"));
                 if ($nrOfDiceOnFlaps > 0 && $nrOfDiceOnLandingGear > 0) {
-                    $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, true);
+                    $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_SYNCHRONISATION, $this->getActivePlayerId());
 
-                    $trafficDice = Dice::fromArray($this->dice->pickCardsForLocation(1, LOCATION_DECK, LOCATION_PLAYER, $playerId));
-                    $trafficDie = current($trafficDice);
-                    $trafficDie->rollDie();
-
-                    $this->notifyPlayer($playerId, "diceRolled", '', [
-                        'playerId' => intval($playerId),
-                        'player_name' => $this->getPlayerName($playerId),
-                        'dice' =>  [$trafficDie],
-                    ]);
-
-                    $this->setGlobalVariable(SYNCHRONISATION_DIE_ID, $trafficDie->id);
-                    $this->gamestate->jumpToState(ST_SYNCHRONISATION);
+                    $this->gamestate->jumpToState(ST_SYNCHRONISATION_START);
                     return;
                 }
             }
@@ -205,6 +194,7 @@ trait ActionTrait
         $rerollToken = Token::from($this->tokens->getCard($rerollToken->id));
 
         $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL, $this->getActivePlayerId());
+        $this->setGlobalVariable(ACTIVE_STATE_AFTER_REROLL, $this->gamestate->state()['name'] === 'dicePlacementSelect' ? ST_DICE_PLACEMENT_SELECT : ST_SYNCHRONISATION);
         $this->notifyAllPlayers( "rerollTokenUsed", clienttranslate('${player_name} uses ${icon_tokens}, all players may re-roll dice'), [
             'playerId' => intval($this->getCurrentPlayerId()),
             'player_name' => $this->getPlayerName($this->getCurrentPlayerId()),
@@ -289,14 +279,7 @@ trait ActionTrait
             ]);
         }
 
-        $lastPlayer = sizeof($this->gamestate->getActivePlayerList()) == 1;
-
-        if ($lastPlayer) {
-            $this->gamestate->changeActivePlayer($this->getGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL));
-            $this->gamestate->jumpToState(ST_DICE_PLACEMENT_SELECT);
-        } else {
-            $this->gamestate->setPlayerNonMultiactive($playerId, '');
-        }
+        $this->gamestate->setPlayerNonMultiactive($playerId, '');
     }
 
     function flipDie($selectedDieId)

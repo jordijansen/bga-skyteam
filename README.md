@@ -12,5 +12,6 @@ Changes:
 - Fixed anticipation traffic die value calculation (fixes axis error)
 - Hide winds module panel if not active
 - Hide dice when returned to players (fixes not showing 1 value dice temporarily)
+- Spend coffee on Traffic Die (Synchronisation)
 - 
 

@@ -304,6 +304,7 @@ class SkyTeam implements SkyTeamGame {
         if (!this.isReadOnly()) {
             switch (stateName) {
                 case 'dicePlacementSelect':
+                case 'performSynchronisation':
                     if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
                         (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
                     }

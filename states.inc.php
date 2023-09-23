@@ -150,8 +150,17 @@ $gameStates = [
             ACT_REROLL
         ],
         "transitions" => [
-            '' => ST_DICE_PLACEMENT_SELECT
+            '' => ST_REROLL_DICE_END
         ],
+    ],
+    ST_REROLL_DICE_END => [
+        "name" => "rerollDiceEnd",
+        "description" => '',
+        "type" => "game",
+        "action" => "stRerollDiceEnd",
+        "transitions" => [
+            // WE USE JUMP
+        ]
     ],
     ST_FLIP_DIE => [
         "name" => "flipDie",
@@ -178,6 +187,15 @@ $gameStates = [
             '' => ST_DICE_PLACEMENT_SELECT
         ],
     ],
+    ST_SYNCHRONISATION_START => [
+        "name" => "performSynchronisationStart",
+        "description" => '',
+        "type" => "game",
+        "action" => "stSynchronisationStart",
+        "transitions" => [
+            '' => ST_SYNCHRONISATION,
+        ]
+    ],
     ST_SYNCHRONISATION => [
         "name" => "performSynchronisation",
         "description" => clienttranslate('${actplayer} must use Special Ability: Synchronisation'),
@@ -185,11 +203,21 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argSynchronisation",
         "possibleactions" => [
-            ACT_SYNCHRONISATION
+            ACT_SYNCHRONISATION,
+            ACT_START_REROLL
         ],
         "transitions" => [
-            '' => ST_DICE_PLACEMENT_NEXT
+            '' => ST_SYNCHRONISATION_END
         ],
+    ],
+    ST_SYNCHRONISATION_END => [
+        "name" => "performSynchronisationEnd",
+        "description" => '',
+        "type" => "game",
+        "action" => "stSynchronisationEnd",
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_NEXT,
+        ]
     ],
     ST_END_OF_ROUND => [
         "name" => "endOfRound",
