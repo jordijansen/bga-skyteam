@@ -31,7 +31,7 @@ class DiceManager extends CardManager<Dice> {
     public setUp(data: SkyTeamGameData) {
         const element = $(DiceManager.PLAYER_AREA);
 
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: true})
+        this.playerDiceStock = new LineStock(this, element, { center: true})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
         this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), {})
@@ -67,6 +67,10 @@ class DiceManager extends CardManager<Dice> {
             }
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
+
+            if (selectableDice.length === 1) {
+                this.playerDiceStock.selectCard(selectableDice[0]);
+            }
         }
     }
 

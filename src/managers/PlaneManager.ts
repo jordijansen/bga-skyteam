@@ -74,6 +74,7 @@ class PlaneManager  {
 
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), {direction: 'column'})
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
+        this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(card => card.type === 2), data.rolesThatUsedAdaptation)
 
         if(!data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-board').style.visibility = 'hidden';

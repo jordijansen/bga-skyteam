@@ -2159,6 +2159,7 @@ var PlaneManager = /** @class */ (function () {
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
+        this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(function (card) { return card.type === 2; }), data.rolesThatUsedAdaptation);
         if (!data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
@@ -2269,7 +2270,7 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'red');
         dojo.addClass(element, 'green');
-        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i><br/>").concat(_('You are not allowed to discuss the dice.'), "<br/></h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
+        dojo.place("<h2><i class=\"fa fa-microphone\" aria-hidden=\"true\"></i> ".concat(_('Limited communication only'), " <i class=\"fa fa-microphone\" aria-hidden=\"true\"></i><br/>").concat(_('You are not allowed to discuss the dice.'), "<br/></h2><i id=\"st-communication-info-dialog-close-button\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
     };
     CommunicationInfoManager.prototype.setCommunicationNotAllowed = function () {
         this.currentCommunicationLevel = 'not-allowed';
@@ -2277,24 +2278,26 @@ var CommunicationInfoManager = /** @class */ (function () {
         dojo.empty(element);
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
-        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i><br/>").concat(_('Non-game communication is allowed.'), "</h2><i id=\"").concat(this.closeButtonId, "\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
+        dojo.place("<h2><i class=\"fa fa-ban\" aria-hidden=\"true\"></i> ".concat(_('No communication'), " <i class=\"fa fa-ban\" aria-hidden=\"true\"></i><br/>").concat(_('Non-game communication is allowed.'), "</h2><i id=\"st-communication-info-dialog-close-button\" class=\"fa fa-times\" aria-hidden=\"true\"></i>"), element);
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
         var _this = this;
         if (this.game.prefs[101].value == 1 || this.game.prefs[101].value == 2) {
-            if (newPhase == 'strategy') {
-                this.setCommunicationLimited();
-            }
-            else if (newPhase == 'diceplacement') {
-                this.setCommunicationNotAllowed();
+            if (newPhase === 'strategy' || newPhase === 'diceplacement') {
+                if (newPhase == 'strategy') {
+                    this.setCommunicationLimited();
+                }
+                else if (newPhase == 'diceplacement') {
+                    this.setCommunicationNotAllowed();
+                }
+                dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', function (event) {
+                    dojo.stopEvent(event);
+                    _this.hideBanner();
+                });
             }
             if (this.game.prefs[101].value == 2) {
                 this.game.delay(10000).then(function () { return _this.hideBanner(); });
             }
-            dojo.connect($(this.closeButtonId), 'onclick', function (event) {
-                dojo.stopEvent(event);
-                _this.hideBanner();
-            });
         }
     };
     CommunicationInfoManager.prototype.hideBanner = function () {
@@ -2446,7 +2449,7 @@ var DiceManager = /** @class */ (function (_super) {
     DiceManager.prototype.setUp = function (data) {
         var _this = this;
         var element = $(DiceManager.PLAYER_AREA);
-        this.playerDiceStock = new LineStock(this, $(DiceManager.PLAYER_AREA), { center: true });
+        this.playerDiceStock = new LineStock(this, element, { center: true });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
@@ -2479,6 +2482,9 @@ var DiceManager = /** @class */ (function (_super) {
             }
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
+            if (selectableDice.length === 1) {
+                this.playerDiceStock.selectCard(selectableDice[0]);
+            }
         }
     };
     DiceManager.prototype.toggleShowPlayerDice = function (show) {
@@ -2534,6 +2540,14 @@ var SpecialAbilityCardManager = /** @class */ (function (_super) {
         _this.game = game;
         return _this;
     }
+    SpecialAbilityCardManager.prototype.updateRolesThatUsedCard = function (card, rolesThatUsedCard) {
+        if (card && card.type === 2) {
+            var cardElement = this.getCardElement(card);
+            var frontDiv_1 = cardElement.querySelector('.st-special-ability');
+            frontDiv_1.querySelectorAll('.fa-check-circle').forEach(function (checkMark) { return checkMark.remove(); });
+            rolesThatUsedCard.forEach(function (role) { return frontDiv_1.insertAdjacentHTML('beforeend', "<i class=\"fa fa-check-circle ".concat(role, "\" aria-hidden=\"true\"></i>")); });
+        }
+    };
     return SpecialAbilityCardManager;
 }(CardManager));
 var HelpDialogManager = /** @class */ (function () {
@@ -2872,7 +2886,6 @@ var WelcomeDialog = /** @class */ (function () {
     function WelcomeDialog(game) {
         var _this = this;
         this.game = game;
-        this.checked = false;
         this.localStorageKey = 'skyteam-welcome-dialog';
         this.dialogId = 'stWelcomeDialogId';
         dojo.place('<div id="bga-help_buttons"><button class="bga-help_button bga-help_popin-button">?</button></div>', $('left-side'));
@@ -2881,25 +2894,18 @@ var WelcomeDialog = /** @class */ (function () {
     WelcomeDialog.prototype.showDialog = function (force) {
         var _this = this;
         if (force === void 0) { force = false; }
-        this.checked = localStorage.getItem(this.localStorageKey) === 'hide';
-        if (!this.checked || force) {
+        if (!this.isHideWelcomeScreen() || force) {
             this.dialog = new ebg.popindialog();
             this.dialog.create(this.dialogId);
             this.dialog.setTitle("<i class=\"fa fa-plane\" aria-hidden=\"true\"></i> ".concat(_('Welcome to Sky Team!')));
             this.dialog.setContent(this.createContent());
             this.dialog.show();
-            $('welcome-dialog-hide-checkbox').checked = this.checked ? 'checked' : undefined;
-            dojo.connect($('welcome-dialog-hide'), 'click', function (event) {
+            dojo.connect($('welcome-dialog-hide'), 'change', function (event) {
                 dojo.stopEvent(event);
-                _this.checked = !_this.checked;
-                if (_this.checked) {
-                    console.log("Checkbox is checked..");
-                    $('welcome-dialog-hide-checkbox').checked = 'checked';
+                if (event.target.checked) {
                     localStorage.setItem(_this.localStorageKey, 'hide');
                 }
                 else {
-                    console.log("Checkbox is not checked..");
-                    $('welcome-dialog-hide-checkbox').checked = undefined;
                     localStorage.setItem(_this.localStorageKey, 'show');
                 }
             });
@@ -2916,8 +2922,11 @@ var WelcomeDialog = /** @class */ (function () {
         html += "<p>".concat(_('Once you are familiar with the game you can hide the communications banner and/or help buttons to have a cleaner interface. Go to the preferences panel through the BGA menu.'), "</p>");
         html += "<h3 style=\"text-align: center\">".concat(_('Enjoy Sky Team!'), "</br>Le Scorpion Masque</h3>");
         html += "</br>";
-        html += "<label id=\"welcome-dialog-hide\" for=\"welcome-dialog-hide-checkbox\" style=\"cursor: pointer;\"><input id=\"welcome-dialog-hide-checkbox\" type=\"checkbox\"> ".concat(_('Do not show this Welcome Screen when opening the game (you can always access it through the ? in the bottom left corner)'), "</label>");
+        html += "<label for=\"welcome-dialog-hide\" style=\"cursor: pointer;\"><input id=\"welcome-dialog-hide\" type=\"checkbox\" ".concat(this.isHideWelcomeScreen() ? 'checked="checked"' : '', " /> ").concat(_('Hide this Welcome Screen when opening the table (you can always access it through the ? in the bottom left corner)'), "</label>");
         return html;
+    };
+    WelcomeDialog.prototype.isHideWelcomeScreen = function () {
+        return localStorage.getItem(this.localStorageKey) === 'hide';
     };
     return WelcomeDialog;
 }());
@@ -3184,11 +3193,11 @@ var SkyTeam = /** @class */ (function () {
             switch (stateName) {
                 case 'dicePlacementSelect':
                 case 'performSynchronisation':
-                    if (args.nrOfRerollAvailable > 0) {
-                        this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
-                    }
                     if (args.canActivateWorkingTogether) {
                         this.addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), function () { return _this.requestSwap(); }, null, null, 'gray');
+                    }
+                    if (args.nrOfRerollAvailable > 0) {
+                        this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
                     }
                     break;
             }
@@ -3453,7 +3462,8 @@ var SkyTeam = /** @class */ (function () {
             ['trafficDiceReturned', 1],
             ['planeKeroseneChanged', 1],
             ['diceRemoved', 1],
-            ['windChanged', undefined]
+            ['windChanged', undefined],
+            ['playerUsedAdaptation', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3499,6 +3509,9 @@ var SkyTeam = /** @class */ (function () {
             _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
         });
         return Promise.resolve();
+    };
+    SkyTeam.prototype.notif_playerUsedAdaptation = function (args) {
+        this.specialAbilityCardManager.updateRolesThatUsedCard(this.planeManager.specialAbilityCardStock.getCards().find(function (card) { return card.type === 2; }), args.rolesThatUsedAdaptation);
     };
     SkyTeam.prototype.notif_diePlaced = function (args) {
         return this.actionSpaceManager.moveDieToActionSpace(args.die);

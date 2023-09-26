@@ -1,6 +1,5 @@
 class WelcomeDialog {
 
-    private checked = false;
     private readonly localStorageKey: string = 'skyteam-welcome-dialog';
     private readonly dialogId: string = 'stWelcomeDialogId';
     private dialog;
@@ -11,26 +10,18 @@ class WelcomeDialog {
     }
 
     public showDialog(force = false) {
-        this.checked = localStorage.getItem(this.localStorageKey) === 'hide';
-        if (!this.checked || force) {
+        if (!this.isHideWelcomeScreen() || force) {
             this.dialog = new ebg.popindialog();
             this.dialog.create(this.dialogId);
             this.dialog.setTitle(`<i class="fa fa-plane" aria-hidden="true"></i> ${_('Welcome to Sky Team!')}`);
             this.dialog.setContent( this.createContent() );
             this.dialog.show();
 
-            $('welcome-dialog-hide-checkbox').checked = this.checked ? 'checked' : undefined;
-
-            dojo.connect($('welcome-dialog-hide'), 'click', (event) => {
+            dojo.connect($('welcome-dialog-hide'), 'change', (event) => {
                 dojo.stopEvent(event);
-                this.checked = !this.checked;
-                if (this.checked) {
-                    console.log("Checkbox is checked..");
-                    $('welcome-dialog-hide-checkbox').checked = 'checked';
+                if (event.target.checked) {
                     localStorage.setItem(this.localStorageKey, 'hide');
                 } else {
-                    console.log("Checkbox is not checked..");
-                    $('welcome-dialog-hide-checkbox').checked = undefined;
                     localStorage.setItem(this.localStorageKey, 'show');
                 }
             });
@@ -48,8 +39,12 @@ class WelcomeDialog {
         html += `<p>${_('Once you are familiar with the game you can hide the communications banner and/or help buttons to have a cleaner interface. Go to the preferences panel through the BGA menu.')}</p>`;
         html += `<h3 style="text-align: center">${_('Enjoy Sky Team!')}</br>Le Scorpion Masque</h3>`;
         html += `</br>`;
-        html += `<label id="welcome-dialog-hide" for="welcome-dialog-hide-checkbox" style="cursor: pointer;"><input id="welcome-dialog-hide-checkbox" type="checkbox"> ${_('Do not show this Welcome Screen when opening the game (you can always access it through the ? in the bottom left corner)')}</label>`;
+        html += `<label for="welcome-dialog-hide" style="cursor: pointer;"><input id="welcome-dialog-hide" type="checkbox" ${this.isHideWelcomeScreen() ? 'checked="checked"' : ''} /> ${_('Hide this Welcome Screen when opening the table (you can always access it through the ? in the bottom left corner)')}</label>`;
 
         return html;
+    }
+
+    private isHideWelcomeScreen() {
+        return localStorage.getItem(this.localStorageKey) === 'hide';
     }
 }

@@ -23,4 +23,13 @@ class SpecialAbilityCardManager  extends CardManager<SpecialAbilityCard> {
             cardHeight: 158
         })
     }
+
+    public updateRolesThatUsedCard(card: SpecialAbilityCard, rolesThatUsedCard: string[]) {
+        if (card && card.type === 2) {
+            const cardElement = this.getCardElement(card);
+            const frontDiv = cardElement.querySelector('.st-special-ability');
+            frontDiv.querySelectorAll('.fa-check-circle').forEach(checkMark => checkMark.remove());
+            rolesThatUsedCard.forEach(role => frontDiv.insertAdjacentHTML('beforeend', `<i class="fa fa-check-circle ${role}" aria-hidden="true"></i>`))
+        }
+    }
 }

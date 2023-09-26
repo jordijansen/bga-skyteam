@@ -25,7 +25,7 @@ class CommunicationInfoManager  {
         dojo.removeClass(element, 'red');
         dojo.addClass(element, 'green');
 
-        dojo.place(`<h2><i class="fa fa-microphone" aria-hidden="true"></i> ${_('Limited communication only')} <i class="fa fa-microphone" aria-hidden="true"></i><br/>${_('You are not allowed to discuss the dice.')}<br/></h2><i id="${this.closeButtonId}" class="fa fa-times" aria-hidden="true"></i>`, element)
+        dojo.place(`<h2><i class="fa fa-microphone" aria-hidden="true"></i> ${_('Limited communication only')} <i class="fa fa-microphone" aria-hidden="true"></i><br/>${_('You are not allowed to discuss the dice.')}<br/></h2><i id="st-communication-info-dialog-close-button" class="fa fa-times" aria-hidden="true"></i>`, element)
     }
 
     public setCommunicationNotAllowed() {
@@ -37,26 +37,27 @@ class CommunicationInfoManager  {
         dojo.removeClass(element, 'green');
         dojo.addClass(element, 'red');
 
-        dojo.place(`<h2><i class="fa fa-ban" aria-hidden="true"></i> ${_('No communication')} <i class="fa fa-ban" aria-hidden="true"></i><br/>${_('Non-game communication is allowed.')}</h2><i id="${this.closeButtonId}" class="fa fa-times" aria-hidden="true"></i>`, element)
+        dojo.place(`<h2><i class="fa fa-ban" aria-hidden="true"></i> ${_('No communication')} <i class="fa fa-ban" aria-hidden="true"></i><br/>${_('Non-game communication is allowed.')}</h2><i id="st-communication-info-dialog-close-button" class="fa fa-times" aria-hidden="true"></i>`, element)
     }
 
     public update(newPhase: SkyTeamGameData['phase']) {
         if (this.game.prefs[101].value == 1 || this.game.prefs[101].value == 2) {
-            if (newPhase == 'strategy') {
-                this.setCommunicationLimited();
-            } else if (newPhase == 'diceplacement') {
-                this.setCommunicationNotAllowed();
+            if (newPhase === 'strategy' || newPhase === 'diceplacement') {
+                if (newPhase == 'strategy') {
+                    this.setCommunicationLimited();
+                } else if (newPhase == 'diceplacement') {
+                    this.setCommunicationNotAllowed();
+                }
+
+                dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', (event) => {
+                    dojo.stopEvent(event);
+                    this.hideBanner();
+                })
             }
 
             if (this.game.prefs[101].value == 2) {
                 this.game.delay(10000).then(() => this.hideBanner())
             }
-
-            dojo.connect($(this.closeButtonId), 'onclick', (event) => {
-                dojo.stopEvent(event);
-                this.hideBanner();
-            })
-
         }
     }
 

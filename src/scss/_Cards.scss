@@ -46,6 +46,20 @@
   &[data-type="5"] {background-position: 50% 100%;}
   &[data-type="6"] {background-position: 100% 100%;}
 
+  .fa-check-circle.pilot {
+    position: absolute;
+    left: 15px;
+    top: 10px;
+    color: $pilot-color;
+    font-size: 24px;
+  }
+  .fa-check-circle.co-pilot {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    color: $co-pilot-color;
+    font-size: 24px;
+  }
 }
 
 .st-special-ability-card {

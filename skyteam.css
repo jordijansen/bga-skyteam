@@ -1235,6 +1235,20 @@ body > .card {
 .st-special-ability[data-type="6"] {
   background-position: 100% 100%;
 }
+.st-special-ability .fa-check-circle.pilot {
+  position: absolute;
+  left: 15px;
+  top: 10px;
+  color: #365ea5;
+  font-size: 24px;
+}
+.st-special-ability .fa-check-circle.co-pilot {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  color: #fba919;
+  font-size: 24px;
+}
 
 .st-special-ability-card {
   display: inline-block;
@@ -1638,6 +1652,10 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 
 #popin_stWelcomeDialogId {
   background: lightgrey;
+}
+#popin_stWelcomeDialogId h1 {
+  text-align: center;
+  text-decoration: underline;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

@@ -30,7 +30,7 @@ trait ArgsTrait
     function argDicePlacementSelect()
     {
         $canActivateAdaptation = $this->isSpecialAbilityActive(ADAPTATION);
-        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getActivePlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getActivePlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION)) && sizeof($this->dice->getCardsInLocation(LOCATION_PLAYER)) >= 2;
 
         $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
         $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED);

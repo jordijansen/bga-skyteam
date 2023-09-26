@@ -217,7 +217,7 @@ trait ActionTrait
         }
 
         $canActivateAdaptation = $this->isSpecialAbilityActive(ADAPTATION);
-        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getCurrentPlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
+        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getActivePlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION)) && sizeof($this->dice->getCardsInLocation(LOCATION_PLAYER)) >= 2;
         if (!$canActivateAdaptation) {
             throw new BgaUserException('You cant use adaptation');
         }
@@ -303,9 +303,13 @@ trait ActionTrait
         $updatedDice = Dice::from($this->dice->getCard($selectedDieId));
         $updatedDice->setSide(7 - $originalDice->side);
 
-        $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} uses Adaptation'), [
+        $playersThatUsedAdaptation = [...$playersThatUsedAdaptation, $playerId];
+        $this->setGlobalVariable(PLAYERS_THAT_USED_ADAPTATION, $playersThatUsedAdaptation);
+
+        $this->notifyAllPlayers("playerUsedAdaptation", clienttranslate('${player_name} uses Adaptation'), [
             'playerId' => intval($playerId),
             'player_name' => $this->getPlayerName($playerId),
+            'rolesThatUsedAdaptation' => array_map(fn($playerId) => $this->getPlayerRole($playerId), $playersThatUsedAdaptation)
         ]);
 
         $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} flips ${icon_dice_1} to ${icon_dice_2}'), [
@@ -313,10 +317,9 @@ trait ActionTrait
             'player_name' => $this->getPlayerName($playerId),
             'dice' =>  [$updatedDice],
             'icon_dice_1' => [$originalDice],
-            'icon_dice_2' => [$updatedDice]
+            'icon_dice_2' => [$updatedDice],
         ]);
 
-        $this->setGlobalVariable(PLAYERS_THAT_USED_ADAPTATION, [...$playersThatUsedAdaptation, $playerId]);
         $this->gamestate->nextState('');
     }
 

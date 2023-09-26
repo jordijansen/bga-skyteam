@@ -178,6 +178,11 @@ class SkyTeam extends Table
         $result['scenario'] = $this->getScenario();
 
         $result['chosenSpecialAbilities'] = SpecialAbilityCard::fromArray($this->specialAbilities->getCardsInLocation(LOCATION_AVAILABLE));
+        $result['rolesThatUsedAdaptation'] = [];
+        $playersThatUsedAdaptation = $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION);
+        if (isset($playersThatUsedAdaptation) && sizeof($playersThatUsedAdaptation) > 0) {
+            $result['rolesThatUsedAdaptation'] = array_map(fn($playerId) => $this->getPlayerRole($playerId), $playersThatUsedAdaptation);
+        }
 
         return $result;
     }

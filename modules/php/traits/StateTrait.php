@@ -131,6 +131,7 @@ trait StateTrait
         $this->activeNextPlayer();
         $this->giveExtraTime($this->getActivePlayerId());
         $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $this->getActivePlayerId()));
+
         if (sizeof($dice) > 0) {
             $this->gamestate->nextState('next');
         } else {

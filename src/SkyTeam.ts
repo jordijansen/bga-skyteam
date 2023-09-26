@@ -305,11 +305,11 @@ class SkyTeam implements SkyTeamGame {
             switch (stateName) {
                 case 'dicePlacementSelect':
                 case 'performSynchronisation':
-                    if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
-                        (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
-                    }
                     if ((args as DicePlacementSelectArgs).canActivateWorkingTogether) {
                         (this as any).addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), () => this.requestSwap(), null, null, 'gray');
+                    }
+                    if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
+                        (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
                     }
                     break;
             }
@@ -608,7 +608,8 @@ class SkyTeam implements SkyTeamGame {
             ['trafficDiceReturned', 1],
             ['planeKeroseneChanged', 1],
             ['diceRemoved', 1],
-            ['windChanged', undefined]
+            ['windChanged', undefined],
+            ['playerUsedAdaptation', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -660,6 +661,10 @@ class SkyTeam implements SkyTeamGame {
             this.delay(500).then(() => this.diceManager.updateCardInformations(die));
         });
         return Promise.resolve();
+    }
+
+    notif_playerUsedAdaptation(args: NotifPlayerUsedAdaptation) {
+        this.specialAbilityCardManager.updateRolesThatUsedCard(this.planeManager.specialAbilityCardStock.getCards().find(card => card.type === 2), args.rolesThatUsedAdaptation)
     }
 
     private notif_diePlaced(args: NotifDiePlaced) {

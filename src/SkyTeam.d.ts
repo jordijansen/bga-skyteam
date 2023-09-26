@@ -102,7 +102,8 @@ interface SkyTeamGameData extends GameData {
     isLanded: boolean,
     victoryConditions: {[conditionLetter: string]: VictoryCondition},
     scenario: {nrOfSpecialAbilities?: number, modules: 'traffic' | 'turns'}
-    chosenSpecialAbilities: SpecialAbilityCard[]
+    chosenSpecialAbilities: SpecialAbilityCard[],
+    rolesThatUsedAdaptation: string[]
 }
 
 // ARGS
@@ -148,7 +149,11 @@ interface NotifTokenReceived {
 
 interface NotifDiceRolled {
     playerId: number,
-    dice: Dice[];
+    dice: Dice[],
+}
+
+interface NotifPlayerUsedAdaptation {
+    rolesThatUsedAdaptation?: string[]
 }
 
 interface NotifDiePlaced {
