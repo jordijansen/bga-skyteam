@@ -2113,6 +2113,7 @@ var PlaneManager = /** @class */ (function () {
         this.game = game;
         this.currentApproach = 1;
         this.currentAltitude = 1;
+        this.currentAxis = 1;
     }
     PlaneManager.prototype.setUp = function (data) {
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = data.plane.axis;
@@ -2125,6 +2126,7 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
         this.currentApproach = data.plane.approach;
         this.currentAltitude = data.plane.altitude;
+        this.currentAxis = data.plane.axis;
         Object.values(data.plane.switches).forEach(function (planeSwitch) {
             dojo.place("<div id=\"plane-switch-".concat(planeSwitch.id, "\" class=\"st-plane-switch-wrapper\" data-value=\"").concat(planeSwitch.value, "\"><div class=\"st-plane-switch token\"></div></div>"), $('st-plane-switches'));
         });
@@ -2197,6 +2199,7 @@ var PlaneManager = /** @class */ (function () {
         return this.setApproachAndAltitude(this.currentApproach, value);
     };
     PlaneManager.prototype.updateAxis = function (axis) {
+        this.currentAxis = axis;
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
         return this.game.delay(ANIMATION_MS);
     };
@@ -2223,6 +2226,21 @@ var PlaneManager = /** @class */ (function () {
     PlaneManager.prototype.updateWind = function (wind) {
         $(PlaneManager.WINDS_PLANE).dataset.value = wind;
         return this.game.delay(ANIMATION_MS);
+    };
+    PlaneManager.prototype.highlightApproachSlot = function (offset) {
+        var slotElementId = "st-approach-overlay-track-slot-".concat(offset);
+        var slotElement = document.getElementById(slotElementId);
+        if (slotElement) {
+            slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+        }
+    };
+    PlaneManager.prototype.hightlightAxis = function (value) {
+        dojo.place("<div id=\"st-plane-axis-indicator-highlight\" class=\"st-plane-axis-indicator\" data-value=\"".concat(value, "\"></div>"), $('st-main-board'));
+    };
+    PlaneManager.prototype.unhighlightPlane = function () {
+        var _a;
+        document.querySelectorAll('.st-approach-overlay-track-slot').forEach(function (element) { return element.classList.remove('st-approach-overlay-track-slot-highlighted'); });
+        (_a = document.getElementById('st-plane-axis-indicator-highlight')) === null || _a === void 0 ? void 0 : _a.remove();
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
@@ -2365,6 +2383,7 @@ var ActionSpaceManager = /** @class */ (function () {
     ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged, dieValue) {
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        this.game.planeManager.unhighlightPlane();
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
         Object.entries(ids).filter(function (_a) {
@@ -2400,6 +2419,13 @@ var ActionSpaceManager = /** @class */ (function () {
                 stock.removeCard(die);
             }
         }); });
+    };
+    ActionSpaceManager.prototype.getDieInLocation = function (space) {
+        var dice = this.actionSpaces[space].getCards();
+        if (dice && dice.length === 1) {
+            return dice[0];
+        }
+        return null;
     };
     ActionSpaceManager.prototype.actionSpaceClicked = function (id, event) {
         dojo.stopEvent(event);
@@ -3096,6 +3122,7 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.onDicePlacementActionSelected = function (args, die, space) {
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        this.planeManager.unhighlightPlane();
         if (space) {
             var dieElement = this.diceManager.getCardElement(die);
             var dieElementClonePlaceholder = dieElement.cloneNode(true);
@@ -3104,6 +3131,19 @@ var SkyTeam = /** @class */ (function () {
             dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
             dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
             $(space).appendChild(dieElementClonePlaceholder);
+            if (space.startsWith('radio')) {
+                this.planeManager.highlightApproachSlot(die.value);
+            }
+            else if (space.startsWith('axis')) {
+                var otherSlot = space === 'axis-1' ? 'axis-2' : 'axis-1';
+                var otherDie = this.actionSpaceManager.getDieInLocation(otherSlot);
+                if (otherDie) {
+                    var pilotValue = space === 'axis-1' ? die.value : otherDie.value;
+                    var copilotValue = space === 'axis-2' ? die.value : otherDie.value;
+                    var axisChange = copilotValue - pilotValue;
+                    this.planeManager.hightlightAxis(this.planeManager.currentAxis + axisChange);
+                }
+            }
             dojo.removeClass('confirmPlacement', 'disabled');
         }
         else {

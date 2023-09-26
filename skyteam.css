@@ -629,7 +629,7 @@ body > .card {
   position: absolute;
   left: 118px;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator {
   background-image: url("img/skyteam-axis-indicator.png");
   width: 190px;
   height: 190px;
@@ -640,68 +640,71 @@ body > .card {
   background-size: cover;
   transition: transform 1s ease-in-out;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-10"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-10"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-9"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-9"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-8"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-8"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-7"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-7"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-6"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-6"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-5"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-5"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-4"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-4"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-3"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-3"] {
   transform: rotate(-75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-2"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-2"] {
   transform: rotate(-50deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="-1"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="-1"] {
   transform: rotate(-25deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="0"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="0"] {
   transform: rotate(0deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="1"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="1"] {
   transform: rotate(25deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="2"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="2"] {
   transform: rotate(50deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="3"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="3"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="4"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="4"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="5"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="5"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="6"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="6"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="7"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="7"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="8"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="8"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="9"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="9"] {
   transform: rotate(75deg);
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator[data-value="10"] {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator[data-value="10"] {
   transform: rotate(75deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-axis-indicator-highlight {
+  opacity: 0.6;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-aerodynamics-blue-marker, #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-aerodynamics-orange-marker {
   position: absolute;
@@ -943,6 +946,24 @@ body > .card {
   top: -68px;
   left: -102px;
   justify-content: end;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track {
+  width: 178px;
+  position: absolute;
+  height: 570px;
+  top: -463px;
+  left: 102px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track .st-approach-overlay-track-slot {
+  height: 95px;
+  border-radius: 10px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track .st-approach-overlay-track-slot.st-approach-overlay-track-slot-highlighted {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks {
   height: 700px;

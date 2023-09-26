@@ -88,7 +88,7 @@
           position: absolute;
           left: 118px;
 
-          #st-plane-axis-indicator {
+          .st-plane-axis-indicator {
             background-image: url('img/skyteam-axis-indicator.png');
             width: 190px;
             height: 190px;
@@ -119,6 +119,10 @@
             &[data-value="8"] { transform: rotate(3 * $axis-rotation-step-degrees); }
             &[data-value="9"] { transform: rotate(3 * $axis-rotation-step-degrees); }
             &[data-value="10"] { transform: rotate(3 * $axis-rotation-step-degrees); }
+          }
+
+          #st-plane-axis-indicator-highlight {
+            opacity: 0.6;
           }
 
           #st-plane-aerodynamics-blue-marker, #st-plane-aerodynamics-orange-marker {
@@ -212,6 +216,23 @@
             top: -68px;
             left: -102px;
             justify-content: end;
+          }
+          #st-approach-overlay-track {
+            width: 178px;
+            position: absolute;
+            height: 570px;
+            top: -463px;
+            left: 102px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            .st-approach-overlay-track-slot {
+              height: 95px;
+              border-radius: 10px;
+              &.st-approach-overlay-track-slot-highlighted {
+                @include selected();
+              }
+            }
           }
         }
       }

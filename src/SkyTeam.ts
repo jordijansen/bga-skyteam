@@ -202,6 +202,8 @@ class SkyTeam implements SkyTeamGame {
 
     private onDicePlacementActionSelected(args: DicePlacementSelectArgs, die: Dice, space: string) {
         document.querySelector('.st-dice-placeholder')?.remove();
+        this.planeManager.unhighlightPlane();
+
         if (space) {
             const dieElement = this.diceManager.getCardElement(die);
             const dieElementClonePlaceholder = dieElement.cloneNode(true) as any;
@@ -210,6 +212,20 @@ class SkyTeam implements SkyTeamGame {
             dieElementClonePlaceholder.classList.remove('bga-cards_selectable-card');
             dieElementClonePlaceholder.classList.remove('bga-cards_selected-card');
             $(space).appendChild(dieElementClonePlaceholder);
+
+            if (space.startsWith('radio')) {
+                this.planeManager.highlightApproachSlot(die.value);
+            } else if (space.startsWith('axis')) {
+                const otherSlot = space === 'axis-1' ? 'axis-2' : 'axis-1';
+                const otherDie = this.actionSpaceManager.getDieInLocation(otherSlot);
+                if (otherDie) {
+                    const pilotValue = space === 'axis-1' ? die.value : otherDie.value;
+                    const copilotValue = space === 'axis-2' ? die.value : otherDie.value;
+                    const axisChange = copilotValue - pilotValue;
+
+                    this.planeManager.hightlightAxis(this.planeManager.currentAxis + axisChange);
+                }
+            }
             dojo.removeClass('confirmPlacement', 'disabled');
         } else {
             dojo.addClass('confirmPlacement', 'disabled');

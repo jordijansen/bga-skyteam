@@ -1,7 +1,8 @@
 class PlaneManager  {
 
-    private currentApproach = 1;
+    public currentApproach = 1;
     private currentAltitude = 1;
+    public currentAxis = 1;
 
     private static readonly PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     private static readonly PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
@@ -33,6 +34,7 @@ class PlaneManager  {
 
         this.currentApproach = data.plane.approach;
         this.currentAltitude = data.plane.altitude;
+        this.currentAxis = data.plane.axis;
 
         Object.values(data.plane.switches).forEach((planeSwitch) => {
             dojo.place(`<div id="plane-switch-${planeSwitch.id}" class="st-plane-switch-wrapper" data-value="${planeSwitch.value}"><div class="st-plane-switch token"></div></div>`, $('st-plane-switches'))
@@ -119,6 +121,7 @@ class PlaneManager  {
     }
 
     public updateAxis(axis: number) {
+        this.currentAxis = axis;
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = axis;
         return this.game.delay(ANIMATION_MS);
     }
@@ -152,4 +155,23 @@ class PlaneManager  {
         $(PlaneManager.WINDS_PLANE).dataset.value = wind;
         return this.game.delay(ANIMATION_MS);
     }
+
+    public highlightApproachSlot(offset: number) {
+        const slotElementId = `st-approach-overlay-track-slot-${offset}`;
+        const slotElement = document.getElementById(slotElementId)
+        if (slotElement) {
+            slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+        }
+    }
+
+    public hightlightAxis(value: number) {
+        dojo.place(`<div id="st-plane-axis-indicator-highlight" class="st-plane-axis-indicator" data-value="${value}"></div>`, $('st-main-board'))
+    }
+
+    public unhighlightPlane() {
+        document.querySelectorAll('.st-approach-overlay-track-slot').forEach(element => element.classList.remove('st-approach-overlay-track-slot-highlighted'))
+        document.getElementById('st-plane-axis-indicator-highlight')?.remove();
+    }
+
+
 }

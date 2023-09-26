@@ -41,7 +41,7 @@
                     <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
                 </div>
                 <div id="st-main-board" class="st-board">
-                    <div id="st-plane-axis-indicator" class="token"></div>
+                    <div id="st-plane-axis-indicator" class="st-plane-axis-indicator token"></div>
                     <div id="st-plane-aerodynamics-blue-marker" class="st-plane-marker token" data-type="aerodynamics-blue"></div>
                     <div id="st-plane-aerodynamics-orange-marker" class="st-plane-marker token" data-type="aerodynamics-orange"></div>
                     <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
@@ -52,6 +52,14 @@
                     <div id="st-token-reserve-plane" class="st-token-reserve"></div>
                     <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
+                    <div id="st-approach-overlay-track">
+                        <div id="st-approach-overlay-track-slot-6" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot-5" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot-4" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot-3" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot-2" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot-1" class="st-approach-overlay-track-slot"></div>
+                    </div>
                     <!-- MODULE BOARDS -->
                 </div>
                 <div id="st-main-board-right">

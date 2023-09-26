@@ -37,6 +37,7 @@ class ActionSpaceManager {
 
     public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: (spaceId: string) => void, dieValue?: number) {
         document.querySelector('.st-dice-placeholder')?.remove();
+        this.game.planeManager.unhighlightPlane();
 
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
 
@@ -73,6 +74,14 @@ class ActionSpaceManager {
                 stock.removeCard(die);
             }
         }))
+    }
+
+    public getDieInLocation(space: string) {
+        const dice = this.actionSpaces[space].getCards();
+        if (dice && dice.length === 1) {
+            return dice[0];
+        }
+        return null;
     }
 
     private actionSpaceClicked(id, event) {

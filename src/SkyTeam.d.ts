@@ -16,6 +16,7 @@ interface PlaneSwitch {
 }
 
 interface SkyTeamGame extends Game {
+    planeManager: PlaneManager;
     helpDialogManager: HelpDialogManager;
     diceManager: DiceManager;
     tokenManager: TokenManager;
