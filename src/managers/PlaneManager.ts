@@ -101,13 +101,9 @@ class PlaneManager  {
         approach.style.bottom = `-${approachHeight}px`;
 
         const newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight)
-        if (this.game.instantaneousMode || forceInstant) {
-            wrapper.style.height = `${newWrapperHeight}px`
-        } else {
-            return this.game.delay(ANIMATION_MS).then(() => {
-                wrapper.style.height = `${newWrapperHeight}px`;
-            });
-        }
+        return this.game.delay(ANIMATION_MS).then(() => {
+            wrapper.style.height = `${newWrapperHeight}px`;
+        });
     }
 
     public updateApproach(value: number) {

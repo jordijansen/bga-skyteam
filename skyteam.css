@@ -1460,7 +1460,7 @@ body > .card {
 
 .st-approach {
   background-image: url("img/skyteam-approach-tracks.png");
-  background-size: 400% auto;
+  background-size: 1300% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -1471,14 +1471,50 @@ body > .card {
 }
 .st-approach[data-type="2"] {
   height: 818px;
-  background-position: 33.33333% 0;
+  background-position: 8.3333333333% 0;
 }
 .st-approach[data-type="3"] {
   height: 818px;
-  background-position: 66.66666% 0;
+  background-position: 16.6666666666% 0;
 }
 .st-approach[data-type="4"] {
   height: 528px;
+  background-position: 24.9999999999% 0;
+}
+.st-approach[data-type="5"] {
+  height: 818px;
+  background-position: 33.3333333332% 0;
+}
+.st-approach[data-type="6"] {
+  height: 528px;
+  background-position: 41.6666666665% 0;
+}
+.st-approach[data-type="7"] {
+  height: 818px;
+  background-position: 49.9999999998% 0;
+}
+.st-approach[data-type="8"] {
+  height: 720px;
+  background-position: 58.3333333331% 0;
+}
+.st-approach[data-type="9"] {
+  height: 720px;
+  background-position: 66.6666666664% 0;
+}
+.st-approach[data-type="10"] {
+  height: 818px;
+  background-position: 74.9999999997% 0;
+}
+.st-approach[data-type="11"] {
+  height: 818px;
+  background-position: 83.333333333% 0;
+}
+.st-approach[data-type="12"] {
+  height: 818px;
+  background-position: 91.6666666663% 0;
+}
+.st-approach[data-type="13"] {
+  height: 818px;
   background-position: 100% 0;
 }
 

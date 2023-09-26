@@ -671,12 +671,12 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
-        args.dice.forEach(die => {
+        const promises = args.dice.map(die => {
             const originalDie = this.diceManager.getCardStock(die).getCards().find(originalDie => originalDie.id === die.id);
             this.diceManager.updateCardInformations({...originalDie, side: originalDie.side == 1 ? 6 : 1})
-            this.delay(500).then(() => this.diceManager.updateCardInformations(die));
+            return this.delay(500).then(() => this.diceManager.updateCardInformations(die));
         });
-        return Promise.resolve();
+        return Promise.all(promises);
     }
 
     notif_playerUsedAdaptation(args: NotifPlayerUsedAdaptation) {

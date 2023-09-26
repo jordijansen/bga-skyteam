@@ -208,13 +208,22 @@
 
 .st-approach {
   background-image: url('img/skyteam-approach-tracks.png');
-  background-size: 400% auto;
+  background-size: 1300% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 
   &[data-type="1"] { height: 720px; background-position: 0 0; }
-  &[data-type="2"] { height: 818px; background-position: 33.33333% 0; }
-  &[data-type="3"] { height: 818px; background-position: 66.66666% 0; }
-  &[data-type="4"] { height: 528px; background-position: 100% 0; }
+  &[data-type="2"] { height: 818px; background-position: calc(8.3333333333% * 1) 0; }
+  &[data-type="3"] { height: 818px; background-position: calc(8.3333333333% * 2) 0; }
+  &[data-type="4"] { height: 528px; background-position: calc(8.3333333333% * 3) 0; }
+  &[data-type="5"] { height: 818px; background-position: calc(8.3333333333% * 4) 0; }
+  &[data-type="6"] { height: 528px; background-position: calc(8.3333333333% * 5) 0; }
+  &[data-type="7"] { height: 818px; background-position: calc(8.3333333333% * 6) 0; }
+  &[data-type="8"] { height: 720px; background-position: calc(8.3333333333% * 7) 0; }
+  &[data-type="9"] { height: 720px; background-position: calc(8.3333333333% * 8) 0; }
+  &[data-type="10"] { height: 818px; background-position: calc(8.3333333333% * 9) 0; }
+  &[data-type="11"] { height: 818px; background-position: calc(8.3333333333% * 10) 0; }
+  &[data-type="12"] { height: 818px; background-position: calc(8.3333333333% * 11) 0; }
+  &[data-type="13"] { height: 818px; background-position: 100% 0; }
 }

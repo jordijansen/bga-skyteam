@@ -2181,14 +2181,9 @@ var PlaneManager = /** @class */ (function () {
         altitude.style.bottom = "-".concat(altitudeHeight, "px");
         approach.style.bottom = "-".concat(approachHeight, "px");
         var newWrapperHeight = Math.max(altitude.offsetHeight - altitudeHeight, approach.offsetHeight - approachHeight);
-        if (this.game.instantaneousMode || forceInstant) {
+        return this.game.delay(ANIMATION_MS).then(function () {
             wrapper.style.height = "".concat(newWrapperHeight, "px");
-        }
-        else {
-            return this.game.delay(ANIMATION_MS).then(function () {
-                wrapper.style.height = "".concat(newWrapperHeight, "px");
-            });
-        }
+        });
     };
     PlaneManager.prototype.updateApproach = function (value) {
         this.currentApproach = value;
@@ -3543,12 +3538,12 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_diceRolled = function (args) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
-        args.dice.forEach(function (die) {
+        var promises = args.dice.map(function (die) {
             var originalDie = _this.diceManager.getCardStock(die).getCards().find(function (originalDie) { return originalDie.id === die.id; });
             _this.diceManager.updateCardInformations(__assign(__assign({}, originalDie), { side: originalDie.side == 1 ? 6 : 1 }));
-            _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
+            return _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
         });
-        return Promise.resolve();
+        return Promise.all(promises);
     };
     SkyTeam.prototype.notif_playerUsedAdaptation = function (args) {
         this.specialAbilityCardManager.updateRolesThatUsedCard(this.planeManager.specialAbilityCardStock.getCards().find(function (card) { return card.type === 2; }), args.rolesThatUsedAdaptation);
