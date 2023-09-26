@@ -1013,6 +1013,9 @@ body > .card {
   position: absolute;
   animation: jj-red-color-transition 2s infinite;
 }
+.st-action-space .st-action-space-mandatory-warning i {
+  font-size: 16px !important;
+}
 .st-action-space .st-action-space-mandatory-warning.bottom {
   bottom: -25px;
 }
@@ -1029,6 +1032,9 @@ body > .card {
   position: absolute;
   opacity: 0.6;
   cursor: pointer;
+}
+.st-action-space .st-action-space-help i {
+  font-size: 16px !important;
 }
 .st-action-space .st-action-space-help.top {
   top: -25px;
@@ -1535,7 +1541,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 
 .st-end-game-info-box {
   background-color: #97c355;
-  width: 300px;
+  width: 400px;
   border-radius: 10px;
   color: white;
   text-align: center;
@@ -1549,6 +1555,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 .st-end-game-info-box h1 {
   text-transform: uppercase;
   font-weight: bold;
+  font-size: 24px;
 }
 
 #st-spend-coffee .bgabutton {

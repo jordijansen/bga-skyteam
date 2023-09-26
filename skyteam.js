@@ -2930,12 +2930,12 @@ var SkyTeam = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.instantaneousMode) return [3 /*break*/, 2];
-                        return [4 /*yield*/, Promise.resolve()];
+                        if (!this.animationManager.animationsActive()) return [3 /*break*/, 2];
+                        return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
+                    case 2: return [4 /*yield*/, Promise.resolve()];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -3493,7 +3493,11 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_diceRolled = function (args) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
-        args.dice.forEach(function (die) { return _this.diceManager.updateCardInformations(die); });
+        args.dice.forEach(function (die) {
+            var originalDie = _this.diceManager.getCardStock(die).getCards().find(function (originalDie) { return originalDie.id === die.id; });
+            _this.diceManager.updateCardInformations(__assign(__assign({}, originalDie), { side: originalDie.side == 1 ? 6 : 1 }));
+            _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
+        });
         return Promise.resolve();
     };
     SkyTeam.prototype.notif_diePlaced = function (args) {

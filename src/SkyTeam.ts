@@ -529,10 +529,10 @@ class SkyTeam implements SkyTeamGame {
     }
 
     public delay = async (ms: number) => {
-        if (this.instantaneousMode) {
-            await Promise.resolve();
-        } else {
+        if (this.animationManager.animationsActive()) {
             await new Promise(resolve => setTimeout(resolve, ms))
+        } else {
+            await Promise.resolve();
         }
     }
 
@@ -654,7 +654,11 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
-        args.dice.forEach(die => this.diceManager.updateCardInformations(die));
+        args.dice.forEach(die => {
+            const originalDie = this.diceManager.getCardStock(die).getCards().find(originalDie => originalDie.id === die.id);
+            this.diceManager.updateCardInformations({...originalDie, side: originalDie.side == 1 ? 6 : 1})
+            this.delay(500).then(() => this.diceManager.updateCardInformations(die));
+        });
         return Promise.resolve();
     }
 

@@ -19,7 +19,7 @@ class PlaneManager extends APP_DbObject
         );
     }
 
-    function get() : Plane
+    function get(): Plane
     {
         return Plane::from(self::getObjectFromDB("SELECT * FROM plane WHERE id = 1"));
     }
@@ -63,7 +63,7 @@ class PlaneManager extends APP_DbObject
 
     function getAllActionSpaces(): array
     {
-        return array_filter(SkyTeam::$instance->ACTION_SPACES, function($value, $key){
+        return array_filter(SkyTeam::$instance->ACTION_SPACES, function ($value, $key) {
             return !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
         }, ARRAY_FILTER_USE_BOTH);
     }
@@ -83,7 +83,7 @@ class PlaneManager extends APP_DbObject
                 $axisChange = $copilotValue - $pilotValue;
                 $plane->axis = $plane->axis + $axisChange;
 
-                SkyTeam::$instance->notifyAllPlayers( "planeAxisChanged", clienttranslate('The plane axis is changed to <b>${axis}</b>'), [
+                SkyTeam::$instance->notifyAllPlayers("planeAxisChanged", clienttranslate('The plane axis is changed to <b>${axis}</b>'), [
                     'axis' => $plane->axis
                 ]);
 
@@ -107,21 +107,36 @@ class PlaneManager extends APP_DbObject
                     $continue = false;
                 } else if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                     $plane->wind = $plane->wind + $plane->axis;
-                    SkyTeam::$instance->notifyAllPlayers( "windChanged", clienttranslate('The wind changed by ${axis} clicks, new wind modifier is <b>${windModifier}</b>'), [
+                    SkyTeam::$instance->notifyAllPlayers("windChanged", clienttranslate('The wind changed by ${axis} clicks, new wind modifier is <b>${windModifier}</b>'), [
                         'axis' => $plane->axis,
                         'wind' => $plane->wind,
-                        'windModifier' => $plane->getWindModifier() > 0 ? '+'.$plane->getWindModifier() : $plane->getWindModifier()
+                        'windModifier' => $plane->getWindModifier() > 0 ? '+' . $plane->getWindModifier() : $plane->getWindModifier()
                     ]);
                 }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_ENGINES) {
-            if (SkyTeam::$instance->isFinalRound()) {
-                // This is the final round, so the engine / breaks are checked at the end of the game.
-            } else {
-                $otherEngineSpace = $die->locationArg == 'engines-1' ? 'engines-2' : 'engines-1';
-                $otherEngineSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherEngineSpace));
-                if (sizeof($otherEngineSpaceDice) > 0) {
-                    $otherEngineSpaceDie = current($otherEngineSpaceDice);
+
+            $otherEngineSpace = $die->locationArg == 'engines-1' ? 'engines-2' : 'engines-1';
+            $otherEngineSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherEngineSpace));
+            if (sizeof($otherEngineSpaceDice) > 0) {
+                $otherEngineSpaceDie = current($otherEngineSpaceDice);
+                if ($die->value == $otherEngineSpaceDie->value && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
+                    // Gain a REROLL token if both Engine values are equal.
+                    $availableRerollTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
+                    if (sizeof($availableRerollTokens) > 0) {
+                        $availableRerollToken = current($availableRerollTokens);
+                        SkyTeam::$instance->tokens->moveCard($availableRerollToken->id, LOCATION_AVAILABLE);
+
+                        SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Players receive ${token_1} (Special Ability: Mastery)'), [
+                            'token_1' => TOKEN_REROLL,
+                            'token' => Token::from(SkyTeam::$instance->tokens->getCard($availableRerollToken->id))
+                        ]);
+                    }
+                }
+
+                if (SkyTeam::$instance->isFinalRound()) {
+                    // This is the final round, so the engine / brakes are checked at the end of the game.
+                } else {
                     $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                     $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                     if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
@@ -135,21 +150,21 @@ class PlaneManager extends APP_DbObject
                         $advanceApproachSpaces = 0;
                     } else if ($totalEngineValue <= $plane->aerodynamicsOrange) {
                         $advanceApproachSpaces = 1;
-                        if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0) {
+                        if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0) {
                             $planeCollision = true;
                         }
                     } else {
                         $advanceApproachSpaces = 2;
-                        if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach)) > 0 ||
-                            sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH,$plane->approach + 1)) > 0) {
+                        if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0 ||
+                            sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach + 1)) > 0) {
                             $planeCollision = true;
                         }
                     }
 
-                    SkyTeam::$instance->notifyAllPlayers( "gameLog", $logMessage, [
+                    SkyTeam::$instance->notifyAllPlayers("gameLog", $logMessage, [
                         'totalEngineValue' => $totalEngineValue,
                         'advanceApproachSpaces' => $advanceApproachSpaces,
-                        'windModifier' => $plane->getWindModifier() > 0 ? '+'.$plane->getWindModifier() : $plane->getWindModifier()
+                        'windModifier' => $plane->getWindModifier() > 0 ? '+' . $plane->getWindModifier() : $plane->getWindModifier()
                     ]);
 
                     for ($i = 1; $i <= $advanceApproachSpaces; $i++) {
@@ -163,23 +178,9 @@ class PlaneManager extends APP_DbObject
                         }
 
                         $plane->approach = $plane->approach + 1;
-                        SkyTeam::$instance->notifyAllPlayers( "planeApproachChanged", '', [
+                        SkyTeam::$instance->notifyAllPlayers("planeApproachChanged", '', [
                             'approach' => $plane->approach
                         ]);
-                    }
-
-                    if ($die->value == $otherEngineSpaceDie->value && SkyTeam::$instance->isSpecialAbilityActive(MASTERY)) {
-                        // Gain a REROLL token if both Engine values are equal.
-                        $availableCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_RESERVE));
-                        if (sizeof($availableCoffeeTokens) > 0) {
-                            $availableRerollToken = current($availableCoffeeTokens);
-                            SkyTeam::$instance->tokens->moveCard($availableRerollToken->id, LOCATION_AVAILABLE);
-
-                            SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Players receive ${token_1} (Special Ability: Mastery)'), [
-                                'token_1' => TOKEN_REROLL,
-                                'token' => Token::from(SkyTeam::$instance->tokens->getCard($availableRerollToken->id))
-                            ]);
-                        }
                     }
 
                     if ($planeTurnFailure) {
@@ -204,7 +205,7 @@ class PlaneManager extends APP_DbObject
                 $planeTokenRemoved = current($planeTokensInSpace);
                 SkyTeam::$instance->tokens->moveCard($planeTokenRemoved->id, LOCATION_RESERVE);
                 $planeTokenRemoved = Token::from(SkyTeam::$instance->tokens->getCard($planeTokenRemoved->id));
-                SkyTeam::$instance->notifyAllPlayers( "planeTokenRemoved", clienttranslate('Radio used to divert ${icon_tokens} from approach'), [
+                SkyTeam::$instance->notifyAllPlayers("planeTokenRemoved", clienttranslate('Radio used to divert ${icon_tokens} from approach'), [
                     'icon_tokens' => [$planeTokenRemoved],
                     'plane' => $planeTokenRemoved
                 ]);
@@ -215,14 +216,14 @@ class PlaneManager extends APP_DbObject
                 $switch->value = true;
                 $switch->save();
 
-                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Landing Gear ${landingGearNumber}</b> ${icon_switch} deployed'), [
+                SkyTeam::$instance->notifyAllPlayers("planeSwitchChanged", clienttranslate('<b>Landing Gear ${landingGearNumber}</b> ${icon_switch} deployed'), [
                     'planeSwitch' => $switch,
-                    'landingGearNumber' => str_replace(ACTION_SPACE_LANDING_GEAR.'-', '', $switch->id),
+                    'landingGearNumber' => str_replace(ACTION_SPACE_LANDING_GEAR . '-', '', $switch->id),
                     'icon_switch' => 1
                 ]);
 
                 $plane->aerodynamicsBlue = $plane->aerodynamicsBlue + 1;
-                SkyTeam::$instance->notifyAllPlayers( "planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker ${icon_plane_marker} moves to <b>${aerodynamicsBlue}</b>'), [
+                SkyTeam::$instance->notifyAllPlayers("planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker ${icon_plane_marker} moves to <b>${aerodynamicsBlue}</b>'), [
                     'aerodynamicsBlue' => $plane->aerodynamicsBlue,
                     'icon_plane_marker' => 'aerodynamics-blue'
                 ]);
@@ -233,14 +234,14 @@ class PlaneManager extends APP_DbObject
                 $switch->value = true;
                 $switch->save();
 
-                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Flap ${switchNumber}</b> ${icon_switch} deployed'), [
+                SkyTeam::$instance->notifyAllPlayers("planeSwitchChanged", clienttranslate('<b>Flap ${switchNumber}</b> ${icon_switch} deployed'), [
                     'planeSwitch' => $switch,
-                    'switchNumber' => str_replace(ACTION_SPACE_FLAPS.'-', '', $switch->id),
+                    'switchNumber' => str_replace(ACTION_SPACE_FLAPS . '-', '', $switch->id),
                     'icon_switch' => 1
                 ]);
 
                 $plane->aerodynamicsOrange = $plane->aerodynamicsOrange + 1;
-                SkyTeam::$instance->notifyAllPlayers( "planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker ${icon_plane_marker} moves to <b>${aerodynamicsOrange}</b>'), [
+                SkyTeam::$instance->notifyAllPlayers("planeAerodynamicsChanged", clienttranslate('Plane aerodynamics marker ${icon_plane_marker} moves to <b>${aerodynamicsOrange}</b>'), [
                     'aerodynamicsOrange' => $plane->aerodynamicsOrange,
                     'icon_plane_marker' => 'aerodynamics-orange'
                 ]);
@@ -248,10 +249,10 @@ class PlaneManager extends APP_DbObject
         } else if ($actionSpace['type'] == ACTION_SPACE_CONCENTRATION) {
             $reserveCoffeeTokens = Token::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, TOKEN_COFFEE, LOCATION_RESERVE));
             if (sizeof($reserveCoffeeTokens) > 0) {
-                $coffeeToken = current ($reserveCoffeeTokens);
+                $coffeeToken = current($reserveCoffeeTokens);
                 SkyTeam::$instance->tokens->moveCard($coffeeToken->id, LOCATION_AVAILABLE, $coffeeToken->locationArg);
 
-                SkyTeam::$instance->notifyAllPlayers( "tokenReceived", clienttranslate('Concentration: ${icon_tokens} received'), [
+                SkyTeam::$instance->notifyAllPlayers("tokenReceived", clienttranslate('Concentration: ${icon_tokens} received'), [
                     'token' => Token::from(SkyTeam::$instance->tokens->getCard($coffeeToken->id)),
                     'icon_tokens' => [$coffeeToken],
                 ]);
@@ -262,9 +263,9 @@ class PlaneManager extends APP_DbObject
                 $switch->value = true;
                 $switch->save();
 
-                SkyTeam::$instance->notifyAllPlayers( "planeSwitchChanged", clienttranslate('<b>Brake ${switchNumber}</b> ${icon_switch} deployed'), [
+                SkyTeam::$instance->notifyAllPlayers("planeSwitchChanged", clienttranslate('<b>Brake ${switchNumber}</b> ${icon_switch} deployed'), [
                     'planeSwitch' => $switch,
-                    'switchNumber' => str_replace(ACTION_SPACE_BRAKES.'-', '', $switch->id),
+                    'switchNumber' => str_replace(ACTION_SPACE_BRAKES . '-', '', $switch->id),
                     'icon_switch' => 1
                 ]);
 
@@ -275,7 +276,7 @@ class PlaneManager extends APP_DbObject
                 } else if ($plane->brake == 4) {
                     $plane->brake = 6;
                 }
-                SkyTeam::$instance->notifyAllPlayers( "planeBrakeChanged", clienttranslate('Plane brakes marker ${icon_plane_marker} moves to <b>${brake}</b>'), [
+                SkyTeam::$instance->notifyAllPlayers("planeBrakeChanged", clienttranslate('Plane brakes marker ${icon_plane_marker} moves to <b>${brake}</b>'), [
                     'brake' => $plane->brake,
                     'icon_plane_marker' => 'brakes-red'
                 ]);
@@ -284,7 +285,7 @@ class PlaneManager extends APP_DbObject
             if (SkyTeam::$instance->isModuleActive(MODULE_KEROSENE)) {
                 $plane->kerosene = $plane->kerosene - $die->value;
 
-                SkyTeam::$instance->notifyAllPlayers( "planeKeroseneChanged", clienttranslate('Kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
+                SkyTeam::$instance->notifyAllPlayers("planeKeroseneChanged", clienttranslate('Kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
                     'kerosene' => $plane->kerosene,
                     'icon_kerosene_marker' => 'kerosene_marker'
                 ]);
@@ -301,14 +302,15 @@ class PlaneManager extends APP_DbObject
 
         $this->save($plane);
 
-        SkyTeam::$instance->notifyAllPlayers( "victoryConditionsUpdated", '', [
+        SkyTeam::$instance->notifyAllPlayers("victoryConditionsUpdated", '', [
             'victoryConditions' => $this->getVictoryConditionsResults()
         ]);
 
         return $continue;
     }
 
-    function getVictoryConditionsResults() {
+    function getVictoryConditionsResults()
+    {
         $victoryConditions = SkyTeam::$instance->getVictoryConditions();
         $isFinalRound = SkyTeam::$instance->isFinalRound();
         $plane = $this->get();
