@@ -53,12 +53,7 @@
                     <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
                     <div id="st-approach-overlay-track">
-                        <div id="st-approach-overlay-track-slot-6" class="st-approach-overlay-track-slot"></div>
-                        <div id="st-approach-overlay-track-slot-5" class="st-approach-overlay-track-slot"></div>
-                        <div id="st-approach-overlay-track-slot-4" class="st-approach-overlay-track-slot"></div>
-                        <div id="st-approach-overlay-track-slot-3" class="st-approach-overlay-track-slot"></div>
-                        <div id="st-approach-overlay-track-slot-2" class="st-approach-overlay-track-slot"></div>
-                        <div id="st-approach-overlay-track-slot-1" class="st-approach-overlay-track-slot"></div>
+                        <div id="st-approach-overlay-track-slot"></div>
                     </div>
                     <!-- MODULE BOARDS -->
                 </div>

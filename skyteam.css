@@ -950,20 +950,19 @@ body > .card {
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track {
   width: 178px;
   position: absolute;
-  height: 570px;
-  top: -463px;
+  top: 15px;
   left: 102px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
 }
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track .st-approach-overlay-track-slot {
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track #st-approach-overlay-track-slot {
   height: 95px;
   border-radius: 10px;
-}
-#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track .st-approach-overlay-track-slot.st-approach-overlay-track-slot-highlighted {
+  display: none;
+  position: relative;
   outline: 6px rgba(124, 252, 0, 0.75) solid;
   cursor: pointer;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track #st-approach-overlay-track-slot.st-approach-overlay-track-slot-highlighted {
+  display: block;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks {
   height: 700px;
@@ -1553,7 +1552,6 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   display: flex;
   max-width: 1000px;
   flex: 1;
-  gap: 10px;
   margin: 10px;
 }
 

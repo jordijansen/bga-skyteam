@@ -31,7 +31,7 @@ class DiceManager extends CardManager<Dice> {
     public setUp(data: SkyTeamGameData) {
         const element = $(DiceManager.PLAYER_AREA);
 
-        this.playerDiceStock = new LineStock(this, element, { center: true})
+        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px'})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
         this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), {})
@@ -47,7 +47,7 @@ class DiceManager extends CardManager<Dice> {
     }
 
     public override updateCardInformations(die: Dice, settings?: Omit<FlipCardSettings, 'updateData'>): void {
-        if (this.getCardElement(die)) {
+        if (this.getCardStock(die) && this.getCardElement(die)) {
             super.updateCardInformations(die, settings);
             const cardElement = this.getCardElement(die);
             cardElement.dataset['value'] = String(die.side);

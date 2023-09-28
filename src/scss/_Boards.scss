@@ -220,17 +220,16 @@
           #st-approach-overlay-track {
             width: 178px;
             position: absolute;
-            height: 570px;
-            top: -463px;
+            top: 15px;
             left: 102px;
-            display: flex;
-            flex-direction: column;
-            justify-content: end;
-            .st-approach-overlay-track-slot {
+            #st-approach-overlay-track-slot {
               height: 95px;
               border-radius: 10px;
+              display: none;
+              position: relative;
+              @include selected();
               &.st-approach-overlay-track-slot-highlighted {
-                @include selected();
+                display: block;
               }
             }
           }

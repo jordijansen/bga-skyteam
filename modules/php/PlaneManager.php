@@ -31,12 +31,10 @@ class PlaneManager extends APP_DbObject
         $mandatoryResult = [];
         $plane = $this->get();
         $remainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
-        $diceAlreadyPlaced = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE));
         foreach ($this->getAllActionSpaces() as $actionSpaceId => $actionSpace) {
-            $diceOnActionSpace = array_filter($diceAlreadyPlaced, fn($die) => $die->locationArg == $actionSpaceId);
 
             if (!array_key_exists($actionSpaceId, $plane->switches) || !$plane->switches[$actionSpaceId]->value) {
-                if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES])) && sizeof($diceOnActionSpace) == 0) {
+                if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES])) && $this->isActionSpaceEmpty($actionSpaceId)) {
                     if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
                         if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
                             $result[$actionSpaceId] = $actionSpace;
@@ -66,6 +64,17 @@ class PlaneManager extends APP_DbObject
         return array_filter(SkyTeam::$instance->ACTION_SPACES, function ($value, $key) {
             return !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
         }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    function isActionSpaceEmpty($actionSpaceId): bool
+    {
+        $diceAlreadyPlaced = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE));
+        $diceOnActionSpace = array_filter($diceAlreadyPlaced, fn($die) => $die->locationArg == $actionSpaceId);
+        if (sizeof($diceOnActionSpace) == 0) {
+            return true;
+        }
+        //TODO CHECK INTERN
+        return false;
     }
 
     function resolveDicePlacement(Dice $die): bool

@@ -217,7 +217,7 @@ trait ActionTrait
         }
 
         $canActivateAdaptation = $this->isSpecialAbilityActive(ADAPTATION);
-        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getActivePlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION)) && sizeof($this->dice->getCardsInLocation(LOCATION_PLAYER)) >= 2;
+        $canActivateAdaptation = $canActivateAdaptation && !in_array($this->getActivePlayerId(), $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION));
         if (!$canActivateAdaptation) {
             throw new BgaUserException('You cant use adaptation');
         }
@@ -232,7 +232,7 @@ trait ActionTrait
         }
 
         $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
-        $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED);
+        $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED) && sizeof($this->dice->getCardsInLocation(LOCATION_PLAYER)) >= 2;
         if (!$canActivateWorkingTogether) {
             throw new BgaUserException('You cant use Working Together');
         }

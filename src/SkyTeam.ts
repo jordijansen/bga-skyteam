@@ -337,19 +337,34 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private confirmPlacement() {
-        document.querySelector('.st-dice-placeholder')?.remove();
         const actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         const diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
 
-        this.actionSpaceManager.selectedActionSpaceId = null;
-        this.actionSpaceManager.setActionSpacesSelectable({}, null);
-        this.diceManager.setSelectionMode('none', null);
-        this.spendCoffee.destroy();
+        let confirmMessage = undefined;
+        if (actionSpaceId.startsWith('radio') && document.querySelectorAll('.st-approach-overlay-track-slot-highlighted').length === 0) {
+            confirmMessage = _('Your Radio reach is outside of the Approach Track. This action has no effect.');
+        } else if (actionSpaceId.startsWith('concentration') && this.reserveManager.reserveCoffeeStock.getCards().length === 0) {
+            confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
+        }
 
-        this.takeAction('confirmPlacement', {
-            placement: JSON.stringify({actionSpaceId, diceId, diceValue})
-        });
+        const runnable = () => {
+            this.actionSpaceManager.selectedActionSpaceId = null;
+            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            this.diceManager.setSelectionMode('none', null);
+            this.spendCoffee.destroy();
+
+            this.takeAction('confirmPlacement', {
+                placement: JSON.stringify({actionSpaceId, diceId, diceValue})
+            })
+        };
+
+        if (confirmMessage) {
+            this.wrapInConfirm(runnable, confirmMessage);
+        } else {
+            runnable();
+        }
+
     }
 
     private confirmPlayerSetup(args: PlayerSetupArgs) {
@@ -673,7 +688,7 @@ class SkyTeam implements SkyTeamGame {
         this.diceManager.toggleShowPlayerDice(true);
         const promises = args.dice.map(die => {
             const originalDie = this.diceManager.getCardStock(die).getCards().find(originalDie => originalDie.id === die.id);
-            this.diceManager.updateCardInformations({...originalDie, side: originalDie.side == 1 ? 6 : 1})
+            this.diceManager.updateCardInformations({...originalDie, side: 7 - die.side})
             return this.delay(500).then(() => this.diceManager.updateCardInformations(die));
         });
         return Promise.all(promises);

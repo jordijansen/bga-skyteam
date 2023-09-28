@@ -137,7 +137,8 @@ $gameStates = [
         "action" => "stDicePlacementNext",
         "transitions" => [
             'next' => ST_DICE_PLACEMENT_SELECT,
-            'endRound' => ST_END_OF_ROUND
+            'endRound' => ST_END_OF_ROUND,
+            'landed' => ST_PLANE_LANDED
         ]
     ],
     ST_REROLL_DICE => [

@@ -128,14 +128,51 @@ trait StateTrait
 
     function stDicePlacementNext()
     {
-        $this->activeNextPlayer();
-        $this->giveExtraTime($this->getActivePlayerId());
-        $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $this->getActivePlayerId()));
+        $endTheGame = false;
+        if ($this->isFinalRound()) {
+            // Check if we can prematurely end the game.
+            // All victory conditions must be success
+            $allVictoryConditionResults = $this->planeManager->getVictoryConditionsResults();
+            $allSuccessVictoryConditionResults = array_map(fn($condition) => $condition['status'] === 'success', $allVictoryConditionResults);
+            $endTheGame = sizeof($allVictoryConditionResults) === sizeof($allSuccessVictoryConditionResults);
+            // All mandatory spaces must be filled
+            if ($endTheGame) {
+                $mandatoryActionSpaces = array_filter($this->planeManager->getAllActionSpaces(), fn($actionSpace) => $actionSpace[MANDATORY]);
 
-        if (sizeof($dice) > 0) {
-            $this->gamestate->nextState('next');
+                foreach ($mandatoryActionSpaces as $spaceId => $mandatoryActionSpace) {
+                    if ($this->planeManager->isActionSpaceEmpty($spaceId)) {
+                        $endTheGame = false;
+                        break;
+                    }
+                }
+            }
+
+            // If Kerosene Module, a die must be placed there or level 6 or more remaining
+            if ($endTheGame && $this->isModuleActive(MODULE_KEROSENE)) {
+                if ($this->getGlobalVariable(KEROSENE_ACTIVATED)) {
+                    $endTheGame = true;
+                } else if ($this->planeManager->get()->kerosene >= 6) {
+                    $endTheGame = true;
+                } else {
+                    $endTheGame = false;
+                }
+            }
+            // TODO ALSO CHECK INTERNS
+            // TODO ALSO CHECK ICE BRAKES
+        }
+
+        if ($endTheGame) {
+            $this->gamestate->nextState('landed');
         } else {
-            $this->gamestate->nextState('endRound');
+            $this->activeNextPlayer();
+            $this->giveExtraTime($this->getActivePlayerId());
+            $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $this->getActivePlayerId()));
+
+            if (sizeof($dice) > 0) {
+                $this->gamestate->nextState('next');
+            } else {
+                $this->gamestate->nextState('endRound');
+            }
         }
     }
 

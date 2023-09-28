@@ -2223,10 +2223,13 @@ var PlaneManager = /** @class */ (function () {
         return this.game.delay(ANIMATION_MS);
     };
     PlaneManager.prototype.highlightApproachSlot = function (offset) {
-        var slotElementId = "st-approach-overlay-track-slot-".concat(offset);
-        var slotElement = document.getElementById(slotElementId);
-        if (slotElement) {
-            slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+        var slotElement = $('st-approach-overlay-track-slot');
+        var remainingOffset = this.game.gamedatas.approach.size - this.currentApproach + 1;
+        if (offset <= remainingOffset) {
+            if (slotElement) {
+                slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+                slotElement.style.bottom = (95 * (offset - 1)) + 'px';
+            }
         }
     };
     PlaneManager.prototype.hightlightAxis = function (value) {
@@ -2234,7 +2237,7 @@ var PlaneManager = /** @class */ (function () {
     };
     PlaneManager.prototype.unhighlightPlane = function () {
         var _a;
-        document.querySelectorAll('.st-approach-overlay-track-slot').forEach(function (element) { return element.classList.remove('st-approach-overlay-track-slot-highlighted'); });
+        document.getElementById('st-approach-overlay-track-slot').classList.remove('st-approach-overlay-track-slot-highlighted');
         (_a = document.getElementById('st-plane-axis-indicator-highlight')) === null || _a === void 0 ? void 0 : _a.remove();
     };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
@@ -2470,7 +2473,7 @@ var DiceManager = /** @class */ (function (_super) {
     DiceManager.prototype.setUp = function (data) {
         var _this = this;
         var element = $(DiceManager.PLAYER_AREA);
-        this.playerDiceStock = new LineStock(this, element, { center: true });
+        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px' });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
@@ -2483,7 +2486,7 @@ var DiceManager = /** @class */ (function (_super) {
         }
     };
     DiceManager.prototype.updateCardInformations = function (die, settings) {
-        if (this.getCardElement(die)) {
+        if (this.getCardStock(die) && this.getCardElement(die)) {
             _super.prototype.updateCardInformations.call(this, die, settings);
             var cardElement = this.getCardElement(die);
             cardElement.dataset['value'] = String(die.side);
@@ -3242,18 +3245,32 @@ var SkyTeam = /** @class */ (function () {
         this.takeAction('confirmReadyStrategy');
     };
     SkyTeam.prototype.confirmPlacement = function () {
-        var _a;
-        (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
+        var _this = this;
         var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         var diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
-        this.actionSpaceManager.selectedActionSpaceId = null;
-        this.actionSpaceManager.setActionSpacesSelectable({}, null);
-        this.diceManager.setSelectionMode('none', null);
-        this.spendCoffee.destroy();
-        this.takeAction('confirmPlacement', {
-            placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
-        });
+        var confirmMessage = undefined;
+        if (actionSpaceId.startsWith('radio') && document.querySelectorAll('.st-approach-overlay-track-slot-highlighted').length === 0) {
+            confirmMessage = _('Your Radio reach is outside of the Approach Track. This action has no effect.');
+        }
+        else if (actionSpaceId.startsWith('concentration') && this.reserveManager.reserveCoffeeStock.getCards().length === 0) {
+            confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
+        }
+        var runnable = function () {
+            _this.actionSpaceManager.selectedActionSpaceId = null;
+            _this.actionSpaceManager.setActionSpacesSelectable({}, null);
+            _this.diceManager.setSelectionMode('none', null);
+            _this.spendCoffee.destroy();
+            _this.takeAction('confirmPlacement', {
+                placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
+            });
+        };
+        if (confirmMessage) {
+            this.wrapInConfirm(runnable, confirmMessage);
+        }
+        else {
+            runnable();
+        }
     };
     SkyTeam.prototype.confirmPlayerSetup = function (args) {
         if (!this.playerSetup.selectedRole) {
@@ -3540,7 +3557,7 @@ var SkyTeam = /** @class */ (function () {
         this.diceManager.toggleShowPlayerDice(true);
         var promises = args.dice.map(function (die) {
             var originalDie = _this.diceManager.getCardStock(die).getCards().find(function (originalDie) { return originalDie.id === die.id; });
-            _this.diceManager.updateCardInformations(__assign(__assign({}, originalDie), { side: originalDie.side == 1 ? 6 : 1 }));
+            _this.diceManager.updateCardInformations(__assign(__assign({}, originalDie), { side: 7 - die.side }));
             return _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
         });
         return Promise.all(promises);

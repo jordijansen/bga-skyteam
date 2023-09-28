@@ -153,10 +153,13 @@ class PlaneManager  {
     }
 
     public highlightApproachSlot(offset: number) {
-        const slotElementId = `st-approach-overlay-track-slot-${offset}`;
-        const slotElement = document.getElementById(slotElementId)
-        if (slotElement) {
-            slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+        const slotElement = $('st-approach-overlay-track-slot');
+        const remainingOffset = this.game.gamedatas.approach.size - this.currentApproach + 1;
+        if (offset <= remainingOffset) {
+            if (slotElement) {
+                slotElement.classList.add('st-approach-overlay-track-slot-highlighted');
+                slotElement.style.bottom = (95 * (offset - 1)) + 'px';
+            }
         }
     }
 
@@ -165,7 +168,7 @@ class PlaneManager  {
     }
 
     public unhighlightPlane() {
-        document.querySelectorAll('.st-approach-overlay-track-slot').forEach(element => element.classList.remove('st-approach-overlay-track-slot-highlighted'))
+        document.getElementById('st-approach-overlay-track-slot').classList.remove('st-approach-overlay-track-slot-highlighted');
         document.getElementById('st-plane-axis-indicator-highlight')?.remove();
     }
 
