@@ -133,7 +133,7 @@ trait StateTrait
             // Check if we can prematurely end the game.
             // All victory conditions must be success
             $allVictoryConditionResults = $this->planeManager->getVictoryConditionsResults();
-            $allSuccessVictoryConditionResults = array_map(fn($condition) => $condition['status'] === 'success', $allVictoryConditionResults);
+            $allSuccessVictoryConditionResults = array_filter($allVictoryConditionResults, fn($condition) => $condition['status'] === 'success');
             $endTheGame = sizeof($allVictoryConditionResults) === sizeof($allSuccessVictoryConditionResults);
             // All mandatory spaces must be filled
             if ($endTheGame) {

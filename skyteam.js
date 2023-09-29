@@ -2486,7 +2486,7 @@ var DiceManager = /** @class */ (function (_super) {
         }
     };
     DiceManager.prototype.updateCardInformations = function (die, settings) {
-        if (this.getCardStock(die) && this.getCardElement(die)) {
+        if (this.getCardElement(die)) {
             _super.prototype.updateCardInformations.call(this, die, settings);
             var cardElement = this.getCardElement(die);
             cardElement.dataset['value'] = String(die.side);
@@ -2770,7 +2770,7 @@ var EndGameInfo = /** @class */ (function () {
             dojo.place("<h2>".concat(_('Unfortunately, not all victory conditions were met, better luck next time pilots!'), "</h2>"), $('st-end-game-info-box'));
         }
         element.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        return this.game.delay(5000);
+        return this.game.delay(10000);
     };
     EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
         return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.game.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.game.getFailureReasonText(failureReason), "</p>\n                </div>");

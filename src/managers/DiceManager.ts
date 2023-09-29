@@ -47,7 +47,7 @@ class DiceManager extends CardManager<Dice> {
     }
 
     public override updateCardInformations(die: Dice, settings?: Omit<FlipCardSettings, 'updateData'>): void {
-        if (this.getCardStock(die) && this.getCardElement(die)) {
+        if (this.getCardElement(die)) {
             super.updateCardInformations(die, settings);
             const cardElement = this.getCardElement(die);
             cardElement.dataset['value'] = String(die.side);
