@@ -18,7 +18,7 @@ class SpendCoffee {
         if (this.currentDie) {
             this.currentDie.side = this.originalSide;
             this.currentDie.value = this.originalValue;
-            this.game.diceManager.updateCardInformations(this.currentDie);
+            this.game.diceManager.updateDieValue(this.currentDie);
         }
 
         if (nrOfCoffeeTokens > 0) {
@@ -46,7 +46,7 @@ class SpendCoffee {
                 die.side = this.determineNewSide(die);
                 this.updateButtonsDisabledState(die);
                 this.updateTotalCost();
-                this.game.diceManager.updateCardInformations(die);
+                this.game.diceManager.updateDieValue(die);
                 onCoffeeSpend(die);
             })
 
@@ -57,7 +57,7 @@ class SpendCoffee {
                 die.side = this.determineNewSide(die);
                 this.updateButtonsDisabledState(die);
                 this.updateTotalCost();
-                this.game.diceManager.updateCardInformations(die);
+                this.game.diceManager.updateDieValue(die);
                 onCoffeeSpend(die);
             })
         }

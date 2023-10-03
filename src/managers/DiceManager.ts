@@ -46,14 +46,13 @@ class DiceManager extends CardManager<Dice> {
         }
     }
 
-    public override updateCardInformations(die: Dice, settings?: Omit<FlipCardSettings, 'updateData'>): void {
-        if (this.getCardElement(die)) {
-            super.updateCardInformations(die, settings);
-            const cardElement = this.getCardElement(die);
-            cardElement.dataset['value'] = String(die.side);
-        } else {
-            this.playerDiceStock.addCard(die);
+    public updateDieValue(die: Dice): void {
+        const dieElementId = this.getId(die);
+        const dieElement = $(dieElementId);
+        if (dieElement) {
+            dieElement.dataset['value'] = String(die.side);
         }
+        this.updateCardInformations(die);
     }
 
     public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[]) {

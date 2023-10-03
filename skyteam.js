@@ -2485,15 +2485,13 @@ var DiceManager = /** @class */ (function (_super) {
             }
         }
     };
-    DiceManager.prototype.updateCardInformations = function (die, settings) {
-        if (this.getCardElement(die)) {
-            _super.prototype.updateCardInformations.call(this, die, settings);
-            var cardElement = this.getCardElement(die);
-            cardElement.dataset['value'] = String(die.side);
+    DiceManager.prototype.updateDieValue = function (die) {
+        var dieElementId = this.getId(die);
+        var dieElement = $(dieElementId);
+        if (dieElement) {
+            dieElement.dataset['value'] = String(die.side);
         }
-        else {
-            this.playerDiceStock.addCard(die);
-        }
+        this.updateCardInformations(die);
     };
     DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes) {
         if (this.playerDiceStock) {
@@ -2795,7 +2793,7 @@ var SpendCoffee = /** @class */ (function () {
         if (this.currentDie) {
             this.currentDie.side = this.originalSide;
             this.currentDie.value = this.originalValue;
-            this.game.diceManager.updateCardInformations(this.currentDie);
+            this.game.diceManager.updateDieValue(this.currentDie);
         }
         if (nrOfCoffeeTokens > 0) {
             this.currentDie = die;
@@ -2817,7 +2815,7 @@ var SpendCoffee = /** @class */ (function () {
                 die.side = _this.determineNewSide(die);
                 _this.updateButtonsDisabledState(die);
                 _this.updateTotalCost();
-                _this.game.diceManager.updateCardInformations(die);
+                _this.game.diceManager.updateDieValue(die);
                 onCoffeeSpend(die);
             });
             var increaseButton = $('st-spend-coffee-increase');
@@ -2827,7 +2825,7 @@ var SpendCoffee = /** @class */ (function () {
                 die.side = _this.determineNewSide(die);
                 _this.updateButtonsDisabledState(die);
                 _this.updateTotalCost();
-                _this.game.diceManager.updateCardInformations(die);
+                _this.game.diceManager.updateDieValue(die);
                 onCoffeeSpend(die);
             });
         }
@@ -3211,7 +3209,7 @@ var SkyTeam = /** @class */ (function () {
                     break;
                 case 'swapDice':
                     var swapDiceArgs = args;
-                    var SwapDieButtonText = swapDiceArgs.firstDie ? "<span>".concat(dojo.string.substitute(_("Swap selected die value with ${die}"), { die: this.diceIcon(swapDiceArgs.firstDie, 'margin-left: -9px; margin-right: 9px;') }), "</span>") : _('Swap selected die value');
+                    var SwapDieButtonText = swapDiceArgs.firstDie ? "".concat(dojo.string.substitute(_("Swap selected die value with ${die}"), { die: swapDiceArgs.firstDie.side })) : _('Swap selected die');
                     this.addActionButton('swapDie', SwapDieButtonText, function () { return _this.swapDie(args.firstDie); });
                     if (!swapDiceArgs.firstDie) {
                         this.addActionButton('cancel', _("Cancel"), function () { return _this.cancelSwap(); }, null, null, 'gray');
@@ -3556,9 +3554,14 @@ var SkyTeam = /** @class */ (function () {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
         var promises = args.dice.map(function (die) {
-            var originalDie = _this.diceManager.getCardStock(die).getCards().find(function (originalDie) { return originalDie.id === die.id; });
-            _this.diceManager.updateCardInformations(__assign(__assign({}, originalDie), { side: 7 - die.side }));
-            return _this.delay(500).then(function () { return _this.diceManager.updateCardInformations(die); });
+            var cardStock = _this.diceManager.getCardStock(die);
+            if (!cardStock) {
+                _this.diceManager.playerDiceStock.addCard(die);
+                cardStock = _this.diceManager.getCardStock(die);
+            }
+            var originalDie = cardStock.getCards().find(function (originalDie) { return originalDie.id === die.id; });
+            _this.diceManager.updateDieValue(__assign(__assign({}, originalDie), { side: 7 - die.side }));
+            return _this.delay(500).then(function () { return _this.diceManager.updateDieValue(die); });
         });
         return Promise.all(promises);
     };
@@ -3632,7 +3635,7 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_trafficDieRolled = function (args) {
         var _this = this;
         return this.diceManager.trafficDiceStock.addCard(__assign(__assign({}, args.trafficDie), { side: args.trafficDie.side == 1 ? 6 : 1 }))
-            .then(function () { return _this.diceManager.updateCardInformations(args.trafficDie); })
+            .then(function () { return _this.diceManager.updateDieValue(args.trafficDie); })
             .then(function () { return _this.planeManager.approachTokenStock.addCard(args.planeToken, { fromElement: $(DiceManager.TRAFFIC_DICE) }); });
     };
     SkyTeam.prototype.notif_trafficDiceReturned = function () {

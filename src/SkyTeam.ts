@@ -300,7 +300,7 @@ class SkyTeam implements SkyTeamGame {
                     break;
                 case 'swapDice':
                     const swapDiceArgs = args as SwapDiceArgs;
-                    const SwapDieButtonText = swapDiceArgs.firstDie ? `<span>${dojo.string.substitute(_("Swap selected die value with ${die}"), { die: this.diceIcon(swapDiceArgs.firstDie, 'margin-left: -9px; margin-right: 9px;') })}</span>` : _('Swap selected die value');
+                    const SwapDieButtonText = swapDiceArgs.firstDie ? `${dojo.string.substitute(_("Swap selected die value with ${die}"), { die: swapDiceArgs.firstDie.side })}` : _('Swap selected die');
                     (this as any).addActionButton('swapDie', SwapDieButtonText, () => this.swapDie(args.firstDie));
                     if (!swapDiceArgs.firstDie) {
                         (this as any).addActionButton('cancel', _("Cancel"), () => this.cancelSwap(), null, null, 'gray');
@@ -687,9 +687,14 @@ class SkyTeam implements SkyTeamGame {
     private notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
         const promises = args.dice.map(die => {
-            const originalDie = this.diceManager.getCardStock(die).getCards().find(originalDie => originalDie.id === die.id);
-            this.diceManager.updateCardInformations({...originalDie, side: 7 - die.side})
-            return this.delay(500).then(() => this.diceManager.updateCardInformations(die));
+            let cardStock = this.diceManager.getCardStock(die);
+            if (!cardStock) {
+                this.diceManager.playerDiceStock.addCard(die);
+                cardStock = this.diceManager.getCardStock(die);
+            }
+            const originalDie = cardStock.getCards().find(originalDie => originalDie.id === die.id);
+            this.diceManager.updateDieValue({...originalDie, side: 7 - die.side})
+            return this.delay(500).then(() => this.diceManager.updateDieValue(die));
         });
         return Promise.all(promises);
     }
@@ -777,7 +782,7 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_trafficDieRolled(args: NotifTrafficDieRolled) {
         return this.diceManager.trafficDiceStock.addCard({...args.trafficDie, side: args.trafficDie.side == 1 ? 6 : 1})
-            .then(() => this.diceManager.updateCardInformations(args.trafficDie))
+            .then(() => this.diceManager.updateDieValue(args.trafficDie))
             .then(() => this.planeManager.approachTokenStock.addCard(args.planeToken, {fromElement: $(DiceManager.TRAFFIC_DICE)}));
     }
 
