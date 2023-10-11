@@ -1368,7 +1368,7 @@ body > .card {
   transform: rotateX(-900deg) rotateZ(1080deg);
 }
 .st-dice[data-value="3"] {
-  transform: rotateY(810deg) rotateZ(720deg);
+  transform: rotateY(809.999999999deg) rotateZ(720deg);
 }
 .st-dice[data-value="4"] {
   transform: rotateX(-810deg) rotateZ(-1080deg);
@@ -1377,7 +1377,7 @@ body > .card {
   transform: rotateX(450deg) rotateZ(-720deg);
 }
 .st-dice[data-value="6"] {
-  transform: rotateY(-450deg) rotateZ(-1440deg);
+  transform: rotateY(-449.999999999deg) rotateZ(-1440deg);
 }
 .st-dice.bga-cards_selectable-card[data-value="1"] .side[data-side="1"] {
   outline: 6px rgba(80, 200, 255, 0.75) dashed;

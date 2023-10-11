@@ -3675,6 +3675,7 @@ var SkyTeam = /** @class */ (function () {
         var _this = this;
         try {
             if (log && args && !args.processed) {
+                args.processed = true;
                 Object.keys(args).forEach(function (argKey) {
                     if (argKey.startsWith('token_') && typeof args[argKey] == 'string') {
                         args[argKey] = _this.tokenIcon(args[argKey]);

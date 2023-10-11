@@ -818,6 +818,7 @@ class SkyTeam implements SkyTeamGame {
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
+                args.processed = true;
                 Object.keys(args).forEach(argKey => {
                     if (argKey.startsWith('token_') && typeof args[argKey] == 'string') {
                         args[argKey] = this.tokenIcon(args[argKey])
