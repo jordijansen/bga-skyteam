@@ -41,20 +41,22 @@ trait ActionTrait
         $this->dice->moveCards(array_map(fn($dice) => $dice->id, $pilotDice), LOCATION_PLAYER, $activePlayerRole == PILOT ? $activePlayerId : $otherPlayerId);
         $this->dice->moveCards(array_map(fn($dice) => $dice->id, $coPilotDice), LOCATION_PLAYER, $activePlayerRole == CO_PILOT ? $activePlayerId : $otherPlayerId);
 
-        $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${role}</b>'), [
+        $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${roleName}</b>'), [
             'i18n' => ['roleName'],
             'playerId' => intval($activePlayerId),
             'player_name' => $this->getPlayerName($activePlayerId),
             'role' => $activePlayerRole,
+            'roleName' => $activePlayerRole,
             'roleColor' => $activePlayerIdColor,
             'dice' =>  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $activePlayerId))
         ]);
 
-        $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${role}</b>'), [
-            'i18n' => ['role'],
+        $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${roleName}</b>'), [
+            'i18n' => ['roleName'],
             'playerId' => intval($otherPlayerId),
             'player_name' => $this->getPlayerName($otherPlayerId),
             'role' => $activePlayerRole == PILOT ? CO_PILOT : PILOT,
+            'roleName' => $activePlayerRole == PILOT ? CO_PILOT : PILOT,
             'roleColor' => $otherPlayerIdColor,
             'dice' =>  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $otherPlayerId))
         ]);
@@ -158,7 +160,7 @@ trait ActionTrait
             'player_name' => $this->getPlayerName($playerId),
             'die' =>  $die,
             'icon_dice' => [$die],
-            'action_type' => $actionSpace['type']
+            'action_type' => $this->ACTION_TYPES[$actionSpace['type']]
         ]);
 
         $continue = $this->planeManager->resolveDicePlacement($die);

@@ -20,7 +20,14 @@ class HelpDialogManager {
         html += `${this.getActionSpaceVictoryCondition(actionSpace.type)}`
         html += `</div>`
         html += `</div>`
-        this.showDialog(event, _(actionSpace.type).toUpperCase(), html)
+        this.showDialog(event, this.getActionSpaceTitle(actionSpace.type).toUpperCase(), html)
+    }
+
+    private getActionSpaceTitle(type: string) {
+        if (type === 'landing-gear') {
+            return _('landing gear');
+        }
+        return _(type);
     }
 
     private getActionSpaceFlavorText(type: string) {

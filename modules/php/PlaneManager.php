@@ -116,6 +116,11 @@ class PlaneManager extends APP_DbObject
                     $continue = false;
                 } else if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                     $plane->wind = $plane->wind + $plane->axis;
+                    if ($plane->wind < 0) {
+                        $plane->wind = 20 - abs($plane->wind);
+                    } else if ($plane->wind > 19) {
+                        $plane->wind = $plane->wind - 20;
+                    }
                     SkyTeam::$instance->notifyAllPlayers("windChanged", clienttranslate('The wind changed by ${axis} clicks, new wind modifier is <b>${windModifier}</b>'), [
                         'axis' => $plane->axis,
                         'wind' => $plane->wind,

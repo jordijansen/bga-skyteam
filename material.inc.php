@@ -56,6 +56,7 @@ $this->ACTION_TYPES = [
     ACTION_SPACE_FLAPS => clienttranslate('flaps'),
     ACTION_SPACE_BRAKES => clienttranslate('brakes'),
     ACTION_SPACE_CONCENTRATION => clienttranslate('concentration'),
+    ACTION_SPACE_KEROSENE => clienttranslate('kerosene')
 ];
 
 $this->ACTION_SPACES = [
@@ -139,7 +140,7 @@ $this->APPROACH_TRACKS = [
             5 => [TOKEN_PLANE => 2],
             4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
             3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 2, ALLOWED_AXIS => [-1, 0]],
-            2 => [TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
             1 => [DICE_TRAFFIC => 3],
         ]
     ]

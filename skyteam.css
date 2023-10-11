@@ -1022,7 +1022,7 @@ body > .card {
   animation: jj-pulse 2s infinite;
 }
 .st-action-space.selectable {
-  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
   cursor: pointer;
   animation: jj-pulse 2s infinite;
 }
@@ -1229,7 +1229,7 @@ body > .card {
   cursor: pointer;
 }
 .st-role-card.selectable {
-  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
   cursor: pointer;
 }
 
@@ -1361,14 +1361,6 @@ body > .card {
 .st-dice .side[data-side="6"] {
   transform: rotateY(90deg) translateZ(1.364em);
 }
-.st-dice.bga-cards_selectable-card .side {
-  outline: 6px rgba(80, 200, 255, 0.75) solid;
-  cursor: pointer;
-}
-.st-dice.bga-cards_selected-card .side {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
-  cursor: pointer;
-}
 .st-dice[data-value="1"] {
   transform: rotateX(720deg) rotateZ(-720deg);
 }
@@ -1386,6 +1378,54 @@ body > .card {
 }
 .st-dice[data-value="6"] {
   transform: rotateY(-450deg) rotateZ(-1440deg);
+}
+.st-dice.bga-cards_selectable-card[data-value="1"] .side[data-side="1"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selectable-card[data-value="2"] .side[data-side="2"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selectable-card[data-value="3"] .side[data-side="3"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selectable-card[data-value="4"] .side[data-side="4"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selectable-card[data-value="5"] .side[data-side="5"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selectable-card[data-value="6"] .side[data-side="6"] {
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="1"] .side[data-side="1"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="2"] .side[data-side="2"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="3"] .side[data-side="3"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="4"] .side[data-side="4"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="5"] .side[data-side="5"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
+}
+.st-dice.bga-cards_selected-card[data-value="6"] .side[data-side="6"] {
+  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  cursor: pointer;
 }
 .st-dice[data-type=pilot] [data-side="1"] {
   background-position: 0 0;
@@ -1523,7 +1563,7 @@ body > .card {
   }
 }
 .bga-cards_selectable-card .card-side {
-  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
   cursor: pointer;
 }
 

@@ -1,5 +1,5 @@
 @mixin selectable() {
-  outline: 6px rgba(80, 200, 255, 0.75) solid;
+  outline: 6px rgba(80, 200, 255, 0.75) dashed;
   cursor: pointer;
 }
 

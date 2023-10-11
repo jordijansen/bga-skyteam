@@ -52,7 +52,10 @@ class DiceManager extends CardManager<Dice> {
         if (dieElement) {
             dieElement.dataset['value'] = String(die.side);
         }
-        this.updateCardInformations(die);
+        const stock = this.getCardStock(die);
+        if (stock) {
+            this.updateCardInformations(die);
+        }
     }
 
     public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[]) {

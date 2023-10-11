@@ -27,7 +27,9 @@ trait StateTrait
         ]);
 
         $this->setGlobalVariable(CURRENT_PHASE, PHASE_STRATEGY);
-        $this->notifyAllPlayers("newPhaseStarted", clienttranslate('New phase: ${newPhase}'), [
+        $this->notifyAllPlayers("newPhaseStarted", clienttranslate('New phase: ${newPhaseLabel}'), [
+            'i18n' => ['newPhaseLabel'],
+            'newPhaseLabel' => clienttranslate('Strategy'),
             'newPhase' => PHASE_STRATEGY
         ]);
 
@@ -88,7 +90,10 @@ trait StateTrait
     function stDicePlacementStart()
     {
         $this->setGlobalVariable(CURRENT_PHASE, PHASE_DICE_PLACEMENT);
-        $this->notifyAllPlayers("newPhaseStarted", clienttranslate('New phase: ${newPhase}'), [
+
+        $this->notifyAllPlayers("newPhaseStarted", clienttranslate('New phase: ${newPhaseLabel}'), [
+            'i18n' => ['newPhaseLabel'],
+            'newPhaseLabel' => clienttranslate('Dice Placement'),
             'newPhase' => PHASE_DICE_PLACEMENT
         ]);
 

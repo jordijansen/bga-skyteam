@@ -8,7 +8,7 @@ class VictoryConditions {
         const element = $(this.elementId);
         dojo.empty(element);
 
-        let html = '<h3>FINAL TURN - VICTORY CONDITIONS</h3>';
+        let html = `<h3>${_('FINAL TURN - VICTORY CONDITIONS')}</h3>`;
 
         for (let conditionLetter in victoryConditions) {
             const victoryCondition = victoryConditions[conditionLetter];

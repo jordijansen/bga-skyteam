@@ -54,22 +54,26 @@ $game_options = [
         'values' => [
             APPROACH_GREEN_YUL_MONTREAL => [
                 'name' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
+                'tmdisplay' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: none. Your first flight is going well. The sun is rising over the horizon, and the snow-covered landscape is magnificent as you glide over the St. Lawrence River. Perfect conditions for a smooth landing.'),
                 'default' => true,
                 'firstgameonly' => true
             ],
             APPROACH_GREEN_HND_HANEDA => [
                 'name' => totranslate('Green: HND - Haneda'),
+                'tmdisplay' => totranslate('Green: HND - Haneda'),
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Turns. With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
                 'nobeginner' => true,
             ],
             APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
+                'tmdisplay' => totranslate('Yellow: KUL - Kuala Lumpur'),
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You are right to be concerned about Malaysia’s electrical storms... Keep your plane in line between the storm masses. It will be a bumpy landing in Kuala Lumpur.'),
                 'nobeginner' => true,
             ],
             APPROACH_RED_TGU_TONCONTIN => [
                 'name' => totranslate('Red: TGU Toncontín'),
+                'tmdisplay' => totranslate('Red: TGU Toncontín'),
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & 2 Special Abilities. When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
                 'nobeginner' => true,
             ]

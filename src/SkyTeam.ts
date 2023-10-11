@@ -524,9 +524,11 @@ class SkyTeam implements SkyTeamGame {
     }
 
     public takeAction(action: string, data?: any, onComplete: () => void = () => {}) {
-        data = data || {};
-        data.lock = true;
-        (this as any).ajaxcall(`/skyteam/skyteam/${action}.html`, data, this, onComplete);
+        if ((this as any).checkLock()) {
+            data = data || {};
+            data.lock = true;
+            (this as any).ajaxcall(`/skyteam/skyteam/${action}.html`, data, this, onComplete);
+        }
     }
     public takeNoLockAction(action: string, data?: any, onComplete: () => void = () => {}) {
         this.disableActionButtons();
@@ -550,12 +552,14 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private wrapInConfirm(runnable: () => void, message: string = _("This action can not be undone. Are you sure?")) {
-        if (this.isAskForConfirmation()) {
-            (this as any).confirmationDialog(message, () => {
+        if ((this as any).checkLock()) {
+            if (this.isAskForConfirmation()) {
+                (this as any).confirmationDialog(message, () => {
+                    runnable();
+                });
+            } else {
                 runnable();
-            });
-        } else {
-            runnable();
+            }
         }
     }
 

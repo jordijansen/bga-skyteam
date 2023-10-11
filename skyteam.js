@@ -2491,7 +2491,10 @@ var DiceManager = /** @class */ (function (_super) {
         if (dieElement) {
             dieElement.dataset['value'] = String(die.side);
         }
-        this.updateCardInformations(die);
+        var stock = this.getCardStock(die);
+        if (stock) {
+            this.updateCardInformations(die);
+        }
     };
     DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes) {
         if (this.playerDiceStock) {
@@ -2591,7 +2594,13 @@ var HelpDialogManager = /** @class */ (function () {
         html += "".concat(this.getActionSpaceVictoryCondition(actionSpace.type));
         html += "</div>";
         html += "</div>";
-        this.showDialog(event, _(actionSpace.type).toUpperCase(), html);
+        this.showDialog(event, this.getActionSpaceTitle(actionSpace.type).toUpperCase(), html);
+    };
+    HelpDialogManager.prototype.getActionSpaceTitle = function (type) {
+        if (type === 'landing-gear') {
+            return _('landing gear');
+        }
+        return _(type);
     };
     HelpDialogManager.prototype.getActionSpaceFlavorText = function (type) {
         switch (type) {
@@ -2885,7 +2894,7 @@ var VictoryConditions = /** @class */ (function () {
     VictoryConditions.prototype.updateVictoryConditions = function (victoryConditions) {
         var element = $(this.elementId);
         dojo.empty(element);
-        var html = '<h3>FINAL TURN - VICTORY CONDITIONS</h3>';
+        var html = "<h3>".concat(_('FINAL TURN - VICTORY CONDITIONS'), "</h3>");
         for (var conditionLetter in victoryConditions) {
             var victoryCondition = victoryConditions[conditionLetter];
             html += "<div class=\"st-victory-conditions-row ".concat(victoryCondition.status, "\">\n                        <div class=\"st-victory-conditions-row-letter\"><span>").concat(conditionLetter, "</span></div>\n                        <div class=\"st-victory-conditions-row-description\">").concat(_(victoryCondition.description), "</div>\n                        <div class=\"st-victory-conditions-row-status\">").concat(this.getIconForStatus(victoryCondition.status), "</div>\n                     </div>");
@@ -3408,9 +3417,11 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.takeAction = function (action, data, onComplete) {
         if (onComplete === void 0) { onComplete = function () { }; }
-        data = data || {};
-        data.lock = true;
-        this.ajaxcall("/skyteam/skyteam/".concat(action, ".html"), data, this, onComplete);
+        if (this.checkLock()) {
+            data = data || {};
+            data.lock = true;
+            this.ajaxcall("/skyteam/skyteam/".concat(action, ".html"), data, this, onComplete);
+        }
     };
     SkyTeam.prototype.takeNoLockAction = function (action, data, onComplete) {
         if (onComplete === void 0) { onComplete = function () { }; }
@@ -3433,13 +3444,15 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.wrapInConfirm = function (runnable, message) {
         if (message === void 0) { message = _("This action can not be undone. Are you sure?"); }
-        if (this.isAskForConfirmation()) {
-            this.confirmationDialog(message, function () {
+        if (this.checkLock()) {
+            if (this.isAskForConfirmation()) {
+                this.confirmationDialog(message, function () {
+                    runnable();
+                });
+            }
+            else {
                 runnable();
-            });
-        }
-        else {
-            runnable();
+            }
         }
     };
     SkyTeam.prototype.setAlwaysFixTopActions = function (alwaysFixed, maximum) {
