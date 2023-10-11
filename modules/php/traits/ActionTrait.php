@@ -273,11 +273,21 @@ trait ActionTrait
                 $rolledDice[] = $die;
             }
 
-            $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} rolls ${icon_dice}'), [
+            $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} re-rolls ${icon_dice}'), [
                 'playerId' => intval($playerId),
                 'player_name' => $this->getPlayerName($playerId),
                 'dice' =>  $rolledDice,
                 'icon_dice' => $rolledDice
+            ]);
+
+            $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} re-rolls an unknown number of dice'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+            ]);
+        } else {
+            $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} re-rolls no dice'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
             ]);
         }
 

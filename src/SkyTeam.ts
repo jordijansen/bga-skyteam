@@ -140,8 +140,13 @@ class SkyTeam implements SkyTeamGame {
                 break;
             case 'flipDie':
                 this.enteringFlipDie();
+                break;
             case 'swapDice':
                 this.enteringSwapDice();
+                break;
+            case 'gameEnd':
+                this.unsetFinalRound();
+                break;
         }
     }
 
@@ -467,6 +472,10 @@ class SkyTeam implements SkyTeamGame {
 
     private setFinalRound() {
         dojo.place(`<p>${_('This is the final round!')}</p>`, $('st-final-round-notice'))
+    }
+
+    private unsetFinalRound() {
+        dojo.empty($('st-final-round-notice'))
     }
 
     public getFailureReasonTitle(failureReason: string) {

@@ -3067,8 +3067,13 @@ var SkyTeam = /** @class */ (function () {
                 break;
             case 'flipDie':
                 this.enteringFlipDie();
+                break;
             case 'swapDice':
                 this.enteringSwapDice();
+                break;
+            case 'gameEnd':
+                this.unsetFinalRound();
+                break;
         }
     };
     SkyTeam.prototype.enteringPlayerSetup = function (args) {
@@ -3366,6 +3371,9 @@ var SkyTeam = /** @class */ (function () {
     ///////////////////////////////////////////////////
     SkyTeam.prototype.setFinalRound = function () {
         dojo.place("<p>".concat(_('This is the final round!'), "</p>"), $('st-final-round-notice'));
+    };
+    SkyTeam.prototype.unsetFinalRound = function () {
+        dojo.empty($('st-final-round-notice'));
     };
     SkyTeam.prototype.getFailureReasonTitle = function (failureReason) {
         switch (failureReason) {

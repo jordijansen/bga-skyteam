@@ -194,7 +194,21 @@ trait StateTrait
     {
         $results = $this->planeManager->getVictoryConditionsResults();
         $failure = sizeof(array_filter($results, fn($victoryCondition) => $victoryCondition['status'] == 'failed')) > 0;
-        $score = $failure ? -1 : 1;
+        $score = 0;
+        if ($failure) {
+            $score = -1;
+        } else {
+            $approachTrack = $this->getApproachTrack();
+            if ($approachTrack->category == APPROACH_GREEN) {
+                $score = 1;
+            } else if ($approachTrack->category == APPROACH_YELLOW) {
+                $score = 2;
+            } else if ($approachTrack->category == APPROACH_RED) {
+                $score = 3;
+            } else if ($approachTrack->category == APPROACH_BLACK) {
+                $score = 4;
+            }
+        }
         $this->notifyAllPlayers('planeLanded', clienttranslate('Plane landed'), [
             "failure" => $failure,
             "victoryConditions" => $results,
