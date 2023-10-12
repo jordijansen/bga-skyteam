@@ -84,6 +84,9 @@ class PlaneManager  {
         if(!data.scenario.modules.includes('winds')) {
             $('st-winds-board').style.display = 'none';
         }
+        if(!data.scenario.modules.includes('intern')) {
+            $('st-intern-board').style.display = 'none';
+        }
     }
 
     public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {

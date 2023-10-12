@@ -24,7 +24,7 @@ class PlaneManager extends APP_DbObject
         return Plane::from(self::getObjectFromDB("SELECT * FROM plane WHERE id = 1"));
     }
 
-    function getAvailableActionSpaces($playerId, $ignoreRoleRestrictions = false): array
+    function getAvailableActionSpaces($playerId, $ignoreRoleRestrictions = false, $ignoreActionSpaceType = null): array
     {
         $playerRole = SkyTeam::$instance->getPlayerRole($playerId);
         $result = [];
@@ -32,9 +32,11 @@ class PlaneManager extends APP_DbObject
         $plane = $this->get();
         $remainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
         foreach ($this->getAllActionSpaces() as $actionSpaceId => $actionSpace) {
-
             if (!array_key_exists($actionSpaceId, $plane->switches) || !$plane->switches[$actionSpaceId]->value) {
-                if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES])) && $this->isActionSpaceEmpty($actionSpaceId)) {
+                if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES]))
+                    && ($ignoreActionSpaceType == null || $actionSpace['type'] != $ignoreActionSpaceType)
+                    && $this->isActionSpaceEmpty($actionSpaceId)
+                    && $this->isActionSpaceAvailable($actionSpaceId)) {
                     if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
                         if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
                             $result[$actionSpaceId] = $actionSpace;
@@ -61,9 +63,37 @@ class PlaneManager extends APP_DbObject
 
     function getAllActionSpaces(): array
     {
-        return array_filter(SkyTeam::$instance->ACTION_SPACES, function ($value, $key) {
+        $actionSpaces =  array_filter(SkyTeam::$instance->ACTION_SPACES, function ($value, $key) {
             return !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
         }, ARRAY_FILTER_USE_BOTH);
+
+        if (array_key_exists(ACTION_SPACE_INTERN .'-1', $actionSpaces)) {
+            $internDie = $this->getNextInternForRole(PILOT);
+            if ($internDie != null) {
+                $actionSpaces[ACTION_SPACE_INTERN .'-1'][ALLOWED_VALUES] = array_values(array_filter([1,2,3,4,5,6], fn($value) => $value != $internDie->value));
+            }
+        }
+        if (array_key_exists(ACTION_SPACE_INTERN .'-2', $actionSpaces)) {
+            $internDie = $this->getNextInternForRole(CO_PILOT);
+            if ($internDie != null) {
+                $actionSpaces[ACTION_SPACE_INTERN . '-2'][ALLOWED_VALUES] = array_values(array_filter([1, 2, 3, 4, 5, 6], fn($value) => $value != $internDie->value));
+            }
+        }
+
+        return $actionSpaces;
+    }
+
+    function getNextInternForRole($role): ?Dice
+    {
+        $internDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_INTERN, null, 'card_location_arg'));
+        if (sizeof($internDice) > 0) {
+            if ($role == PILOT) {
+                return array_shift($internDice);
+            } else {
+                return end($internDice);
+            }
+        }
+        return null;
     }
 
     function isActionSpaceEmpty($actionSpaceId): bool
@@ -73,8 +103,15 @@ class PlaneManager extends APP_DbObject
         if (sizeof($diceOnActionSpace) == 0) {
             return true;
         }
-        //TODO CHECK INTERN
         return false;
+    }
+
+    function isActionSpaceAvailable($actionSpaceId): bool
+    {
+        if ($actionSpaceId == 'intern-1' || $actionSpaceId == 'intern-2') {
+            return sizeof(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_INTERN)) > 0;
+        }
+        return true;
     }
 
     function resolveDicePlacement(Dice $die): bool
@@ -312,6 +349,24 @@ class PlaneManager extends APP_DbObject
                     $continue = false;
                 }
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_INTERN) {
+            if (SkyTeam::$instance->isModuleActive(MODULE_INTERN)) {
+                $role = $die->locationArg == 'intern-1' ? PILOT : CO_PILOT;
+                $intern = $this->getNextInternForRole($role);
+                $playerId = SkyTeam::$instance->getPlayerIdForRole($role);
+                SkyTeam::$instance->dice->moveCard($intern->id, LOCATION_PLAYER, $playerId);
+
+                $intern = Dice::from(SkyTeam::$instance->dice->getCard($intern->id));
+                SkyTeam::$instance->notifyAllPlayers( 'internTrained', clienttranslate('${player_name} trains the intern and must place ${icon_dice}'), [
+                    'playerId' => intval($playerId),
+                    'player_name' => SkyTeam::$instance->getPlayerName($playerId),
+                    'icon_dice' => [$intern],
+                    'die' =>  $intern
+                ]);
+
+                SkyTeam::$instance->gamestate->jumpToState(ST_PLACE_INTERN);
+                $continue = false;
+            }
         }
 
         $this->save($plane);
@@ -365,6 +420,10 @@ class PlaneManager extends APP_DbObject
                             $victoryCondition['status'] = 'success';
                         }
                     }
+                }
+            } else if ($conditionLetter == VICTORY_E) {
+                if (sizeof(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_INTERN)) == 0) {
+                    $victoryCondition['status'] = 'success';
                 }
             }
 

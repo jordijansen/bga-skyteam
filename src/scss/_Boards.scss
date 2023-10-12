@@ -75,7 +75,7 @@
 
     #st-main-board-wrapper {
       width: 1000px;
-      height: 1550px;
+      height: 1645px;
       #st-plane-board-wrapper {
         position: absolute;
         z-index: 2;
@@ -191,6 +191,8 @@
             #brakes-2 {bottom: 177px; left: 276px;}
             #brakes-3 {bottom: 177px; left: 368px;}
             #kerosene {left: -88px; top: 26px;}
+            #intern-1 {left: 2px; bottom: -77px;}
+            #intern-2 {right: 2px; bottom: -77px;}
           }
           #st-plane-switches {
             #plane-switch-landing-gear-1 { top: 386px; left: 18px; }
@@ -230,6 +232,23 @@
               @include selected();
               &.st-approach-overlay-track-slot-highlighted {
                 display: block;
+              }
+            }
+          }
+          #st-intern-board {
+            background-image: url("img/skyteam-intern-board.png");
+            width: 641px;
+            height: 95px;
+            position: absolute;
+            bottom: -95px;
+            left: -16px;
+
+            #st-intern-dice-stock {
+              position: relative;
+              top: 16px;
+              left: 95px;
+              .slot {
+                width: 55px;
               }
             }
           }

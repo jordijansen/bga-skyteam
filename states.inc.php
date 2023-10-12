@@ -220,6 +220,19 @@ $gameStates = [
             '' => ST_DICE_PLACEMENT_NEXT,
         ]
     ],
+    ST_PLACE_INTERN => [
+        "name" => "placeIntern",
+        "description" => clienttranslate('${actplayer} must place the Intern'),
+        "descriptionmyturn" => clienttranslate('${you} must place the Intern'),
+        "type" => "activeplayer",
+        "args" => "argPlaceIntern",
+        "possibleactions" => [
+            ACT_PLACE_INTERN,
+        ],
+        "transitions" => [
+            '' => ST_DICE_PLACEMENT_NEXT
+        ],
+    ],
     ST_END_OF_ROUND => [
         "name" => "endOfRound",
         "description" => clienttranslate('End of Round: decreasing altitude...'),

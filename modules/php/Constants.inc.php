@@ -11,6 +11,7 @@ const CO_PILOT_PLAYER_COLOR = 'fba919';
 
 const DICE_PLAYER = 'player';
 const DICE_TRAFFIC = 'traffic';
+const DICE_INTERN = 'intern';
 
 const APPROACH_GREEN = 'green';
 const APPROACH_YELLOW = 'yellow';
@@ -38,6 +39,7 @@ const ACTION_SPACE_FLAPS = 'flaps';
 const ACTION_SPACE_BRAKES = 'brakes';
 const ACTION_SPACE_CONCENTRATION = 'concentration';
 const ACTION_SPACE_KEROSENE = 'kerosene';
+const ACTION_SPACE_INTERN = 'intern';
 
 
 const ALLOWED_ROLES = 'allowedRoles';
@@ -64,6 +66,7 @@ const VICTORY_A = 'A';
 const VICTORY_B = 'B';
 const VICTORY_C = 'C';
 const VICTORY_D = 'D';
+const VICTORY_E = 'E';
 
 /**
  * Options
@@ -89,6 +92,7 @@ const MODULE_TURNS = 'turns';
 const MODULE_KEROSENE = 'kerosene';
 const MODULE_WINDS = 'winds';
 const MODULE_SPECIAL_ABILITIES = 'special-abilities';
+const MODULE_INTERN = 'intern';
 
 
 
@@ -119,6 +123,8 @@ const ST_SYNCHRONISATION_START = 74;
 const ST_SYNCHRONISATION_END = 75;
 const ST_REROLL_DICE_END = 76;
 
+const ST_PLACE_INTERN = 77;
+
 const ST_PLANE_FAILURE = 80;
 const ST_PLANE_LANDED = 85;
 
@@ -137,7 +143,7 @@ const ACT_REROLL = 'reroll';
 const ACT_FLIP = 'flip';
 const ACT_SWAP = 'swap';
 const ACT_SYNCHRONISATION = 'synchronisation';
-
+const ACT_PLACE_INTERN = 'placeIntern';
 
 const ACT_UNDO = 'undo';
 
@@ -152,6 +158,7 @@ const LOCATION_AVAILABLE = 'available';
 const LOCATION_PLAYER = 'player';
 const LOCATION_PLANE = 'plane';
 const LOCATION_TRAFFIC = 'traffic';
+const LOCATION_INTERN = 'intern';
 
 
 /**

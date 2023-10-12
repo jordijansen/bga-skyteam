@@ -90,6 +90,7 @@ interface SkyTeamGameData extends GameData {
     failureReason?: string;
     planeDice: Dice[];
     trafficDice: Dice[];
+    internDice: Dice[];
     round: number,
     phase: 'setup' | 'strategy' | 'diceplacement',
     actionSpaces: {[actionSpaceId: string]: ActionSpace}
@@ -237,4 +238,9 @@ interface NotifDiceRemoved {
 
 interface NotifWindChanged {
     wind: number;
+}
+
+interface NotifInternTrained {
+    playerId: number,
+    die: Dice
 }

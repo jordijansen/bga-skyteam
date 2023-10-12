@@ -47,7 +47,6 @@
                     <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-available-coffee"></div>
                     <div id="st-available-reroll"></div>
-                    <div id="st-action-spaces"></div>
                     <div id="st-plane-switches"></div>
                     <div id="st-token-reserve-plane" class="st-token-reserve"></div>
                     <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
@@ -55,7 +54,10 @@
                     <div id="st-approach-overlay-track">
                         <div id="st-approach-overlay-track-slot"></div>
                     </div>
-                    <!-- MODULE BOARDS -->
+                    <div id="st-intern-board" class="st-board">
+                        <div id="st-intern-dice-stock"></div>
+                    </div>
+                    <div id="st-action-spaces"></div>
                 </div>
                 <div id="st-main-board-right">
                     <div id="st-winds-board" class="st-board">

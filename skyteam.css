@@ -614,7 +614,7 @@ body > .card {
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper {
   width: 1000px;
-  height: 1550px;
+  height: 1645px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper {
   position: absolute;
@@ -894,6 +894,14 @@ body > .card {
   left: -88px;
   top: 26px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #intern-1 {
+  left: 2px;
+  bottom: -77px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #intern-2 {
+  right: 2px;
+  bottom: -77px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
@@ -963,6 +971,22 @@ body > .card {
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track #st-approach-overlay-track-slot.st-approach-overlay-track-slot-highlighted {
   display: block;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-intern-board {
+  background-image: url("img/skyteam-intern-board.png");
+  width: 641px;
+  height: 95px;
+  position: absolute;
+  bottom: -95px;
+  left: -16px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-intern-board #st-intern-dice-stock {
+  position: relative;
+  top: 16px;
+  left: 95px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-intern-board #st-intern-dice-stock .slot {
+  width: 55px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-tracks {
   height: 700px;
@@ -1480,6 +1504,31 @@ body > .card {
 }
 .st-dice[data-type=traffic] [data-side="6"] {
   background-position: 100% 100%;
+}
+.st-dice[data-type=intern] .side {
+  background-image: url("img/skyteam-intern-tokens.png");
+  backface-visibility: hidden;
+  box-shadow: none;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+.st-dice[data-type=intern] [data-side="1"] {
+  background-position: 0 0;
+}
+.st-dice[data-type=intern] [data-side="2"] {
+  background-position: 20% 0;
+}
+.st-dice[data-type=intern] [data-side="3"] {
+  background-position: 40% 0;
+}
+.st-dice[data-type=intern] [data-side="4"] {
+  background-position: 60% 0;
+}
+.st-dice[data-type=intern] [data-side="5"] {
+  background-position: 80% 0;
+}
+.st-dice[data-type=intern] [data-side="6"] {
+  background-position: 100% 0;
 }
 
 .st-altitude {

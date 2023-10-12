@@ -48,6 +48,8 @@ class HelpDialogManager {
                 return _('Brake enough to bring the plane to a halt once it touches the runway.');
             case 'kerosene':
                 return _('Manage your fuel and land your plane before going dry!');
+            case 'intern':
+                return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
             default:
                 return '';
         }
@@ -71,6 +73,8 @@ class HelpDialogManager {
                 return _('Place a die respecting the number constraint. The brakes must be deployed in order, starting with the 2 space. If this is the first die you place here, the Switch below the space is activated (green light) and The Brakes marker (red) is moved. The Brakes only have an impact in the game’s final round. Playing on a space whose Switch is already showing green has no effect.');
             case 'kerosene':
                 return _('Placing a die here will reduce the Kerosene level by a number of spaces equal to the die value. If no die is placed here at the end of the round, the Kerosene level is lowered by 6.');
+            case 'intern':
+                return _('On your turn, you can train your Intern by placing a die of any value on the space of your colour on the Intern Board, and taking the first available token closest to your side. You can then place that token on any space you’d normally be able to place a die, and resolve its effect with the token’s number.<br/><br/><b>Important:</b><br/>An Intern token cannot be modified by a Coffee token.<br/>You cannot use this token on a Concentration space.</br>The die placed must be of a different value than the next available token.');
             default:
                 return '';
         }
@@ -101,6 +105,8 @@ class HelpDialogManager {
             case 'brakes':
             case 'engines':
                 return `<div class="st-end-game-info-box success"><p><h1>${dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'D' })}</h1></br>${_(this.game.gamedatas.victoryConditions['D'].description)}</p></div>`
+            case 'intern':
+                return `<div class="st-end-game-info-box success"><p><h1>${dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'E' })}</h1></br>${_(this.game.gamedatas.victoryConditions['E'].description)}</p></div>`
             default:
                 return '';
         }

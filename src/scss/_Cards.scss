@@ -198,6 +198,22 @@
     [data-side="5"] { background-position: 80% 100%;}
     [data-side="6"] { background-position: 100% 100%;}
   }
+
+  &[data-type="intern"] {
+    .side {
+      background-image: url('img/skyteam-intern-tokens.png');
+      backface-visibility: hidden;
+      box-shadow: none;
+      filter: drop-shadow(1px 1px 1px black);
+      -webkit-filter: drop-shadow(1px 1px 1px black);
+    }
+    [data-side="1"] { background-position: 0 0;}
+    [data-side="2"] { background-position: 20% 0;}
+    [data-side="3"] { background-position: 40% 0;}
+    [data-side="4"] { background-position: 60% 0;}
+    [data-side="5"] { background-position: 80% 0;}
+    [data-side="6"] { background-position: 100% 0;}
+  }
 }
 
 .st-altitude {

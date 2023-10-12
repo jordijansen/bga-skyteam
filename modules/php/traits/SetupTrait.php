@@ -1,6 +1,7 @@
 <?php
 
 namespace traits;
+use objects\Dice;
 use objects\Plane;
 
 trait SetupTrait
@@ -73,8 +74,16 @@ trait SetupTrait
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => PILOT, 'nbr' => 4];
         $dice[] = ['type' => DICE_PLAYER, 'type_arg' => CO_PILOT, 'nbr' => 4];
         $dice[] = ['type' => DICE_TRAFFIC, 'type_arg' => DICE_TRAFFIC, 'nbr' => 20];
+        $dice[] = ['type' => DICE_INTERN, 'type_arg' => DICE_INTERN, 'nbr' => 6];
 
         $this->dice->createCards($dice, LOCATION_DECK);
+
+        $internDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_INTERN, DICE_INTERN, LOCATION_DECK));
+        foreach ($internDice as $i => $internDie) {
+            $internDie->setSide($i + 1);
+            $this->dice->moveCard($internDie->id, LOCATION_INTERN);
+        }
+        $this->dice->shuffle(LOCATION_INTERN);
     }
 
     private function createSpecialAbilities()

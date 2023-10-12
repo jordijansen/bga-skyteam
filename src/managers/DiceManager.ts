@@ -3,10 +3,12 @@ class DiceManager extends CardManager<Dice> {
     private static readonly PLAYER_AREA = 'st-player-dice';
     private static readonly OTHER_PLAYER_AREA = 'st-other-player-dice';
     public static readonly TRAFFIC_DICE = 'st-traffic-dice-stock';
+    public static readonly INTERN_DICE = 'st-intern-dice-stock';
 
     public playerDiceStock: LineStock<Dice>;
     public otherPlayerDiceStock: VoidStock<Dice>;
     public trafficDiceStock: LineStock<Dice>;
+    public internDiceStock: SlotStock<Dice>;
 
     constructor(public game: SkyTeamGame) {
         super(game, {
@@ -31,12 +33,21 @@ class DiceManager extends CardManager<Dice> {
     public setUp(data: SkyTeamGameData) {
         const element = $(DiceManager.PLAYER_AREA);
 
-        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px'})
+        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px', sort: sortFunction('type')})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
         this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), {})
-
         this.trafficDiceStock.addCards(data.trafficDice);
+
+        const internDiceSlots = [0,1,2,3,4,5].map(slotId => `st-intern-slot-${slotId}`);
+        this.internDiceStock = new SlotStock<Dice>(this, $(DiceManager.INTERN_DICE), {
+            slotsIds: internDiceSlots,
+            mapCardToSlot: card => `st-intern-slot-${card.locationArg}`,
+            gap: '22.5px',
+            direction: 'row',
+            center: false
+        })
+        this.internDiceStock.addCards(data.internDice);
 
         const player = data.players[this.game.getPlayerId()];
         if (player) {

@@ -46,15 +46,18 @@ trait UtilsTrait
 
     function getVictoryConditions()
     {
-        $BASE_GAME_CONDITIONS = [
+        $VICTORY_CONDITIONS = [
             VICTORY_A => ['letter' => VICTORY_A, 'description' => clienttranslate('There are no Airplane tokens on the Approach Track.')],
             VICTORY_B => ['letter' => VICTORY_B, 'description' => clienttranslate('All your Flaps and Landing Gear Switches show the green light.')],
             VICTORY_C => ['letter' => VICTORY_C, 'description' => clienttranslate('Your Airplane’s Axis is completely horizontal.')],
             VICTORY_D => ['letter' => VICTORY_D, 'description' => clienttranslate('Your Speed is less than your Brakes when you placed your Engine dice.')],
         ];
-        // TODO GET BASED ON SCENARIO/MODULES
 
-        return $BASE_GAME_CONDITIONS;
+        if ($this->isModuleActive(MODULE_INTERN)) {
+            $VICTORY_CONDITIONS[VICTORY_E] = ['letter' => VICTORY_E, 'description' => clienttranslate('Fully train the Intern by removing all intern tokens from the board')];
+        }
+
+        return $VICTORY_CONDITIONS;
     }
 
     function isFinalRound()

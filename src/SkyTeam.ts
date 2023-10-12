@@ -133,7 +133,14 @@ class SkyTeam implements SkyTeamGame {
                 break;
             case 'dicePlacementSelect':
             case 'performSynchronisation':
-                this.enteringDicePlacementSelect(args.args, stateName === 'performSynchronisation');
+            case 'placeIntern':
+                let allowedDiceTypes = []; // ALL
+                if (stateName === 'performSynchronisation') {
+                    allowedDiceTypes = ['traffic'];
+                } else if (stateName === 'placeIntern') {
+                    allowedDiceTypes = ['intern'];
+                }
+                this.enteringDicePlacementSelect(args.args, allowedDiceTypes);
                 break;
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
@@ -186,10 +193,10 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
-    private enteringDicePlacementSelect(args: DicePlacementSelectArgs, trafficDieOnly: boolean) {
+    private enteringDicePlacementSelect(args: DicePlacementSelectArgs, allowedDieTypes?: string[]) {
         this.diceManager.toggleShowPlayerDice(true);
         if ((this as any).isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection), [], trafficDieOnly ? ['traffic'] : []);
+            this.diceManager.setSelectionMode('single', (selection) => this.onDicePlacementDiceSelected(args, selection), [], allowedDieTypes ? allowedDieTypes : []);
         }
     }
 
@@ -251,6 +258,8 @@ class SkyTeam implements SkyTeamGame {
                 this.leavingPlayerSetup();
                 break;
             case 'dicePlacementSelect':
+            case 'performSynchronisation':
+            case 'placeIntern':
                 this.leavingDicePlacementSelect()
                 break;
             case 'rerollDice':
@@ -312,6 +321,7 @@ class SkyTeam implements SkyTeamGame {
                     }
                     break;
                 case 'performSynchronisation':
+                case 'placeIntern':
                     (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
@@ -653,7 +663,8 @@ class SkyTeam implements SkyTeamGame {
             ['planeKeroseneChanged', 1],
             ['diceRemoved', 1],
             ['windChanged', undefined],
-            ['playerUsedAdaptation', 1]
+            ['playerUsedAdaptation', 1],
+            ['internTrained', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -813,6 +824,13 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_windChanged(args: NotifWindChanged) {
         return this.planeManager.updateWind(args.wind);
+    }
+
+    private notif_internTrained(args: NotifInternTrained) {
+        if (args.playerId === this.getPlayerId()) {
+            return this.diceManager.playerDiceStock.addCard(args.die);
+        }
+        return Promise.resolve();
     }
 
     public format_string_recursive(log: string, args: any) {

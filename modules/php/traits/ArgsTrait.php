@@ -72,4 +72,13 @@ trait ArgsTrait
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
         ];
     }
+
+    function argPlaceIntern()
+    {
+        $internDie = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_INTERN, DICE_INTERN, LOCATION_PLAYER));
+        return [
+            'internDie' => $internDie,
+            'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId(), false, ACTION_SPACE_CONCENTRATION)
+        ];
+    }
 }

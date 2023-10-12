@@ -106,7 +106,7 @@ trait ActionTrait
             throw new BgaUserException('Invalid dice supplied!');
         }
 
-        $actionSpaces = $this->planeManager->getAvailableActionSpaces($playerId, $die->type == 'traffic');
+        $actionSpaces = $this->planeManager->getAvailableActionSpaces($playerId, $die->type == DICE_TRAFFIC, $die->type == DICE_INTERN ? ACTION_SPACE_CONCENTRATION : null);
         if (!array_key_exists($actionSpaceId, $actionSpaces)) {
             throw new BgaUserException('Action space not available.');
         }

@@ -2168,6 +2168,9 @@ var PlaneManager = /** @class */ (function () {
         if (!data.scenario.modules.includes('winds')) {
             $('st-winds-board').style.display = 'none';
         }
+        if (!data.scenario.modules.includes('intern')) {
+            $('st-intern-board').style.display = 'none';
+        }
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2473,11 +2476,20 @@ var DiceManager = /** @class */ (function (_super) {
     DiceManager.prototype.setUp = function (data) {
         var _this = this;
         var element = $(DiceManager.PLAYER_AREA);
-        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px' });
+        this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px', sort: sortFunction('type') });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
         this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
         this.trafficDiceStock.addCards(data.trafficDice);
+        var internDiceSlots = [0, 1, 2, 3, 4, 5].map(function (slotId) { return "st-intern-slot-".concat(slotId); });
+        this.internDiceStock = new SlotStock(this, $(DiceManager.INTERN_DICE), {
+            slotsIds: internDiceSlots,
+            mapCardToSlot: function (card) { return "st-intern-slot-".concat(card.locationArg); },
+            gap: '22.5px',
+            direction: 'row',
+            center: false
+        });
+        this.internDiceStock.addCards(data.internDice);
         var player = data.players[this.game.getPlayerId()];
         if (player) {
             if (player.dice) {
@@ -2518,6 +2530,7 @@ var DiceManager = /** @class */ (function (_super) {
     DiceManager.PLAYER_AREA = 'st-player-dice';
     DiceManager.OTHER_PLAYER_AREA = 'st-other-player-dice';
     DiceManager.TRAFFIC_DICE = 'st-traffic-dice-stock';
+    DiceManager.INTERN_DICE = 'st-intern-dice-stock';
     return DiceManager;
 }(CardManager));
 var TokenManager = /** @class */ (function (_super) {
@@ -2620,6 +2633,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Brake enough to bring the plane to a halt once it touches the runway.');
             case 'kerosene':
                 return _('Manage your fuel and land your plane before going dry!');
+            case 'intern':
+                return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
             default:
                 return '';
         }
@@ -2642,6 +2657,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Place a die respecting the number constraint. The brakes must be deployed in order, starting with the 2 space. If this is the first die you place here, the Switch below the space is activated (green light) and The Brakes marker (red) is moved. The Brakes only have an impact in the game’s final round. Playing on a space whose Switch is already showing green has no effect.');
             case 'kerosene':
                 return _('Placing a die here will reduce the Kerosene level by a number of spaces equal to the die value. If no die is placed here at the end of the round, the Kerosene level is lowered by 6.');
+            case 'intern':
+                return _('On your turn, you can train your Intern by placing a die of any value on the space of your colour on the Intern Board, and taking the first available token closest to your side. You can then place that token on any space you’d normally be able to place a die, and resolve its effect with the token’s number.<br/><br/><b>Important:</b><br/>An Intern token cannot be modified by a Coffee token.<br/>You cannot use this token on a Concentration space.</br>The die placed must be of a different value than the next available token.');
             default:
                 return '';
         }
@@ -2670,6 +2687,8 @@ var HelpDialogManager = /** @class */ (function () {
             case 'brakes':
             case 'engines':
                 return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'D' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['D'].description), "</p></div>");
+            case 'intern':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'E' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['E'].description), "</p></div>");
             default:
                 return '';
         }
@@ -3060,7 +3079,15 @@ var SkyTeam = /** @class */ (function () {
                 break;
             case 'dicePlacementSelect':
             case 'performSynchronisation':
-                this.enteringDicePlacementSelect(args.args, stateName === 'performSynchronisation');
+            case 'placeIntern':
+                var allowedDiceTypes = []; // ALL
+                if (stateName === 'performSynchronisation') {
+                    allowedDiceTypes = ['traffic'];
+                }
+                else if (stateName === 'placeIntern') {
+                    allowedDiceTypes = ['intern'];
+                }
+                this.enteringDicePlacementSelect(args.args, allowedDiceTypes);
                 break;
             case 'rerollDice':
                 this.enteringRerollDice(args.args);
@@ -3109,11 +3136,11 @@ var SkyTeam = /** @class */ (function () {
             this.diceManager.setSelectionMode('single');
         }
     };
-    SkyTeam.prototype.enteringDicePlacementSelect = function (args, trafficDieOnly) {
+    SkyTeam.prototype.enteringDicePlacementSelect = function (args, allowedDieTypes) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
         if (this.isCurrentPlayerActive()) {
-            this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); }, [], trafficDieOnly ? ['traffic'] : []);
+            this.diceManager.setSelectionMode('single', function (selection) { return _this.onDicePlacementDiceSelected(args, selection); }, [], allowedDieTypes ? allowedDieTypes : []);
         }
     };
     SkyTeam.prototype.onDicePlacementDiceSelected = function (args, selection) {
@@ -3173,6 +3200,8 @@ var SkyTeam = /** @class */ (function () {
                 this.leavingPlayerSetup();
                 break;
             case 'dicePlacementSelect':
+            case 'performSynchronisation':
+            case 'placeIntern':
                 this.leavingDicePlacementSelect();
                 break;
             case 'rerollDice':
@@ -3230,6 +3259,7 @@ var SkyTeam = /** @class */ (function () {
                     }
                     break;
                 case 'performSynchronisation':
+                case 'placeIntern':
                     this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
@@ -3534,7 +3564,8 @@ var SkyTeam = /** @class */ (function () {
             ['planeKeroseneChanged', 1],
             ['diceRemoved', 1],
             ['windChanged', undefined],
-            ['playerUsedAdaptation', 1]
+            ['playerUsedAdaptation', 1],
+            ['internTrained', undefined]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3670,6 +3701,12 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_windChanged = function (args) {
         return this.planeManager.updateWind(args.wind);
+    };
+    SkyTeam.prototype.notif_internTrained = function (args) {
+        if (args.playerId === this.getPlayerId()) {
+            return this.diceManager.playerDiceStock.addCard(args.die);
+        }
+        return Promise.resolve();
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
