@@ -78,12 +78,22 @@ class PlaneManager  {
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(card => card.type === 2), data.rolesThatUsedAdaptation)
 
-        if(!data.scenario.modules.includes('kerosene')) {
+        if(!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
+        if (data.scenario.modules.includes('kerosene')) {
+            $('st-kerosene-leak-marker').style.display = 'none';
+        }
+        if (data.scenario.modules.includes('kerosene-leak')) {
+            dojo.connect($(`st-kerosene-leak-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'kerosene-leak'))
+        }
+
         if(!data.scenario.modules.includes('winds')) {
             $('st-winds-board').style.display = 'none';
+        } else {
+            dojo.connect($(`st-winds-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'winds'))
         }
+
         if(!data.scenario.modules.includes('intern')) {
             $('st-intern-board').style.display = 'none';
         }

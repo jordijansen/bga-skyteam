@@ -32,6 +32,11 @@
         &[data-value="#{$row}"] { bottom: 27px + (($row + 1) * 21.71428px); }
       }
     }
+    #st-kerosene-leak-marker {
+      position: absolute;
+      top: 25px;
+      left: 43px;
+    }
   }
   #st-token-reserve-coffee {
     padding-bottom: 10px;
@@ -303,6 +308,27 @@
   }
 }
 
+.st-action-space-help {
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+  i {
+    font-size: 16px !important;
+  }
+  &.top {
+    top: -25px;
+  }
+  &.right {
+    right: -24px;
+  }
+  &.left {
+    left: -24px;
+  }
+}
+
 .st-action-space {
   position: absolute;
   width: 60px;
@@ -339,27 +365,6 @@
     }
     &.right {
       right: -25px;
-    }
-  }
-
-  .st-action-space-help {
-    background-color: white;
-    padding: 5px;
-    border-radius: 5px;
-    position: absolute;
-    opacity: 0.6;
-    cursor: pointer;
-    i {
-      font-size: 16px !important;
-    }
-    &.top {
-      top: -25px;
-    }
-    &.right {
-      right: -24px;
-    }
-    &.left {
-      left: -24px;
     }
   }
 }

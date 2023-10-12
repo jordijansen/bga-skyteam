@@ -166,7 +166,6 @@ class PlaneManager extends APP_DbObject
                 }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_ENGINES) {
-
             $otherEngineSpace = $die->locationArg == 'engines-1' ? 'engines-2' : 'engines-1';
             $otherEngineSpaceDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherEngineSpace));
             if (sizeof($otherEngineSpaceDice) > 0) {
@@ -185,9 +184,26 @@ class PlaneManager extends APP_DbObject
                     }
                 }
 
-                if (SkyTeam::$instance->isFinalRound()) {
+                if (SkyTeam::$instance->isModuleActive(MODULE_KEROSENE_LEAK)) {
+                    $keroseneLeaked = abs($die->value - $otherEngineSpaceDie->value) + 1;
+
+                    $plane->kerosene = $plane->kerosene - $keroseneLeaked;
+
+                    SkyTeam::$instance->notifyAllPlayers("planeKeroseneChanged", clienttranslate('Leaking ${keroseneLeaked} unit(s) of Kerosene: kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
+                        'kerosene' => $plane->kerosene,
+                        'keroseneLeaked' => $keroseneLeaked,
+                        'icon_kerosene_marker' => 'kerosene_marker'
+                    ]);
+
+                    if ($plane->kerosene < 0) {
+                        SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_KEROSENE);
+                        SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+                        $continue = false;
+                    }
+                }
+                // If we already failed kerosene leak than we have no reason to check anything else.
+                if ($continue && !SkyTeam::$instance->isFinalRound()) {
                     // This is the final round, so the engine / brakes are checked at the end of the game.
-                } else {
                     $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                     $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                     if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
@@ -227,7 +243,6 @@ class PlaneManager extends APP_DbObject
                                 break;
                             }
                         }
-
                         $plane->approach = $plane->approach + 1;
                         SkyTeam::$instance->notifyAllPlayers("planeApproachChanged", '', [
                             'approach' => $plane->approach

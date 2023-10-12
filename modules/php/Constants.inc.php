@@ -93,9 +93,7 @@ const MODULE_KEROSENE = 'kerosene';
 const MODULE_WINDS = 'winds';
 const MODULE_SPECIAL_ABILITIES = 'special-abilities';
 const MODULE_INTERN = 'intern';
-
-
-
+const MODULE_KEROSENE_LEAK = 'kerosene-leak';
 
 /**
  * State

@@ -519,6 +519,11 @@ body > .card {
 #st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="20"] {
   bottom: 482.99988px;
 }
+#st-main-board-left #st-kerosene-board #st-kerosene-leak-marker {
+  position: absolute;
+  top: 25px;
+  left: 43px;
+}
 #st-main-board-left #st-token-reserve-coffee {
   padding-bottom: 10px;
   padding-right: 10px;
@@ -1032,6 +1037,27 @@ body > .card {
   margin-top: 36px;
 }
 
+.st-action-space-help {
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.st-action-space-help i {
+  font-size: 16px !important;
+}
+.st-action-space-help.top {
+  top: -25px;
+}
+.st-action-space-help.right {
+  right: -24px;
+}
+.st-action-space-help.left {
+  left: -24px;
+}
+
 .st-action-space {
   position: absolute;
   width: 60px;
@@ -1068,26 +1094,6 @@ body > .card {
 }
 .st-action-space .st-action-space-mandatory-warning.right {
   right: -25px;
-}
-.st-action-space .st-action-space-help {
-  background-color: white;
-  padding: 5px;
-  border-radius: 5px;
-  position: absolute;
-  opacity: 0.6;
-  cursor: pointer;
-}
-.st-action-space .st-action-space-help i {
-  font-size: 16px !important;
-}
-.st-action-space .st-action-space-help.top {
-  top: -25px;
-}
-.st-action-space .st-action-space-help.right {
-  right: -24px;
-}
-.st-action-space .st-action-space-help.left {
-  left: -24px;
 }
 
 .help-buttons-disabled .st-action-space-help {
@@ -1133,6 +1139,13 @@ body > .card {
 }
 .st-plane-marker[data-type=brakes-red] {
   background-position: 100% 0;
+}
+
+.st-kerosene-leak-marker {
+  background-image: url("img/skyteam-kerosene-leak-marker.png");
+  background-size: cover;
+  height: 58px;
+  width: 32px;
 }
 
 .st-kerosene-marker {

@@ -6,9 +6,19 @@ class HelpDialogManager {
     constructor(private game: SkyTeamGame) {
     }
 
-    showActionSpaceHelp(event, actionSpace: ActionSpace) {
-        dojo.stopEvent(event);
+    showModuleHelp(event, module: string) {
+        let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
+        html += `<p><i>${this.getModuleFlavorText(module)}</i></p>`
+        html += `<p>${this.getModuleDescription(module)}</p>`
+        html += `<br/><div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">`
+        html += `${this.getModuleFailure(module)}`
+        html += `${this.getModuleVictoryCondition(module)}`
+        html += `</div>`
+        html += `</div>`
+        this.showDialog(event, this.getModuleTitle(module).toUpperCase(), html)
+    }
 
+    showActionSpaceHelp(event, actionSpace: ActionSpace) {
         let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
         html += actionSpace.mandatory ? `<p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ${_('Mandatory, a die must be placed here each round')}</p>` : '';
         html += `<p>${dojo.string.substitute(_('<b>Allowed role(s)</b>: ${roles}'), { roles: actionSpace.allowedRoles.map(role => _(role)).join(', ') })}</p>`
@@ -23,11 +33,31 @@ class HelpDialogManager {
         this.showDialog(event, this.getActionSpaceTitle(actionSpace.type).toUpperCase(), html)
     }
 
+    private getModuleTitle(module: string) {
+        if (module === 'kerosene-leak') {
+            return _('kerosene leak');
+        }else if (module === 'winds') {
+            return _('winds');
+        }
+        return _(module);
+    }
+
     private getActionSpaceTitle(type: string) {
         if (type === 'landing-gear') {
             return _('landing gear');
         }
         return _(type);
+    }
+
+    private getModuleFlavorText(module: string) {
+        switch (module) {
+            case 'kerosene-leak':
+                return _('Uh-oh... there’s a kerosene leak to take care of! Adjust your speed to avoid catastrophe.');
+            case 'winds':
+                return _('The tail wind has picked up and you are advancing too fast. Turn your plane to control your speed.');
+            default:
+                return '';
+        }
     }
 
     private getActionSpaceFlavorText(type: string) {
@@ -50,6 +80,17 @@ class HelpDialogManager {
                 return _('Manage your fuel and land your plane before going dry!');
             case 'intern':
                 return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
+            default:
+                return '';
+        }
+    }
+
+    private getModuleDescription(module: string) {
+        switch (module) {
+            case 'kerosene-leak':
+                return _('You can no longer perform the Kerosene Action, and you do not lose kerosene in the same way. Instead, your kerosene loss is the same as the difference between your two Engine dice, +1.<br />For example, if you played a 6 and a 3 in the Engines, you lose 4 units of kerosene: 6 - 3 + 1');
+            case 'winds':
+                return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.')
             default:
                 return '';
         }
@@ -80,6 +121,17 @@ class HelpDialogManager {
         }
     }
 
+    private getModuleFailure(module: string) {
+        switch (module) {
+            case 'kerosene-leak':
+                return this.getActionSpaceFailure('kerosene');
+            case 'winds':
+                return this.getActionSpaceFailure('engines');
+            default:
+                return '';
+        }
+    }
+
     private getActionSpaceFailure(type: string) {
         switch (type) {
             case 'axis':
@@ -88,6 +140,15 @@ class HelpDialogManager {
                 return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-collision')}</h1></br>${this.game.getFailureReasonText('failure-collision')}</p></div><div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-overshoot')}</h1></br>${this.game.getFailureReasonText('failure-overshoot')}</p></div>`
             case 'kerosene':
                 return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-kerosene')}</h1></br>${this.game.getFailureReasonText('failure-kerosene')}</p></div>`
+            default:
+                return '';
+        }
+    }
+
+    private getModuleVictoryCondition(module: string) {
+        switch (module) {
+            case 'winds':
+                return this.getActionSpaceVictoryCondition('engines');
             default:
                 return '';
         }

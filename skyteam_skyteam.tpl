@@ -36,6 +36,7 @@
             <div id="st-plane-board-wrapper">
                 <div id="st-main-board-left">
                     <div id="st-kerosene-board" class="st-board">
+                        <div id="st-kerosene-leak-marker" class="st-kerosene-leak-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
                         <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
                     </div>
                     <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
@@ -61,6 +62,7 @@
                 </div>
                 <div id="st-main-board-right">
                     <div id="st-winds-board" class="st-board">
+                        <span id="st-winds-help" class="st-action-space-help" style="left: 10px; bottom: 10px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                         <div id="st-winds-plane" class="st-winds-plane token" data-value="0"></div>
                     </div>
                     <div id="st-main-board-special-abilities"></div>

@@ -162,7 +162,6 @@ trait StateTrait
                     $endTheGame = false;
                 }
             }
-            // TODO ALSO CHECK INTERNS
             // TODO ALSO CHECK ICE BRAKES
         }
 

@@ -2116,6 +2116,7 @@ var PlaneManager = /** @class */ (function () {
         this.currentAxis = 1;
     }
     PlaneManager.prototype.setUp = function (data) {
+        var _this = this;
         $(PlaneManager.PLANE_AXIS_INDICATOR).dataset.value = data.plane.axis;
         $(PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER).dataset.value = data.plane.aerodynamicsOrange;
         $(PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER).dataset.value = data.plane.aerodynamicsBlue;
@@ -2162,11 +2163,20 @@ var PlaneManager = /** @class */ (function () {
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(function (card) { return card.type === 2; }), data.rolesThatUsedAdaptation);
-        if (!data.scenario.modules.includes('kerosene')) {
+        if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
+        }
+        if (data.scenario.modules.includes('kerosene')) {
+            $('st-kerosene-leak-marker').style.display = 'none';
+        }
+        if (data.scenario.modules.includes('kerosene-leak')) {
+            dojo.connect($("st-kerosene-leak-help"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'kerosene-leak'); });
         }
         if (!data.scenario.modules.includes('winds')) {
             $('st-winds-board').style.display = 'none';
+        }
+        else {
+            dojo.connect($("st-winds-help"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'winds'); });
         }
         if (!data.scenario.modules.includes('intern')) {
             $('st-intern-board').style.display = 'none';
@@ -2593,9 +2603,19 @@ var HelpDialogManager = /** @class */ (function () {
         this.game = game;
         this.dialogId = 'stHelpDialogId';
     }
+    HelpDialogManager.prototype.showModuleHelp = function (event, module) {
+        var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
+        html += "<p><i>".concat(this.getModuleFlavorText(module), "</i></p>");
+        html += "<p>".concat(this.getModuleDescription(module), "</p>");
+        html += "<br/><div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">";
+        html += "".concat(this.getModuleFailure(module));
+        html += "".concat(this.getModuleVictoryCondition(module));
+        html += "</div>";
+        html += "</div>";
+        this.showDialog(event, this.getModuleTitle(module).toUpperCase(), html);
+    };
     HelpDialogManager.prototype.showActionSpaceHelp = function (event, actionSpace) {
         var _a;
-        dojo.stopEvent(event);
         var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
         html += actionSpace.mandatory ? "<p><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> ".concat(_('Mandatory, a die must be placed here each round'), "</p>") : '';
         html += "<p>".concat(dojo.string.substitute(_('<b>Allowed role(s)</b>: ${roles}'), { roles: actionSpace.allowedRoles.map(function (role) { return _(role); }).join(', ') }), "</p>");
@@ -2609,11 +2629,30 @@ var HelpDialogManager = /** @class */ (function () {
         html += "</div>";
         this.showDialog(event, this.getActionSpaceTitle(actionSpace.type).toUpperCase(), html);
     };
+    HelpDialogManager.prototype.getModuleTitle = function (module) {
+        if (module === 'kerosene-leak') {
+            return _('kerosene leak');
+        }
+        else if (module === 'winds') {
+            return _('winds');
+        }
+        return _(module);
+    };
     HelpDialogManager.prototype.getActionSpaceTitle = function (type) {
         if (type === 'landing-gear') {
             return _('landing gear');
         }
         return _(type);
+    };
+    HelpDialogManager.prototype.getModuleFlavorText = function (module) {
+        switch (module) {
+            case 'kerosene-leak':
+                return _('Uh-oh... there’s a kerosene leak to take care of! Adjust your speed to avoid catastrophe.');
+            case 'winds':
+                return _('The tail wind has picked up and you are advancing too fast. Turn your plane to control your speed.');
+            default:
+                return '';
+        }
     };
     HelpDialogManager.prototype.getActionSpaceFlavorText = function (type) {
         switch (type) {
@@ -2635,6 +2674,16 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Manage your fuel and land your plane before going dry!');
             case 'intern':
                 return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.getModuleDescription = function (module) {
+        switch (module) {
+            case 'kerosene-leak':
+                return _('You can no longer perform the Kerosene Action, and you do not lose kerosene in the same way. Instead, your kerosene loss is the same as the difference between your two Engine dice, +1.<br />For example, if you played a 6 and a 3 in the Engines, you lose 4 units of kerosene: 6 - 3 + 1');
+            case 'winds':
+                return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.');
             default:
                 return '';
         }
@@ -2663,6 +2712,16 @@ var HelpDialogManager = /** @class */ (function () {
                 return '';
         }
     };
+    HelpDialogManager.prototype.getModuleFailure = function (module) {
+        switch (module) {
+            case 'kerosene-leak':
+                return this.getActionSpaceFailure('kerosene');
+            case 'winds':
+                return this.getActionSpaceFailure('engines');
+            default:
+                return '';
+        }
+    };
     HelpDialogManager.prototype.getActionSpaceFailure = function (type) {
         switch (type) {
             case 'axis':
@@ -2671,6 +2730,14 @@ var HelpDialogManager = /** @class */ (function () {
                 return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div><div class=\"st-end-game-info-box failure\"><p><h1>").concat(this.game.getFailureReasonTitle('failure-overshoot'), "</h1></br>").concat(this.game.getFailureReasonText('failure-overshoot'), "</p></div>");
             case 'kerosene':
                 return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-kerosene'), "</h1></br>").concat(this.game.getFailureReasonText('failure-kerosene'), "</p></div>");
+            default:
+                return '';
+        }
+    };
+    HelpDialogManager.prototype.getModuleVictoryCondition = function (module) {
+        switch (module) {
+            case 'winds':
+                return this.getActionSpaceVictoryCondition('engines');
             default:
                 return '';
         }
