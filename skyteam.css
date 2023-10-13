@@ -1702,10 +1702,11 @@ body > .card {
   cursor: pointer;
 }
 
-html, .mode_3d #game_play_area_background {
+.skyteam-background-blue {
   background-image: unset;
   background-color: #03afee;
 }
+
 html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   border-radius: 10px;
 }
@@ -1726,6 +1727,7 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 }
 
 #st-player-setup {
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

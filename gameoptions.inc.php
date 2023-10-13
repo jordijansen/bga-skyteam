@@ -33,7 +33,7 @@ $game_preferences = [
             PREF_SHOW_HELP_ICONS_ENABLED_ID => ['name' => totranslate( 'Enabled' ), 'cssPref' => 'help-buttons-enabled'],
             PREF_SHOW_HELP_ICONS_DISABLED_ID => ['name' => totranslate( 'Disabled' ), 'cssPref' => 'help-buttons-disabled'],
         ],
-        'default' => 1
+        'default' => PREF_SHOW_HELP_ICONS_ENABLED_ID
     ],
     PREF_SHOW_COMMUNICATION_BANNER => [
         'name' => totranslate('Communication reminder banner'),
@@ -43,7 +43,16 @@ $game_preferences = [
             PREF_SHOW_COMMUNICATION_BANNER_AUTO_HIDE => ['name' => totranslate( 'Auto hide after 10 seconds' ), 'cssPref' => 'communication-banner-auto-hide'],
             PREF_SHOW_COMMUNICATION_BANNER_HIDE => ['name' => totranslate( 'Always hidden' ), 'cssPref' => 'communication-banner-hidden'],
         ],
-        'default' => 1
+        'default' => PREF_SHOW_COMMUNICATION_BANNER_ALWAYS
+    ],
+    PREF_BACKGROUND => [
+        'name' => totranslate('Background'),
+        'needReload' => true, // after user changes this preference game interface would auto-reload
+        'values' => [
+            PREF_BACKGROUND_BLUE => ['name' => totranslate( 'Blue Solid Color' ), 'cssPref' => 'skyteam-background-blue'],
+            PREF_BACKGROUND_BGA => ['name' => totranslate( 'Default BGA background (wood)' ), 'cssPref' => 'skyteam-background-bga']
+        ],
+        'default' => PREF_BACKGROUND_BLUE
     ],
 ];
 
