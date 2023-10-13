@@ -27,6 +27,7 @@ class SkyTeam implements SkyTeamGame {
     private spendCoffee: SpendCoffee;
     private victoryConditions: VictoryConditions;
     public welcomeDialog: WelcomeDialog;
+    public realTimeCounter: RealTimeCounter;
 
     // Managers
     public planeManager: PlaneManager;
@@ -502,6 +503,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('Turn Failure');
             case 'failure-kerosene':
                 return _('Ran out of Kerosene');
+            case 'failure-mandatory-empty':
+                return _('Mandatory Space Empty');
         }
     }
 
@@ -519,6 +522,8 @@ class SkyTeam implements SkyTeamGame {
                 return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.')
             case 'failure-kerosene':
                 return _('At any time during the game, even in the final round, if you hit the X space on the Kerosene track, you have run out of kerosene and you’ve lost the game!')
+            case 'failure-mandatory-empty':
+                return _('One or more Mandatory spaces (Axis and Engines) are still empty and you have no time left; you have lost the game!');
         }
         return '';
     }
@@ -664,7 +669,9 @@ class SkyTeam implements SkyTeamGame {
             ['diceRemoved', 1],
             ['windChanged', undefined],
             ['playerUsedAdaptation', 1],
-            ['internTrained', undefined]
+            ['internTrained', undefined],
+            ['realTimeTimerStarted', 1],
+            ['realTimeTimerCleared', 1],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -833,6 +840,14 @@ class SkyTeam implements SkyTeamGame {
         return Promise.resolve();
     }
 
+    private notif_realTimeTimerStarted() {
+        this.realTimeCounter.start(60);
+    }
+
+    private notif_realTimeTimerCleared() {
+        this.realTimeCounter.clear();
+    }
+
     public format_string_recursive(log: string, args: any) {
         try {
             if (log && args && !args.processed) {
@@ -863,6 +878,8 @@ class SkyTeam implements SkyTeamGame {
 
     public updatePlayerOrdering() {
         (this as any).inherited(arguments);
+        this.realTimeCounter = new RealTimeCounter(this, () => this.takeAction('realTimeOutOfTime'));
+
         dojo.place(`<div id="st-victory-conditions-panel" class="player-board st-victory-conditions" style="height: auto;"></div>`, `player_boards`, 'first');
         this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
         this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);

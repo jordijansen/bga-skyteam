@@ -2,6 +2,7 @@
 
 namespace traits;
 
+use DateTimeImmutable;
 use objects\Dice;
 use objects\Token;
 
@@ -118,6 +119,12 @@ trait StateTrait
         $startRole = $this->getAltitudeTrack()->spaces[$plane->altitude][ROUND_START_PLAYER];
         $startPlayerId = $this->getPlayerIdForRole($startRole);
 
+        if ($this->isModuleActive(MODULE_REAL_TIME)) {
+            $date = new DateTimeImmutable();
+            $this->setGlobalVariable(REAL_TIME_END_TIME, $date->getTimestamp() + 60);
+            $this->notifyAllPlayers("realTimeTimerStarted", clienttranslate('Timer: 60 seconds remaining'), []);
+        }
+
         $this->giveExtraTime($startPlayerId);
         if ($this->isSpecialAbilityActive(ANTICIPATION)) {
             $this->setGlobalVariable(ACTIVE_PLAYER_AFTER_REROLL, $startPlayerId);
@@ -166,6 +173,7 @@ trait StateTrait
         }
 
         if ($endTheGame) {
+            $this->clearRealTimeTimeIfApplicable();
             $this->gamestate->nextState('landed');
         } else {
             $this->activeNextPlayer();
@@ -175,6 +183,7 @@ trait StateTrait
             if (sizeof($dice) > 0) {
                 $this->gamestate->nextState('next');
             } else {
+                $this->clearRealTimeTimeIfApplicable();
                 $this->gamestate->nextState('endRound');
             }
         }

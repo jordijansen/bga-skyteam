@@ -184,6 +184,21 @@ class SkyTeam extends Table
             $result['rolesThatUsedAdaptation'] = array_map(fn($playerId) => $this->getPlayerRole($playerId), $playersThatUsedAdaptation);
         }
 
+        $result['timerNeedsClearing'] = false;
+        if ($this->isModuleActive(MODULE_REAL_TIME)) {
+            $realTimeEndTime = $this->getGlobalVariable(REAL_TIME_END_TIME);
+            if (isset($realTimeEndTime)) {
+                $date = new DateTimeImmutable();
+                $realTimeEndTime = intval($realTimeEndTime);
+                $secondsRemaining = $realTimeEndTime - $date->getTimestamp();
+                if ($secondsRemaining >= 0) {
+                    $result['realTimeSecondsRemaining'] = $secondsRemaining;
+                } else {
+                    $result['timerNeedsClearing'] = true;
+                }
+            }
+        }
+
         return $result;
     }
     /*

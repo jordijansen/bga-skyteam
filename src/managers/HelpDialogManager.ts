@@ -36,8 +36,10 @@ class HelpDialogManager {
     private getModuleTitle(module: string) {
         if (module === 'kerosene-leak') {
             return _('kerosene leak');
-        }else if (module === 'winds') {
+        } else if (module === 'winds') {
             return _('winds');
+        } else if (module === 'real-time') {
+            return _('real-time');
         }
         return _(module);
     }
@@ -55,6 +57,8 @@ class HelpDialogManager {
                 return _('Uh-oh... there’s a kerosene leak to take care of! Adjust your speed to avoid catastrophe.');
             case 'winds':
                 return _('The tail wind has picked up and you are advancing too fast. Turn your plane to control your speed.');
+            case 'real-time':
+                return _('Show your nerves of steel by playing in real time.');
             default:
                 return '';
         }
@@ -91,6 +95,8 @@ class HelpDialogManager {
                 return _('You can no longer perform the Kerosene Action, and you do not lose kerosene in the same way. Instead, your kerosene loss is the same as the difference between your two Engine dice, +1.<br />For example, if you played a 6 and a 3 in the Engines, you lose 4 units of kerosene: 6 - 3 + 1');
             case 'winds':
                 return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.')
+            case 'real-time':
+                return _('At the beginning of each round, a 60-second timer is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
             default:
                 return '';
         }
@@ -127,6 +133,8 @@ class HelpDialogManager {
                 return this.getActionSpaceFailure('kerosene');
             case 'winds':
                 return this.getActionSpaceFailure('engines');
+            case 'real-time':
+                return `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-mandatory-empty')}</h1></br>${this.game.getFailureReasonText('failure-mandatory-empty')}</p></div>`;
             default:
                 return '';
         }

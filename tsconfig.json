@@ -55,6 +55,7 @@
     "src/ui/SpendCoffee.ts",
     "src/ui/VictoryConditions.ts",
     "src/ui/WelcomeDialog.ts",
+    "src/ui/RealTimeCounter.ts",
 
     "src/SkyTeam.ts"
   ]

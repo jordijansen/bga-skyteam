@@ -2636,6 +2636,9 @@ var HelpDialogManager = /** @class */ (function () {
         else if (module === 'winds') {
             return _('winds');
         }
+        else if (module === 'real-time') {
+            return _('real-time');
+        }
         return _(module);
     };
     HelpDialogManager.prototype.getActionSpaceTitle = function (type) {
@@ -2650,6 +2653,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Uh-oh... there’s a kerosene leak to take care of! Adjust your speed to avoid catastrophe.');
             case 'winds':
                 return _('The tail wind has picked up and you are advancing too fast. Turn your plane to control your speed.');
+            case 'real-time':
+                return _('Show your nerves of steel by playing in real time.');
             default:
                 return '';
         }
@@ -2684,6 +2689,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('You can no longer perform the Kerosene Action, and you do not lose kerosene in the same way. Instead, your kerosene loss is the same as the difference between your two Engine dice, +1.<br />For example, if you played a 6 and a 3 in the Engines, you lose 4 units of kerosene: 6 - 3 + 1');
             case 'winds':
                 return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.');
+            case 'real-time':
+                return _('At the beginning of each round, a 60-second timer is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
             default:
                 return '';
         }
@@ -2718,6 +2725,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return this.getActionSpaceFailure('kerosene');
             case 'winds':
                 return this.getActionSpaceFailure('engines');
+            case 'real-time':
+                return "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-mandatory-empty'), "</h1></br>").concat(this.game.getFailureReasonText('failure-mandatory-empty'), "</p></div>");
             default:
                 return '';
         }
@@ -3046,6 +3055,88 @@ var WelcomeDialog = /** @class */ (function () {
         return localStorage.getItem(this.localStorageKey) === 'hide';
     };
     return WelcomeDialog;
+}());
+var RealTimeCounter = /** @class */ (function () {
+    function RealTimeCounter(game, onTimerFinished) {
+        var _this = this;
+        this.game = game;
+        this.onTimerFinished = onTimerFinished;
+        this.TIME_LIMIT = 60;
+        // Warning occurs at 10s
+        this.WARNING_THRESHOLD = 20;
+        // Alert occurs at 5s
+        this.ALERT_THRESHOLD = 10;
+        this.secondsRemaining = 0;
+        if (game.gamedatas.scenario.modules.includes('real-time')) {
+            dojo.place("<div id=\"st-real-time-wrapper\" class=\"player-board\" style=\"height: auto;\">\n                                <p>".concat(_('Time Remaining'), "</p>\n                                <div class=\"st-real-time-base-timer\">\n                                  <span id=\"st-real-time-help\" class=\"st-action-space-help right\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                                  <svg class=\"st-real-time-base-timer__svg\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">\n                                    <g class=\"st-real-time-base-timer__circle\">\n                                      <circle class=\"st-real-time-base-timer__path-elapsed\" cx=\"50\" cy=\"50\" r=\"45\" />\n                                      <path\n                                        id=\"st-real-time-base-timer-remaining\"\n                                        stroke-dasharray=\"283\"\n                                        class=\"st-real-time-base-timer-remaining green\"\n                                        d=\"\n                                          M 50, 50\n                                          m -45, 0\n                                          a 45,45 0 1,0 90,0\n                                          a 45,45 0 1,0 -90,0\n                                        \"\n                                      ></path>\n                                    </g>\n                                  </svg>\n                                  <span id=\"st-real-time-base-timer-label\" class=\"st-real-time-base-timer-label\">\n                                    ").concat(game.gamedatas.realTimeSecondsRemaining >= 0 ? game.gamedatas.realTimeSecondsRemaining : 60, "\n                                  </span>\n                                </div>\n                            </div>"), "player_boards", 'first');
+            if (game.gamedatas.realTimeSecondsRemaining >= 0) {
+                this.start(game.gamedatas.realTimeSecondsRemaining);
+            }
+            if (game.gamedatas.timerNeedsClearing) {
+                this.showTimerRanOutDialog();
+            }
+            dojo.connect($("st-real-time-help"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'real-time'); });
+        }
+    }
+    RealTimeCounter.prototype.start = function (seconds) {
+        var _this = this;
+        this.secondsRemaining = seconds;
+        this.setCircleDasharray();
+        this.setRemainingPathColor();
+        this.timerInterval = setInterval(function () {
+            if (_this.secondsRemaining <= 0) {
+                clearInterval(_this.timerInterval);
+            }
+            else {
+                _this.secondsRemaining -= 1;
+                document.getElementById("st-real-time-base-timer-label").innerHTML = _this.secondsRemaining + '';
+                if (_this.secondsRemaining <= 0) {
+                    clearInterval(_this.timerInterval);
+                    _this.showTimerRanOutDialog();
+                }
+                _this.setCircleDasharray();
+                _this.setRemainingPathColor();
+            }
+        }, 1000);
+    };
+    RealTimeCounter.prototype.showTimerRanOutDialog = function () {
+        var _this = this;
+        this.dialog = new ebg.popindialog();
+        this.dialog.create('realTimeTimerDialog');
+        this.dialog.setTitle(_("Time's Up!"));
+        this.dialog.setMaxWidth(500); // Optional
+        this.dialog.setContent("<p>".concat(_('The timer has run out of time. Close this dialog to end the Dice Placement phase.'), "</p>"));
+        this.dialog.show();
+        this.dialog.replaceCloseCallback(function () { _this.onTimerFinished(); _this.dialog.hide(); });
+    };
+    RealTimeCounter.prototype.clear = function () {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+    };
+    RealTimeCounter.prototype.calculateTimeFraction = function () {
+        var rawTimeFraction = this.secondsRemaining / this.TIME_LIMIT;
+        return rawTimeFraction - (1 / this.TIME_LIMIT) * (1 - rawTimeFraction);
+    };
+    RealTimeCounter.prototype.setCircleDasharray = function () {
+        var circleDasharray = "".concat((this.calculateTimeFraction() * 283).toFixed(0), " 283");
+        document.getElementById("st-real-time-base-timer-remaining")
+            .setAttribute("stroke-dasharray", circleDasharray);
+    };
+    RealTimeCounter.prototype.setRemainingPathColor = function () {
+        var remainingPath = document.getElementById("st-real-time-base-timer-remaining");
+        remainingPath.classList.remove('green', 'warning', 'alert');
+        if (this.secondsRemaining > this.WARNING_THRESHOLD) {
+            remainingPath.classList.add('green');
+        }
+        else if (this.secondsRemaining > this.ALERT_THRESHOLD) {
+            remainingPath.classList.add('warning');
+        }
+        else {
+            remainingPath.classList.add('alert');
+        }
+    };
+    return RealTimeCounter;
 }());
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
@@ -3486,6 +3577,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('Turn Failure');
             case 'failure-kerosene':
                 return _('Ran out of Kerosene');
+            case 'failure-mandatory-empty':
+                return _('Mandatory Space Empty');
         }
     };
     SkyTeam.prototype.getFailureReasonText = function (failureReason) {
@@ -3502,6 +3595,8 @@ var SkyTeam = /** @class */ (function () {
                 return _('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during the round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.');
             case 'failure-kerosene':
                 return _('At any time during the game, even in the final round, if you hit the X space on the Kerosene track, you have run out of kerosene and you’ve lost the game!');
+            case 'failure-mandatory-empty':
+                return _('One or more Mandatory spaces (Axis and Engines) are still empty and you have no time left; you have lost the game!');
         }
         return '';
     };
@@ -3632,7 +3727,9 @@ var SkyTeam = /** @class */ (function () {
             ['diceRemoved', 1],
             ['windChanged', undefined],
             ['playerUsedAdaptation', 1],
-            ['internTrained', undefined]
+            ['internTrained', undefined],
+            ['realTimeTimerStarted', 1],
+            ['realTimeTimerCleared', 1],
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3775,6 +3872,12 @@ var SkyTeam = /** @class */ (function () {
         }
         return Promise.resolve();
     };
+    SkyTeam.prototype.notif_realTimeTimerStarted = function () {
+        this.realTimeCounter.start(60);
+    };
+    SkyTeam.prototype.notif_realTimeTimerCleared = function () {
+        this.realTimeCounter.clear();
+    };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
         try {
@@ -3810,7 +3913,9 @@ var SkyTeam = /** @class */ (function () {
         return this.inherited(arguments);
     };
     SkyTeam.prototype.updatePlayerOrdering = function () {
+        var _this = this;
         this.inherited(arguments);
+        this.realTimeCounter = new RealTimeCounter(this, function () { return _this.takeAction('realTimeOutOfTime'); });
         dojo.place("<div id=\"st-victory-conditions-panel\" class=\"player-board st-victory-conditions\" style=\"height: auto;\"></div>", "player_boards", 'first');
         this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
         this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);

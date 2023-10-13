@@ -221,6 +221,63 @@ html, .mode_3d #game_play_area_background {
   }
 }
 
+#st-real-time-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  p {
+    color: $sky-team-red;
+    text-decoration: underline;
+  }
+
+  .st-real-time-base-timer {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    /* Removes SVG styling that would hide the time label */
+    .st-real-time-base-timer__circle {
+      fill: none;
+      stroke: none;
+    }
+
+    /* The SVG path that displays the timer's progress */
+    .st-real-time-base-timer__path-elapsed {
+      stroke-width: 10px;
+      stroke: grey;
+    }
+    .st-real-time-base-timer-remaining {
+      stroke-width: 10px;
+      stroke-linecap: round;
+      transform: rotate(90deg);
+      transform-origin: center;
+      transition: 1s linear all;
+      &.green {
+        stroke: $sky-team-green;
+      }
+      &.warning {
+        stroke: $co-pilot-color;
+      }
+      &.alert {
+        stroke: $sky-team-red;
+      }
+    }
+  }
+  .st-real-time-base-timer-label {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+  .st-real-time-base-timer__svg {
+    transform: scaleX(-1);
+  }
+}
+
 .player-board {
   background: linear-gradient(180deg,#f8f8f8,#e7e9e8);
 

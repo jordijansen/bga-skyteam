@@ -57,7 +57,7 @@ const FAILURE_OVERSHOOT = 'failure-overshoot';
 const FAILURE_TURN = 'failure-turn';
 const FAILURE_CRASH_LANDED = 'failure-crash-landed';
 const FAILURE_KEROSENE = 'failure-kerosene';
-
+const FAILURE_MANDATORY_SPACE_EMPTY = 'failure-mandatory-empty';
 
 /**
  * Victory Conditions
@@ -94,6 +94,7 @@ const MODULE_WINDS = 'winds';
 const MODULE_SPECIAL_ABILITIES = 'special-abilities';
 const MODULE_INTERN = 'intern';
 const MODULE_KEROSENE_LEAK = 'kerosene-leak';
+const MODULE_REAL_TIME = 'real-time';
 
 /**
  * State
@@ -133,7 +134,7 @@ const ST_GAME_END = 99;
  */
 const ACT_CONFIRM_PLAYER_SETUP = 'confirmPlayerSetup';
 const ACT_READY = 'ready';
-const ACT_DICE_PLACEMENT_SELECT = 'dicePlacementSelect';
+const ACT_DICE_PLACEMENT = 'dicePlacement';
 const ACT_START_REROLL = 'startReroll';
 const ACT_START_FLIP = 'startFlip';
 const ACT_START_SWAP = 'startSwap';
@@ -179,6 +180,7 @@ const SWAP_DICE_FIRST_DIE = 'SWAP_DICE_FIRST_DIE';
 const SYNCHRONISATION_ACTIVATED = 'SYNCHRONISATION_ACTIVATED';
 const SYNCHRONISATION_DIE_ID = 'SYNCHRONISATION_DIE_ID';
 const KEROSENE_ACTIVATED = 'KEROSENE_ACTIVATED';
+const REAL_TIME_END_TIME = 'REAL_TIME_END_TIME';
 
 /**
  * Approaches

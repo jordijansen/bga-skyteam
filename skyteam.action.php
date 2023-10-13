@@ -147,6 +147,13 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function realTimeOutOfTime()
+    {
+        self::setAjaxMode();
+        $this->game->realTimeOutOfTime();
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

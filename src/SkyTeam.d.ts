@@ -105,7 +105,9 @@ interface SkyTeamGameData extends GameData {
     victoryConditions: {[conditionLetter: string]: VictoryCondition},
     scenario: {nrOfSpecialAbilities?: number, modules: 'traffic' | 'turns'}
     chosenSpecialAbilities: SpecialAbilityCard[],
-    rolesThatUsedAdaptation: string[]
+    rolesThatUsedAdaptation: string[],
+    realTimeSecondsRemaining?: number,
+    timerNeedsClearing: boolean
 }
 
 // ARGS

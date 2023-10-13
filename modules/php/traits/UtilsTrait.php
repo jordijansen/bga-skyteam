@@ -60,6 +60,14 @@ trait UtilsTrait
         return $VICTORY_CONDITIONS;
     }
 
+    function clearRealTimeTimeIfApplicable()
+    {
+        if ($this->isModuleActive(MODULE_REAL_TIME)) {
+            $this->deleteGlobalVariable(REAL_TIME_END_TIME);
+            $this->notifyAllPlayers("realTimeTimerCleared", clienttranslate('Timer: stopped'), []);
+        }
+    }
+
     function isFinalRound()
     {
         $isFinalRound = $this->getGlobalVariable(FINAL_ROUND);

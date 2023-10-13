@@ -1798,6 +1798,61 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   text-decoration: underline;
 }
 
+#st-real-time-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#st-real-time-wrapper p {
+  color: #c13633;
+  text-decoration: underline;
+}
+#st-real-time-wrapper .st-real-time-base-timer {
+  position: relative;
+  height: 100px;
+  width: 100px;
+  /* Removes SVG styling that would hide the time label */
+  /* The SVG path that displays the timer's progress */
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer__circle {
+  fill: none;
+  stroke: none;
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer__path-elapsed {
+  stroke-width: 10px;
+  stroke: grey;
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer-remaining {
+  stroke-width: 10px;
+  stroke-linecap: round;
+  transform: rotate(90deg);
+  transform-origin: center;
+  transition: 1s linear all;
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer-remaining.green {
+  stroke: #97c355;
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer-remaining.warning {
+  stroke: #fba919;
+}
+#st-real-time-wrapper .st-real-time-base-timer .st-real-time-base-timer-remaining.alert {
+  stroke: #c13633;
+}
+#st-real-time-wrapper .st-real-time-base-timer-label {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+#st-real-time-wrapper .st-real-time-base-timer__svg {
+  transform: scaleX(-1);
+}
+
 .player-board {
   background: linear-gradient(180deg, #f8f8f8, #e7e9e8);
 }

@@ -73,7 +73,7 @@ $basicGameStates = [
 $gameStates = [
     ST_PLAYER_SETUP => [
         "name" => "playerSetup",
-        "description" => clienttranslate('${actplayer} confirm roles'),
+        "description" => clienttranslate('${actplayer} must confirm roles'),
         "descriptionmyturn" => clienttranslate('${you} must confirm roles'),
         "args" => "argPlayerSetup",
         "type" => "activeplayer",
@@ -121,7 +121,7 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argDicePlacementSelect",
         "possibleactions" => [
-            ACT_DICE_PLACEMENT_SELECT,
+            ACT_DICE_PLACEMENT,
             ACT_START_REROLL,
             ACT_START_FLIP,
             ACT_START_SWAP
@@ -204,7 +204,7 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argSynchronisation",
         "possibleactions" => [
-            ACT_SYNCHRONISATION,
+            ACT_DICE_PLACEMENT,
             ACT_START_REROLL
         ],
         "transitions" => [
@@ -227,7 +227,7 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argPlaceIntern",
         "possibleactions" => [
-            ACT_PLACE_INTERN,
+            ACT_DICE_PLACEMENT
         ],
         "transitions" => [
             '' => ST_DICE_PLACEMENT_NEXT
