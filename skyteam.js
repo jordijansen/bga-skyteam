@@ -2518,7 +2518,8 @@ var DiceManager = /** @class */ (function (_super) {
             this.updateCardInformations(die);
         }
     };
-    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes) {
+    DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes, autoSelectIfOnly1Die) {
+        if (autoSelectIfOnly1Die === void 0) { autoSelectIfOnly1Die = true; }
         if (this.playerDiceStock) {
             var selectableDice = this.playerDiceStock.getCards();
             if (allowedValues && allowedValues.length > 0) {
@@ -2529,7 +2530,7 @@ var DiceManager = /** @class */ (function (_super) {
             }
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged;
-            if (selectableDice.length === 1) {
+            if (autoSelectIfOnly1Die && selectableDice.length === 1) {
                 this.playerDiceStock.selectCard(selectableDice[0]);
             }
         }
@@ -3279,7 +3280,7 @@ var SkyTeam = /** @class */ (function () {
                 else {
                     _this.diceManager.playerDiceStock.setSelectableCards(_this.diceManager.playerDiceStock.getCards());
                 }
-            });
+            }, undefined, undefined, false);
         }
     };
     SkyTeam.prototype.enteringFlipDie = function () {

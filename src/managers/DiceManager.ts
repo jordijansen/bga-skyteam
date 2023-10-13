@@ -69,7 +69,7 @@ class DiceManager extends CardManager<Dice> {
         }
     }
 
-    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[]) {
+    public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[], autoSelectIfOnly1Die: boolean = true) {
         if (this.playerDiceStock) {
             let  selectableDice = this.playerDiceStock.getCards();
             if (allowedValues && allowedValues.length > 0) {
@@ -81,7 +81,7 @@ class DiceManager extends CardManager<Dice> {
             this.playerDiceStock.setSelectionMode(selectionMode, selectableDice);
             this.playerDiceStock.onSelectionChange = onSelectedActionSpaceChanged
 
-            if (selectableDice.length === 1) {
+            if (autoSelectIfOnly1Die && selectableDice.length === 1) {
                 this.playerDiceStock.selectCard(selectableDice[0]);
             }
         }

@@ -176,7 +176,7 @@ class SkyTeam implements SkyTeamGame {
                 } else {
                     this.diceManager.playerDiceStock.setSelectableCards(this.diceManager.playerDiceStock.getCards());
                 }
-            });
+            }, undefined, undefined, false);
         }
     }
 
