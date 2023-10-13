@@ -98,6 +98,7 @@ $gameStates = [
         "description" => clienttranslate('Waiting for players to confirm they are ready'),
         "descriptionmyturn" => clienttranslate('Players may discuss strategy, once you are ready to start the round click the ready button'),
         "type" => "multipleactiveplayer",
+        "updateGameProgression" => true,
         "possibleactions" => [
             ACT_READY
         ],

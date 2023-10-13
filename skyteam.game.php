@@ -213,8 +213,9 @@ class SkyTeam extends Table
        */
     function getGameProgression()
     {
-        //TODO
-        return 0;
+        $multiplier = intval($this->getGlobalVariable(CURRENT_ROUND)) - 1;
+        $result = round($multiplier * (100 / 7));
+        return $result;
     }
 
 
@@ -332,19 +333,7 @@ class SkyTeam extends Table
 
     function zombieTurn( $state, $active_player )
     {
-        $statename = $state['name'];
-
-        //TODO IMPLEMENT
-        if ($state['type'] === "activeplayer") {
-            switch ($statename) {
-                default:
-                    break;
-            }
-
-            return;
-        }
-
-        throw new feException( "Zombie mode not supported at this game state: ".$statename );
+        $this->gamestate->jumpToState(ST_GAME_END);
     }
 
 ///////////////////////////////////////////////////////////////////////////////////:
