@@ -45,7 +45,6 @@
                     <div id="st-plane-axis-indicator" class="st-plane-axis-indicator token"></div>
                     <div id="st-plane-aerodynamics-blue-marker" class="st-plane-marker token" data-type="aerodynamics-blue"></div>
                     <div id="st-plane-aerodynamics-orange-marker" class="st-plane-marker token" data-type="aerodynamics-orange"></div>
-                    <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-available-coffee"></div>
                     <div id="st-available-reroll"></div>
                     <div id="st-plane-switches"></div>
@@ -58,6 +57,8 @@
                     <div id="st-intern-board" class="st-board">
                         <div id="st-intern-dice-stock"></div>
                     </div>
+                    <div id="st-ice-brakes-board" class="st-board"></div>
+                    <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-action-spaces"></div>
                 </div>
                 <div id="st-main-board-right">

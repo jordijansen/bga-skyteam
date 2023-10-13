@@ -2181,6 +2181,12 @@ var PlaneManager = /** @class */ (function () {
         if (!data.scenario.modules.includes('intern')) {
             $('st-intern-board').style.display = 'none';
         }
+        if (!data.scenario.modules.includes('ice-brakes')) {
+            $('st-ice-brakes-board').style.display = 'none';
+        }
+        if (data.scenario.modules.includes('ice-brakes')) {
+            $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
+        }
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2383,6 +2389,9 @@ var ActionSpaceManager = /** @class */ (function () {
             }
             else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
                 helpPlacement = 'right';
+            }
+            else if (id.startsWith('ice-brakes-2')) {
+                helpPlacement = 'bottom';
             }
             dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
@@ -2646,6 +2655,9 @@ var HelpDialogManager = /** @class */ (function () {
         if (type === 'landing-gear') {
             return _('landing gear');
         }
+        else if (type === 'ice-brakes') {
+            return _('ice brakes');
+        }
         return _(type);
     };
     HelpDialogManager.prototype.getModuleFlavorText = function (module) {
@@ -2680,6 +2692,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Manage your fuel and land your plane before going dry!');
             case 'intern':
                 return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
+            case 'ice-brakes':
+                return _('You are landing on an icy runway. Deploy your special brakes to avoid losing control!');
             default:
                 return '';
         }
@@ -2716,6 +2730,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Placing a die here will reduce the Kerosene level by a number of spaces equal to the die value. If no die is placed here at the end of the round, the Kerosene level is lowered by 6.');
             case 'intern':
                 return _('On your turn, you can train your Intern by placing a die of any value on the space of your colour on the Intern Board, and taking the first available token closest to your side. You can then place that token on any space you’d normally be able to place a die, and resolve its effect with the token’s number.<br/><br/><b>Important:</b><br/>An Intern token cannot be modified by a Coffee token.<br/>You cannot use this token on a Concentration space.</br>The die placed must be of a different value than the next available token.');
+            case 'ice-brakes':
+                return _('The Ice Brakes track works like the normal Brakes track, but 2 dice of the same value must be placed in the space above and below the track in the same round. If you place a die in a space on the Ice Brake track and you are not able to place a die in the opposite space in the same round, the single die has no effect. The die is removed without moving the Brake marker.<br/><br/>Note that this track does not have Switches. However, as with the normal brakes:<br/>You must deploy them in order, from left to right.<br/>You cannot play a die in a space to the left of the Brake marker (in a space where dice have already been played in a previous round).<br/>You can advance the Brake marker more than once per round if the conditions have been met.');
             default:
                 return '';
         }
@@ -2766,6 +2782,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'D' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['D'].description), "</p></div>");
             case 'intern':
                 return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'E' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['E'].description), "</p></div>");
+            case 'ice-brakes':
+                return "<div class=\"st-end-game-info-box success\"><p><h1>".concat(dojo.string.substitute(_('Victory Condition ${victoryCondition}'), { victoryCondition: 'F' }), "</h1></br>").concat(_(this.game.gamedatas.victoryConditions['F'].description), "</p></div>");
             default:
                 return '';
         }

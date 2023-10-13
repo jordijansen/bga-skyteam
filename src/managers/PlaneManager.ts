@@ -93,9 +93,14 @@ class PlaneManager  {
         } else {
             dojo.connect($(`st-winds-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'winds'))
         }
-
         if(!data.scenario.modules.includes('intern')) {
             $('st-intern-board').style.display = 'none';
+        }
+        if(!data.scenario.modules.includes('ice-brakes')) {
+            $('st-ice-brakes-board').style.display = 'none';
+        }
+        if(data.scenario.modules.includes('ice-brakes')) {
+            $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
         }
     }
 

@@ -22,6 +22,8 @@ class ActionSpaceManager {
                 helpPlacement = 'left';
             } else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
                 helpPlacement = 'right';
+            } else if (id.startsWith('ice-brakes-2')) {
+                helpPlacement = 'bottom';
             }
             dojo.place(`<div id="${id}" class="st-action-space">
                                 ${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}

@@ -76,6 +76,12 @@ $game_options = [
                 'tmdisplay' => totranslate('Red: TGU Toncontín'),
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & 2 Special Abilities. When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
                 'nobeginner' => true,
+            ],
+            99 => [
+                'name' => 'Alpha: Modules Test (Do Not Use)',
+                'description' => 'Alpha: Modules Test (Do Not Use)',
+                'nobeginner' => true,
+                'alpha' => true
             ]
         ]
     ]

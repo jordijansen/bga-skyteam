@@ -56,6 +56,9 @@ trait UtilsTrait
         if ($this->isModuleActive(MODULE_INTERN)) {
             $VICTORY_CONDITIONS[VICTORY_E] = ['letter' => VICTORY_E, 'description' => clienttranslate('Fully train the Intern by removing all intern tokens from the board')];
         }
+        if ($this->isModuleActive(MODULE_ICE_BRAKES)) {
+            $VICTORY_CONDITIONS[VICTORY_F] = ['letter' => VICTORY_F, 'description' => clienttranslate('Move the Brake marker to the end of the Brake Track (past the 5)')];
+        }
 
         return $VICTORY_CONDITIONS;
     }

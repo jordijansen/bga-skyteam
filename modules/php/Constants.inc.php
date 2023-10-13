@@ -40,13 +40,14 @@ const ACTION_SPACE_BRAKES = 'brakes';
 const ACTION_SPACE_CONCENTRATION = 'concentration';
 const ACTION_SPACE_KEROSENE = 'kerosene';
 const ACTION_SPACE_INTERN = 'intern';
-
+const ACTION_SPACE_ICE_BRAKES = 'ice-brakes';
 
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';
 const MANDATORY = 'mandatory';
 const REQUIRES_SWITCH_IN = 'requiresSwitchIn';
 const MODULE = 'module';
+const NOT_MODULE = 'notModule';
 
 /**
  * Failure Reasons
@@ -67,6 +68,7 @@ const VICTORY_B = 'B';
 const VICTORY_C = 'C';
 const VICTORY_D = 'D';
 const VICTORY_E = 'E';
+const VICTORY_F = 'F';
 
 /**
  * Options
@@ -95,6 +97,7 @@ const MODULE_SPECIAL_ABILITIES = 'special-abilities';
 const MODULE_INTERN = 'intern';
 const MODULE_KEROSENE_LEAK = 'kerosene-leak';
 const MODULE_REAL_TIME = 'real-time';
+const MODULE_ICE_BRAKES = 'ice-brakes';
 
 /**
  * State

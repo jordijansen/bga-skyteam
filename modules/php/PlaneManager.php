@@ -36,7 +36,7 @@ class PlaneManager extends APP_DbObject
                 if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES]))
                     && ($ignoreActionSpaceType == null || $actionSpace['type'] != $ignoreActionSpaceType)
                     && $this->isActionSpaceEmpty($actionSpaceId)
-                    && $this->isActionSpaceAvailable($actionSpaceId)) {
+                    && $this->isActionSpaceAvailable($plane, $actionSpaceId, $actionSpace)) {
                     if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
                         if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
                             $result[$actionSpaceId] = $actionSpace;
@@ -64,7 +64,9 @@ class PlaneManager extends APP_DbObject
     function getAllActionSpaces(): array
     {
         $actionSpaces =  array_filter(SkyTeam::$instance->ACTION_SPACES, function ($value, $key) {
-            return !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
+            $moduleMatch = !array_key_exists(MODULE, $value) || in_array($value[MODULE], SkyTeam::$instance->getScenario()->modules);
+            $notModuleMatch = !array_key_exists(NOT_MODULE, $value) || !in_array($value[NOT_MODULE], SkyTeam::$instance->getScenario()->modules);
+            return $moduleMatch && $notModuleMatch;
         }, ARRAY_FILTER_USE_BOTH);
 
         if (array_key_exists(ACTION_SPACE_INTERN .'-1', $actionSpaces)) {
@@ -106,10 +108,23 @@ class PlaneManager extends APP_DbObject
         return false;
     }
 
-    function isActionSpaceAvailable($actionSpaceId): bool
+    function isActionSpaceAvailable(Plane $plane, $actionSpaceId, $actionSpace): bool
     {
         if ($actionSpaceId == 'intern-1' || $actionSpaceId == 'intern-2') {
             return sizeof(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_INTERN)) > 0;
+        }
+        if ($actionSpace['type'] === ACTION_SPACE_ICE_BRAKES) {
+            $availableIceBrakeSpaces = [];
+            if ($plane->brake === 0) {
+                $availableIceBrakeSpaces = ['ice-brakes-1-1', 'ice-brakes-2-1'];
+            } if ($plane->brake === 2) {
+                $availableIceBrakeSpaces = ['ice-brakes-1-2', 'ice-brakes-2-2'];
+            } else if ($plane->brake === 3) {
+                $availableIceBrakeSpaces = ['ice-brakes-1-3', 'ice-brakes-2-3'];
+            } else if ($plane->brake === 4) {
+                $availableIceBrakeSpaces = ['ice-brakes-1-4', 'ice-brakes-2-4'];
+            }
+            return in_array($actionSpaceId, $availableIceBrakeSpaces);
         }
         return true;
     }
@@ -382,6 +397,29 @@ class PlaneManager extends APP_DbObject
                 SkyTeam::$instance->gamestate->jumpToState(ST_PLACE_INTERN);
                 $continue = false;
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_ICE_BRAKES) {
+            if (strpos($die->locationArg, 'ice-brakes-1') === false) {
+                $otherActionSpaceId = str_replace('ice-brakes-2', 'ice-brakes-1', $die->locationArg);
+            } else {
+                $otherActionSpaceId = str_replace('ice-brakes-1', 'ice-brakes-2', $die->locationArg);
+            }
+            $otherDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, $otherActionSpaceId));
+            if (sizeof($otherDice) > 0) {
+                if ($plane->brake == 0) {
+                    $plane->brake = 2;
+                } else if ($plane->brake == 2) {
+                    $plane->brake = 3;
+                } else if ($plane->brake == 3) {
+                    $plane->brake = 4;
+                } else if ($plane->brake == 4) {
+                    $plane->brake = 5;
+                }
+
+                SkyTeam::$instance->notifyAllPlayers("planeBrakeChanged", clienttranslate('Plane brakes marker ${icon_plane_marker} moves to <b>${brake}</b>'), [
+                    'brake' => $plane->brake,
+                    'icon_plane_marker' => 'brakes-red'
+                ]);
+            }
         }
 
         $this->save($plane);
@@ -440,8 +478,11 @@ class PlaneManager extends APP_DbObject
                 if (sizeof(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_INTERN)) == 0) {
                     $victoryCondition['status'] = 'success';
                 }
+            } else if ($conditionLetter == VICTORY_F) {
+                if ($plane->brake === 5) {
+                    $victoryCondition['status'] = 'success';
+                }
             }
-
         }
         return $victoryConditions;
     }
