@@ -7,10 +7,8 @@ declare const g_gamethemeurl;
 declare const g_replayFrom;
 declare const g_archive_mode;
 
-const ANIMATION_MS = 1000;
+let ANIMATION_MS = 1000;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
-
-
 
 class SkyTeam implements SkyTeamGame {
 
@@ -82,6 +80,10 @@ class SkyTeam implements SkyTeamGame {
         dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last')
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last')
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last')
+
+        if (data.scenario.modules.includes('real-time')) {
+            ANIMATION_MS = 500;
+        }
 
         // Setup modules
         this.zoomManager = new AutoZoomManager(this, 'st-game', 'st-zoom-level')

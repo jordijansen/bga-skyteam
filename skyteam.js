@@ -3212,6 +3212,9 @@ var SkyTeam = /** @class */ (function () {
         dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-custom-actions"></div>', maintitlebarContent, 'last');
         dojo.place('<div id="st-final-round-notice"></div>', maintitlebarContent, 'last');
+        if (data.scenario.modules.includes('real-time')) {
+            ANIMATION_MS = 500;
+        }
         // Setup modules
         this.zoomManager = new AutoZoomManager(this, 'st-game', 'st-zoom-level');
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });

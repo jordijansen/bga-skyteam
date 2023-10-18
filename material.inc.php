@@ -181,10 +181,16 @@ $this->SCENARIOS = [
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
+    98 => [
+        'approach' => APPROACH_GREEN_YUL_MONTREAL,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_SPECIAL_ABILITIES, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME],
+        'nrOfSpecialAbilities' => 2
+    ],
     99 => [
         'approach' => APPROACH_GREEN_YUL_MONTREAL,
         'altitude' => ALTITUDE_GREEN_YELLOW,
-        'modules' => [MODULE_SPECIAL_ABILITIES, MODULE_INTERN, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME, MODULE_ICE_BRAKES],
+        'modules' => [MODULE_SPECIAL_ABILITIES, MODULE_INTERN, MODULE_ICE_BRAKES],
         'nrOfSpecialAbilities' => 2
     ],
 ];

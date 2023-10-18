@@ -86,9 +86,15 @@ $game_options = [
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & 2 Special Abilities. When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
                 'nobeginner' => true,
             ],
+            98 => [
+                'name' => 'Alpha: Modules Test - RT - (Do Not Use)',
+                'description' => 'MODULE_SPECIAL_ABILITIES, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME',
+                'nobeginner' => true,
+                'alpha' => true
+            ],
             99 => [
                 'name' => 'Alpha: Modules Test (Do Not Use)',
-                'description' => 'Alpha: Modules Test (Do Not Use)',
+                'description' => 'MODULE_SPECIAL_ABILITIES, MODULE_INTERN, MODULE_ICE_BRAKES',
                 'nobeginner' => true,
                 'alpha' => true
             ]
