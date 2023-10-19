@@ -2163,6 +2163,8 @@ var PlaneManager = /** @class */ (function () {
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(function (card) { return card.type === 2; }), data.rolesThatUsedAdaptation);
+        dojo.connect($('st-approach-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showApproachHelp(event); });
+        dojo.connect($('st-altitude-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showAltitudeHelp(event); });
         if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
@@ -2591,6 +2593,7 @@ var SpecialAbilityCardManager = /** @class */ (function (_super) {
                 var description = document.createElement('p');
                 description.innerHTML = _(card.description);
                 div.appendChild(description);
+                _this.game.setTooltip(div.id, _this.getTooltipHtml(card));
             },
             cardWidth: 240,
             cardHeight: 158
@@ -2606,6 +2609,9 @@ var SpecialAbilityCardManager = /** @class */ (function (_super) {
             rolesThatUsedCard.forEach(function (role) { return frontDiv_1.insertAdjacentHTML('beforeend', "<i class=\"fa fa-check-circle ".concat(role, "\" aria-hidden=\"true\"></i>")); });
         }
     };
+    SpecialAbilityCardManager.prototype.getTooltipHtml = function (card) {
+        return "\n            <div>\n                <p><b>".concat(_(card.name), "</b></p>\n                <p>").concat(_(card.description), "</p>\n            </div>\n        ");
+    };
     return SpecialAbilityCardManager;
 }(CardManager));
 var HelpDialogManager = /** @class */ (function () {
@@ -2613,6 +2619,37 @@ var HelpDialogManager = /** @class */ (function () {
         this.game = game;
         this.dialogId = 'stHelpDialogId';
     }
+    HelpDialogManager.prototype.showApproachHelp = function (event) {
+        var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
+        html += "<p><i>".concat(_('The Approach Track tracks your approach to the airport. Once you reach the top airport space, you have arrived at the airport'), "</i></p>");
+        html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">".concat(this.game.tokenIcon('plane', ''), "</p></div>");
+        html += "<p>".concat(_('Remove Airplane tokens from the approach track before you advance past the space it is on.'), "</p>");
+        html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div>").concat(this.getActionSpaceVictoryCondition('radio'), "</div>");
+        html += "<br/>";
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-turns-example.png\" alt=\"turns\" /></div>");
+            html += "<p><i>".concat(_('Ominous clouds and mountains require a steady hand at the controls. You’d better buckle up!'), "</p></i>");
+            html += "<p>".concat(_('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions (black or green arrows) in the Current Position screen, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during this round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.'), "</p>");
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-turn'), "</h1></br>").concat(this.game.getFailureReasonText('failure-turn'), "</p></div></div>");
+            html += "<br/>";
+        }
+        if (this.game.gamedatas.scenario.modules.includes('traffic')) {
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-traffic-example.png\" alt=\"traffic\" /></div>");
+            html += "<p><i>".concat(_('The skies are particularly busy today... airplanes seem to be appearing out of nowhere!'), "</p></i>");
+            html += "<p>".concat(_('If there is a Traffic icon in the Current Position space at the beginning of the round, Traffic dice are rolled as many as there are icons on the space. Each rolled Traffic die adds an Airplane token to the space indicated by the value of the die, starting with the Current Position space. No Airplane tokens are placed if all Airplane tokens are already on the Approach Track (12).'), "</p>");
+            html += "<br/>";
+        }
+        html += "</div>";
+        this.showDialog(event, this.game.gamedatas.approach.name.toUpperCase(), html);
+    };
+    HelpDialogManager.prototype.showAltitudeHelp = function (event) {
+        var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
+        html += "<p><i>".concat(_('The Altitude Track tracks your alitude. Once you reach the top space, you have touched down... hopefully at the Airport...'), "</i></p>");
+        html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-altitude-example.png\" alt=\"turns\" /></div>");
+        html += "<p>".concat(_('If at the start of the round the Current Altitude space contains a Re-Roll token, it is gained. The Altitude Track is automatically advanced at the end of each round. The orange (co-pilot) and blue (pilot) arrows indicate what player will go first in a round.'), "</p>");
+        html += "</div>";
+        this.showDialog(event, _('Altitude Track').toUpperCase(), html);
+    };
     HelpDialogManager.prototype.showModuleHelp = function (event, module) {
         var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
         html += "<p><i>".concat(this.getModuleFlavorText(module), "</i></p>");
@@ -2736,6 +2773,13 @@ var HelpDialogManager = /** @class */ (function () {
                 return '';
         }
     };
+    HelpDialogManager.prototype.getApproachFailure = function () {
+        var result = "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div>");
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            result += "<div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-turn'), "</h1></br>").concat(this.game.getFailureReasonText('failure-turn'), "</p></div>");
+        }
+        return result;
+    };
     HelpDialogManager.prototype.getModuleFailure = function (module) {
         switch (module) {
             case 'kerosene-leak':
@@ -2759,6 +2803,12 @@ var HelpDialogManager = /** @class */ (function () {
             default:
                 return '';
         }
+    };
+    HelpDialogManager.prototype.getApproachVictoryConditions = function () {
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            return this.getActionSpaceVictoryCondition('radio');
+        }
+        return '';
     };
     HelpDialogManager.prototype.getModuleVictoryCondition = function (module) {
         switch (module) {
@@ -3424,7 +3474,8 @@ var SkyTeam = /** @class */ (function () {
                     }
                     break;
                 case 'rerollDice':
-                    this.addActionButton('rerollDice', _("Reroll selected dice"), function () { return _this.rerollDice(); });
+                    this.addActionButton('rerollDice', _("Reroll selected dice"), function () { return _this.rerollDice(false); });
+                    this.addActionButton('skipRerollDice', _("Skip"), function () { return _this.rerollDice(true); }, null, null, 'gray');
                     break;
                 case 'flipDie':
                     this.addActionButton('rerollDice', _("Flip selected die"), function () { return _this.flipDie(); });
@@ -3530,13 +3581,21 @@ var SkyTeam = /** @class */ (function () {
         this.diceManager.setSelectionMode('none');
         this.takeAction('cancelSwap');
     };
-    SkyTeam.prototype.rerollDice = function () {
+    SkyTeam.prototype.rerollDice = function (skip) {
         var _this = this;
-        var selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(function (die) { return die.id; });
-        this.wrapInConfirm(function () {
-            _this.diceManager.setSelectionMode('none');
-            _this.takeNoLockAction('rerollDice', { payload: JSON.stringify({ selectedDieIds: selectedDieIds }) });
-        }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }));
+        if (skip) {
+            this.wrapInConfirm(function () {
+                _this.diceManager.setSelectionMode('none');
+                _this.takeNoLockAction('rerollDice', { payload: JSON.stringify({ selectedDieIds: [] }) });
+            }, _("You have chosen to NOT re-roll any dice. This action cannot be undone."));
+        }
+        else {
+            var selectedDieIds_1 = this.diceManager.playerDiceStock.getSelection().map(function (die) { return die.id; });
+            this.wrapInConfirm(function () {
+                _this.diceManager.setSelectionMode('none');
+                _this.takeNoLockAction('rerollDice', { payload: JSON.stringify({ selectedDieIds: selectedDieIds_1 }) });
+            }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds_1.length + '' }));
+        }
     };
     SkyTeam.prototype.flipDie = function () {
         var _this = this;
@@ -3949,8 +4008,9 @@ var SkyTeam = /** @class */ (function () {
         // });
         return '';
     };
-    SkyTeam.prototype.tokenIcon = function (type) {
-        return "<span class=\"st-token token small\" data-type=\"".concat(type, "\"></span>");
+    SkyTeam.prototype.tokenIcon = function (type, size) {
+        if (size === void 0) { size = 'small'; }
+        return "<span class=\"st-token token ".concat(size, "\" data-type=\"").concat(type, "\"></span>");
     };
     SkyTeam.prototype.planeMarkerIcon = function (type) {
         return "<span class=\"st-plane-marker token small\" data-type=\"".concat(type, "\"></span>");

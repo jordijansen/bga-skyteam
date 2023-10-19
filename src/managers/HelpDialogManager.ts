@@ -5,6 +5,38 @@ class HelpDialogManager {
 
     constructor(private game: SkyTeamGame) {
     }
+    showApproachHelp(event) {
+        let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
+        html += `<p><i>${_('The Approach Track tracks your approach to the airport. Once you reach the top airport space, you have arrived at the airport')}</i></p>`
+        html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">${this.game.tokenIcon('plane', '')}</p></div>`
+        html += `<p>${_('Remove Airplane tokens from the approach track before you advance past the space it is on.')}</p>`
+        html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-collision')}</h1></br>${this.game.getFailureReasonText('failure-collision')}</p></div>${this.getActionSpaceVictoryCondition('radio')}</div>`
+        html += `<br/>`
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-turns-example.png" alt="turns" /></div>`;
+            html += `<p><i>${_('Ominous clouds and mountains require a steady hand at the controls. You’d better buckle up!')}</p></i>`
+            html += `<p>${_('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions (black or green arrows) in the Current Position screen, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during this round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.')}</p>`
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-turn')}</h1></br>${this.game.getFailureReasonText('failure-turn')}</p></div></div>`
+            html += `<br/>`
+        }
+        if (this.game.gamedatas.scenario.modules.includes('traffic')) {
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-traffic-example.png" alt="traffic" /></div>`;
+            html += `<p><i>${_('The skies are particularly busy today... airplanes seem to be appearing out of nowhere!')}</p></i>`
+            html += `<p>${_('If there is a Traffic icon in the Current Position space at the beginning of the round, Traffic dice are rolled as many as there are icons on the space. Each rolled Traffic die adds an Airplane token to the space indicated by the value of the die, starting with the Current Position space. No Airplane tokens are placed if all Airplane tokens are already on the Approach Track (12).')}</p>`
+            html += `<br/>`
+        }
+        html += `</div>`
+        this.showDialog(event, this.game.gamedatas.approach.name.toUpperCase(), html)
+    }
+
+    showAltitudeHelp(event) {
+        let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
+        html += `<p><i>${_('The Altitude Track tracks your alitude. Once you reach the top space, you have touched down... hopefully at the Airport...')}</i></p>`
+        html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-altitude-example.png" alt="turns" /></div>`;
+        html += `<p>${_('If at the start of the round the Current Altitude space contains a Re-Roll token, it is gained. The Altitude Track is automatically advanced at the end of each round. The orange (co-pilot) and blue (pilot) arrows indicate what player will go first in a round.')}</p>`
+        html += `</div>`
+        this.showDialog(event, _('Altitude Track').toUpperCase(), html)
+    }
 
     showModuleHelp(event, module: string) {
         let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
@@ -133,6 +165,14 @@ class HelpDialogManager {
         }
     }
 
+    private getApproachFailure() {
+        let result = `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-collision')}</h1></br>${this.game.getFailureReasonText('failure-collision')}</p></div>`;
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            result += `<div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-turn')}</h1></br>${this.game.getFailureReasonText('failure-turn')}</p></div>`
+        }
+        return result;
+    }
+
     private getModuleFailure(module: string) {
         switch (module) {
             case 'kerosene-leak':
@@ -157,6 +197,13 @@ class HelpDialogManager {
             default:
                 return '';
         }
+    }
+
+    private getApproachVictoryConditions() {
+        if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            return this.getActionSpaceVictoryCondition('radio');
+        }
+        return '';
     }
 
     private getModuleVictoryCondition(module: string) {

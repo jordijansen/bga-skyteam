@@ -32,6 +32,7 @@ interface SkyTeamGame extends Game {
     delay(ANIMATION_MS: number): Promise<void>;
     getFailureReasonTitle(failureReason: string): string;
     getFailureReasonText(failureReason: string): string;
+    tokenIcon(plane: string, size?: string): string;
 }
 
 interface Dice {

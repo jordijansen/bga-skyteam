@@ -4,7 +4,8 @@ class SpecialAbilityCardManager  extends CardManager<SpecialAbilityCard> {
         super(game, {
             getId: (card) => `st-special-ability-card-${card.id}`,
             setupDiv: (card: SpecialAbilityCard, div: HTMLElement) => {
-                div.classList.add('st-special-ability-card')
+                div.classList.add('st-special-ability-card');
+
             },
             setupFrontDiv: (card: SpecialAbilityCard, div: HTMLElement) => {
                 div.classList.add('st-special-ability')
@@ -18,6 +19,8 @@ class SpecialAbilityCardManager  extends CardManager<SpecialAbilityCard> {
                 const description = document.createElement('p');
                 description.innerHTML = _(card.description);
                 div.appendChild(description);
+
+                (this.game as any).setTooltip(div.id, this.getTooltipHtml(card));
             },
             cardWidth: 240,
             cardHeight: 158
@@ -31,5 +34,14 @@ class SpecialAbilityCardManager  extends CardManager<SpecialAbilityCard> {
             frontDiv.querySelectorAll('.fa-check-circle').forEach(checkMark => checkMark.remove());
             rolesThatUsedCard.forEach(role => frontDiv.insertAdjacentHTML('beforeend', `<i class="fa fa-check-circle ${role}" aria-hidden="true"></i>`))
         }
+    }
+
+    private getTooltipHtml(card) {
+        return `
+            <div>
+                <p><b>${_(card.name)}</b></p>
+                <p>${_(card.description)}</p>
+            </div>
+        `
     }
 }

@@ -309,7 +309,8 @@ class SkyTeam implements SkyTeamGame {
                     }
                     break;
                 case 'rerollDice':
-                    (this as any).addActionButton('rerollDice', _("Reroll selected dice"), () => this.rerollDice());
+                    (this as any).addActionButton('rerollDice', _("Reroll selected dice"), () => this.rerollDice(false));
+                    (this as any).addActionButton('skipRerollDice', _("Skip"), () => this.rerollDice(true), null, null, 'gray');
                     break;
                 case 'flipDie':
                     (this as any).addActionButton('rerollDice', _("Flip selected die"), () => this.flipDie());
@@ -428,12 +429,19 @@ class SkyTeam implements SkyTeamGame {
         this.takeAction('cancelSwap');
     }
 
-    private rerollDice() {
-        const selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(die => die.id);
-        this.wrapInConfirm(() => {
-            this.diceManager.setSelectionMode('none');
-            this.takeNoLockAction('rerollDice', {payload: JSON.stringify({selectedDieIds})});
-        }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }))
+    private rerollDice(skip: boolean) {
+        if (skip) {
+            this.wrapInConfirm(() => {
+                this.diceManager.setSelectionMode('none');
+                this.takeNoLockAction('rerollDice', {payload: JSON.stringify({selectedDieIds: []})});
+            }, _("You have chosen to NOT re-roll any dice. This action cannot be undone."))
+        } else {
+            const selectedDieIds = this.diceManager.playerDiceStock.getSelection().map(die => die.id);
+            this.wrapInConfirm(() => {
+                this.diceManager.setSelectionMode('none');
+                this.takeNoLockAction('rerollDice', {payload: JSON.stringify({selectedDieIds})});
+            }, dojo.string.substitute(_("You have chosen to re-roll ${nrOfSelectedDice} dice. This action cannot be undone."), { nrOfSelectedDice: selectedDieIds.length + '' }))
+        }
     }
 
     private flipDie() {
@@ -895,8 +903,8 @@ class SkyTeam implements SkyTeamGame {
         return '';
     }
 
-    public tokenIcon(type) {
-        return `<span class="st-token token small" data-type="${type}"></span>`
+    public tokenIcon(type, size = 'small') {
+        return `<span class="st-token token ${size}" data-type="${type}"></span>`
     }
 
     public planeMarkerIcon(type) {

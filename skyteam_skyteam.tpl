@@ -60,6 +60,8 @@
                     <div id="st-ice-brakes-board" class="st-board"></div>
                     <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-action-spaces"></div>
+                    <span id="st-altitude-help" class="st-action-space-help top" style="right: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+                    <span id="st-approach-help" class="st-action-space-help top" style="left: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                 </div>
                 <div id="st-main-board-right">
                     <div id="st-winds-board" class="st-board">

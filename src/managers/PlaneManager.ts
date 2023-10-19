@@ -78,6 +78,9 @@ class PlaneManager  {
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(card => card.type === 2), data.rolesThatUsedAdaptation)
 
+        dojo.connect($('st-approach-help'), 'onclick', (event)=>this.game.helpDialogManager.showApproachHelp(event));
+        dojo.connect($('st-altitude-help'), 'onclick', (event)=>this.game.helpDialogManager.showAltitudeHelp(event));
+
         if(!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }

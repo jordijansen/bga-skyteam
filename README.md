@@ -5,16 +5,12 @@ TODO:
 - If no placement, confirm end turn
 
 Fixed bugs:
-#99497: "Reroll animation not shown when a re-roll results in the same result"
-#99598: "Mastery Card not activated in final round (while playing dice of same value on engines)"
-#99310: "Inaccurate brake calculations"
-#99306: "Kerosene marker does not show accurately on mobile."
+#101441: When you have the synchronization special ability you should be able to place dice on landing/flaps
+#101435: The engine dice was not compared to the brake dice until the end of the round
 
 Improvements:
-#99316: "If only one die remaining for placement, it should auto select it"
-#99500: "Highlight approach slot when using the radio action to indicate the slot where the plane is removed"
-Adaption Special Ability now shows the players that have used it using checkmarks
-When placing the second Axis die it now highlights what the new Axis will be (before confirming)
+#101605: When rerolling dice it should show a skip re-roll button for if you don't want to reroll any dice.
+
 
 Please keep reporting bugs and suggestions.
 
