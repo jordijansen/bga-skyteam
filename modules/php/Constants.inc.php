@@ -151,6 +151,7 @@ const ACT_FLIP = 'flip';
 const ACT_SWAP = 'swap';
 const ACT_SYNCHRONISATION = 'synchronisation';
 const ACT_PLACE_INTERN = 'placeIntern';
+const ACT_SKIP_INTERN = 'skipIntern';
 
 const ACT_UNDO = 'undo';
 

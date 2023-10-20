@@ -228,7 +228,8 @@ $gameStates = [
         "type" => "activeplayer",
         "args" => "argPlaceIntern",
         "possibleactions" => [
-            ACT_DICE_PLACEMENT
+            ACT_DICE_PLACEMENT,
+            ACT_SKIP_INTERN
         ],
         "transitions" => [
             '' => ST_DICE_PLACEMENT_NEXT

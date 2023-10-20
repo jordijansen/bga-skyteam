@@ -30,6 +30,7 @@ class WelcomeDialog {
 
     private createContent() {
         let html = ''
+        html += `<p style="display: none;"><b>${_('NEW: In this BGA version you will find all the Special Scenarios available on <a href="https://www.scorpionmasque.com/Skyteam/">scorpionmasque.com/Skyteam/</a>. This is our way of thanking you for stepping into our cockpit in such great numbers. Find even more Scenarios in the physical Sky Team game.')}</b></p>`;
         html += `<div style="display: flex; justify-content: center;"><img src="${g_gamethemeurl}/img/skyteam-logo.png" width="100%" style="max-width: 300px;"></img></div>`;
         html += `<p>${_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! You’ll need to communicate with the Control Tower to make sure your approach is free of air traffic, adjust your speed to not overshoot the airport, level your plane in order to land square with the ground, deploy your flaps to increase lift and allow you to descend more steeply, deploy your landing gear to ensure a safe landing, and finally engage the brakes to slow the plane once you\'ve landed. Cooperation and nerves of steel are all it takes to succeed!')}</p>`;
         html += `<h1>${_('Communications')}</h1>`;

@@ -37,6 +37,10 @@ class ActionSpaceManager {
         data.planeDice.forEach(die => this.moveDieToActionSpace(die));
     }
 
+    public getValidPlacements(ids: { [p: string]: ActionSpace }, dieValue?: number) {
+        return Object.entries(ids).filter(([id, space]) => !dieValue || (!space.allowedValues || space.allowedValues?.includes(dieValue)));
+    }
+
     public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: (spaceId: string) => void, dieValue?: number) {
         document.querySelector('.st-dice-placeholder')?.remove();
         this.game.planeManager.unhighlightPlane();
@@ -45,7 +49,8 @@ class ActionSpaceManager {
 
         this.setAllActionSpacesUnselectable();
 
-        Object.entries(ids).filter(([id, space]) => !dieValue || (!space.allowedValues || space.allowedValues?.includes(dieValue))).forEach(([id, space]) => {
+        const validPlacements = this.getValidPlacements(ids, dieValue);
+        validPlacements.forEach(([id, space]) => {
             const element = $(id);
             if (!element.classList.contains('selected')) {
                 element.classList.add('selectable');

@@ -327,6 +327,12 @@ class SkyTeam implements SkyTeamGame {
                 case 'performSynchronisation':
                 case 'placeIntern':
                     (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
+                    if (stateName === 'placeIntern') {
+                        const placeInternArgs = (args as PlaceInternArgs);
+                        if (this.actionSpaceManager.getValidPlacements(placeInternArgs.availableActionSpaces, placeInternArgs.internDie[0].value).length === 0) {
+                            (this as any).addActionButton('skipInternPlacement', _("Skip placement (no placement possible)"), () => this.skipInternPlacement());
+                        }
+                    }
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
             }
@@ -383,7 +389,10 @@ class SkyTeam implements SkyTeamGame {
         } else {
             runnable();
         }
+    }
 
+    private skipInternPlacement() {
+        this.takeAction('skipInternPlacement', {});
     }
 
     private confirmPlayerSetup(args: PlayerSetupArgs) {
@@ -682,6 +691,7 @@ class SkyTeam implements SkyTeamGame {
             ['internTrained', undefined],
             ['realTimeTimerStarted', 1],
             ['realTimeTimerCleared', 1],
+            ['internDieSkipped', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -856,6 +866,11 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_realTimeTimerCleared() {
         this.realTimeCounter.clear();
+    }
+
+    private notif_internDieSkipped(args: NotifInternDieSkipped) {
+        this.diceManager.playerDiceStock.removeCard(args.internDie);
+        this.diceManager.otherPlayerDiceStock.removeCard(args.internDie);
     }
 
     public format_string_recursive(log: string, args: any) {

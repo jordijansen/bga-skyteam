@@ -154,6 +154,13 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function skipInternPlacement()
+    {
+        self::setAjaxMode();
+        $this->game->skipInternPlacement();
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

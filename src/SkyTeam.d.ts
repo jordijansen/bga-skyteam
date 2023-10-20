@@ -120,6 +120,11 @@ interface DicePlacementSelectArgs {
     canActivateWorkingTogether: boolean;
 }
 
+interface PlaceInternArgs {
+    availableActionSpaces: {[actionSpaceId: string]: ActionSpace};
+    internDie: Dice[];
+}
+
 interface PlayerSetupArgs {
     nrOfSpecialAbilitiesToSelect: number,
     specialAbilities: SpecialAbilityCard[]
@@ -246,4 +251,9 @@ interface NotifWindChanged {
 interface NotifInternTrained {
     playerId: number,
     die: Dice
+}
+
+interface NotifInternDieSkipped {
+    playerId: number,
+    internDie: Dice
 }

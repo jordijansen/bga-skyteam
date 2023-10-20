@@ -2402,17 +2402,21 @@ var ActionSpaceManager = /** @class */ (function () {
         });
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
     };
+    ActionSpaceManager.prototype.getValidPlacements = function (ids, dieValue) {
+        return Object.entries(ids).filter(function (_a) {
+            var _b;
+            var id = _a[0], space = _a[1];
+            return !dieValue || (!space.allowedValues || ((_b = space.allowedValues) === null || _b === void 0 ? void 0 : _b.includes(dieValue)));
+        });
+    };
     ActionSpaceManager.prototype.setActionSpacesSelectable = function (ids, onSelectedActionSpaceChanged, dieValue) {
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         this.game.planeManager.unhighlightPlane();
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
-        Object.entries(ids).filter(function (_a) {
-            var _b;
-            var id = _a[0], space = _a[1];
-            return !dieValue || (!space.allowedValues || ((_b = space.allowedValues) === null || _b === void 0 ? void 0 : _b.includes(dieValue)));
-        }).forEach(function (_a) {
+        var validPlacements = this.getValidPlacements(ids, dieValue);
+        validPlacements.forEach(function (_a) {
             var id = _a[0], space = _a[1];
             var element = $(id);
             if (!element.classList.contains('selected')) {
@@ -3108,6 +3112,7 @@ var WelcomeDialog = /** @class */ (function () {
     };
     WelcomeDialog.prototype.createContent = function () {
         var html = '';
+        html += "<p style=\"display: none;\"><b>".concat(_('NEW: In this BGA version you will find all the Special Scenarios available on <a href="https://www.scorpionmasque.com/Skyteam/">scorpionmasque.com/Skyteam/</a>. This is our way of thanking you for stepping into our cockpit in such great numbers. Find even more Scenarios in the physical Sky Team game.'), "</b></p>");
         html += "<div style=\"display: flex; justify-content: center;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-logo.png\" width=\"100%\" style=\"max-width: 300px;\"></img></div>");
         html += "<p>".concat(_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! You’ll need to communicate with the Control Tower to make sure your approach is free of air traffic, adjust your speed to not overshoot the airport, level your plane in order to land square with the ground, deploy your flaps to increase lift and allow you to descend more steeply, deploy your landing gear to ensure a safe landing, and finally engage the brakes to slow the plane once you\'ve landed. Cooperation and nerves of steel are all it takes to succeed!'), "</p>");
         html += "<h1>".concat(_('Communications'), "</h1>");
@@ -3492,6 +3497,12 @@ var SkyTeam = /** @class */ (function () {
                 case 'performSynchronisation':
                 case 'placeIntern':
                     this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
+                    if (stateName === 'placeIntern') {
+                        var placeInternArgs = args;
+                        if (this.actionSpaceManager.getValidPlacements(placeInternArgs.availableActionSpaces, placeInternArgs.internDie[0].value).length === 0) {
+                            this.addActionButton('skipInternPlacement', _("Skip placement (no placement possible)"), function () { return _this.skipInternPlacement(); });
+                        }
+                    }
                     dojo.addClass('confirmPlacement', 'disabled');
                     break;
             }
@@ -3544,6 +3555,9 @@ var SkyTeam = /** @class */ (function () {
         else {
             runnable();
         }
+    };
+    SkyTeam.prototype.skipInternPlacement = function () {
+        this.takeAction('skipInternPlacement', {});
     };
     SkyTeam.prototype.confirmPlayerSetup = function (args) {
         if (!this.playerSetup.selectedRole) {
@@ -3811,6 +3825,7 @@ var SkyTeam = /** @class */ (function () {
             ['internTrained', undefined],
             ['realTimeTimerStarted', 1],
             ['realTimeTimerCleared', 1],
+            ['internDieSkipped', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3958,6 +3973,10 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_realTimeTimerCleared = function () {
         this.realTimeCounter.clear();
+    };
+    SkyTeam.prototype.notif_internDieSkipped = function (args) {
+        this.diceManager.playerDiceStock.removeCard(args.internDie);
+        this.diceManager.otherPlayerDiceStock.removeCard(args.internDie);
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;

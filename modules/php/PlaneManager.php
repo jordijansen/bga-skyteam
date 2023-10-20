@@ -40,13 +40,13 @@ class PlaneManager extends APP_DbObject
                     if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace)) {
                         if ($plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
                             $result[$actionSpaceId] = $actionSpace;
-                            if ($actionSpace[MANDATORY] && !$ignoreRoleRestrictions) {
+                            if ($actionSpace[MANDATORY]) {
                                 $mandatoryResult[$actionSpaceId] = $actionSpace;
                             }
                         }
                     } else {
                         $result[$actionSpaceId] = $actionSpace;
-                        if ($actionSpace[MANDATORY] && !$ignoreRoleRestrictions) {
+                        if ($actionSpace[MANDATORY]) {
                             $mandatoryResult[$actionSpaceId] = $actionSpace;
                         }
                     }
@@ -57,14 +57,19 @@ class PlaneManager extends APP_DbObject
         if (sizeof($remainingDice) > sizeof($mandatoryResult)) {
             return $result;
         } else {
+            // If playing the traffic dice, it must be placed on one of your own mandatory spaces if needed
+            if ($ignoreRoleRestrictions) {
+                $ownMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
+                if (sizeof($remainingDice) <= sizeof($ownMandatorySpaces)) {
+                    $mandatoryResult = $ownMandatorySpaces;
+                }
+            }
+
             // Normally we would only be able to place dice on the mandatory spots, but if synchronisation can be used it might be different
             if (SkyTeam::$instance->isSpecialAbilityActive(SYNCHRONISATION) && !SkyTeam::$instance->getGlobalVariable(SYNCHRONISATION_ACTIVATED)) {
                 // We can still use SYNCHRONISATION check to see if there is a dice on the opposite side
-                if ($playerRole === PILOT) {
-                    $nrOfDiceOnOppositeSide = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'flaps%'"));
-                } else {
-                    $nrOfDiceOnOppositeSide = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'landing-gear%'"));
-                }
+                $oppositeSideType = $playerRole === PILOT ? ACTION_SPACE_FLAPS : ACTION_SPACE_LANDING_GEAR;
+                $nrOfDiceOnOppositeSide = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE '$oppositeSideType%'"));
 
                 if ($nrOfDiceOnOppositeSide > 0) {
                     $thisSideSpaceType = $playerRole === PILOT ? ACTION_SPACE_LANDING_GEAR : ACTION_SPACE_FLAPS;
@@ -72,6 +77,15 @@ class PlaneManager extends APP_DbObject
                     foreach ($thisSideSpaces as $actionSpaceId => $actionSpace) {
                         $mandatoryResult[$actionSpaceId] = $actionSpace;
                     }
+                }
+            }
+
+            if (SkyTeam::$instance->isModuleActive(MODULE_INTERN)) {
+                $availableInternSpaces = array_filter($result, fn($actionSpace) => $actionSpace['type'] === ACTION_SPACE_INTERN);
+                if (sizeof($availableInternSpaces) > 0) {
+                    $actionSpaceId = current(array_keys($availableInternSpaces));
+                    $actionSpace = current(array_values($availableInternSpaces));
+                    $mandatoryResult[$actionSpaceId] = $actionSpace;
                 }
             }
             return $mandatoryResult;

@@ -185,6 +185,30 @@ trait ActionTrait
         }
     }
 
+    function skipInternPlacement()
+    {
+        $this->checkAction(ACT_SKIP_INTERN);
+
+        $internDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_INTERN, DICE_INTERN, LOCATION_PLAYER));
+        if (sizeof($internDice) === 1) {
+            $internDie = current($internDice);
+            $this->dice->moveCard($internDie->id, LOCATION_DECK);
+
+            $playerId = $this->getActivePlayerId();
+            $internDie = Dice::from($this->dice->getCard($internDie->id));
+            $this->notifyAllPlayers('internDieSkipped', clienttranslate('${player_name} skips placement of ${icon_dice} (no placement possible)'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+                'internDie' => $internDie,
+                'icon_dice' => [$internDie]
+            ]);
+
+            $this->gamestate->nextState("");
+        } else {
+            throw new BgaUserException('Not allowed!');
+        }
+    }
+
     function requestReroll()
     {
         if (!$this->realTimeOutOfTime()) {
