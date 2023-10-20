@@ -155,7 +155,147 @@ $this->APPROACH_TRACKS = [
             2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
             1 => [DICE_TRAFFIC => 3],
         ]
-    ]
+    ],
+    // WAVE 2
+    APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+        'type' => APPROACH_BLACK_KUL_KUALA_LUMPUR,
+        'category' => APPROACH_BLACK,
+        'name' => 'KUL Kuala Lumpur',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1], DICE_TRAFFIC => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0]],
+            4 => [ALLOWED_AXIS => [-2]],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1],
+            2 => [ALLOWED_AXIS => [0, 1]],
+            1 => [DICE_TRAFFIC => 3],
+        ],
+    ],
+    APPROACH_YELLOW_TGU_TONCONTIN => [
+        'type' => APPROACH_YELLOW_TGU_TONCONTIN,
+        'category' => APPROACH_YELLOW,
+        'name' => 'TGU Toncontin',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0]],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_RED_HND_HANEDA => [
+        'type' => APPROACH_RED_HND_HANEDA,
+        'category' => APPROACH_RED,
+        'name' => 'HND Haneda',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 2],
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0], DICE_TRAFFIC => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1],
+            3 => [TOKEN_PLANE => 1],
+            2 => [ALLOWED_AXIS => [-1, 0]],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_BLACK_LGA_LAGUARDIA => [
+        'type' => APPROACH_BLACK_LGA_LAGUARDIA,
+        'category' => APPROACH_BLACK,
+        'name' => 'LGA LaGuardia',
+        'size' => 7,
+        'spaces' => [
+            7 => [],
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1],
+            4 => [],
+            3 => [ALLOWED_AXIS => [1, 2], DICE_TRAFFIC => 1],
+            2 => [],
+            1 => [ALLOWED_AXIS => [0, 1, 2]],
+        ]
+    ],
+    APPROACH_YELLOW_LGA_LAGUARDIA => [
+        'type' => APPROACH_YELLOW_LGA_LAGUARDIA,
+        'category' => APPROACH_YELLOW,
+        'name' => 'LGA LaGuardia',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1, 0]],
+            3 => [DICE_TRAFFIC => 1],
+            2 => [ALLOWED_AXIS => [0, 1, 2]],
+            1 => [DICE_TRAFFIC => 1],
+        ]
+    ],
+    APPROACH_BLACK_DUS_DUSSELDORF => [
+        'type' => APPROACH_BLACK_DUS_DUSSELDORF,
+        'category' => APPROACH_BLACK,
+        'name' => 'DUS Düsseldorf',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 2],
+            7 => [TOKEN_PLANE => 3],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1],
+            3 => [DICE_TRAFFIC => 1],
+            2 => [ALLOWED_AXIS => [0]],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_YELLOW_DUS_DUSSELDORF => [
+        'type' => APPROACH_YELLOW_DUS_DUSSELDORF,
+        'category' => APPROACH_YELLOW,
+        'name' => 'DUS Düsseldorf',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 2, ALLOWED_AXIS => [-1, 0, 1], DICE_TRAFFIC => 2],
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2, ALLOWED_AXIS => [-1, 0, 1]],
+            3 => [TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_RED_CDG_PARIS => [
+        'type' => APPROACH_RED_CDG_PARIS,
+        'category' => APPROACH_RED,
+        'name' => 'CDG Paris-Charles de Gaulle',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 2],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2], DICE_TRAFFIC => 1],
+            5 => [TOKEN_PLANE => 1],
+            4 => [DICE_TRAFFIC => 1, ALLOWED_AXIS => [-2, -1]],
+            3 => [],
+            2 => [],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_YELLOW_CDG_PARIS => [
+        'type' => APPROACH_YELLOW_CDG_PARIS,
+        'category' => APPROACH_YELLOW,
+        'name' => 'CDG Paris-Charles de Gaulle',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 2],
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
+            5 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
+            4 => [DICE_TRAFFIC => 1],
+            3 => [],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
 ];
 
 $this->SCENARIOS = [
@@ -181,17 +321,58 @@ $this->SCENARIOS = [
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
-    98 => [
-        'approach' => APPROACH_GREEN_YUL_MONTREAL,
-        'altitude' => ALTITUDE_GREEN_YELLOW,
-        'modules' => [MODULE_SPECIAL_ABILITIES, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME],
+    // WAVE 2
+    APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+        'approach' => APPROACH_BLACK_KUL_KUALA_LUMPUR,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
-    99 => [
-        'approach' => APPROACH_GREEN_YUL_MONTREAL,
+    APPROACH_YELLOW_TGU_TONCONTIN => [
+        'approach' => APPROACH_YELLOW_TGU_TONCONTIN,
         'altitude' => ALTITUDE_GREEN_YELLOW,
-        'modules' => [MODULE_SPECIAL_ABILITIES, MODULE_INTERN, MODULE_ICE_BRAKES],
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_RED_HND_HANEDA => [
+        'approach' => APPROACH_RED_HND_HANEDA,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_BLACK_LGA_LAGUARDIA => [
+        'approach' => APPROACH_BLACK_LGA_LAGUARDIA,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_YELLOW_LGA_LAGUARDIA => [
+        'approach' => APPROACH_YELLOW_LGA_LAGUARDIA,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_BLACK_DUS_DUSSELDORF => [
+        'approach' => APPROACH_BLACK_DUS_DUSSELDORF,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_YELLOW_DUS_DUSSELDORF => [
+        'approach' => APPROACH_YELLOW_DUS_DUSSELDORF,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_RED_CDG_PARIS => [
+        'approach' => APPROACH_RED_CDG_PARIS,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_INTERN],
+    ],
+    APPROACH_YELLOW_CDG_PARIS => [
+        'approach' => APPROACH_YELLOW_CDG_PARIS,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_INTERN],
     ],
 ];
 

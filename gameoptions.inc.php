@@ -57,10 +57,26 @@ $game_preferences = [
 ];
 
 $game_options = [
-
     SCENARIO_OPTION_ID => [
         'name' => totranslate('Scenario'),
+        'startcondition' => [
+            APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+                'type' => 'otheroption',
+                'id' => GAMESTATE_CLOCK_MODE,
+                'value' => [0, 1, 2],
+                'message' => totranslate('This scenario can only be played in Real-Time'),
+                'gamestartonly' => false
+            ],
+            APPROACH_BLACK_DUS_DUSSELDORF => [
+                'type' => 'otheroption',
+                'id' => GAMESTATE_CLOCK_MODE,
+                'value' => [0, 1, 2],
+                'message' => totranslate('This scenario can only be played in Real-Time'),
+                'gamestartonly' => false
+            ]
+        ],
         'values' => [
+            // GREEN
             APPROACH_GREEN_YUL_MONTREAL => [
                 'name' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
                 'tmdisplay' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
@@ -74,30 +90,75 @@ $game_options = [
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Turns. With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
                 'nobeginner' => true,
             ],
+            // YELLOW
             APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
                 'tmdisplay' => totranslate('Yellow: KUL - Kuala Lumpur'),
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You are right to be concerned about Malaysia’s electrical storms... Keep your plane in line between the storm masses. It will be a bumpy landing in Kuala Lumpur.'),
                 'nobeginner' => true,
             ],
+            APPROACH_YELLOW_TGU_TONCONTIN => [
+                'name' => totranslate('Yellow: TGU - Toncontín'),
+                'tmdisplay' => totranslate('Yellow: TGU - Toncontín'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene & 2 Special Abilities. This airport is nestled at the base of a bowl of mountains; you will need to descend rapidly and make a very tight final turn. Welcome to Honduras!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_LGA_LAGUARDIA => [
+                'name' => totranslate('Yellow: LGA - LaGuardia'),
+                'tmdisplay' => totranslate('Yellow: LGA - LaGuardia'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Ice Brakes & 2 Special Abilities. A cold front has the Eastern Seaboard in its icy grip. Weather conditions are less than ideal and the run way is frozen. Brooklyn and Manhattan are glistening pillars of frost. It’s up to you now.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_DUS_DUSSELDORF => [
+                'name' => totranslate('Yellow: DUS - Düsseldorf'),
+                'tmdisplay' => totranslate('Yellow: DUS - Düsseldorf'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene Leak & 2 Special Abilities. A computer problem paralyses Amsterdam airport and some flights, including yours, have been diverted to Düsseldorf. It’s early October, and the skies are already full. What can be going on...?'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_CDG_PARIS => [
+                'name' => totranslate('Yellow: CDG - Paris-Charles de Gaulle'),
+                'tmdisplay' => totranslate('Yellow: CDG - Paris-Charles de Gaulle'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Winds & Intern. Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
+                'nobeginner' => true,
+            ],
+            // RED
             APPROACH_RED_TGU_TONCONTIN => [
-                'name' => totranslate('Red: TGU Toncontín'),
-                'tmdisplay' => totranslate('Red: TGU Toncontín'),
+                'name' => totranslate('Red: TGU - Toncontín'),
+                'tmdisplay' => totranslate('Red: TGU - Toncontín'),
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & 2 Special Abilities. When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
                 'nobeginner' => true,
             ],
-            98 => [
-                'name' => 'Alpha: Modules Test - RT - (Do Not Use)',
-                'description' => 'MODULE_SPECIAL_ABILITIES, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME',
+            APPROACH_RED_HND_HANEDA => [
+                'name' => totranslate('Red: HND - Haneda'),
+                'tmdisplay' => totranslate('Red: HND - Haneda'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Intern & 1 Special Ability. Your air corridor has been cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach.'),
                 'nobeginner' => true,
-                'alpha' => true
             ],
-            99 => [
-                'name' => 'Alpha: Modules Test (Do Not Use)',
-                'description' => 'MODULE_SPECIAL_ABILITIES, MODULE_INTERN, MODULE_ICE_BRAKES',
+            APPROACH_RED_CDG_PARIS => [
+                'name' => totranslate('Red: CDG - Paris-Charles de Gaulle'),
+                'tmdisplay' => totranslate('Red: CDG - Paris-Charles de Gaulle'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & Intern. Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
                 'nobeginner' => true,
-                'alpha' => true
-            ]
+            ],
+            // BLACK
+            APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+                'name' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
+                'tmdisplay' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities. Lightning flashes all around as you approach. This must be what it’s like to fly into hell. Getting to the airport is going to take every last ounce of your concentration. Time is against you. Semoga berjaya, as the locals would say.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_LGA_LAGUARDIA => [
+                'name' => totranslate('Black: LGA - LaGuardia'),
+                'tmdisplay' => totranslate('Black: LGA - LaGuardia'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene, Ice Brakes & 1 Special Ability. A cold front has the Eastern Seaboard in its icy grip. Weather conditions are less than ideal and the run way is frozen. Brooklyn and Manhattan are glistening pillars of frost. It’s up to you now.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_DUS_DUSSELDORF => [
+                'name' => totranslate('Black: DUS - Düsseldorf (Real-Time)'),
+                'tmdisplay' => totranslate('Black: DUS - Düsseldorf (Real-Time)'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene Leak, Real-Time & 1 Special Ability. A computer problem paralyses Amsterdam airport and some flights, including yours, have been diverted to Düsseldorf. It’s early October, and the skies are already full. What can be going on...?'),
+                'nobeginner' => true,
+            ],
         ]
     ]
 ];
