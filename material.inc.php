@@ -64,8 +64,8 @@ $this->ACTION_TYPES = [
 $this->ACTION_SPACES = [
     ACTION_SPACE_AXIS.'-1' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [PILOT], MANDATORY => true],
     ACTION_SPACE_AXIS.'-2' => ['type' => ACTION_SPACE_AXIS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true],
-    ACTION_SPACE_ENGINES.'-1' => ['type' => ACTION_SPACE_ENGINES, ALLOWED_ROLES => [PILOT], MANDATORY => true],
-    ACTION_SPACE_ENGINES.'-2' => ['type' => ACTION_SPACE_ENGINES, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true],
+    ACTION_SPACE_ENGINES.'-1' => ['type' => ACTION_SPACE_ENGINES, NOT_MODULE => MODULE_ENGINE_LOSS, ALLOWED_ROLES => [PILOT], MANDATORY => true],
+    ACTION_SPACE_ENGINES.'-2' => ['type' => ACTION_SPACE_ENGINES, NOT_MODULE => MODULE_ENGINE_LOSS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => true],
     ACTION_SPACE_RADIO.'-1' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [PILOT], MANDATORY => false],
     ACTION_SPACE_RADIO.'-2' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false],
     ACTION_SPACE_RADIO.'-3' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false],
@@ -192,7 +192,7 @@ $this->APPROACH_TRACKS = [
         'name' => 'HND Haneda',
         'size' => 8,
         'spaces' => [
-            8 => [TOKEN_PLANE => 2],
+            8 => [TOKEN_PLANE => 1],
             7 => [TOKEN_PLANE => 1],
             6 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
             5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0], DICE_TRAFFIC => 1],
@@ -296,6 +296,36 @@ $this->APPROACH_TRACKS = [
             1 => [DICE_TRAFFIC => 3],
         ]
     ],
+    APPROACH_YELLOW_TER_LAJES => [
+        'type' => APPROACH_YELLOW_TER_LAJES,
+        'category' => APPROACH_YELLOW,
+        'name' => 'TER Lajes, Açores',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [ALLOWED_AXIS => [1, 2]],
+            3 => [ALLOWED_AXIS => [-2, -1]],
+            2 => [ALLOWED_AXIS => [0, 1, 2]],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    APPROACH_BLACK_TER_LAJES => [
+        'type' => APPROACH_BLACK_TER_LAJES,
+        'category' => APPROACH_BLACK,
+        'name' => 'TER Lajes, Açores',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            3 => [ALLOWED_AXIS => [-2, -1]],
+            2 => [ALLOWED_AXIS => [1, 2]],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
 ];
 
 $this->SCENARIOS = [
@@ -337,7 +367,7 @@ $this->SCENARIOS = [
     APPROACH_RED_HND_HANEDA => [
         'approach' => APPROACH_RED_HND_HANEDA,
         'altitude' => ALTITUDE_RED_BLACK,
-        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_BLACK_LGA_LAGUARDIA => [
@@ -374,6 +404,18 @@ $this->SCENARIOS = [
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_INTERN],
     ],
+    APPROACH_YELLOW_TER_LAJES => [
+        'approach' => APPROACH_YELLOW_TER_LAJES,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_BLACK_TER_LAJES => [
+        'approach' => APPROACH_BLACK_TER_LAJES,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ]
 ];
 
 $this->ALTITUDE_TRACKS = [

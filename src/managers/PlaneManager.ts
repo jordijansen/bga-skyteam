@@ -81,6 +81,7 @@ class PlaneManager  {
         dojo.connect($('st-approach-help'), 'onclick', (event)=>this.game.helpDialogManager.showApproachHelp(event));
         dojo.connect($('st-altitude-help'), 'onclick', (event)=>this.game.helpDialogManager.showAltitudeHelp(event));
 
+        console.log(data.scenario.modules);
         if(!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
@@ -104,6 +105,14 @@ class PlaneManager  {
         }
         if(data.scenario.modules.includes('ice-brakes')) {
             $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
+        }
+
+        if (!data.scenario.modules.includes('engine-loss')) {
+            $('st-engine-loss-marker-1').style.display = 'none';
+            $('st-engine-loss-marker-2').style.display = 'none';
+        } else {
+            dojo.connect($(`st-engine-loss-help-1`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'))
+            dojo.connect($(`st-engine-loss-help-2`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'))
         }
     }
 

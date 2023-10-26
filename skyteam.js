@@ -2165,6 +2165,7 @@ var PlaneManager = /** @class */ (function () {
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(function (card) { return card.type === 2; }), data.rolesThatUsedAdaptation);
         dojo.connect($('st-approach-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showApproachHelp(event); });
         dojo.connect($('st-altitude-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showAltitudeHelp(event); });
+        console.log(data.scenario.modules);
         if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
             $('st-kerosene-board').style.visibility = 'hidden';
         }
@@ -2188,6 +2189,14 @@ var PlaneManager = /** @class */ (function () {
         }
         if (data.scenario.modules.includes('ice-brakes')) {
             $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
+        }
+        if (!data.scenario.modules.includes('engine-loss')) {
+            $('st-engine-loss-marker-1').style.display = 'none';
+            $('st-engine-loss-marker-2').style.display = 'none';
+        }
+        else {
+            dojo.connect($("st-engine-loss-help-1"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'); });
+            dojo.connect($("st-engine-loss-help-2"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'); });
         }
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
@@ -2690,6 +2699,9 @@ var HelpDialogManager = /** @class */ (function () {
         else if (module === 'real-time') {
             return _('real-time');
         }
+        else if (module === 'engine-loss') {
+            return _('engine loss');
+        }
         return _(module);
     };
     HelpDialogManager.prototype.getActionSpaceTitle = function (type) {
@@ -2709,6 +2721,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('The tail wind has picked up and you are advancing too fast. Turn your plane to control your speed.');
             case 'real-time':
                 return _('Show your nerves of steel by playing in real time.');
+            case 'engine-loss':
+                return _('Both our engines have stopped. Our only hope: glide to the Airport');
             default:
                 return '';
         }
@@ -2747,6 +2761,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.');
             case 'real-time':
                 return _('At the beginning of each round, a 60-second timer is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
+            case 'engine-loss':
+                return _('The 2 Engines Action Spaces will not be used. Each round, the players roll their 4 dice but only play 3. At the end of the round, the Approach Track is automatically advanced by 1 space.<br/><br/>Note: Ice Brakes Module<br/>There is no actual ice on the landing strip here, but you’ll need a much stronger braking system to perform an emergency landing.');
             default:
                 return '';
         }
@@ -2843,7 +2859,9 @@ var HelpDialogManager = /** @class */ (function () {
         }
     };
     HelpDialogManager.prototype.showDialog = function (event, title, html) {
-        dojo.stopEvent(event);
+        if (event) {
+            dojo.stopEvent(event);
+        }
         this.dialog = new ebg.popindialog();
         this.dialog.create(this.dialogId);
         this.dialog.setTitle("<i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i> ".concat(_(title)));
@@ -3294,6 +3312,9 @@ var SkyTeam = /** @class */ (function () {
         }
         else {
             this.endGameInfo.setFailureReason(data.failureReason);
+        }
+        if (data.scenario.modules.includes('engine-loss')) {
+            this.helpDialogManager.showModuleHelp(null, 'engine-loss');
         }
         this.setupNotifications();
         log("Ending game setup");

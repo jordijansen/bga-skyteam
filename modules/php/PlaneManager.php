@@ -54,17 +54,10 @@ class PlaneManager extends APP_DbObject
             }
         }
 
-        if (sizeof($remainingDice) > sizeof($mandatoryResult)) {
+        $ownMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
+        if (sizeof($remainingDice) > sizeof($ownMandatorySpaces)) {
             return $result;
         } else {
-            // If playing the traffic dice, it must be placed on one of your own mandatory spaces if needed
-            if ($ignoreRoleRestrictions) {
-                $ownMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
-                if (sizeof($remainingDice) <= sizeof($ownMandatorySpaces)) {
-                    $mandatoryResult = $ownMandatorySpaces;
-                }
-            }
-
             // Normally we would only be able to place dice on the mandatory spots, but if synchronisation can be used it might be different
             if (SkyTeam::$instance->isSpecialAbilityActive(SYNCHRONISATION) && !SkyTeam::$instance->getGlobalVariable(SYNCHRONISATION_ACTIVATED)) {
                 // We can still use SYNCHRONISATION check to see if there is a dice on the opposite side
@@ -277,21 +270,12 @@ class PlaneManager extends APP_DbObject
                             $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue} (wind modifier: ${windModifier})</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                         }
 
-                        $planeCollision = false;
-                        $planeTurnFailure = false;
                         if ($totalEngineValue <= $plane->aerodynamicsBlue) {
                             $advanceApproachSpaces = 0;
                         } else if ($totalEngineValue <= $plane->aerodynamicsOrange) {
                             $advanceApproachSpaces = 1;
-                            if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0) {
-                                $planeCollision = true;
-                            }
                         } else {
                             $advanceApproachSpaces = 2;
-                            if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0 ||
-                                sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach + 1)) > 0) {
-                                $planeCollision = true;
-                            }
                         }
 
                         SkyTeam::$instance->notifyAllPlayers("gameLog", $logMessage, [
@@ -300,34 +284,7 @@ class PlaneManager extends APP_DbObject
                             'windModifier' => $plane->getWindModifier() > 0 ? '+' . $plane->getWindModifier() : $plane->getWindModifier()
                         ]);
 
-                        for ($i = 1; $i <= $advanceApproachSpaces; $i++) {
-                            $currentApproachSpace = SkyTeam::$instance->getApproachTrack()->spaces[$plane->approach];
-                            if (SkyTeam::$instance->isModuleActive(MODULE_TURNS) && array_key_exists(ALLOWED_AXIS, $currentApproachSpace)) {
-                                // The current approach track space has turn requirements, checking now to see if they are in the allowed axis range.
-                                if (!in_array($plane->axis, $currentApproachSpace[ALLOWED_AXIS])) {
-                                    $planeTurnFailure = true;
-                                    break;
-                                }
-                            }
-                            $plane->approach = $plane->approach + 1;
-                            SkyTeam::$instance->notifyAllPlayers("planeApproachChanged", '', [
-                                'approach' => $plane->approach
-                            ]);
-                        }
-
-                        if ($planeTurnFailure) {
-                            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_TURN);
-                            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-                            $continue = false;
-                        } else if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
-                            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_OVERSHOOT);
-                            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-                            $continue = false;
-                        } else if ($planeCollision) {
-                            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_COLLISION);
-                            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-                            $continue = false;
-                        }
+                        $continue = $this->approachPlane($plane, $advanceApproachSpaces);
                     }
                 }
             }
@@ -483,6 +440,47 @@ class PlaneManager extends APP_DbObject
         return $continue;
     }
 
+    function approachPlane($plane, $nrOfSpacesToApproach) {
+        $planeCollision = false;
+        $planeTurnFailure = false;
+
+        for ($i = 1; $i <= $nrOfSpacesToApproach; $i++) {
+            $currentApproachSpace = SkyTeam::$instance->getApproachTrack()->spaces[$plane->approach];
+            if (SkyTeam::$instance->isModuleActive(MODULE_TURNS) && array_key_exists(ALLOWED_AXIS, $currentApproachSpace)) {
+                // The current approach track space has turn requirements, checking now to see if they are in the allowed axis range.
+                if (!in_array($plane->axis, $currentApproachSpace[ALLOWED_AXIS])) {
+                    $planeTurnFailure = true;
+                    break;
+                }
+            }
+            if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0) {
+                $planeCollision = true;
+                break;
+            }
+
+            $plane->approach = $plane->approach + 1;
+            SkyTeam::$instance->notifyAllPlayers("planeApproachChanged", '', [
+                'approach' => $plane->approach
+            ]);
+            $this->save($plane);
+        }
+
+        if ($planeTurnFailure) {
+            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_TURN);
+            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+            return false;
+        } else if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
+            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_OVERSHOOT);
+            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+            return false;
+        } else if ($planeCollision) {
+            SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_COLLISION);
+            SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
+            return false;
+        }
+        return true;
+    }
+
     function getVictoryConditionsResults()
     {
         $victoryConditions = SkyTeam::$instance->getVictoryConditions();
@@ -521,7 +519,7 @@ class PlaneManager extends APP_DbObject
                         if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                         }
-                        if ($totalEngineValue <= $plane->brake) {
+                        if ($totalEngineValue <= $plane->brake && $plane->brake >= 2) {
                             $victoryCondition['status'] = 'success';
                         }
                     }

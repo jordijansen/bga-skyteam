@@ -103,6 +103,7 @@ const MODULE_INTERN = 'intern';
 const MODULE_KEROSENE_LEAK = 'kerosene-leak';
 const MODULE_REAL_TIME = 'real-time';
 const MODULE_ICE_BRAKES = 'ice-brakes';
+const MODULE_ENGINE_LOSS = 'engine-loss';
 
 /**
  * State
@@ -208,6 +209,8 @@ const APPROACH_BLACK_DUS_DUSSELDORF = 10;
 const APPROACH_YELLOW_DUS_DUSSELDORF = 11;
 const APPROACH_RED_CDG_PARIS = 12;
 const APPROACH_YELLOW_CDG_PARIS = 13;
+const APPROACH_YELLOW_TER_LAJES = 14;
+const APPROACH_BLACK_TER_LAJES = 15;
 
 
 /**

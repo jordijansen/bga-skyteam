@@ -169,7 +169,6 @@ trait StateTrait
                     $endTheGame = false;
                 }
             }
-            // TODO ALSO CHECK ICE BRAKES
         }
 
         if ($endTheGame) {
@@ -179,8 +178,11 @@ trait StateTrait
             $this->activeNextPlayer();
             $this->giveExtraTime($this->getActivePlayerId());
             $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $this->getActivePlayerId()));
-
-            if (sizeof($dice) > 0) {
+            $nrOfDiceToPlaceEachRound = 4;
+            if ($this->isModuleActive(MODULE_ENGINE_LOSS)) {
+                $nrOfDiceToPlaceEachRound = 3;
+            }
+            if (sizeof($dice) > (4 - $nrOfDiceToPlaceEachRound)) {
                 $this->gamestate->nextState('next');
             } else {
                 $this->clearRealTimeTimeIfApplicable();
@@ -332,19 +334,28 @@ trait StateTrait
                 ]);
             }
 
-            if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
-                // The plane has landed, let's see if we're at the airport
-                if ($plane->approach == sizeof($approachTrack->spaces)) {
-                    // We're at the airport, start the last round
-                    $this->setGlobalVariable(FINAL_ROUND, true);
-                    $this->gamestate->nextState('start');
+            $continue = true;
+            if ($this->isModuleActive(MODULE_ENGINE_LOSS)) {
+                $this->notifyAllPlayers("gameLog", clienttranslate('Engine Loss: approaching airport by 1 space'), []);
+                // Auto Approach 1 space
+                $continue = $this->planeManager->approachPlane($plane, 1);
+            }
+
+            if ($continue) {
+                if ($plane->altitude == sizeof($altitudeTrack->spaces)) {
+                    // The plane has landed, let's see if we're at the airport
+                    if ($plane->approach == sizeof($approachTrack->spaces)) {
+                        // We're at the airport, start the last round
+                        $this->setGlobalVariable(FINAL_ROUND, true);
+                        $this->gamestate->nextState('start');
+                    } else {
+                        // The plane has landed, but not at the airport -> crash
+                        $this->setGlobalVariable(FAILURE_REASON, FAILURE_CRASH_LANDED);
+                        $this->gamestate->nextState('failure');
+                    }
                 } else {
-                    // The plane has landed, but not at the airport -> crash
-                    $this->setGlobalVariable(FAILURE_REASON, FAILURE_CRASH_LANDED);
-                    $this->gamestate->nextState('failure');
+                    $this->gamestate->nextState('start');
                 }
-            } else {
-                $this->gamestate->nextState('start');
             }
         }
     }

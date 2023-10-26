@@ -1004,6 +1004,16 @@ body > .card {
   top: 690px;
   left: 365px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-engine-loss-marker-1 {
+  position: absolute;
+  top: 433px;
+  left: 195px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-engine-loss-marker-2 {
+  position: absolute;
+  top: 433px;
+  right: 193px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-plane, #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-token-reserve-reroll {
   top: -50px;
   position: absolute;
@@ -1209,7 +1219,7 @@ body > .card {
   background-position: 100% 0;
 }
 
-.st-kerosene-leak-marker {
+.st-action-space-blocked-marker {
   background-image: url("img/skyteam-kerosene-leak-marker.png");
   background-size: cover;
   height: 58px;
@@ -1629,7 +1639,7 @@ body > .card {
 
 .st-approach {
   background-image: url("img/skyteam-approach-tracks.png");
-  background-size: 1300% auto;
+  background-size: 1500% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -1640,49 +1650,57 @@ body > .card {
 }
 .st-approach[data-type="2"] {
   height: 818px;
-  background-position: 8.3333333333% 0;
+  background-position: 7.142857143% 0;
 }
 .st-approach[data-type="3"] {
   height: 818px;
-  background-position: 16.6666666666% 0;
+  background-position: 14.285714286% 0;
 }
 .st-approach[data-type="4"] {
   height: 528px;
-  background-position: 24.9999999999% 0;
+  background-position: 21.428571429% 0;
 }
 .st-approach[data-type="5"] {
   height: 818px;
-  background-position: 33.3333333332% 0;
+  background-position: 28.571428572% 0;
 }
 .st-approach[data-type="6"] {
   height: 528px;
-  background-position: 41.6666666665% 0;
+  background-position: 35.714285715% 0;
 }
 .st-approach[data-type="7"] {
   height: 818px;
-  background-position: 49.9999999998% 0;
+  background-position: 42.857142858% 0;
 }
 .st-approach[data-type="8"] {
   height: 720px;
-  background-position: 58.3333333331% 0;
+  background-position: 50.000000001% 0;
 }
 .st-approach[data-type="9"] {
   height: 720px;
-  background-position: 66.6666666664% 0;
+  background-position: 57.142857144% 0;
 }
 .st-approach[data-type="10"] {
   height: 818px;
-  background-position: 74.9999999997% 0;
+  background-position: 64.285714287% 0;
 }
 .st-approach[data-type="11"] {
   height: 818px;
-  background-position: 83.333333333% 0;
+  background-position: 71.42857143% 0;
 }
 .st-approach[data-type="12"] {
   height: 818px;
-  background-position: 91.6666666663% 0;
+  background-position: 78.571428573% 0;
 }
 .st-approach[data-type="13"] {
+  height: 818px;
+  background-position: 85.714285716% 0;
+}
+.st-approach[data-type="14"] {
+  height: 818px;
+  background-position: 92.857142859% 0;
+}
+.st-approach[data-type="15"] {
   height: 818px;
   background-position: 100% 0;
 }

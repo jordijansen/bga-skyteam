@@ -36,7 +36,7 @@
             <div id="st-plane-board-wrapper">
                 <div id="st-main-board-left">
                     <div id="st-kerosene-board" class="st-board">
-                        <div id="st-kerosene-leak-marker" class="st-kerosene-leak-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+                        <div id="st-kerosene-leak-marker" class="st-action-space-blocked-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
                         <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
                     </div>
                     <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
@@ -60,6 +60,8 @@
                     <div id="st-ice-brakes-board" class="st-board"></div>
                     <div id="st-plane-brake-marker" class="st-plane-marker token" data-type="brakes-red"></div>
                     <div id="st-action-spaces"></div>
+                    <div id="st-engine-loss-marker-1" class="st-action-space-blocked-marker token"><span id="st-engine-loss-help-1" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+                    <div id="st-engine-loss-marker-2" class="st-action-space-blocked-marker token"><span id="st-engine-loss-help-2" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
                     <span id="st-altitude-help" class="st-action-space-help top" style="right: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                     <span id="st-approach-help" class="st-action-space-help top" style="left: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                 </div>

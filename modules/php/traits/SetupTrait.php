@@ -89,7 +89,12 @@ trait SetupTrait
     private function createSpecialAbilities()
     {
         $cards = [];
-        foreach ($this->SPECIAL_ABILITIES as $type => $specialAbility) {
+        $specialAbilities = $this->SPECIAL_ABILITIES;
+        if ($this->isModuleActive(MODULE_ENGINE_LOSS)) {
+            $specialAbilities = array_filter($specialAbilities, fn($value, $key) => $key !== MASTERY, ARRAY_FILTER_USE_BOTH);
+        }
+
+        foreach ($specialAbilities as $type => $specialAbility) {
             $cards[] = ['type' => $type, 'type_arg' => $type, 'nbr' => 1];
         }
         $this->specialAbilities->createCards($cards, LOCATION_DECK);

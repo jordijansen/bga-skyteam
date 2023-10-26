@@ -114,6 +114,10 @@ class SkyTeam implements SkyTeamGame {
             this.endGameInfo.setFailureReason(data.failureReason)
         }
 
+        if (data.scenario.modules.includes('engine-loss')) {
+            this.helpDialogManager.showModuleHelp(null, 'engine-loss');
+        }
+
         this.setupNotifications();
         log( "Ending game setup" );
     }

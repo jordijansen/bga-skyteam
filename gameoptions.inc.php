@@ -61,18 +61,32 @@ $game_options = [
         'name' => totranslate('Scenario'),
         'startcondition' => [
             APPROACH_BLACK_KUL_KUALA_LUMPUR => [
-                'type' => 'otheroption',
-                'id' => GAMESTATE_CLOCK_MODE,
-                'value' => [0, 1, 2],
-                'message' => totranslate('This scenario can only be played in Real-Time'),
-                'gamestartonly' => false
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
             ],
             APPROACH_BLACK_DUS_DUSSELDORF => [
-                'type' => 'otheroption',
-                'id' => GAMESTATE_CLOCK_MODE,
-                'value' => [0, 1, 2],
-                'message' => totranslate('This scenario can only be played in Real-Time'),
-                'gamestartonly' => false
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
             ]
         ],
         'values' => [
@@ -121,6 +135,12 @@ $game_options = [
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Winds & Intern. Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
                 'nobeginner' => true,
             ],
+            APPROACH_YELLOW_TER_LAJES => [
+                'name' => totranslate('Yellow: TER - Lajes, Açores'),
+                'tmdisplay' => totranslate('Yellow: TER - Lajes, Açores'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Ability. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'nobeginner' => true,
+            ],
             // RED
             APPROACH_RED_TGU_TONCONTIN => [
                 'name' => totranslate('Red: TGU - Toncontín'),
@@ -131,7 +151,7 @@ $game_options = [
             APPROACH_RED_HND_HANEDA => [
                 'name' => totranslate('Red: HND - Haneda'),
                 'tmdisplay' => totranslate('Red: HND - Haneda'),
-                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Intern & 1 Special Ability. Your air corridor has been cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach.'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Intern & 1 Special Ability. Your air corridor has been cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach.'),
                 'nobeginner' => true,
             ],
             APPROACH_RED_CDG_PARIS => [
@@ -157,6 +177,12 @@ $game_options = [
                 'name' => totranslate('Black: DUS - Düsseldorf (Real-Time)'),
                 'tmdisplay' => totranslate('Black: DUS - Düsseldorf (Real-Time)'),
                 'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene Leak, Real-Time & 1 Special Ability. A computer problem paralyses Amsterdam airport and some flights, including yours, have been diverted to Düsseldorf. It’s early October, and the skies are already full. What can be going on...?'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_TER_LAJES => [
+                'name' => totranslate('Black: TER - Lajes, Açores'),
+                'tmdisplay' => totranslate('Black: TER - Lajes, Açores'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Ability. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
                 'nobeginner' => true,
             ],
         ]
