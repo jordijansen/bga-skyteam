@@ -53,9 +53,16 @@ class PlaneManager extends APP_DbObject
                 }
             }
         }
+        $mandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
+        if ($ignoreRoleRestrictions) {
+            $pilotRemainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, SkyTeam::$instance->getPlayerIdForRole(PILOT)));
+            $pilotMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array(PILOT, $actionSpace[ALLOWED_ROLES]));
+            if (sizeof($pilotRemainingDice) <= sizeof($pilotMandatorySpaces)) {
+                $mandatorySpaces = $pilotMandatorySpaces;
+            }
+        }
 
-        $ownMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
-        if (sizeof($remainingDice) > sizeof($ownMandatorySpaces)) {
+        if (sizeof($remainingDice) > sizeof($mandatorySpaces)) {
             return $result;
         } else {
             // Normally we would only be able to place dice on the mandatory spots, but if synchronisation can be used it might be different
@@ -262,7 +269,6 @@ class PlaneManager extends APP_DbObject
                             $continue = false;
                         }
                     } else {
-                        // This is the final round, so the engine / brakes are checked at the end of the game.
                         $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                         $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                         if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
@@ -392,7 +398,7 @@ class PlaneManager extends APP_DbObject
             if (SkyTeam::$instance->isModuleActive(MODULE_INTERN)) {
                 $role = $die->locationArg == 'intern-1' ? PILOT : CO_PILOT;
                 $intern = $this->getNextInternForRole($role);
-                $playerId = SkyTeam::$instance->getPlayerIdForRole($role);
+                $playerId = SkyTeam::$instance->getActivePlayerId();
                 SkyTeam::$instance->dice->moveCard($intern->id, LOCATION_PLAYER, $playerId);
 
                 $intern = Dice::from(SkyTeam::$instance->dice->getCard($intern->id));

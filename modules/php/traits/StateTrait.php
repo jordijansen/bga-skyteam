@@ -164,6 +164,14 @@ trait StateTrait
                 if ($this->getGlobalVariable(KEROSENE_ACTIVATED)) {
                     $endTheGame = true;
                 } else if ($this->planeManager->get()->kerosene >= 6) {
+                    $plane = $this->planeManager->get();
+                    $plane->kerosene = $plane->kerosene - 6;
+                    $this->planeManager->save($plane);
+
+                    $this->notifyAllPlayers( "planeKeroseneChanged", clienttranslate('Kerosene marker ${icon_kerosene_marker} moves to <b>${kerosene}</b>'), [
+                        'kerosene' => $plane->kerosene,
+                        'icon_kerosene_marker' => 'kerosene_marker'
+                    ]);
                     $endTheGame = true;
                 } else {
                     $endTheGame = false;

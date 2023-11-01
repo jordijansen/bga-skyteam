@@ -3313,7 +3313,10 @@ var SkyTeam = /** @class */ (function () {
         else {
             this.endGameInfo.setFailureReason(data.failureReason);
         }
-        if (data.scenario.modules.includes('engine-loss')) {
+        // @ts-ignore
+        var tableId = gameui === null || gameui === void 0 ? void 0 : gameui.table_id;
+        if (data.scenario.modules.includes('engine-loss') && tableId && localStorage.getItem("st-engine-loss-welcome-dialog-".concat(tableId)) !== 'shown') {
+            localStorage.setItem("st-engine-loss-welcome-dialog-".concat(tableId), 'shown');
             this.helpDialogManager.showModuleHelp(null, 'engine-loss');
         }
         this.setupNotifications();

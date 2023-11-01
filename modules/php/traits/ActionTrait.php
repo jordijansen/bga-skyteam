@@ -234,10 +234,20 @@ trait ActionTrait
                 'icon_tokens' => [$rerollToken],
             ]);
 
-            $this->gamestate->setAllPlayersMultiactive();
-            foreach ($this->gamestate->getActivePlayerList() as $playerId) {
-                $this->giveExtraTime($playerId);
+            $pilotPlayerId = $this->getPlayerIdForRole(PILOT);
+            $coPilotPlayerId = $this->getPlayerIdForRole(CO_PILOT);
+
+            $playerIdsForReRoll = [];
+            if ($this->dice->countCardInLocation(LOCATION_PLAYER, $pilotPlayerId) > 0) {
+                $playerIdsForReRoll[] = $pilotPlayerId;
+                $this->giveExtraTime($pilotPlayerId);
             }
+            if ($this->dice->countCardInLocation(LOCATION_PLAYER, $coPilotPlayerId) > 0) {
+                $playerIdsForReRoll[] = $coPilotPlayerId;
+                $this->giveExtraTime($coPilotPlayerId);
+            }
+
+            $this->gamestate->setPlayersMultiactive($playerIdsForReRoll, '', true);
             $this->setGlobalVariable(REROLL_DICE_AMOUNT, 4);
             $this->gamestate->jumpToState(ST_REROLL_DICE);
         }
@@ -300,6 +310,7 @@ trait ActionTrait
         if (!$this->realTimeOutOfTime()) {
             $playerId = $this->getCurrentPlayerId();
             $this->checkAction(ACT_REROLL);
+            $isAnticipation = intval($this->getGlobalVariable(REROLL_DICE_AMOUNT)) === 1;
 
             if (isset($selectedDieIds) && is_array($selectedDieIds) && sizeof($selectedDieIds) > 0) {
                 $rolledDice = [];
@@ -313,19 +324,22 @@ trait ActionTrait
                     $rolledDice[] = $die;
                 }
 
-                $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} re-rolls ${icon_dice}'), [
+                $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls ${icon_dice}'): clienttranslate('${player_name} re-rolls ${icon_dice}');
+                $this->notifyPlayer($playerId, "diceRolled", $logMessage, [
                     'playerId' => intval($playerId),
                     'player_name' => $this->getPlayerName($playerId),
                     'dice' => $rolledDice,
                     'icon_dice' => $rolledDice
                 ]);
 
-                $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} re-rolls an unknown number of dice'), [
+                $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls 1 die'): clienttranslate('${player_name} re-rolls an unknown number of dice');
+                $this->notifyAllPlayers("gameLog", $logMessage, [
                     'playerId' => intval($playerId),
                     'player_name' => $this->getPlayerName($playerId),
                 ]);
             } else {
-                $this->notifyAllPlayers("gameLog", clienttranslate('${player_name} re-rolls no dice'), [
+                $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls no dice'): clienttranslate('${player_name} re-rolls no dice');
+                $this->notifyAllPlayers("gameLog", $logMessage, [
                     'playerId' => intval($playerId),
                     'player_name' => $this->getPlayerName($playerId),
                 ]);

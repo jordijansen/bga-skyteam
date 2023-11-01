@@ -114,7 +114,10 @@ class SkyTeam implements SkyTeamGame {
             this.endGameInfo.setFailureReason(data.failureReason)
         }
 
-        if (data.scenario.modules.includes('engine-loss')) {
+        // @ts-ignore
+        const tableId = gameui?.table_id;
+        if (data.scenario.modules.includes('engine-loss') && tableId && localStorage.getItem(`st-engine-loss-welcome-dialog-${tableId}`) !== 'shown') {
+            localStorage.setItem(`st-engine-loss-welcome-dialog-${tableId}`, 'shown');
             this.helpDialogManager.showModuleHelp(null, 'engine-loss');
         }
 
