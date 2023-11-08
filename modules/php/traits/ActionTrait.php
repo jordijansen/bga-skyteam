@@ -455,7 +455,7 @@ trait ActionTrait
 
     function realTimeOutOfTime()
     {
-        if ($this->isModuleActive(MODULE_REAL_TIME)) {
+        if ($this->isModuleActive(MODULE_REAL_TIME) && $this->gamestate->state()['name'] !== 'gameEnd') {
             $realTimeEndTime = $this->getGlobalVariable(REAL_TIME_END_TIME);
             if (isset($realTimeEndTime)) {
                 $date = new DateTimeImmutable();

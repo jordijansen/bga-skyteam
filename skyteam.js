@@ -3911,6 +3911,9 @@ var SkyTeam = /** @class */ (function () {
         return this.planeManager.updateAxis(args.axis);
     };
     SkyTeam.prototype.notif_planeFailure = function (args) {
+        if (this.gamedatas.scenario.modules.includes('real-time')) {
+            this.realTimeCounter.clear();
+        }
         return this.endGameInfo.setFailureReason(args.failureReason);
     };
     SkyTeam.prototype.notif_planeApproachChanged = function (args) {
@@ -3990,7 +3993,9 @@ var SkyTeam = /** @class */ (function () {
         if (args.playerId === this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCard(args.die);
         }
-        return Promise.resolve();
+        else {
+            return this.diceManager.otherPlayerDiceStock.addCard(args.die);
+        }
     };
     SkyTeam.prototype.notif_realTimeTimerStarted = function () {
         this.realTimeCounter.start(60);

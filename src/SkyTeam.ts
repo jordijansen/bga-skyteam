@@ -770,6 +770,9 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_planeFailure(args: NotifPlaneFailure) {
+        if (this.gamedatas.scenario.modules.includes('real-time')) {
+            this.realTimeCounter.clear();
+        }
         return this.endGameInfo.setFailureReason(args.failureReason);
     }
 
@@ -863,8 +866,9 @@ class SkyTeam implements SkyTeamGame {
     private notif_internTrained(args: NotifInternTrained) {
         if (args.playerId === this.getPlayerId()) {
             return this.diceManager.playerDiceStock.addCard(args.die);
+        } else {
+            return this.diceManager.otherPlayerDiceStock.addCard(args.die);
         }
-        return Promise.resolve();
     }
 
     private notif_realTimeTimerStarted() {

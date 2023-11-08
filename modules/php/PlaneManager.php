@@ -57,8 +57,8 @@ class PlaneManager extends APP_DbObject
         if ($ignoreRoleRestrictions) {
             $pilotRemainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, SkyTeam::$instance->getPlayerIdForRole(PILOT)));
             $pilotMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array(PILOT, $actionSpace[ALLOWED_ROLES]));
-            if (sizeof($pilotRemainingDice) <= sizeof($pilotMandatorySpaces)) {
-                $mandatorySpaces = $pilotMandatorySpaces;
+            if (sizeof($pilotRemainingDice) < sizeof($pilotMandatorySpaces)) {
+                return $pilotMandatorySpaces;
             }
         }
 
