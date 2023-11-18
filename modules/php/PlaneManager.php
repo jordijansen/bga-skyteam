@@ -409,6 +409,12 @@ class PlaneManager extends APP_DbObject
                     'die' =>  $intern
                 ]);
 
+                if ($die->type === DICE_TRAFFIC) {
+                    SkyTeam::$instance->setGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC, true);
+                } else {
+                    SkyTeam::$instance->setGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC, false);
+                }
+
                 SkyTeam::$instance->gamestate->jumpToState(ST_PLACE_INTERN);
                 $continue = false;
             }

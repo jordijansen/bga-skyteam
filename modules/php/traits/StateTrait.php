@@ -140,6 +140,12 @@ trait StateTrait
 
     function stDicePlacementNext()
     {
+        $forceNextPlayer = $this->getGlobalVariable(FORCE_NEXT_PLAYER);
+        if ($forceNextPlayer != null) {
+            $this->gamestate->changeActivePlayer($forceNextPlayer);
+            $this->deleteGlobalVariable(FORCE_NEXT_PLAYER);
+        }
+
         $endTheGame = false;
         if ($this->isFinalRound()) {
             // Check if we can prematurely end the game.

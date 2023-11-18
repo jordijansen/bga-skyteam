@@ -180,6 +180,11 @@ trait ActionTrait
                     }
                 }
 
+                if ($die->type === DICE_INTERN && boolval($this->getGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC)) === true) {
+                    $playerId = $this->getGlobalVariable(ACTIVE_PLAYER_AFTER_SYNCHRONISATION);
+                    $this->setGlobalVariable(FORCE_NEXT_PLAYER, $playerId);
+                }
+
                 $this->gamestate->nextState("");
             }
         }
