@@ -38,9 +38,25 @@
       left: 43px;
     }
   }
-  #st-token-reserve-coffee {
+  #st-token-reserve {
     padding-bottom: 10px;
     padding-right: 10px;
+    position: absolute;
+    bottom: 262px;
+    width: 45px;
+    #st-token-reserve-plane {
+      top: 70px;
+    }
+    #st-token-reserve-reroll {
+      top: 140px;
+    }
+    #st-token-reserve-coffee {
+      top: 210px;
+    }
+    .all-visible-deck {
+      width: 45px;
+      height: 45px;
+    }
   }
 }
 
@@ -230,11 +246,6 @@
           #st-engine-loss-marker-1 {position: absolute; top: 433px; left: 195px;}
           #st-engine-loss-marker-2 {position: absolute; top: 433px; right: 193px;}
 
-          #st-token-reserve-plane, #st-token-reserve-reroll {
-            top: -50px;
-            position: absolute;
-            left: -600px;
-          }
           #st-traffic-dice-stock {
             width: 202px;
             height: 50px;

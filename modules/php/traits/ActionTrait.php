@@ -337,10 +337,11 @@ trait ActionTrait
                     'icon_dice' => $rolledDice
                 ]);
 
-                $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls 1 die'): clienttranslate('${player_name} re-rolls an unknown number of dice');
+                $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls 1 die'): clienttranslate('${player_name} re-rolls ${nrOfDiceRerolled} dice');
                 $this->notifyAllPlayers("gameLog", $logMessage, [
                     'playerId' => intval($playerId),
                     'player_name' => $this->getPlayerName($playerId),
+                    'nrOfDiceRerolled' => sizeof($selectedDieIds)
                 ]);
             } else {
                 $logMessage = $isAnticipation ? clienttranslate('Anticipation: ${player_name} re-rolls no dice'): clienttranslate('${player_name} re-rolls no dice');

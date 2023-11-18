@@ -23,6 +23,7 @@ class HelpDialogManager {
             html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-traffic-example.png" alt="traffic" /></div>`;
             html += `<p><i>${_('The skies are particularly busy today... airplanes seem to be appearing out of nowhere!')}</p></i>`
             html += `<p>${_('If there is a Traffic icon in the Current Position space at the beginning of the round, Traffic dice are rolled as many as there are icons on the space. Each rolled Traffic die adds an Airplane token to the space indicated by the value of the die, starting with the Current Position space. No Airplane tokens are placed if all Airplane tokens are already on the Approach Track (12).')}</p>`
+            html += `<p><b>${_('Please note: the traffic die only has values 2, 3, 4 and 5.')}</b></p>`
             html += `<br/>`
         }
         html += `</div>`

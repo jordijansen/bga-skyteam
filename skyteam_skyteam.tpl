@@ -39,7 +39,11 @@
                         <div id="st-kerosene-leak-marker" class="st-action-space-blocked-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
                         <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
                     </div>
-                    <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
+                    <div id="st-token-reserve">
+                        <div id="st-token-reserve-plane" class="st-token-reserve"></div>
+                        <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
+                        <div id="st-token-reserve-coffee" class="st-token-reserve"></div>
+                    </div>
                 </div>
                 <div id="st-main-board" class="st-board">
                     <div id="st-plane-axis-indicator" class="st-plane-axis-indicator token"></div>
@@ -48,8 +52,6 @@
                     <div id="st-available-coffee"></div>
                     <div id="st-available-reroll"></div>
                     <div id="st-plane-switches"></div>
-                    <div id="st-token-reserve-plane" class="st-token-reserve"></div>
-                    <div id="st-token-reserve-reroll" class="st-token-reserve"></div>
                     <div id="st-traffic-dice-stock"></div>
                     <div id="st-approach-overlay-track">
                         <div id="st-approach-overlay-track-slot"></div>
