@@ -91,6 +91,13 @@ const PREF_BACKGROUND_BGA = 2;
 const SCENARIO_OPTION_ID = 100;
 const SCENARIO_OPTION = 'scenario';
 
+const REAL_TIME_SECONDS_OPTION_ID = 101;
+const REAL_TIME_SECONDS = 'real-time-seconds';
+
+const REAL_TIME_60_SECONDS = 60;
+const REAL_TIME_70_SECONDS = 70;
+const REAL_TIME_80_SECONDS = 80;
+
 /**
  * Modules
  */

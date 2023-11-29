@@ -99,6 +99,7 @@ class SkyTeam extends Table
 
         self::initGameStateLabels( array(
             SCENARIO_OPTION => SCENARIO_OPTION_ID,
+            REAL_TIME_SECONDS => REAL_TIME_SECONDS_OPTION_ID,
         ));
 
         self::$instance = $this;
@@ -185,6 +186,7 @@ class SkyTeam extends Table
         }
 
         $result['timerNeedsClearing'] = false;
+        $result['timerSeconds'] = $this->getRealTimeTimerSeconds();
         if ($this->isModuleActive(MODULE_REAL_TIME)) {
             $realTimeEndTime = $this->getGlobalVariable(REAL_TIME_END_TIME);
             if (isset($realTimeEndTime)) {

@@ -872,7 +872,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_realTimeTimerStarted() {
-        this.realTimeCounter.start(60);
+        this.realTimeCounter.start(this.gamedatas.timerSeconds);
     }
 
     private notif_realTimeTimerCleared() {

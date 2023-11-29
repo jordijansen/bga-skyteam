@@ -186,7 +186,38 @@ $game_options = [
                 'nobeginner' => true,
             ],
         ]
-    ]
+    ],
+    REAL_TIME_SECONDS_OPTION_ID => [
+        'name' => totranslate('Timer Duration'),
+        'displaycondition' => [
+              [
+                  'type' => 'otheroption',
+                  'id' => SCENARIO_OPTION_ID,
+                  'value' => [ APPROACH_BLACK_KUL_KUALA_LUMPUR, APPROACH_BLACK_DUS_DUSSELDORF]
+              ]
+        ],
+        'values' => [
+            REAL_TIME_60_SECONDS => [
+                'name' => totranslate('60 seconds (default)'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 60 seconds'),
+                'description' => totranslate('You have 60 seconds to place your dice each round. This is the intended way of playing Real-Time scenarios.'),
+                'default' => true,
+            ],
+            REAL_TIME_70_SECONDS => [
+                'name' => totranslate('70 seconds'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 70 seconds'),
+                'description' => totranslate('You have 70 seconds to place your dice each round. This is a more forgiving experience. Some actions are slower on BGA than in real life.'),
+                'default' => true,
+            ],
+            REAL_TIME_80_SECONDS => [
+                'name' => totranslate('80 seconds'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 80 seconds'),
+                'description' => totranslate('You have 80 seconds to place your dice each round. This is the most forgiving experience. Some actions are slower on BGA than in real life.'),
+                'default' => true,
+            ],
+        ]
+        
+    ],
 ];
 
 

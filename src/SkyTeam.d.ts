@@ -108,7 +108,8 @@ interface SkyTeamGameData extends GameData {
     chosenSpecialAbilities: SpecialAbilityCard[],
     rolesThatUsedAdaptation: string[],
     realTimeSecondsRemaining?: number,
-    timerNeedsClearing: boolean
+    timerNeedsClearing: boolean,
+    timerSeconds: number
 }
 
 // ARGS

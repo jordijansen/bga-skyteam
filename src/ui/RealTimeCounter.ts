@@ -1,10 +1,10 @@
 class RealTimeCounter {
 
-    public TIME_LIMIT = 60;
     // Warning occurs at 10s
     public WARNING_THRESHOLD = 20;
     // Alert occurs at 5s
     public ALERT_THRESHOLD = 10;
+
     public secondsRemaining = 0;
     private timerInterval;
     private dialog;
@@ -31,7 +31,7 @@ class RealTimeCounter {
                                     </g>
                                   </svg>
                                   <span id="st-real-time-base-timer-label" class="st-real-time-base-timer-label">
-                                    ${game.gamedatas.realTimeSecondsRemaining >= 0 ? game.gamedatas.realTimeSecondsRemaining : 60}
+                                    ${game.gamedatas.realTimeSecondsRemaining >= 0 ? game.gamedatas.realTimeSecondsRemaining : game.gamedatas.timerSeconds}
                                   </span>
                                 </div>
                             </div>`, `player_boards`, 'first')
@@ -84,8 +84,8 @@ class RealTimeCounter {
     }
 
     public calculateTimeFraction() {
-        const rawTimeFraction = this.secondsRemaining / this.TIME_LIMIT;
-        return rawTimeFraction - (1 / this.TIME_LIMIT) * (1 - rawTimeFraction);
+        const rawTimeFraction = this.secondsRemaining / this.game.gamedatas.timerSeconds;
+        return rawTimeFraction - (1 / this.game.gamedatas.timerSeconds) * (1 - rawTimeFraction);
     }
 
     public setCircleDasharray() {

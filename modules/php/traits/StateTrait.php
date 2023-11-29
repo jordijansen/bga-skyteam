@@ -98,6 +98,32 @@ trait StateTrait
             'newPhase' => PHASE_DICE_PLACEMENT
         ]);
 
+        $playerIds = $this->getPlayerIds();
+        foreach ($playerIds as $playerId) {
+            $playerRole = $this->getPlayerRole($playerId);
+            $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLANE));
+            foreach ($playerDice as $playerDie) {
+                $playerDie->setSide(1);
+            }
+            $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
+            $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER, $playerId);
+            $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
+                'playerId' => intval($playerId),
+                'player_name' => $this->getPlayerName($playerId),
+                'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
+            ]);
+        }
+
+        // Remove remaining dice (traffic die if used with synchronisation) (interns)
+        $remainingDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE));
+        if (sizeof($remainingDice) > 0) {
+            $remainingDiceIds = array_map(fn($die) => $die->id, $remainingDice);
+            $this->dice->moveCards($remainingDiceIds, LOCATION_DECK);
+            $this->notifyAllPlayers('diceRemoved', '', [
+                'dice' => Dice::fromArray($this->dice->getCards($remainingDiceIds))
+            ]);
+        }
+
         // Roll the player dice, and notify only the player of the results
         $playerIds = $this->getPlayerIds();
         foreach ($playerIds as $playerId) {
@@ -121,8 +147,8 @@ trait StateTrait
 
         if ($this->isModuleActive(MODULE_REAL_TIME)) {
             $date = new DateTimeImmutable();
-            $this->setGlobalVariable(REAL_TIME_END_TIME, $date->getTimestamp() + 60);
-            $this->notifyAllPlayers("realTimeTimerStarted", clienttranslate('Timer: 60 seconds remaining'), []);
+            $this->setGlobalVariable(REAL_TIME_END_TIME, $date->getTimestamp() + $this->getRealTimeTimerSeconds());
+            $this->notifyAllPlayers("realTimeTimerStarted", clienttranslate('Timer: ${timerSeconds} seconds remaining'), ['timerSeconds' => $this->getRealTimeTimerSeconds()]);
         }
 
         $this->giveExtraTime($startPlayerId);
@@ -321,32 +347,6 @@ trait StateTrait
                 'altitudeHeight' => $altitudeTrack->spaces[$plane->altitude][ALTITUDE_HEIGHT],
                 'altitude' => $plane->altitude
             ]);
-
-            $playerIds = $this->getPlayerIds();
-            foreach ($playerIds as $playerId) {
-                $playerRole = $this->getPlayerRole($playerId);
-                $playerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, $playerRole, LOCATION_PLANE));
-                foreach ($playerDice as $playerDie) {
-                    $playerDie->setSide(1);
-                }
-                $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
-                $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER, $playerId);
-                $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
-                    'playerId' => intval($playerId),
-                    'player_name' => $this->getPlayerName($playerId),
-                    'dice' => Dice::fromArray($this->dice->getCards($playerDiceIds)),
-                ]);
-            }
-
-            // Remove remaining dice (traffic die if used with synchronisation)
-            $remainingDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLANE));
-            if (sizeof($remainingDice) > 0) {
-                $remainingDiceIds = array_map(fn($die) => $die->id, $remainingDice);
-                $this->dice->moveCards($remainingDiceIds, LOCATION_DECK);
-                $this->notifyAllPlayers('diceRemoved', '', [
-                    'dice' => Dice::fromArray($this->dice->getCards($remainingDiceIds))
-                ]);
-            }
 
             $continue = true;
             if ($this->isModuleActive(MODULE_ENGINE_LOSS)) {

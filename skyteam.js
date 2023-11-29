@@ -2869,7 +2869,7 @@ var HelpDialogManager = /** @class */ (function () {
             case 'winds':
                 return _('Immediately after resolving the Axis, the blue Airplane token is moved as many spaces as the current Axis position is off centre, even if the Axis did not move.<br/>When resolving the Engine speed, the wind speed (the number of the space the blue Airplane token is pointing to) is added to the sum of your Engine dice. This modifier applies to all rounds, even the last one.');
             case 'real-time':
-                return _('At the beginning of each round, a 60-second timer is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
+                return _('At the beginning of each round, a 60-second timer (or 70 or 80 seconds) is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
             case 'engine-loss':
                 return _('The 2 Engines Action Spaces will not be used. Each round, the players roll their 4 dice but only play 3. At the end of the round, the Approach Track is automatically advanced by 1 space.<br/><br/>Note: Ice Brakes Module<br/>There is no actual ice on the landing strip here, but you’ll need a much stronger braking system to perform an emergency landing.');
             default:
@@ -3262,14 +3262,13 @@ var RealTimeCounter = /** @class */ (function () {
         var _this = this;
         this.game = game;
         this.onTimerFinished = onTimerFinished;
-        this.TIME_LIMIT = 60;
         // Warning occurs at 10s
         this.WARNING_THRESHOLD = 20;
         // Alert occurs at 5s
         this.ALERT_THRESHOLD = 10;
         this.secondsRemaining = 0;
         if (game.gamedatas.scenario.modules.includes('real-time')) {
-            dojo.place("<div id=\"st-real-time-wrapper\" class=\"player-board\" style=\"height: auto;\">\n                                <p>".concat(_('Time Remaining'), "</p>\n                                <div class=\"st-real-time-base-timer\">\n                                  <span id=\"st-real-time-help\" class=\"st-action-space-help right\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                                  <svg class=\"st-real-time-base-timer__svg\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">\n                                    <g class=\"st-real-time-base-timer__circle\">\n                                      <circle class=\"st-real-time-base-timer__path-elapsed\" cx=\"50\" cy=\"50\" r=\"45\" />\n                                      <path\n                                        id=\"st-real-time-base-timer-remaining\"\n                                        stroke-dasharray=\"283\"\n                                        class=\"st-real-time-base-timer-remaining green\"\n                                        d=\"\n                                          M 50, 50\n                                          m -45, 0\n                                          a 45,45 0 1,0 90,0\n                                          a 45,45 0 1,0 -90,0\n                                        \"\n                                      ></path>\n                                    </g>\n                                  </svg>\n                                  <span id=\"st-real-time-base-timer-label\" class=\"st-real-time-base-timer-label\">\n                                    ").concat(game.gamedatas.realTimeSecondsRemaining >= 0 ? game.gamedatas.realTimeSecondsRemaining : 60, "\n                                  </span>\n                                </div>\n                            </div>"), "player_boards", 'first');
+            dojo.place("<div id=\"st-real-time-wrapper\" class=\"player-board\" style=\"height: auto;\">\n                                <p>".concat(_('Time Remaining'), "</p>\n                                <div class=\"st-real-time-base-timer\">\n                                  <span id=\"st-real-time-help\" class=\"st-action-space-help right\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                                  <svg class=\"st-real-time-base-timer__svg\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">\n                                    <g class=\"st-real-time-base-timer__circle\">\n                                      <circle class=\"st-real-time-base-timer__path-elapsed\" cx=\"50\" cy=\"50\" r=\"45\" />\n                                      <path\n                                        id=\"st-real-time-base-timer-remaining\"\n                                        stroke-dasharray=\"283\"\n                                        class=\"st-real-time-base-timer-remaining green\"\n                                        d=\"\n                                          M 50, 50\n                                          m -45, 0\n                                          a 45,45 0 1,0 90,0\n                                          a 45,45 0 1,0 -90,0\n                                        \"\n                                      ></path>\n                                    </g>\n                                  </svg>\n                                  <span id=\"st-real-time-base-timer-label\" class=\"st-real-time-base-timer-label\">\n                                    ").concat(game.gamedatas.realTimeSecondsRemaining >= 0 ? game.gamedatas.realTimeSecondsRemaining : game.gamedatas.timerSeconds, "\n                                  </span>\n                                </div>\n                            </div>"), "player_boards", 'first');
             if (game.gamedatas.realTimeSecondsRemaining >= 0) {
                 this.start(game.gamedatas.realTimeSecondsRemaining);
             }
@@ -3316,8 +3315,8 @@ var RealTimeCounter = /** @class */ (function () {
         }
     };
     RealTimeCounter.prototype.calculateTimeFraction = function () {
-        var rawTimeFraction = this.secondsRemaining / this.TIME_LIMIT;
-        return rawTimeFraction - (1 / this.TIME_LIMIT) * (1 - rawTimeFraction);
+        var rawTimeFraction = this.secondsRemaining / this.game.gamedatas.timerSeconds;
+        return rawTimeFraction - (1 / this.game.gamedatas.timerSeconds) * (1 - rawTimeFraction);
     };
     RealTimeCounter.prototype.setCircleDasharray = function () {
         var circleDasharray = "".concat((this.calculateTimeFraction() * 283).toFixed(0), " 283");
@@ -4107,7 +4106,7 @@ var SkyTeam = /** @class */ (function () {
         }
     };
     SkyTeam.prototype.notif_realTimeTimerStarted = function () {
-        this.realTimeCounter.start(60);
+        this.realTimeCounter.start(this.gamedatas.timerSeconds);
     };
     SkyTeam.prototype.notif_realTimeTimerCleared = function () {
         this.realTimeCounter.clear();

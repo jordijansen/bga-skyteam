@@ -9,12 +9,20 @@ use objects\ApproachTrack;
 
 trait UtilsTrait
 {
+    function getRealTimeTimerSeconds(): int
+    {
+        $value = $this->getGameStateValue(REAL_TIME_SECONDS);
+        if ($value != null) {
+            return intval($value);
+        }
+        return 60;
+    }
+
     /**
      * @return ApproachTrack
      */
     function getApproachTrack()
     {
-        // TODO GET BASED ON SCENARIO
         return ReflectionUtils::rebuildAllPropertyValues($this->APPROACH_TRACKS[$this->getScenario()->approach], ApproachTrack::class);
     }
 
