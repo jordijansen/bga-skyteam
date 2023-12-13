@@ -1498,16 +1498,16 @@ body > .card {
   transform: rotateX(-180deg) translateZ(1.364em);
 }
 .st-dice .side[data-side="3"] {
-  transform: rotateY(-90deg) translateZ(1.364em);
+  transform: rotateY(-90.1deg) translateZ(1.364em);
 }
 .st-dice .side[data-side="4"] {
-  transform: rotateX(90deg) translateZ(1.364em);
+  transform: rotateX(90.1deg) translateZ(1.364em);
 }
 .st-dice .side[data-side="5"] {
-  transform: rotateX(-90deg) translateZ(1.364em);
+  transform: rotateX(-90.1deg) translateZ(1.364em);
 }
 .st-dice .side[data-side="6"] {
-  transform: rotateY(90deg) translateZ(1.364em);
+  transform: rotateY(90.1deg) translateZ(1.364em);
 }
 .st-dice[data-value="1"] {
   transform: rotateX(720deg) rotateZ(-720deg);
