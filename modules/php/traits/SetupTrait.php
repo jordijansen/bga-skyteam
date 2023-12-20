@@ -58,7 +58,7 @@ trait SetupTrait
 
     private function setInitialPlaneParameters()
     {
-        $this->planeManager->save(new Plane(0, 4, 8, 0, 1, 1, 20, 10));
+        $this->planeManager->save(new Plane(0, 4, 8, 0, 1, $this->getStartingAltitude(), 20, 10));
         $query = 'INSERT INTO plane_switch (id, value) VALUES ';
         $queryValues = [];
         foreach ($this->PLANE_SWITCHES as $i => $planeSwitch) {
@@ -121,8 +121,9 @@ trait SetupTrait
         $this->tokens->createCards($planeTokens, LOCATION_RESERVE);
 
         $rerollCreated = 0;
+        $startingAltitude = $this->getStartingAltitude();
         foreach ($altitudeTrack->spaces as $spaceId => $space) {
-            if (array_key_exists(TOKEN_REROLL, $space) && $space[TOKEN_REROLL] > 0) {
+            if ($spaceId >= $startingAltitude && array_key_exists(TOKEN_REROLL, $space) && $space[TOKEN_REROLL] > 0) {
                 $rerollTokens = [['type' => TOKEN_REROLL, 'type_arg' => TOKEN_REROLL, 'nbr' => $space[TOKEN_REROLL]]];
                 $this->tokens->createCards($rerollTokens, LOCATION_ALTITUDE, $spaceId);
                 $rerollCreated = $rerollCreated + $space[TOKEN_REROLL];
@@ -130,5 +131,13 @@ trait SetupTrait
         }
         $rerollTokens = [['type' => TOKEN_REROLL, 'type_arg' => TOKEN_REROLL, 'nbr' => 3 - $rerollCreated]];
         $this->tokens->createCards($rerollTokens, LOCATION_RESERVE);
+    }
+
+    private function getStartingAltitude() {
+        $altitude = 1;
+        if ($this->isModuleActive(MODULE_MODIFIED_ALTITUDE)) {
+            $altitude = $this->getScenario()->modifiedAltitude;
+        }
+        return $altitude;
     }
 }

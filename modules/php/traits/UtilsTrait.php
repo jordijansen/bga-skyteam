@@ -52,6 +52,11 @@ trait UtilsTrait
         return in_array($module, $this->getScenario()->modules);
     }
 
+    function isOneOfModulesActive($module1, $module2): bool
+    {
+        return $this->isModuleActive($module1) || $this->isModuleActive($module2);
+    }
+
     function getVictoryConditions()
     {
         $VICTORY_CONDITIONS = [

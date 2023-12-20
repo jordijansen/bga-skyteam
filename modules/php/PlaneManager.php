@@ -197,7 +197,7 @@ class PlaneManager extends APP_DbObject
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                     $continue = false;
-                } else if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                } else if (SkyTeam::$instance->isOneOfModulesActive(MODULE_WINDS, MODULE_WINDS_HEADON)) {
                     $plane->wind = $plane->wind + $plane->axis;
                     if ($plane->wind < 0) {
                         $plane->wind = 20 - abs($plane->wind);
@@ -253,7 +253,7 @@ class PlaneManager extends APP_DbObject
                         // If this is the final round check the engine versus the brakes and fail immediatly if not reached.
                         $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                         $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b>');
-                        if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                        if (SkyTeam::$instance->isOneOfModulesActive(MODULE_WINDS, MODULE_WINDS_HEADON)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                             $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue} (wind modifier: ${windModifier})');
                         }
@@ -271,7 +271,7 @@ class PlaneManager extends APP_DbObject
                     } else {
                         $totalEngineValue = $die->value + $otherEngineSpaceDie->value;
                         $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue}</b> : approach the airport <b>${advanceApproachSpaces}</b> space(s)');
-                        if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                        if (SkyTeam::$instance->isOneOfModulesActive(MODULE_WINDS, MODULE_WINDS_HEADON)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                             $logMessage = clienttranslate('The plane speed is at <b>${totalEngineValue} (wind modifier: ${windModifier})</b>: approach the airport <b>${advanceApproachSpaces}</b> space(s)');
                         }
@@ -528,7 +528,7 @@ class PlaneManager extends APP_DbObject
                     $dice2 = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLANE, 'engines-2'));
                     if (sizeof($dice1) == 1 && sizeof($dice2) == 1) {
                         $totalEngineValue = current($dice1)->value + current($dice2)->value;
-                        if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
+                        if (SkyTeam::$instance->isOneOfModulesActive(MODULE_WINDS, MODULE_WINDS_HEADON)) {
                             $totalEngineValue = $totalEngineValue + $plane->getWindModifier();
                         }
                         if ($totalEngineValue <= $plane->brake && $plane->brake >= 2) {

@@ -2,6 +2,7 @@
 namespace objects;
 use APP_GameClass;
 use managers\objects\PlaneSwitch;
+use SkyTeam;
 
 class Plane extends APP_GameClass {
 
@@ -40,34 +41,66 @@ class Plane extends APP_GameClass {
     }
 
     public function getWindModifier() {
-        switch ($this->wind) {
-            case 0:
-            case 19:
-            case 1:
-                return -3;
-            case 2:
-            case 18:
-            case 17:
-            case 3:
-                return -2;
-            case 16:
-            case 4:
-                return -1;
-            case 15:
-            case 5:
-                return 0;
-            case 14:
-            case 6:
-                return +1;
-            case 7:
-            case 13:
-            case 12:
-            case 8:
-                return +2;
-            case 9:
-            case 10:
-            case 11:
-                return +3;
+        if (SkyTeam::$instance->isModuleActive(MODULE_WINDS_HEADON)) {
+            switch ($this->wind) {
+                case 0:
+                case 19:
+                case 1:
+                    return +3;
+                case 2:
+                case 18:
+                case 17:
+                case 3:
+                    return +2;
+                case 16:
+                case 4:
+                    return +1;
+                case 15:
+                case 5:
+                    return 0;
+                case 14:
+                case 6:
+                    return -1;
+                case 7:
+                case 13:
+                case 12:
+                case 8:
+                    return -2;
+                case 9:
+                case 10:
+                case 11:
+                    return -3;
+            }
+        } else {
+            switch ($this->wind) {
+                case 0:
+                case 19:
+                case 1:
+                    return -3;
+                case 2:
+                case 18:
+                case 17:
+                case 3:
+                    return -2;
+                case 16:
+                case 4:
+                    return -1;
+                case 15:
+                case 5:
+                    return 0;
+                case 14:
+                case 6:
+                    return +1;
+                case 7:
+                case 13:
+                case 12:
+                case 8:
+                    return +2;
+                case 9:
+                case 10:
+                case 11:
+                    return +3;
+            }
         }
     }
 }

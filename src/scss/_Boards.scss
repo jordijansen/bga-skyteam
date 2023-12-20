@@ -76,6 +76,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    &.winds-headon {
+      background-image: url("img/skyteam-winds-headon-board.png");
+    }
     #st-winds-plane {
       transition: transform 1s ease-in-out;
       @for $i from 0 through 19 {

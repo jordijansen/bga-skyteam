@@ -111,6 +111,8 @@ const MODULE_KEROSENE_LEAK = 'kerosene-leak';
 const MODULE_REAL_TIME = 'real-time';
 const MODULE_ICE_BRAKES = 'ice-brakes';
 const MODULE_ENGINE_LOSS = 'engine-loss';
+const MODULE_WINDS_HEADON = 'winds-headon';
+const MODULE_MODIFIED_ALTITUDE = 'modified-altitude';
 
 /**
  * State
@@ -219,7 +221,13 @@ const APPROACH_RED_CDG_PARIS = 12;
 const APPROACH_YELLOW_CDG_PARIS = 13;
 const APPROACH_YELLOW_TER_LAJES = 14;
 const APPROACH_BLACK_TER_LAJES = 15;
-
+// WAVE 3
+const APPROACH_BLACK_NZIR = 16;
+const APPROACH_RED_NZIR = 17;
+const APPROACH_GREEN_BUD_BUDAPEST = 18;
+const APPROACH_RED_BUD_BUDAPEST = 19;
+const APPROACH_RED_BLQ_GUGLIELMO_MARCONI = 20;
+const APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI = 21;
 
 /**
  * Altitude

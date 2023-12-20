@@ -584,6 +584,9 @@ body > .card {
   justify-content: center;
   align-items: center;
 }
+#st-main-board-right #st-winds-board.winds-headon {
+  background-image: url("img/skyteam-winds-headon-board.png");
+}
 #st-main-board-right #st-winds-board #st-winds-plane {
   transition: transform 1s ease-in-out;
 }
@@ -1672,7 +1675,7 @@ body > .card {
 
 .st-approach {
   background-image: url("img/skyteam-approach-tracks.png");
-  background-size: 1500% auto;
+  background-size: 2100% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -1683,58 +1686,82 @@ body > .card {
 }
 .st-approach[data-type="2"] {
   height: 818px;
-  background-position: 7.142857143% 0;
+  background-position: 5% 0;
 }
 .st-approach[data-type="3"] {
   height: 818px;
-  background-position: 14.285714286% 0;
+  background-position: 10% 0;
 }
 .st-approach[data-type="4"] {
   height: 528px;
-  background-position: 21.428571429% 0;
+  background-position: 15% 0;
 }
 .st-approach[data-type="5"] {
   height: 818px;
-  background-position: 28.571428572% 0;
+  background-position: 20% 0;
 }
 .st-approach[data-type="6"] {
   height: 528px;
-  background-position: 35.714285715% 0;
+  background-position: 25% 0;
 }
 .st-approach[data-type="7"] {
   height: 818px;
-  background-position: 42.857142858% 0;
+  background-position: 30% 0;
 }
 .st-approach[data-type="8"] {
   height: 720px;
-  background-position: 50.000000001% 0;
+  background-position: 35% 0;
 }
 .st-approach[data-type="9"] {
   height: 720px;
-  background-position: 57.142857144% 0;
+  background-position: 40% 0;
 }
 .st-approach[data-type="10"] {
   height: 818px;
-  background-position: 64.285714287% 0;
+  background-position: 45% 0;
 }
 .st-approach[data-type="11"] {
   height: 818px;
-  background-position: 71.42857143% 0;
+  background-position: 50% 0;
 }
 .st-approach[data-type="12"] {
   height: 818px;
-  background-position: 78.571428573% 0;
+  background-position: 55% 0;
 }
 .st-approach[data-type="13"] {
   height: 818px;
-  background-position: 85.714285716% 0;
+  background-position: 60% 0;
 }
 .st-approach[data-type="14"] {
-  height: 818px;
-  background-position: 92.857142859% 0;
+  height: 720px;
+  background-position: 65% 0;
 }
 .st-approach[data-type="15"] {
+  height: 720px;
+  background-position: 70% 0;
+}
+.st-approach[data-type="16"] {
   height: 818px;
+  background-position: 75% 0;
+}
+.st-approach[data-type="17"] {
+  height: 818px;
+  background-position: 80% 0;
+}
+.st-approach[data-type="18"] {
+  height: 625px;
+  background-position: 85% 0;
+}
+.st-approach[data-type="19"] {
+  height: 625px;
+  background-position: 90% 0;
+}
+.st-approach[data-type="20"] {
+  height: 625px;
+  background-position: 95% 0;
+}
+.st-approach[data-type="21"] {
+  height: 625px;
   background-position: 100% 0;
 }
 

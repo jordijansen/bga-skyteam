@@ -8,6 +8,7 @@ class Scenario extends APP_GameClass {
     public int $altitude;
     public array $modules;
     public ?int $nrOfSpecialAbilities;
+    public ?int $modifiedAltitude;
 
     /**
      * @param int $approach

@@ -467,6 +467,8 @@ trait ActionTrait
                 $date = new DateTimeImmutable();
                 $realTimeEndTime = intval($realTimeEndTime);
                 $secondsRemaining = $realTimeEndTime - $date->getTimestamp();
+                // We add a server correction because the UI might still be behind on seconds.
+                $secondsRemaining = $secondsRemaining + 2;
                 if ($secondsRemaining <= 0) {
                     $this->deleteGlobalVariable(REAL_TIME_END_TIME);
                     $this->notifyAllPlayers("gameLog", clienttranslate('Timer: 0 seconds remaining, ending dice placement phase'), []);

@@ -230,24 +230,30 @@
 
 .st-approach {
   background-image: url('img/skyteam-approach-tracks.png');
-  background-size: 1500% auto;
+  background-size: 2100% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 
   &[data-type="1"] { height: 720px; background-position: 0 0; }
-  &[data-type="2"] { height: 818px; background-position:  calc(7.142857143% * 1) 0; }
-  &[data-type="3"] { height: 818px; background-position:  calc(7.142857143% * 2) 0; }
-  &[data-type="4"] { height: 528px; background-position:  calc(7.142857143% * 3) 0; }
-  &[data-type="5"] { height: 818px; background-position:  calc(7.142857143% * 4) 0; }
-  &[data-type="6"] { height: 528px; background-position:  calc(7.142857143% * 5) 0; }
-  &[data-type="7"] { height: 818px; background-position:  calc(7.142857143% * 6) 0; }
-  &[data-type="8"] { height: 720px; background-position:  calc(7.142857143% * 7) 0; }
-  &[data-type="9"] { height: 720px; background-position:  calc(7.142857143% * 8) 0; }
-  &[data-type="10"] { height: 818px; background-position: calc(7.142857143% * 9) 0; }
-  &[data-type="11"] { height: 818px; background-position: calc(7.142857143% * 10) 0; }
-  &[data-type="12"] { height: 818px; background-position: calc(7.142857143% * 11) 0; }
-  &[data-type="13"] { height: 818px; background-position: calc(7.142857143% * 12) 0; }
-  &[data-type="14"] { height: 818px; background-position: calc(7.142857143% * 13) 0; }
-  &[data-type="15"] { height: 818px; background-position: 100% 0; }
+  &[data-type="2"] { height: 818px; background-position:  calc(5% * 1) 0; }
+  &[data-type="3"] { height: 818px; background-position:  calc(5% * 2) 0; }
+  &[data-type="4"] { height: 528px; background-position:  calc(5% * 3) 0; }
+  &[data-type="5"] { height: 818px; background-position:  calc(5% * 4) 0; }
+  &[data-type="6"] { height: 528px; background-position:  calc(5% * 5) 0; }
+  &[data-type="7"] { height: 818px; background-position:  calc(5% * 6) 0; }
+  &[data-type="8"] { height: 720px; background-position:  calc(5% * 7) 0; }
+  &[data-type="9"] { height: 720px; background-position:  calc(5% * 8) 0; }
+  &[data-type="10"] { height: 818px; background-position: calc(5% * 9) 0; }
+  &[data-type="11"] { height: 818px; background-position: calc(5% * 10) 0; }
+  &[data-type="12"] { height: 818px; background-position: calc(5% * 11) 0; }
+  &[data-type="13"] { height: 818px; background-position: calc(5% * 12) 0; }
+  &[data-type="14"] { height: 720px; background-position: calc(5% * 13) 0; }
+  &[data-type="15"] { height: 720px; background-position: calc(5% * 14) 0; }
+  &[data-type="16"] { height: 818px; background-position: calc(5% * 15) 0; }
+  &[data-type="17"] { height: 818px; background-position: calc(5% * 16) 0; }
+  &[data-type="18"] { height: 625px; background-position: calc(5% * 17) 0; }
+  &[data-type="19"] { height: 625px; background-position: calc(5% * 18) 0; }
+  &[data-type="20"] { height: 625px; background-position: calc(5% * 19) 0; }
+  &[data-type="21"] { height: 625px; background-position: 100% 0; }
 }

@@ -104,6 +104,18 @@ $game_options = [
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Turns. With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
                 'nobeginner' => true,
             ],
+//            APPROACH_GREEN_BUD_BUDAPEST => [
+//                'name' => totranslate('Green: BUD - Budapest Ferenc Liszt'),
+//                'tmdisplay' => totranslate('Green: BUD - Budapest Ferenc Liszt'),
+//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns & Winds. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+//                'nobeginner' => true,
+//            ],
+//            APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+//                'name' => totranslate('Green: BLQ - Guglielmo Marconi'),
+//                'tmdisplay' => totranslate('Green: BLQ - Guglielmo Marconi'),
+//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns & Kerosene Leak. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+//                'nobeginner' => true,
+//            ],
             // YELLOW
             APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
@@ -138,7 +150,7 @@ $game_options = [
             APPROACH_YELLOW_TER_LAJES => [
                 'name' => totranslate('Yellow: TER - Lajes, Açores'),
                 'tmdisplay' => totranslate('Yellow: TER - Lajes, Açores'),
-                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Ability. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
                 'nobeginner' => true,
             ],
             // RED
@@ -160,6 +172,24 @@ $game_options = [
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Winds & Intern. Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
                 'nobeginner' => true,
             ],
+            APPROACH_RED_NZIR => [
+                'name' => totranslate('Red: NZIR - Ice Runway'),
+                'tmdisplay' => totranslate('Red: NZIR - Ice Runway'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Ice Brakes, Winds HEAD-ON & 1 Special Ability. A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The all-white landscape suggests a landing strip on the ice floe! In this month of November, the ice is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal.'),
+                'nobeginner' => true,
+            ],
+//            APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+//                'name' => totranslate('Red: BLQ - Guglielmo Marconi'),
+//                'tmdisplay' => totranslate('Red: BLQ - Guglielmo Marconi'),
+//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+//                'nobeginner' => true,
+//            ],
+//            APPROACH_RED_BUD_BUDAPEST => [
+//                'name' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
+//                'tmdisplay' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
+//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Altitude: 5000, Winds & 2 Special Abilities. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+//                'nobeginner' => true,
+//            ],
             // BLACK
             APPROACH_BLACK_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
@@ -182,9 +212,15 @@ $game_options = [
             APPROACH_BLACK_TER_LAJES => [
                 'name' => totranslate('Black: TER - Lajes, Açores'),
                 'tmdisplay' => totranslate('Black: TER - Lajes, Açores'),
-                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Ability. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
                 'nobeginner' => true,
             ],
+            APPROACH_BLACK_NZIR => [
+                'name' => totranslate('Black: NZIR - Ice Runway'),
+                'tmdisplay' => totranslate('Black: NZIR - Ice Runway'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Kerosene, Intern & Winds HEAD-ON. A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The all-white landscape suggests a landing strip on the ice floe! In this month of November, the ice is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal.'),
+                'nobeginner' => true,
+            ]
         ]
     ],
     REAL_TIME_SECONDS_OPTION_ID => [

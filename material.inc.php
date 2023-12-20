@@ -242,10 +242,10 @@ $this->APPROACH_TRACKS = [
             7 => [TOKEN_PLANE => 3],
             6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
             5 => [TOKEN_PLANE => 2],
-            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 2],
             3 => [DICE_TRAFFIC => 1],
             2 => [ALLOWED_AXIS => [0]],
-            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 2],
         ]
     ],
     APPROACH_YELLOW_DUS_DUSSELDORF => [
@@ -324,6 +324,95 @@ $this->APPROACH_TRACKS = [
             3 => [ALLOWED_AXIS => [-2, -1]],
             2 => [ALLOWED_AXIS => [1, 2]],
             1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    // WAVE 3
+    APPROACH_BLACK_NZIR => [
+        'type' => APPROACH_BLACK_NZIR,
+        'category' => APPROACH_BLACK,
+        'name' => 'NZIR Ice Runway',
+        'size' => 8,
+        'spaces' => [
+            8 => [],
+            7 => [ALLOWED_AXIS => [-1, 0]],
+            6 => [],
+            5 => [ALLOWED_AXIS => [1, 2]],
+            4 => [],
+            3 => [ALLOWED_AXIS => [-1, 0]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_RED_NZIR => [
+        'type' => APPROACH_RED_NZIR,
+        'category' => APPROACH_YELLOW,
+        'name' => 'NZIR Ice Runway',
+        'size' => 8,
+        'spaces' => [
+            8 => [],
+            7 => [],
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1]],
+            4 => [TOKEN_PLANE => 1],
+            3 => [],
+            2 => [ALLOWED_AXIS => [-2, -1]],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_GREEN_BUD_BUDAPEST => [
+        'type' => APPROACH_GREEN_BUD_BUDAPEST,
+        'category' => APPROACH_GREEN,
+        'name' => 'BUD Budapest Liszt Ferenc',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_RED_BUD_BUDAPEST => [
+        'type' => APPROACH_RED_BUD_BUDAPEST,
+        'category' => APPROACH_RED,
+        'name' => 'BUD Budapest Liszt Ferenc',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 4],
+        ]
+    ],
+    APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+        'type' => APPROACH_RED_BLQ_GUGLIELMO_MARCONI,
+        'category' => APPROACH_RED,
+        'name' => 'BLQ Guglielmo Marconi',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0]],
+            3 => [TOKEN_PLANE => 2],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0]],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+        'type' => APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI,
+        'category' => APPROACH_GREEN,
+        'name' => 'BLQ Guglielmo Marconi',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1]],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0]],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
         ]
     ],
 ];
@@ -415,7 +504,42 @@ $this->SCENARIOS = [
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
-    ]
+    ],
+    // WAVE 3
+    APPROACH_BLACK_NZIR => [
+        'approach' => APPROACH_BLACK_NZIR,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_KEROSENE, MODULE_INTERN, MODULE_WINDS_HEADON],
+    ],
+    APPROACH_RED_NZIR => [
+        'approach' => APPROACH_RED_NZIR,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_WINDS_HEADON, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_GREEN_BUD_BUDAPEST => [
+        'approach' => APPROACH_GREEN_BUD_BUDAPEST,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS],
+    ],
+    APPROACH_RED_BUD_BUDAPEST => [
+        'approach' => APPROACH_RED_BUD_BUDAPEST,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS, MODULE_SPECIAL_ABILITIES, MODULE_MODIFIED_ALTITUDE],
+        'nrOfSpecialAbilities' => 2,
+        'modifiedAltitude' => 2
+    ],
+    APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+        'approach' => APPROACH_RED_BLQ_GUGLIELMO_MARCONI,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+    ],
+    APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+        'approach' => APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK],
+    ],
 ];
 
 $this->ALTITUDE_TRACKS = [

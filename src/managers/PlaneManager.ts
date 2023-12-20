@@ -92,10 +92,12 @@ class PlaneManager  {
             dojo.connect($(`st-kerosene-leak-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'kerosene-leak'))
         }
 
-        if(!data.scenario.modules.includes('winds')) {
+        if(!data.scenario.modules.includes('winds') && !data.scenario.modules.includes('winds-headon')) {
             $('st-winds-board').style.display = 'none';
         } else {
-            dojo.connect($(`st-winds-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'winds'))
+            const module = data.scenario.modules.includes('winds') ? 'winds' : 'winds-headon';
+            $('st-winds-board').classList.add(module)
+            dojo.connect($(`st-winds-help`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, module))
         }
         if(!data.scenario.modules.includes('intern')) {
             $('st-intern-board').style.display = 'none';
