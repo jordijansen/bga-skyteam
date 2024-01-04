@@ -3994,6 +3994,7 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_diceRolled = function (args) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
+        this.diceManager.playerDiceStock.removeAll();
         var promises = args.dice.map(function (die) {
             var cardStock = _this.diceManager.getCardStock(die);
             if (!cardStock) {

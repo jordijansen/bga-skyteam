@@ -486,6 +486,11 @@ trait ActionTrait
                         $this->setGlobalVariable(FAILURE_REASON, FAILURE_MANDATORY_SPACE_EMPTY);
                         $this->gamestate->jumpToState(ST_PLANE_FAILURE);
                     } else {
+                        $trafficDiceStillWithPlayer = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_TRAFFIC, null, LOCATION_PLAYER));
+                        if (sizeof($trafficDiceStillWithPlayer) > 0) {
+                            $dieIds = array_map(fn($die) => $die->id, $trafficDiceStillWithPlayer);
+                            $this->dice->moveCards($dieIds, LOCATION_DECK);
+                        }
                         $this->gamestate->jumpToState(ST_END_OF_ROUND);
                     }
                     return true;

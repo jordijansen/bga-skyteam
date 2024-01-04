@@ -212,7 +212,7 @@ $game_options = [
             APPROACH_BLACK_TER_LAJES => [
                 'name' => totranslate('Black: TER - Lajes, Açores'),
                 'tmdisplay' => totranslate('Black: TER - Lajes, Açores'),
-                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 1 Special Abilities. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
                 'nobeginner' => true,
             ],
             APPROACH_BLACK_NZIR => [

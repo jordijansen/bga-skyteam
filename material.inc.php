@@ -240,7 +240,7 @@ $this->APPROACH_TRACKS = [
         'spaces' => [
             8 => [TOKEN_PLANE => 2],
             7 => [TOKEN_PLANE => 3],
-            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            6 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
             5 => [TOKEN_PLANE => 2],
             4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 2],
             3 => [DICE_TRAFFIC => 1],

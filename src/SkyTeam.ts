@@ -744,6 +744,7 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
+        this.diceManager.playerDiceStock.removeAll();
         const promises = args.dice.map(die => {
             let cardStock = this.diceManager.getCardStock(die);
             if (!cardStock) {
