@@ -36,7 +36,7 @@ class DiceManager extends CardManager<Dice> {
         this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px', sort: sortFunction('type')})
         dojo.place(`<div id="${DiceManager.OTHER_PLAYER_AREA}"></div>`, `player_board_${Object.keys(this.game.gamedatas.players).find(playerId => Number(playerId) !== Number(this.game.getPlayerId()))}`)
         this.otherPlayerDiceStock = new VoidStock<Dice>(this, $(DiceManager.OTHER_PLAYER_AREA))
-        this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), {})
+        this.trafficDiceStock = new LineStock<Dice>(this, $(DiceManager.TRAFFIC_DICE), { wrap: 'nowrap'})
         this.trafficDiceStock.addCards(data.trafficDice);
 
         const internDiceSlots = [0,1,2,3,4,5].map(slotId => `st-intern-slot-${slotId}`);

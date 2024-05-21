@@ -64,6 +64,8 @@ class SpendCoffee {
     }
 
     public destroy() {
+        this.initiate(null, 0, null);
+
         const element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
 

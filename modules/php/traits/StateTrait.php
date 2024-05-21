@@ -22,8 +22,14 @@ trait StateTrait
         $newRoundNumber = $this->getGlobalVariable(CURRENT_ROUND) + 1;
         $this->setGlobalVariable(CURRENT_ROUND, $newRoundNumber);
 
-        $this->notifyAllPlayers("newRoundStarted", clienttranslate('Round (${roundNumber}/7) started'), [
+        $totalRounds = 7;
+        if ($this->isModuleActive(MODULE_MODIFIED_ALTITUDE)) {
+            $totalRounds = $totalRounds - ($this->getScenario()->modifiedAltitude - 1);
+        }
+
+        $this->notifyAllPlayers("newRoundStarted", clienttranslate('Round (${roundNumber}/${totalRounds}) started'), [
             'roundNumber' => $newRoundNumber,
+            'totalRounds' => $totalRounds,
             'finalRound' => $this->isFinalRound()
         ]);
 

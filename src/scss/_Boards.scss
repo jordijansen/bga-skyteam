@@ -17,7 +17,7 @@
   justify-content: space-between;
   align-items: end;
   #st-kerosene-board {
-    background-image: url("img/skyteam-kerosene-board.jpg");
+    background-image: url("img/skyteam-kerosene-board.png");
     width: 118px;
     height: 637px;
     position: relative;
@@ -48,7 +48,12 @@
       top: 70px;
     }
     #st-token-reserve-reroll {
-      top: 140px;
+      top: 135px;
+      left: -17px;
+      .bga-cards_deck-counter {
+        left: 22px;
+        top: 48px;
+      }
     }
     #st-token-reserve-coffee {
       top: 210px;
@@ -197,8 +202,8 @@
 
           #st-available-reroll {
             position: absolute;
-            top: 37px;
-            left: 29px;
+            top: 30px;
+            left: 22px
           }
 
           #st-action-spaces {

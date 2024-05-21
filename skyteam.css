@@ -465,7 +465,7 @@ body > .card {
   align-items: end;
 }
 #st-main-board-left #st-kerosene-board {
-  background-image: url("img/skyteam-kerosene-board.jpg");
+  background-image: url("img/skyteam-kerosene-board.png");
   width: 118px;
   height: 637px;
   position: relative;
@@ -557,7 +557,12 @@ body > .card {
   top: 70px;
 }
 #st-main-board-left #st-token-reserve #st-token-reserve-reroll {
-  top: 140px;
+  top: 135px;
+  left: -17px;
+}
+#st-main-board-left #st-token-reserve #st-token-reserve-reroll .bga-cards_deck-counter {
+  left: 22px;
+  top: 48px;
 }
 #st-main-board-left #st-token-reserve #st-token-reserve-coffee {
   top: 210px;
@@ -878,8 +883,8 @@ body > .card {
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-available-reroll {
   position: absolute;
-  top: 37px;
-  left: 29px;
+  top: 30px;
+  left: 22px;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #axis-1 {
   top: 129px;
@@ -1297,7 +1302,13 @@ body > .card {
   height: 25px;
 }
 .st-token[data-type=reroll] {
+  width: 65px;
+  height: 65px;
   background-position: 0 0;
+}
+.st-token[data-type=reroll].small {
+  width: 25px;
+  height: 25px;
 }
 .st-token[data-type=coffee] {
   width: 47px;

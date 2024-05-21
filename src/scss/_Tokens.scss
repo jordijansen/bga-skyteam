@@ -62,7 +62,16 @@
   background-size: 300% auto;
   display: inline-block;
   vertical-align: middle;
-  &[data-type="reroll"] {background-position: 0 0;}
+  &[data-type="reroll"] {
+    width: 65px;
+    height: 65px;
+    background-position: 0 0;
+
+    &.small {
+      width: 25px;
+      height: 25px;
+    }
+  }
   &[data-type="coffee"] {
     width: 47px;
     height: 42px;

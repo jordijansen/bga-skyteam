@@ -104,18 +104,12 @@ $game_options = [
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Turns. With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_GREEN_BUD_BUDAPEST => [
-//                'name' => totranslate('Green: BUD - Budapest Ferenc Liszt'),
-//                'tmdisplay' => totranslate('Green: BUD - Budapest Ferenc Liszt'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns & Winds. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
-//                'name' => totranslate('Green: BLQ - Guglielmo Marconi'),
-//                'tmdisplay' => totranslate('Green: BLQ - Guglielmo Marconi'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns & Kerosene Leak. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+                'name' => totranslate('Green: BLQ - Guglielmo Marconi'),
+                'tmdisplay' => totranslate('Green: BLQ - Guglielmo Marconi'),
+                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns & Kerosene Leak. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+                'nobeginner' => true,
+            ],
             // YELLOW
             APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
@@ -153,6 +147,12 @@ $game_options = [
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities. You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
                 'nobeginner' => true,
             ],
+            APPROACH_YELLOW_BUD_BUDAPEST => [
+                'name' => totranslate('Yellow: BUD - Budapest Ferenc Liszt'),
+                'tmdisplay' => totranslate('Yellow: BUD - Budapest Ferenc Liszt'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns & Winds. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+                'nobeginner' => true,
+            ],
             // RED
             APPROACH_RED_TGU_TONCONTIN => [
                 'name' => totranslate('Red: TGU - Toncontín'),
@@ -178,18 +178,18 @@ $game_options = [
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Ice Brakes, Winds HEAD-ON & 1 Special Ability. A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The all-white landscape suggests a landing strip on the ice floe! In this month of November, the ice is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
-//                'name' => totranslate('Red: BLQ - Guglielmo Marconi'),
-//                'tmdisplay' => totranslate('Red: BLQ - Guglielmo Marconi'),
-//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_RED_BUD_BUDAPEST => [
-//                'name' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
-//                'tmdisplay' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
-//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Altitude: 5000, Winds & 2 Special Abilities. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+                'name' => totranslate('Red: BLQ - Guglielmo Marconi'),
+                'tmdisplay' => totranslate('Red: BLQ - Guglielmo Marconi'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene & 1 Special Ability. You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_BUD_BUDAPEST => [
+                'name' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
+                'tmdisplay' => totranslate('Red: BUD - Budapest Ferenc Liszt'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Altitude: 5000, Winds & 2 Special Abilities. You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+                'nobeginner' => true,
+            ],
             // BLACK
             APPROACH_BLACK_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),

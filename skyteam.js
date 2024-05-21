@@ -2552,6 +2552,7 @@ var ActionSpaceManager = /** @class */ (function () {
         });
     };
     ActionSpaceManager.prototype.moveDieToActionSpace = function (die) {
+        this.game.diceManager.updateDieValue(die);
         return this.actionSpaces[die.locationArg].addCard(die).then(function () { return $(die.locationArg).classList.add('st-action-space-occupied'); });
     };
     ActionSpaceManager.prototype.resetActionSpaceOccupied = function () {
@@ -2623,7 +2624,7 @@ var DiceManager = /** @class */ (function (_super) {
         this.playerDiceStock = new LineStock(this, element, { center: true, gap: '16px', sort: sortFunction('type') });
         dojo.place("<div id=\"".concat(DiceManager.OTHER_PLAYER_AREA, "\"></div>"), "player_board_".concat(Object.keys(this.game.gamedatas.players).find(function (playerId) { return Number(playerId) !== Number(_this.game.getPlayerId()); })));
         this.otherPlayerDiceStock = new VoidStock(this, $(DiceManager.OTHER_PLAYER_AREA));
-        this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), {});
+        this.trafficDiceStock = new LineStock(this, $(DiceManager.TRAFFIC_DICE), { wrap: 'nowrap' });
         this.trafficDiceStock.addCards(data.trafficDice);
         var internDiceSlots = [0, 1, 2, 3, 4, 5].map(function (slotId) { return "st-intern-slot-".concat(slotId); });
         this.internDiceStock = new SlotStock(this, $(DiceManager.INTERN_DICE), {
@@ -3132,6 +3133,7 @@ var SpendCoffee = /** @class */ (function () {
         }
     };
     SpendCoffee.prototype.destroy = function () {
+        this.initiate(null, 0, null);
         var element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
         this.currentDie = null;
@@ -3648,7 +3650,7 @@ var SkyTeam = /** @class */ (function () {
                         this.addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), function () { return _this.requestSwap(); }, null, null, 'gray');
                     }
                     if (args.nrOfRerollAvailable > 0) {
-                        this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
+                        this.addActionButton('useReroll', "<span>".concat(dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll', 'small') }), "</span>"), function () { return _this.requestReroll(); }, null, null, 'gray');
                     }
                     break;
             }
@@ -3994,7 +3996,6 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_diceRolled = function (args) {
         var _this = this;
         this.diceManager.toggleShowPlayerDice(true);
-        this.diceManager.playerDiceStock.removeAll();
         var promises = args.dice.map(function (die) {
             var cardStock = _this.diceManager.getCardStock(die);
             if (!cardStock) {

@@ -359,8 +359,8 @@ $this->APPROACH_TRACKS = [
             1 => [DICE_TRAFFIC => 3],
         ]
     ],
-    APPROACH_GREEN_BUD_BUDAPEST => [
-        'type' => APPROACH_GREEN_BUD_BUDAPEST,
+    APPROACH_YELLOW_BUD_BUDAPEST => [
+        'type' => APPROACH_YELLOW_BUD_BUDAPEST,
         'category' => APPROACH_GREEN,
         'name' => 'BUD Budapest Liszt Ferenc',
         'size' => 6,
@@ -517,8 +517,8 @@ $this->SCENARIOS = [
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_WINDS_HEADON, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
-    APPROACH_GREEN_BUD_BUDAPEST => [
-        'approach' => APPROACH_GREEN_BUD_BUDAPEST,
+    APPROACH_YELLOW_BUD_BUDAPEST => [
+        'approach' => APPROACH_YELLOW_BUD_BUDAPEST,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS],
     ],

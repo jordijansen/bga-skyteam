@@ -68,6 +68,7 @@ class ActionSpaceManager {
     }
 
     public moveDieToActionSpace(die: Dice) {
+        this.game.diceManager.updateDieValue(die);
         return this.actionSpaces[die.locationArg].addCard(die).then(() => $(die.locationArg).classList.add('st-action-space-occupied'));
     }
 

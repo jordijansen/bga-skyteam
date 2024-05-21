@@ -357,7 +357,7 @@ class SkyTeam implements SkyTeamGame {
                         (this as any).addActionButton('useWorkingTogether', _("Use Special Ability: Working Together"), () => this.requestSwap(), null, null, 'gray');
                     }
                     if ((args as DicePlacementSelectArgs).nrOfRerollAvailable > 0) {
-                        (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll') })}</span>`, () => this.requestReroll(), null, null, 'gray');
+                        (this as any).addActionButton('useReroll', `<span>${dojo.string.substitute(_("Use ${token} to reroll dice"), { token: this.tokenIcon('reroll', 'small') })}</span>`, () => this.requestReroll(), null, null, 'gray');
                     }
                     break;
             }
@@ -744,7 +744,6 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
-        this.diceManager.playerDiceStock.removeAll();
         const promises = args.dice.map(die => {
             let cardStock = this.diceManager.getCardStock(die);
             if (!cardStock) {
