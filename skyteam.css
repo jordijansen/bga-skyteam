@@ -1775,6 +1775,62 @@ body > .card {
   height: 625px;
   background-position: 100% 0;
 }
+.st-approach[data-type="22"] {
+  height: 818px;
+  background-position: 0 100%;
+}
+.st-approach[data-type="23"] {
+  height: 818px;
+  background-position: 5% 100%;
+}
+.st-approach[data-type="24"] {
+  height: 720px;
+  background-position: 10% 100%;
+}
+.st-approach[data-type="25"] {
+  height: 720px;
+  background-position: 15% 100%;
+}
+.st-approach[data-type="26"] {
+  height: 625px;
+  background-position: 20% 100%;
+}
+.st-approach[data-type="27"] {
+  height: 625px;
+  background-position: 25% 100%;
+}
+.st-approach[data-type="28"] {
+  height: 818px;
+  background-position: 30% 100%;
+}
+.st-approach[data-type="29"] {
+  height: 818px;
+  background-position: 35% 100%;
+}
+.st-approach[data-type="30"] {
+  height: 625px;
+  background-position: 40% 100%;
+}
+.st-approach[data-type="31"] {
+  height: 625px;
+  background-position: 45% 100%;
+}
+.st-approach[data-type="32"] {
+  height: 625px;
+  background-position: 50% 100%;
+}
+.st-approach[data-type="33"] {
+  height: 625px;
+  background-position: 55% 100%;
+}
+.st-approach[data-type="34"] {
+  height: 818px;
+  background-position: 60% 100%;
+}
+.st-approach[data-type="35"] {
+  height: 818px;
+  background-position: 65% 100%;
+}
 
 @media screen and (max-device-width: 480px) {
   body {

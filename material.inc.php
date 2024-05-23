@@ -345,7 +345,7 @@ $this->APPROACH_TRACKS = [
     ],
     APPROACH_RED_NZIR => [
         'type' => APPROACH_RED_NZIR,
-        'category' => APPROACH_YELLOW,
+        'category' => APPROACH_RED,
         'name' => 'NZIR Ice Runway',
         'size' => 8,
         'spaces' => [
@@ -413,6 +413,217 @@ $this->APPROACH_TRACKS = [
             3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1],
             2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0]],
             1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    // WAVE 4
+    APPROACH_GREEN_ATL => [
+        'type' => APPROACH_GREEN_ATL,
+        'category' => APPROACH_GREEN,
+        'name' => 'ATL Hartsfield-Jackson',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 2],
+            7 => [TOKEN_PLANE => 1],
+            6 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            4 => [],
+            3 => [DICE_TRAFFIC => 1],
+            2 => [],
+            1 => [DICE_TRAFFIC => 4],
+        ]
+    ],
+    APPROACH_YELLOW_ATL => [
+        'type' => APPROACH_YELLOW_ATL,
+        'category' => APPROACH_YELLOW,
+        'name' => 'ATL Hartsfield-Jackson',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [ALLOWED_AXIS => [1, 2], TOKEN_PLANE => 3],
+            6 => [TOKEN_PLANE => 1],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            4 => [DICE_TRAFFIC => 2, TOKEN_PLANE => 2],
+            3 => [ALLOWED_AXIS => [-1, 0, 1]],
+            2 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 1],
+        ]
+    ],
+    APPROACH_YELLOW_GIG => [
+        'type' => APPROACH_YELLOW_GIG,
+        'category' => APPROACH_YELLOW,
+        'name' => 'GIG Galeão',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 3],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            4 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            3 => [TOKEN_PLANE => 2],
+            2 => [],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_RED_GIG => [
+        'type' => APPROACH_RED_GIG,
+        'category' => APPROACH_RED,
+        'name' => 'GIG Galeão',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 2],
+            6 => [TOKEN_PLANE => 1],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_BLACK_PBH => [
+        'type' => APPROACH_BLACK_PBH,
+        'category' => APPROACH_BLACK,
+        'name' => 'PBH Paro',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 1],
+            5 => [ALLOWED_AXIS => [2], DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            4 => [ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            3 => [ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            2 => [],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_RED_PBH => [
+        'type' => APPROACH_RED_PBH,
+        'category' => APPROACH_RED,
+        'name' => 'PBH Paro',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 1],
+            5 => [ALLOWED_AXIS => [1, 2], TOKEN_PLANE => 1],
+            4 => [ALLOWED_AXIS => [-2, -1, 0], DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            3 => [ALLOWED_AXIS => [-2, -1], TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_RED_OSL => [
+        'type' => APPROACH_RED_OSL,
+        'category' => APPROACH_RED,
+        'name' => 'OSL Gardermoen',
+        'size' => 8,
+        'spaces' => [
+            8 => [],
+            7 => [DICE_TRAFFIC => 1],
+            6 => [TOKEN_PLANE => 1],
+            5 => [DICE_TRAFFIC => 1],
+            4 => [],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1],
+            2 => [],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_GREEN_OSL => [
+        'type' => APPROACH_GREEN_OSL,
+        'category' => APPROACH_GREEN,
+        'name' => 'OSL Gardermoen',
+        'size' => 8,
+        'spaces' => [
+            8 => [],
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 1],
+            4 => [DICE_TRAFFIC => 1],
+            3 => [TOKEN_PLANE => 1],
+            2 => [],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_BLACK_KEF => [
+        'type' => APPROACH_BLACK_KEF,
+        'category' => APPROACH_BLACK,
+        'name' => 'KEF Keflavik',
+        'size' => 6,
+        'spaces' => [
+            6 => [],
+            5 => [ALLOWED_AXIS => [-1, 0, 1], TOKEN_PLANE => 1],
+            4 => [ALLOWED_AXIS => [0, 1, 2], TOKEN_PLANE => 1],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            2 => [ALLOWED_AXIS => [-2, -1, 0]],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_YELLOW_KEF => [
+        'type' => APPROACH_YELLOW_KEF,
+        'category' => APPROACH_YELLOW,
+        'name' => 'KEF Keflavik',
+        'size' => 6,
+        'spaces' => [
+            6 => [],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 1],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            2 => [],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_YELLOW_LHR => [
+        'type' => APPROACH_YELLOW_LHR,
+        'category' => APPROACH_YELLOW,
+        'name' => 'LHR Heathrow',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            4 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 2, TOKEN_PLANE => 1],
+        ]
+    ],
+    APPROACH_GREEN_LHR => [
+        'type' => APPROACH_GREEN_LHR,
+        'category' => APPROACH_GREEN,
+        'name' => 'LHR Heathrow',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 2],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 1],
+        ]
+    ],
+    APPROACH_YELLOW_PRG => [
+        'type' => APPROACH_YELLOW_PRG,
+        'category' => APPROACH_YELLOW,
+        'name' => 'PRG Václav Havel',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 3],
+            7 => [TOKEN_PLANE => 2],
+            6 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 3],
+            5 => [],
+            4 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 3],
+            3 => [TOKEN_PLANE => 1],
+            2 => [],
+            1 => [],
+        ]
+    ],
+    APPROACH_GREEN_PRG => [
+        'type' => APPROACH_GREEN_PRG,
+        'category' => APPROACH_GREEN,
+        'name' => 'PRG Václav Havel',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1],
+            6 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            5 => [],
+            4 => [ALLOWED_AXIS => [1, 2], TOKEN_PLANE => 1],
+            3 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1],
+            2 => [ALLOWED_AXIS => [-1, 0]],
+            1 => [DICE_TRAFFIC => 1],
         ]
     ],
 ];
@@ -539,6 +750,87 @@ $this->SCENARIOS = [
         'approach' => APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK],
+    ],
+    // WAVE 4
+    APPROACH_GREEN_ATL => [
+        'approach' => APPROACH_GREEN_ATL,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_INTERN],
+    ],
+    APPROACH_YELLOW_ATL => [
+        'approach' => APPROACH_YELLOW_ATL,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+    ],
+    APPROACH_YELLOW_GIG => [
+        'approach' => APPROACH_YELLOW_GIG,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+    ],
+    APPROACH_RED_GIG => [
+        'approach' => APPROACH_RED_GIG,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_BLACK_PBH => [
+        'approach' => APPROACH_BLACK_PBH,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_RED_PBH => [
+        'approach' => APPROACH_RED_PBH,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_RED_OSL => [
+        'approach' => APPROACH_RED_OSL,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE_LEAK, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_GREEN_OSL => [
+        'approach' => APPROACH_GREEN_OSL,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE],
+    ],
+    APPROACH_BLACK_KEF => [
+        'approach' => APPROACH_BLACK_KEF,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_YELLOW_KEF => [
+        'approach' => APPROACH_YELLOW_KEF,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+    ],
+    APPROACH_YELLOW_LHR => [
+        'approach' => APPROACH_YELLOW_LHR,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_INTERN],
+    ],
+    APPROACH_GREEN_LHR => [
+        'approach' => APPROACH_GREEN_LHR,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC],
+    ],
+    APPROACH_YELLOW_PRG => [
+        'approach' => APPROACH_YELLOW_PRG,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_GREEN_PRG => [
+        'approach' => APPROACH_GREEN_PRG,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
     ],
 ];
 
