@@ -139,12 +139,12 @@ $game_options = [
                 'nobeginner' => true,
             ],
             // WAVE 4
-//            APPROACH_GREEN_ATL => [
-//                'name' => totranslate('Green: ATL - Hartsfield-Jackson'),
-//                'tmdisplay' => totranslate('Green: ATL - Hartsfield-Jackson'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Intern. As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_GREEN_ATL => [
+                'name' => totranslate('Green: ATL - Hartsfield-Jackson'),
+                'tmdisplay' => totranslate('Green: ATL - Hartsfield-Jackson'),
+                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Intern. As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
+                'nobeginner' => true,
+            ],
 //            APPROACH_GREEN_OSL => [
 //                'name' => totranslate('Green: OSL - Gardermoen'),
 //                'tmdisplay' => totranslate('Green: OSL - Gardermoen'),
@@ -207,18 +207,18 @@ $game_options = [
                 'nobeginner' => true,
             ],
             // WAVE 4
-//            APPROACH_YELLOW_ATL => [
-//                'name' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
-//                'tmdisplay' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
-//                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene Leak & 1 Special Ability. As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_YELLOW_GIG => [
-//                'name' => totranslate('Yellow: GIG - Galeão'),
-//                'tmdisplay' => totranslate('Yellow: GIG - Galeão'),
-//                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Winds & 1 Special Ability. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_YELLOW_ATL => [
+                'name' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
+                'tmdisplay' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Turns, Kerosene Leak & 1 Special Ability. As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_GIG => [
+                'name' => totranslate('Yellow: GIG - Galeão'),
+                'tmdisplay' => totranslate('Yellow: GIG - Galeão'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Winds & 1 Special Ability. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
+                'nobeginner' => true,
+            ],
 //            APPROACH_YELLOW_KEF => [
 //                'name' => totranslate('Yellow: KEF - Keflavík'),
 //                'tmdisplay' => totranslate('Yellow: KEF - Keflavík'),
@@ -275,12 +275,12 @@ $game_options = [
                 'nobeginner' => true,
             ],
             // WAVE 4
-//            APPROACH_RED_GIG => [
-//                'name' => totranslate('Red: GIG - Galeão'),
-//                'tmdisplay' => totranslate('Red: GIG - Galeão'),
-//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Winds, Kerosene Leak & 2 Special Abilities. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_RED_GIG => [
+                'name' => totranslate('Red: GIG - Galeão'),
+                'tmdisplay' => totranslate('Red: GIG - Galeão'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Winds, Kerosene Leak & 2 Special Abilities. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
+                'nobeginner' => true,
+            ],
 //            APPROACH_RED_PBH => [
 //                'name' => totranslate('Red: PBH - Paro (Real-Time)'),
 //                'tmdisplay' => totranslate('Red: PBH - Paro (Real-Time)'),
