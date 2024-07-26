@@ -145,12 +145,12 @@ $game_options = [
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Intern. As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_GREEN_OSL => [
-//                'name' => totranslate('Green: OSL - Gardermoen'),
-//                'tmdisplay' => totranslate('Green: OSL - Gardermoen'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Kerosene. You begin your descent into Oslo, the city to your left, with the sun shimmering off the long narrow Øyeren Lake to your right. Keep your eyes on your kerosene. Happy landing!'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_GREEN_OSL => [
+                'name' => totranslate('Green: OSL - Gardermoen'),
+                'tmdisplay' => totranslate('Green: OSL - Gardermoen'),
+                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Kerosene. You begin your descent into Oslo, the city to your left, with the sun shimmering off the long narrow Øyeren Lake to your right. Keep your eyes on your kerosene. Happy landing!'),
+                'nobeginner' => true,
+            ],
 //            APPROACH_GREEN_LHR => [
 //                'name' => totranslate('Green: LHR - Heathrow'),
 //                'tmdisplay' => totranslate('Green: LHR - Heathrow'),
@@ -219,12 +219,12 @@ $game_options = [
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Winds & 1 Special Ability. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_YELLOW_KEF => [
-//                'name' => totranslate('Yellow: KEF - Keflavík'),
-//                'tmdisplay' => totranslate('Yellow: KEF - Keflavík'),
-//                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Ice Brakes & 1 Special Ability. As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_YELLOW_KEF => [
+                'name' => totranslate('Yellow: KEF - Keflavík'),
+                'tmdisplay' => totranslate('Yellow: KEF - Keflavík'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Ice Brakes & 1 Special Ability. As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
+                'nobeginner' => true,
+            ],
 //            APPROACH_YELLOW_LHR => [
 //                'name' => totranslate('Yellow: LHR - Heathrow'),
 //                'tmdisplay' => totranslate('Yellow: LHR - Heathrow'),
@@ -281,18 +281,18 @@ $game_options = [
                 'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Winds, Kerosene Leak & 2 Special Abilities. The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_RED_PBH => [
-//                'name' => totranslate('Red: PBH - Paro (Real-Time)'),
-//                'tmdisplay' => totranslate('Red: PBH - Paro (Real-Time)'),
-//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities. They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_RED_OSL => [
-//                'name' => totranslate('Red: OSL - Gardermoen'),
-//                'tmdisplay' => totranslate('Red: OSL - Gardermoen'),
-//                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Kerosene Leak, Ice Brakes & 2 Special Abilities. The runway is frozen solid and your kerosene gauge has been running low for 30 minutes already. 150 passengers and crew are depending on you. Don’t let them down.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_RED_PBH => [
+                'name' => totranslate('Red: PBH - Paro (Real-Time)'),
+                'tmdisplay' => totranslate('Red: PBH - Paro (Real-Time)'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities. They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_OSL => [
+                'name' => totranslate('Red: OSL - Gardermoen'),
+                'tmdisplay' => totranslate('Red: OSL - Gardermoen'),
+                'description' => totranslate('Difficulty: Red (Elite Pilots Only). Modules: Traffic, Kerosene Leak, Ice Brakes & 2 Special Abilities. The runway is frozen solid and your kerosene gauge has been running low for 30 minutes already. 150 passengers and crew are depending on you. Don’t let them down.'),
+                'nobeginner' => true,
+            ],
             // BLACK
             APPROACH_BLACK_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
@@ -325,18 +325,18 @@ $game_options = [
                 'nobeginner' => true,
             ],
             // WAVE 4
-//            APPROACH_BLACK_PBH => [
-//                'name' => totranslate('Black: PBH - Paro (Real-Time)'),
-//                'tmdisplay' => totranslate('Black: PBH - Paro (Real-Time)'),
-//                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities. They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_BLACK_KEF => [
-//                'name' => totranslate('Black: KEF - Keflavík'),
-//                'tmdisplay' => totranslate('Black: KEF - Keflavík'),
-//                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Winds, Ice Brakes & 2 Special Abilities. As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_BLACK_PBH => [
+                'name' => totranslate('Black: PBH - Paro (Real-Time)'),
+                'tmdisplay' => totranslate('Black: PBH - Paro (Real-Time)'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities. They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_KEF => [
+                'name' => totranslate('Black: KEF - Keflavík'),
+                'tmdisplay' => totranslate('Black: KEF - Keflavík'),
+                'description' => totranslate('Difficulty: Black (Heroic Landing). Modules: Traffic, Winds, Ice Brakes & 2 Special Abilities. As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
+                'nobeginner' => true,
+            ],
         ]
     ],
     REAL_TIME_SECONDS_OPTION_ID => [
