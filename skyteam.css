@@ -1837,6 +1837,11 @@ body > .card {
     -webkit-text-size-adjust: 100%;
   }
 }
+#page-content,
+#right-side-first-part {
+  zoom: 1 !important;
+}
+
 .bga-cards_selectable-card .card-side {
   outline: 6px rgba(80, 200, 255, 0.75) dashed;
   cursor: pointer;

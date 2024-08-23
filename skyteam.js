@@ -2147,15 +2147,24 @@ var determineMaxZoomLevel = function (game) {
     var rowWidth = determineBoardWidth(game);
     return contentWidth / rowWidth;
 };
-var getZoomLevels = function (maxZoomLevels) {
+var getZoomLevels = function (maxZoomLevel) {
     var zoomLevels = [];
-    if (maxZoomLevels > 1) {
-        var maxZoomLevelsAbove1 = maxZoomLevels - 1;
-        var increments = (maxZoomLevelsAbove1 / 3);
-        zoomLevels = [(increments) + 1, increments + increments + 1, increments + increments + increments + 1];
+    var increments = 0.05;
+    if (maxZoomLevel > 1) {
+        var maxZoomLevelsAbove1 = maxZoomLevel - 1;
+        increments = (maxZoomLevelsAbove1 / 9);
+        zoomLevels = [];
+        for (var i = 1; i <= 9; i++) {
+            zoomLevels.push((increments * i) + 1);
+        }
     }
-    zoomLevels = __spreadArray(__spreadArray([], zoomLevels, true), [1, 0.8, 0.6], false);
-    return zoomLevels.sort();
+    for (var i = 1; i <= 9; i++) {
+        zoomLevels.push(1 - (increments * i));
+    }
+    zoomLevels = __spreadArray(__spreadArray([], zoomLevels, true), [1, maxZoomLevel], false);
+    zoomLevels = zoomLevels.sort();
+    zoomLevels = zoomLevels.filter(function (zoomLevel) { return (zoomLevel <= maxZoomLevel) && (zoomLevel > 0.3); });
+    return zoomLevels;
 };
 var AutoZoomManager = /** @class */ (function (_super) {
     __extends(AutoZoomManager, _super);
@@ -2166,15 +2175,16 @@ var AutoZoomManager = /** @class */ (function (_super) {
             localStorage.removeItem(localStorageKey);
         }
         var zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
+        console.log(zoomLevels);
+        console.log(maxZoomLevel < 1 ? maxZoomLevel : 1);
         return _super.call(this, {
             element: document.getElementById(elementId),
-            smooth: true,
+            smooth: false,
             zoomLevels: zoomLevels,
-            defaultZoom: 1,
-            localStorageZoomKey: localStorageKey,
+            defaultZoom: maxZoomLevel < 1 ? maxZoomLevel : 1,
             zoomControls: {
-                color: 'black',
-                position: 'top-right'
+                color: 'white',
+                position: 'top-right',
             }
         }) || this;
     }
@@ -3370,6 +3380,8 @@ var SkyTeam = /** @class */ (function () {
         this.helpDialogManager = new HelpDialogManager(this);
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
+        // @ts-ignore
+        this.default_viewport = 'width=1000';
     }
     /*
         setup:

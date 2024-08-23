@@ -54,6 +54,8 @@ class SkyTeam implements SkyTeamGame {
         this.helpDialogManager = new HelpDialogManager(this);
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
+        // @ts-ignore
+        this.default_viewport = 'width=1000';
     }
 
     /*

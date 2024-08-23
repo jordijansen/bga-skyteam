@@ -25,6 +25,11 @@
   }
 }
 
+#page-content,
+#right-side-first-part {
+  zoom: 1 !important;
+}
+
 .bga-cards_selectable-card {
   .card-side {
     @include selectable();
