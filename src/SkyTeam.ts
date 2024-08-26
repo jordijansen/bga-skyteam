@@ -55,7 +55,8 @@ class SkyTeam implements SkyTeamGame {
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
         // @ts-ignore
-        this.default_viewport = 'width=1000';
+        // Set mobile viewport for portrait orientation based on gameinfos.inc.php
+        this.default_viewport = "width=740"
     }
 
     /*
@@ -623,7 +624,7 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
-    public setAlwaysFixTopActions(alwaysFixed = true, maximum = 30) {
+    public setAlwaysFixTopActions(alwaysFixed = true, maximum = 300) {
         this.alwaysFixTopActions = alwaysFixed;
         this.alwaysFixTopActionsMaximum = maximum;
         this.adaptStatusBar();
@@ -641,8 +642,8 @@ class SkyTeam implements SkyTeamGame {
                 zoom = 1;
             }
 
-            const titleRect = afterTitleElem.getBoundingClientRect();
-            if (titleRect.top < 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
+            const titleRect = titleElem.getBoundingClientRect();
+            if (titleRect.top <= 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
                 const afterTitleRect = afterTitleElem.getBoundingClientRect();
                 titleElem.classList.add('fixed-page-title');
                 titleElem.style.width = ((afterTitleRect.width - 10) / zoom) + 'px';

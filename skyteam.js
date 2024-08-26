@@ -3381,7 +3381,8 @@ var SkyTeam = /** @class */ (function () {
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
         // Init Modules
         // @ts-ignore
-        this.default_viewport = 'width=1000';
+        // Set mobile viewport for portrait orientation based on gameinfos.inc.php
+        this.default_viewport = "width=740";
     }
     /*
         setup:
@@ -3895,7 +3896,7 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.setAlwaysFixTopActions = function (alwaysFixed, maximum) {
         if (alwaysFixed === void 0) { alwaysFixed = true; }
-        if (maximum === void 0) { maximum = 30; }
+        if (maximum === void 0) { maximum = 300; }
         this.alwaysFixTopActions = alwaysFixed;
         this.alwaysFixTopActionsMaximum = maximum;
         this.adaptStatusBar();
@@ -3910,8 +3911,8 @@ var SkyTeam = /** @class */ (function () {
             if (!zoom) {
                 zoom = 1;
             }
-            var titleRect = afterTitleElem.getBoundingClientRect();
-            if (titleRect.top < 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
+            var titleRect = titleElem.getBoundingClientRect();
+            if (titleRect.top <= 0 && (titleElem.offsetHeight < (window.innerHeight * this.alwaysFixTopActionsMaximum / 100))) {
                 var afterTitleRect = afterTitleElem.getBoundingClientRect();
                 titleElem.classList.add('fixed-page-title');
                 titleElem.style.width = ((afterTitleRect.width - 10) / zoom) + 'px';

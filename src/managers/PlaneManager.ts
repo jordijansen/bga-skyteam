@@ -203,6 +203,4 @@ class PlaneManager  {
         document.getElementById('st-approach-overlay-track-slot').classList.remove('st-approach-overlay-track-slot-highlighted');
         document.getElementById('st-plane-axis-indicator-highlight')?.remove();
     }
-
-
 }
