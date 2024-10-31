@@ -151,18 +151,18 @@ $game_options = [
                 'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic & Kerosene. You begin your descent into Oslo, the city to your left, with the sun shimmering off the long narrow Øyeren Lake to your right. Keep your eyes on your kerosene. Happy landing!'),
                 'nobeginner' => true,
             ],
-//            APPROACH_GREEN_LHR => [
-//                'name' => totranslate('Green: LHR - Heathrow'),
-//                'tmdisplay' => totranslate('Green: LHR - Heathrow'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic. You see the river Thames cutting a black channel through the lights of London as you near the airport. There is traffic at the end of your approach. Stay calm and land your plane.'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_GREEN_PRG => [
-//                'name' => totranslate('Green: PRG - Václav Havel'),
-//                'tmdisplay' => totranslate('Green: PRG - Václav Havel'),
-//                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns, Kerosene & 2 Special Abilities. Your skill set is improving. Use these abilities to land safely in Prague, one of Europe’s cultural centres, in the heart of Old Bohemia.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_GREEN_LHR => [
+                'name' => totranslate('Green: LHR - Heathrow'),
+                'tmdisplay' => totranslate('Green: LHR - Heathrow'),
+                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic. You see the river Thames cutting a black channel through the lights of London as you near the airport. There is traffic at the end of your approach. Stay calm and land your plane.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_GREEN_PRG => [
+                'name' => totranslate('Green: PRG - Václav Havel'),
+                'tmdisplay' => totranslate('Green: PRG - Václav Havel'),
+                'description' => totranslate('Difficulty: Green (Routine Landing). Modules: Traffic, Turns, Kerosene & 2 Special Abilities. Your skill set is improving. Use these abilities to land safely in Prague, one of Europe’s cultural centres, in the heart of Old Bohemia.'),
+                'nobeginner' => true,
+            ],
             // YELLOW
             APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
                 'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
@@ -225,18 +225,18 @@ $game_options = [
                 'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Ice Brakes & 1 Special Ability. As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
                 'nobeginner' => true,
             ],
-//            APPROACH_YELLOW_LHR => [
-//                'name' => totranslate('Yellow: LHR - Heathrow'),
-//                'tmdisplay' => totranslate('Yellow: LHR - Heathrow'),
-//                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic & Intern. Heavy fog, common in London, has caused the sky to fill with planes in holding patterns over the British capital. You will need to stay alert right from the start of your approach!'),
-//                'nobeginner' => true,
-//            ],
-//            APPROACH_YELLOW_PRG => [
-//                'name' => totranslate('Yellow: PRG - Václav Havel'),
-//                'tmdisplay' => totranslate('Yellow: PRG - Václav Havel'),
-//                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Kerosene Leak & 2 Special Abilities. The sky is clear, giving a gorgeous view of the Carpathian mountains in the distance... An alarm sounds. You are losing fuel. Will you have enough to make it? Manage your speed, and may luck be on your side.'),
-//                'nobeginner' => true,
-//            ],
+            APPROACH_YELLOW_LHR => [
+                'name' => totranslate('Yellow: LHR - Heathrow'),
+                'tmdisplay' => totranslate('Yellow: LHR - Heathrow'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic & Intern. Heavy fog, common in London, has caused the sky to fill with planes in holding patterns over the British capital. You will need to stay alert right from the start of your approach!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_PRG => [
+                'name' => totranslate('Yellow: PRG - Václav Havel'),
+                'tmdisplay' => totranslate('Yellow: PRG - Václav Havel'),
+                'description' => totranslate('Difficulty: Yellow (Exceptional Conditions). Modules: Traffic, Kerosene Leak & 2 Special Abilities. The sky is clear, giving a gorgeous view of the Carpathian mountains in the distance... An alarm sounds. You are losing fuel. Will you have enough to make it? Manage your speed, and may luck be on your side.'),
+                'nobeginner' => true,
+            ],
             // RED
             APPROACH_RED_TGU_TONCONTIN => [
                 'name' => totranslate('Red: TGU - Toncontín'),

@@ -2169,22 +2169,24 @@ var getZoomLevels = function (maxZoomLevel) {
 var AutoZoomManager = /** @class */ (function (_super) {
     __extends(AutoZoomManager, _super);
     function AutoZoomManager(game, elementId, localStorageKey) {
+        var zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
         var storedZoomLevel = localStorage.getItem(localStorageKey);
-        var maxZoomLevel = determineMaxZoomLevel(game);
-        if (storedZoomLevel && Number(storedZoomLevel) > maxZoomLevel) {
+        if (!zoomLevels.includes(Number(storedZoomLevel))) {
             localStorage.removeItem(localStorageKey);
         }
-        var zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
-        console.log(zoomLevels);
-        console.log(maxZoomLevel < 1 ? maxZoomLevel : 1);
+        var defaultZoom = 1;
+        if (!zoomLevels.includes(defaultZoom)) {
+            defaultZoom = zoomLevels[zoomLevels.length - 1];
+        }
         return _super.call(this, {
             element: document.getElementById(elementId),
             smooth: false,
             zoomLevels: zoomLevels,
-            defaultZoom: maxZoomLevel < 1 ? maxZoomLevel : 1,
+            defaultZoom: defaultZoom,
+            localStorageZoomKey: localStorageKey,
             zoomControls: {
                 color: 'white',
-                position: 'top-right',
+                position: 'top-right'
             }
         }) || this;
     }

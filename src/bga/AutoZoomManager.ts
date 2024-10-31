@@ -46,24 +46,27 @@ const getZoomLevels = (maxZoomLevel: number) => {
 class AutoZoomManager extends ZoomManager {
 
     constructor(game: SkyTeamGame, elementId: string, localStorageKey: string) {
+        const zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
+
         const storedZoomLevel = localStorage.getItem(localStorageKey);
-        const maxZoomLevel = determineMaxZoomLevel(game);
-        if (storedZoomLevel && Number(storedZoomLevel) > maxZoomLevel) {
+        if (!zoomLevels.includes(Number(storedZoomLevel))) {
             localStorage.removeItem(localStorageKey);
         }
 
-        const zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
-        console.log(zoomLevels);
-        console.log(maxZoomLevel < 1 ? maxZoomLevel : 1);
+        let defaultZoom = 1;
+        if (!zoomLevels.includes(defaultZoom)) {
+            defaultZoom = zoomLevels[zoomLevels.length - 1]
+        }
+
         super({
             element: document.getElementById(elementId),
             smooth: false,
             zoomLevels: zoomLevels,
-            defaultZoom: maxZoomLevel < 1 ? maxZoomLevel : 1,
+            defaultZoom: defaultZoom,
+            localStorageZoomKey: localStorageKey,
             zoomControls: {
                 color: 'white',
-                position: 'top-right',
-
+                position: 'top-right'
             }
         });
     }
