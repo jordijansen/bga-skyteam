@@ -161,6 +161,14 @@ class action_skyteam extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function skipPlacement()
+    {
+        self::setAjaxMode();
+        $dieId = self::getArg("dieId", AT_posint, true);
+        $this->game->skipPlacement($dieId);
+        self::ajaxResponse();
+    }
+
     public function undoLast()
     {
         self::setAjaxMode();

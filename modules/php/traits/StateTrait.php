@@ -3,6 +3,7 @@
 namespace traits;
 
 use DateTimeImmutable;
+use managers\objects\AlarmToken;
 use objects\Dice;
 use objects\Token;
 
@@ -83,15 +84,57 @@ trait StateTrait
             }
         }
 
+        // If there is an alarm activation in the current slot, activate alarm
+        if ($this->isModuleActive(MODULE_ALARMS) && array_key_exists(ALARM, $approachTrackSpace)) {
+            $nrOfAlarms = $approachTrackSpace[ALARM];
+            $alarmTokens = AlarmToken::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_ALARM, null, LOCATION_ALARM));
+            $alarmTokens = array_filter($alarmTokens, fn($alarmToken) => !$alarmToken->isActive);
+            shuffle($alarmTokens);
+
+            $activatedAlarms = [];
+            for ($i = 0; $i < $nrOfAlarms; $i++) {
+                if (sizeof($alarmTokens) > 0) {
+                    $activatedAlarms[] = array_pop($alarmTokens);
+                }
+            }
+
+            if (sizeof($activatedAlarms) > 0) {
+                $activeAlarms = $this->getGlobalVariable(ACTIVE_ALARMS, true, []);
+                foreach ($activatedAlarms as $alarm) {
+                    $activeAlarms[] = $alarm->typeArg;
+                    $alarm->isActive = true;
+
+                    $this->notifyAllPlayers("alarmActivated", clienttranslate('Alarm Activated: <b>${alarmName}</b>'), [
+                        'i18n' => ['alarmName'],
+                        'alarmName' => $this->ALARM_TOKENS[$alarm->typeArg]['name'],
+                        'alarmToken' => $alarm
+                    ]);
+                }
+                $this->setGlobalVariable(ACTIVE_ALARMS, $activeAlarms);
+            } else {
+                $this->notifyAllPlayers("gameLog", clienttranslate('No Alarm tokens remaining to activate'), []);
+            }
+
+
+        }
+
         $this->setGlobalVariable(WORKING_TOGETHER_ACTIVATED, false);
         $this->setGlobalVariable(SYNCHRONISATION_ACTIVATED, false);
         $this->setGlobalVariable(KEROSENE_ACTIVATED, false);
 
-        $this->gamestate->setAllPlayersMultiactive();
-        foreach ($this->gamestate->getActivePlayerList() as $playerId) {
-            $this->giveExtraTime($playerId);
+        if ($this->isModuleActive(MODULE_TOTAL_TRUST) && array_key_exists(TOTAL_TRUST, $approachTrackSpace)) {
+            $this->notifyAllPlayers("gameLog", clienttranslate('Total Trust: communication has become impossible in the cockpit. Skipping Strategy Phase.'), []);
+            $this->gamestate->nextState('startDicePlacement');
+        } else if ($this->isPermanentTotalTrust()) {
+            $this->notifyAllPlayers("gameLog", clienttranslate('Permanent Total Trust: communication has become impossible in the cockpit. Players have opted to skip the Strategy Phase.'), []);
+            $this->gamestate->nextState('startDicePlacement');
+        } else {
+            $this->gamestate->setAllPlayersMultiactive();
+            foreach ($this->gamestate->getActivePlayerList() as $playerId) {
+                $this->giveExtraTime($playerId);
+            }
+            $this->gamestate->nextState('strategy');
         }
-        $this->gamestate->nextState('');
     }
 
     function stDicePlacementStart()
@@ -104,6 +147,9 @@ trait StateTrait
             'newPhase' => PHASE_DICE_PLACEMENT
         ]);
 
+        $plane = $this->planeManager->get();
+        $altitudeTrackSpace = $this->getAltitudeTrack()->spaces[$plane->altitude];
+
         $playerIds = $this->getPlayerIds();
         foreach ($playerIds as $playerId) {
             $playerRole = $this->getPlayerRole($playerId);
@@ -112,6 +158,15 @@ trait StateTrait
                 $playerDie->setSide(1);
             }
             $playerDiceIds = array_map(fn($die) => $die->id, $playerDice);
+            if ($this->isModuleActive(MODULE_BAD_VISIBILITY) && array_key_exists(BAD_VISIBILITY, $altitudeTrackSpace) && $altitudeTrackSpace[BAD_VISIBILITY]) {
+                $diceToPutAside = array_slice($playerDiceIds, 0, 2);
+                $this->dice->moveCards($diceToPutAside, LOCATION_PLAYER_ASIDE, $playerId);
+                $playerDiceIds = array_diff($playerDiceIds, $diceToPutAside);
+                $this->notifyAllPlayers("dicePutAside", clienttranslate('<b>Bad Visibility:</b> you can only choose from 2 dice'), [
+                    'dice' => Dice::fromArray($this->dice->getCards($diceToPutAside)),
+                ]);
+            }
+
             $this->dice->moveCards($playerDiceIds, LOCATION_PLAYER, $playerId);
             $this->notifyAllPlayers( "diceReturnedToPlayer", clienttranslate('${player_name} dice are returned'), [
                 'playerId' => intval($playerId),
@@ -130,6 +185,7 @@ trait StateTrait
             ]);
         }
 
+
         // Roll the player dice, and notify only the player of the results
         $playerIds = $this->getPlayerIds();
         foreach ($playerIds as $playerId) {
@@ -139,6 +195,7 @@ trait StateTrait
             }
 
             $dice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
+
             $this->notifyPlayer($playerId, "diceRolled", clienttranslate('${player_name} rolls ${icon_dice}'), [
                 'playerId' => intval($playerId),
                 'player_name' => $this->getPlayerName($playerId),
@@ -147,7 +204,6 @@ trait StateTrait
             ]);
         }
 
-        $plane = $this->planeManager->get();
         $startRole = $this->getAltitudeTrack()->spaces[$plane->altitude][ROUND_START_PLAYER];
         $startPlayerId = $this->getPlayerIdForRole($startRole);
 
@@ -239,6 +295,8 @@ trait StateTrait
 
     function stPlaneFailure()
     {
+        $this->flightLogManager->saveScenarioResult(false);
+
         $this->notifyAllPlayers('planeFailure', clienttranslate('MAYDAY MAYDAY, something went horribly wrong...'), [
             "failureReason" => $this->getGlobalVariable(FAILURE_REASON)
         ]);
@@ -248,6 +306,8 @@ trait StateTrait
 
     function stPlaneLanded()
     {
+        $this->flightLogManager->saveScenarioResult(true);
+
         $results = $this->planeManager->getVictoryConditionsResults();
         $failure = sizeof(array_filter($results, fn($victoryCondition) => $victoryCondition['status'] == 'failed')) > 0;
         $score = 0;
@@ -358,7 +418,7 @@ trait StateTrait
             if ($this->isModuleActive(MODULE_ENGINE_LOSS)) {
                 $this->notifyAllPlayers("gameLog", clienttranslate('Engine Loss: approaching airport by 1 space'), []);
                 // Auto Approach 1 space
-                $continue = $this->planeManager->approachPlane($plane, 1);
+                $continue = $this->planeManager->approachPlane($plane, 1, true);
             }
 
             if ($continue) {

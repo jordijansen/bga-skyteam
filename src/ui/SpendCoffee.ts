@@ -15,11 +15,14 @@ class SpendCoffee {
         const element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
 
+        console.log('init');
         if (this.currentDie) {
             this.currentDie.side = this.originalSide;
             this.currentDie.value = this.originalValue;
             this.game.diceManager.updateDieValue(this.currentDie);
         }
+
+        console.log(die);
 
         if (nrOfCoffeeTokens > 0) {
             this.currentDie = die;
@@ -65,6 +68,7 @@ class SpendCoffee {
 
     public destroy() {
         this.initiate(null, 0, null);
+        console.log('destroy')
 
         const element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);

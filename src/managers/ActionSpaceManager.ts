@@ -4,6 +4,7 @@ class ActionSpaceManager {
     public selectedActionSpaceId: string = null;
     private actionSpaces: {[id: string]: LineStock<Dice>} = {}
     private onSelectedActionSpaceChanged: (spaceId: string) => void
+    public activeAlarms = [];
 
     constructor(private game: SkyTeamGame) {
 
@@ -18,23 +19,37 @@ class ActionSpaceManager {
                 warningPlacement = 'right';
             }
             let helpPlacement = 'top';
-            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1') {
+            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1' || space.type === 'alarms') {
                 helpPlacement = 'left';
             } else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
                 helpPlacement = 'right';
             } else if (id.startsWith('ice-brakes-2')) {
                 helpPlacement = 'bottom';
             }
-            dojo.place(`<div id="${id}" class="st-action-space">
+            dojo.place(`<div id="${id}" class="st-action-space" data-kerosene-board-active="${data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak') ? 'true' : 'false'}">
                                 ${space.mandatory ? `<span class="st-action-space-mandatory-warning ${warningPlacement}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>` : ''}
                                 <span id="${id}-help" class="st-action-space-help ${helpPlacement}"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                              </div>`, $('st-action-spaces'))
             this.actionSpaces[id] = new LineStock<Dice>(this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', (event) => this.actionSpaceClicked(id, event))
-            dojo.connect($(`${id}-help`), 'onclick', (event) => this.game.helpDialogManager.showActionSpaceHelp(event, space))
+            dojo.connect($(`${id}-help`), 'onclick', (event) => this.game.helpDialogManager.showActionSpaceHelp(event, id, space))
         });
 
         data.planeDice.forEach(die => this.moveDieToActionSpace(die));
+
+        this.activeAlarms = data.alarmTokens.filter(alarm => alarm.isActive === true);
+        this.updateActiveAlarms();
+    }
+
+    public updateActiveAlarms() {
+        document.querySelectorAll('.st-action-space').forEach(element => {
+            element.classList.remove('blocked-by-alarm')
+            this.activeAlarms.forEach(alarm => {
+                if (alarm.blocksSpaces.includes(element.id)) {
+                    element.classList.add('blocked-by-alarm')
+                }
+            })
+        })
     }
 
     public getValidPlacements(ids: { [p: string]: ActionSpace }, dieValue?: number) {
@@ -44,6 +59,7 @@ class ActionSpaceManager {
     public setActionSpacesSelectable(ids: { [p: string]: ActionSpace }, onSelectedActionSpaceChanged?: (spaceId: string) => void, dieValue?: number) {
         document.querySelector('.st-dice-placeholder')?.remove();
         this.game.planeManager.unhighlightPlane();
+        this.game.planeManager.updateSpeedMarker();
 
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
 
@@ -69,7 +85,10 @@ class ActionSpaceManager {
 
     public moveDieToActionSpace(die: Dice) {
         this.game.diceManager.updateDieValue(die);
-        return this.actionSpaces[die.locationArg].addCard(die).then(() => $(die.locationArg).classList.add('st-action-space-occupied'));
+        if (this.actionSpaces[die.locationArg]) {
+            return this.actionSpaces[die.locationArg].addCard(die).then(() => $(die.locationArg).classList.add('st-action-space-occupied'));
+        }
+        return Promise.resolve();
     }
 
     public resetActionSpaceOccupied() {
@@ -85,7 +104,7 @@ class ActionSpaceManager {
     }
 
     public getDieInLocation(space: string) {
-        const dice = this.actionSpaces[space].getCards();
+        const dice = this.actionSpaces[space]?.getCards();
         if (dice && dice.length === 1) {
             return dice[0];
         }

@@ -1,0 +1,119 @@
+"57": {
+        "name": "Yellow: KBP - Boryspil",
+        "tmdisplay": "Yellow: KBP - Boryspil",
+        "description": "<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Total Trust & 2 Special Abilities<br /><br />WHAM! you have ploughed headlong into a high-flying flock of geese!! You maintain control, but they\u2019ve torn off some of the housing and cracked a panel in the cockpit. You should be able to land in the Ukranian capital without any trouble, but noise and vibration caused by the strikes have made flight-deck communication impossible.",
+        "nobeginner": true
+      },
+
+      "61": {
+              "name": "Yellow: MAD - Madrid",
+              "tmdisplay": "Yellow: MAD - Madrid",
+              "description": "<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Altitude: 5000, Intern & 1 Special Ability<br /><br />You\u2019ve passed over the Portuguese Serra da Estrela mountain range and turn south at Salamanca. You get word that there is heavy traffic over the Spanish capital. You descend slowly, turning northeast over Toledo, and at 5,000 feet you get clearance to land. You\u2019ll have to work quickly!",
+              "nobeginner": true
+            },
+            "63": {
+              "name": "Yellow: WAW - Warsaw Chopin",
+              "tmdisplay": "Yellow: WAW - Warsaw Chopin",
+              "description": "<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Stuck Landing Gear, Alarms, Kerosene & 1 Special Ability<br /><br />You tried to deploy your landing gear... to no avail. You\u2019ll have to perform a belly landing, but first you needed to climb back up and circle high above the Polish capital to burn the remainder of your fuel. The last thing you need is a full tank when the sparks start to fly. The F-16s have kept you company for everyone\u2019s safety, but now it\u2019s time to put her down. Carefully, very carefully.",
+              "nobeginner": true
+            },"62": {
+                      "name": "Red: WAW - Warsaw Chopin",
+                      "tmdisplay": "Red: WAW - Warsaw Chopin",
+                      "description": "<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Stuck Landing Gear, Alarms, Winds, Kerosene & 1 Special Ability<br /><br />The landing gear is stuck. You\u2019ve known since you took off, so you\u2019ve had the whole flight to discuss options with your co-pilot and air-traffic control at your destination. You\u2019re going to have to perform a belly landing in a gale. Now as you start your descent, an alarm sounds. Looks like the landing gear wasn\u2019t the only issue. A bead of sweat trickles down your brow as you turn to your co-pilot. Time to land.",
+                      "nobeginner": true
+                    },
+                    "60": {
+                            "name": "Black: MAD - Madrid (Real-Time)",
+                            "tmdisplay": "Black: MAD - Madrid (Real-Time)",
+                            "description": "<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Altitude: 5000, Kerosene, Real-Time & 1 Special Ability<br /><br />Ninety minutes ago the Madrid control tower held you back due to an emergency on the runway. You\u2019ve been slowly circling downward. But there\u2019s an emergency up here, too: You\u2019re running low on fuel. You\u2019ve finally got the go. There\u2019s no time to lose!!",
+                            "nobeginner": true
+                          },
+
+                          {
+                                  "type": "otheroption",
+                                  "id": 151,
+                                  "value": [
+                                    51,
+                                    60
+                                  ]
+                                }
+                                "60": [
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 10,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 11,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 12,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 13,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 14,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 15,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 16,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 17,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 18,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 19,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 20,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        },
+                                        {
+                                          "type": "otheroptionisnot",
+                                          "id": 200,
+                                          "value": 21,
+                                          "message": "This scenario can only be played in Real-Time"
+                                        }
+                                      ]
+                          "56": {
+                                  "name": "Black: KBP - Boryspil",
+                                  "tmdisplay": "Black: KBP - Boryspil",
+                                  "description": "<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Alarms, Total Trust & 2 Special Abilities<br /><br />You\u2019re cruising in towards Kyiv. It would be beautiful if it wasn\u2019t for all the noise. Your instruments show no issues, but something has come loose near the cockpit, making a loud buzzing and whistling noise that\u2019s impossible to speak over. You\u2019ll have some maneuvering to do as well. You\u2019re already looking forward to your hotel room.",
+                                  "nobeginner": true
+                                },

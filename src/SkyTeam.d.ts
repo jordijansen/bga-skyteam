@@ -7,6 +7,7 @@ interface Plane {
     brake: number,
     kerosene: number,
     wind: number,
+    windModifier: string,
     switches: {[id: string]: PlaneSwitch}
 }
 
@@ -78,7 +79,8 @@ interface ActionSpace {
 
 interface SkyTeamPlayer extends Player {
     role: 'pilot'|'co-pilot',
-    dice: Dice[]
+    dice: Dice[],
+    flightLog: {[scenarioId: number]: number[]}
 }
 
 interface VictoryCondition {
@@ -104,12 +106,21 @@ interface SkyTeamGameData extends GameData {
     finalRound: boolean,
     isLanded: boolean,
     victoryConditions: {[conditionLetter: string]: VictoryCondition},
-    scenario: {nrOfSpecialAbilities?: number, modules: 'traffic' | 'turns'}
+    scenario: {id: number, nrOfSpecialAbilities?: number, modules: 'traffic' | 'turns'}
     chosenSpecialAbilities: SpecialAbilityCard[],
     rolesThatUsedAdaptation: string[],
     realTimeSecondsRemaining?: number,
     timerNeedsClearing: boolean,
-    timerSeconds: number
+    timerSeconds: number,
+    scenarioData: {[scenarioId: number]: {approach: number, altitude: number, modules: string[], tags: string[], nrOfSpecialAbilities?: number}}
+    approachTrackData: {[approachTrackId: number]: {category: string, name: string}}
+    flightLog: {[scenarioId: number]: number[]}
+    alarmTokens: AlarmToken[],
+    alarmTokenData: {[typeArg: number]: {name: string}}
+}
+
+interface AlarmToken extends Card {
+    isActive: boolean
 }
 
 // ARGS
@@ -218,6 +229,10 @@ interface NotifDiceReturnedToPlayer {
     dice: Dice[]
 }
 
+interface NotifDicePutAside {
+    dice: Dice[]
+}
+
 interface NotifVictoryConditionsUpdated {
     victoryConditions: {[conditionLetter: string]: VictoryCondition}
 }
@@ -247,6 +262,7 @@ interface NotifDiceRemoved {
 
 interface NotifWindChanged {
     wind: number;
+    windModifier: string;
 }
 
 interface NotifInternTrained {
@@ -254,7 +270,16 @@ interface NotifInternTrained {
     die: Dice
 }
 
-interface NotifInternDieSkipped {
+interface NotifDieSkipped {
     playerId: number,
-    internDie: Dice
+    die: Dice
+}
+
+interface NotifFlightLogUpdated {
+    team: {[scenarioId: number]: number[]},
+    players: {[playerId: number]: {[scenarioId: number]: number[]}},
+}
+
+interface NotifAlarmActivated {
+    alarmToken: AlarmToken
 }

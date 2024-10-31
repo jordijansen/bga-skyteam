@@ -58,7 +58,8 @@ $this->ACTION_TYPES = [
     ACTION_SPACE_CONCENTRATION => clienttranslate('concentration'),
     ACTION_SPACE_KEROSENE => clienttranslate('kerosene'),
     ACTION_SPACE_INTERN => clienttranslate('intern'),
-    ACTION_SPACE_ICE_BRAKES => clienttranslate('ice-brakes')
+    ACTION_SPACE_ICE_BRAKES => clienttranslate('ice-brakes'),
+    ACTION_SPACE_ALARMS => clienttranslate('alarms')
 ];
 
 $this->ACTION_SPACES = [
@@ -69,9 +70,9 @@ $this->ACTION_SPACES = [
     ACTION_SPACE_RADIO.'-1' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [PILOT], MANDATORY => false],
     ACTION_SPACE_RADIO.'-2' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false],
     ACTION_SPACE_RADIO.'-3' => ['type' => ACTION_SPACE_RADIO, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false],
-    ACTION_SPACE_LANDING_GEAR.'-1' => ['type' => ACTION_SPACE_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [1,2]],
-    ACTION_SPACE_LANDING_GEAR.'-2' => ['type' => ACTION_SPACE_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [3,4]],
-    ACTION_SPACE_LANDING_GEAR.'-3' => ['type' => ACTION_SPACE_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [5,6]],
+    ACTION_SPACE_LANDING_GEAR.'-1' => ['type' => ACTION_SPACE_LANDING_GEAR, NOT_MODULE => MODULE_STUCK_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [1,2]],
+    ACTION_SPACE_LANDING_GEAR.'-2' => ['type' => ACTION_SPACE_LANDING_GEAR, NOT_MODULE => MODULE_STUCK_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [3,4]],
+    ACTION_SPACE_LANDING_GEAR.'-3' => ['type' => ACTION_SPACE_LANDING_GEAR, NOT_MODULE => MODULE_STUCK_LANDING_GEAR, ALLOWED_ROLES => [PILOT], MANDATORY => false, ALLOWED_VALUES => [5,6]],
     ACTION_SPACE_FLAPS.'-1' => ['type' => ACTION_SPACE_FLAPS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false, ALLOWED_VALUES => [1,2]],
     ACTION_SPACE_FLAPS.'-2' => ['type' => ACTION_SPACE_FLAPS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false, ALLOWED_VALUES => [2,3], REQUIRES_SWITCH_IN => ACTION_SPACE_FLAPS.'-1'],
     ACTION_SPACE_FLAPS.'-3' => ['type' => ACTION_SPACE_FLAPS, ALLOWED_ROLES => [CO_PILOT], MANDATORY => false, ALLOWED_VALUES => [4,5], REQUIRES_SWITCH_IN => ACTION_SPACE_FLAPS.'-2'],
@@ -93,6 +94,12 @@ $this->ACTION_SPACES = [
     ACTION_SPACE_ICE_BRAKES.'-2-2' => ['type'=> ACTION_SPACE_ICE_BRAKES, MODULE => MODULE_ICE_BRAKES, ALLOWED_ROLES => [PILOT, CO_PILOT], ALLOWED_VALUES => [3], MANDATORY => false],
     ACTION_SPACE_ICE_BRAKES.'-2-3' => ['type'=> ACTION_SPACE_ICE_BRAKES, MODULE => MODULE_ICE_BRAKES, ALLOWED_ROLES => [PILOT, CO_PILOT], ALLOWED_VALUES => [4], MANDATORY => false],
     ACTION_SPACE_ICE_BRAKES.'-2-4' => ['type'=> ACTION_SPACE_ICE_BRAKES, MODULE => MODULE_ICE_BRAKES, ALLOWED_ROLES => [PILOT, CO_PILOT], ALLOWED_VALUES => [5], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-1' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [PILOT, CO_PILOT], ALLOWED_VALUES => [1], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-2' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [CO_PILOT], ALLOWED_VALUES => [2], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-3' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [CO_PILOT], ALLOWED_VALUES => [3], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-4' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [PILOT], ALLOWED_VALUES => [4], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-5' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [CO_PILOT], ALLOWED_VALUES => [5], MANDATORY => false],
+    ACTION_SPACE_ALARMS.'-6' => ['type'=> ACTION_SPACE_ALARMS, MODULE => MODULE_ALARMS, ALLOWED_ROLES => [PILOT], ALLOWED_VALUES => [6], MANDATORY => false],
 ];
 
 $this->APPROACH_TRACKS = [
@@ -361,7 +368,7 @@ $this->APPROACH_TRACKS = [
     ],
     APPROACH_YELLOW_BUD_BUDAPEST => [
         'type' => APPROACH_YELLOW_BUD_BUDAPEST,
-        'category' => APPROACH_GREEN,
+        'category' => APPROACH_YELLOW,
         'name' => 'BUD Budapest Liszt Ferenc',
         'size' => 6,
         'spaces' => [
@@ -626,26 +633,329 @@ $this->APPROACH_TRACKS = [
             1 => [DICE_TRAFFIC => 1],
         ]
     ],
+    // TURBULENCE
+    APPROACH_EXP_YELLOW_DUS => [
+        'type' => APPROACH_EXP_YELLOW_DUS,
+        'category' => APPROACH_YELLOW,
+        'name' => 'DUS Düsseldorf',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 2, ALLOWED_AXIS => [-1, 0, 1], DICE_TRAFFIC => 2],
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2, ALLOWED_AXIS => [-1, 0, 1]],
+            3 => [TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_EXP_RED_DUS => [
+        'type' => APPROACH_EXP_RED_DUS,
+        'category' => APPROACH_RED,
+        'name' => 'DUS Düsseldorf',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 2],
+            7 => [TOKEN_PLANE => 3],
+            6 => [DICE_TRAFFIC => 1, TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 2],
+            3 => [DICE_TRAFFIC => 1],
+            2 => [ALLOWED_AXIS => [1]],
+            1 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_EXP_YELLOW_TER => [
+        'type' => APPROACH_EXP_YELLOW_TER,
+        'category' => APPROACH_YELLOW,
+        'name' => 'TER Lajes, Açores',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1, 0]],
+            4 => [ALLOWED_AXIS => [1, 2]],
+            3 => [ALLOWED_AXIS => [-2, -1]],
+            2 => [ALLOWED_AXIS => [0, 1, 2]],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    APPROACH_EXP_BLACK_TER => [
+        'type' => APPROACH_EXP_BLACK_TER,
+        'category' => APPROACH_BLACK,
+        'name' => 'TER Lajes, Açores',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2]],
+            3 => [ALLOWED_AXIS => [-2, -1]],
+            2 => [ALLOWED_AXIS => [1, 2]],
+            1 => [DICE_TRAFFIC => 4, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    APPROACH_EXP_BLACK_NZIR => [
+        'type' => APPROACH_EXP_BLACK_NZIR,
+        'category' => APPROACH_BLACK,
+        'name' => 'NZIR Ice Runway',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1, 0]],
+            6 => [],
+            5 => [ALLOWED_AXIS => [1, 2]],
+            4 => [],
+            3 => [ALLOWED_AXIS => [-1, 0]],
+            2 => [],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
+    APPROACH_EXP_RED_NZIR => [
+        'type' => APPROACH_EXP_RED_NZIR,
+        'category' => APPROACH_RED,
+        'name' => 'NZIR Ice Runway',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1],
+            6 => [],
+            5 => [ALLOWED_AXIS => [0, 1]],
+            4 => [TOKEN_PLANE => 1],
+            3 => [],
+            2 => [ALLOWED_AXIS => [-2, -1]],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_EXP_BLACK_KBP => [
+        'type' => APPROACH_EXP_BLACK_KBP,
+        'category' => APPROACH_BLACK,
+        'name' => 'KBP Boryspil',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1, TOTAL_TRUST => true],
+            7 => [TOKEN_PLANE => 1, ALARM => 1, TOTAL_TRUST => true],
+            6 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, TOTAL_TRUST => true],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-1], ALARM => 1, TOTAL_TRUST => true],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1, ALARM => 1, TOTAL_TRUST => true],
+            3 => [TOKEN_PLANE => 1, ALARM => 1],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], DICE_TRAFFIC => 1],
+            1 => [DICE_TRAFFIC => 2, ALARM => 2],
+        ]
+    ],
+    APPROACH_EXP_YELLOW_KBP => [
+        'type' => APPROACH_EXP_YELLOW_KBP,
+        'category' => APPROACH_YELLOW,
+        'name' => 'KBP Boryspil',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1, TOTAL_TRUST => true],
+            7 => [TOKEN_PLANE => 1, TOTAL_TRUST => true],
+            6 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, ALLOWED_AXIS => [-1, 0], TOTAL_TRUST => true],
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 2, ALLOWED_AXIS => [0, 1], DICE_TRAFFIC => 1],
+            3 => [DICE_TRAFFIC => 1],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_EXP_RED_PEK => [
+        'type' => APPROACH_EXP_RED_PEK,
+        'category' => APPROACH_RED,
+        'name' => 'PEK Beijing Capital',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, ALLOWED_AXIS => [1, 2]],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, ALLOWED_AXIS => [0, 1]],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_EXP_GREEN_PEK => [
+        'type' => APPROACH_EXP_GREEN_PEK,
+        'category' => APPROACH_GREEN,
+        'name' => 'PEK Beijing Capital',
+        'size' => 6,
+        'spaces' => [
+            6 => [TOKEN_PLANE => 2],
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1, 2]],
+            3 => [TOKEN_PLANE => 1],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1, 0]],
+            1 => [DICE_TRAFFIC => 3],
+        ]
+    ],
+    APPROACH_EXP_BLACK_MAD => [
+        'type' => APPROACH_EXP_BLACK_MAD,
+        'category' => APPROACH_BLACK,
+        'name' => 'MAD Madrid–Barajas',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [TOKEN_PLANE => 1],
+            3 => [DICE_TRAFFIC => 1, ALLOWED_AXIS => [-1]],
+            2 => [],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [1, 2]],
+        ]
+    ],
+    APPROACH_EXP_YELLOW_MAD => [
+        'type' => APPROACH_EXP_YELLOW_MAD,
+        'category' => APPROACH_YELLOW,
+        'name' => 'MAD Madrid–Barajas',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 2],
+            6 => [TOKEN_PLANE => 1],
+            5 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, ALLOWED_AXIS => [-2, -1]],
+            4 => [TOKEN_PLANE => 1],
+            3 => [DICE_TRAFFIC => 1, ALLOWED_AXIS => [-1, 0]],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [0, 1]],
+            1 => [DICE_TRAFFIC => 4],
+        ]
+    ],
+    APPROACH_EXP_RED_WAW => [
+        'type' => APPROACH_EXP_RED_WAW,
+        'category' => APPROACH_RED,
+        'name' => 'WAW Warsaw Chopin',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 1],
+            4 => [TOKEN_PLANE => 1, ALARM => 1],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1], ALARM => 1],
+            2 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], ALARM => 1],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [1,2]],
+        ]
+    ],
+    APPROACH_EXP_YELLOW_WAW => [
+        'type' => APPROACH_EXP_YELLOW_WAW,
+        'category' => APPROACH_YELLOW,
+        'name' => 'WAW Warsaw Chopin',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1, ALARM => 1],
+            3 => [DICE_TRAFFIC => 1, ALLOWED_AXIS => [0, 1, 2], ALARM => 1],
+            2 => [ALLOWED_AXIS => [-2, -1, 0], ALARM => 1],
+            1 => [DICE_TRAFFIC => 2, ALLOWED_AXIS => [1,2]],
+        ]
+    ],
+    APPROACH_EXP_RED_SYD => [
+        'type' => APPROACH_EXP_RED_SYD,
+        'category' => APPROACH_RED,
+        'name' => 'SYD Kingsford Smith',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1, ALARM => 1],
+            6 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1, 2], ALARM => 1],
+            5 => [TOKEN_PLANE => 1, ALARM => 1],
+            4 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [1,2]],
+            3 => [ALARM => 1],
+            2 => [ALLOWED_AXIS => [1, 2], ALARM => 1],
+            1 => [DICE_TRAFFIC => 4, ALARM => 2],
+        ]
+    ],
+    APPROACH_EXP_GREEN_SYD => [
+        'type' => APPROACH_EXP_GREEN_SYD,
+        'category' => APPROACH_GREEN,
+        'name' => 'SYD Kingsford Smith',
+        'size' => 8,
+        'spaces' => [
+            8 => [TOKEN_PLANE => 1],
+            7 => [TOKEN_PLANE => 1, ALARM => 1],
+            6 => [ALLOWED_AXIS => [1, 2], ALARM => 1],
+            5 => [TOKEN_PLANE => 1, ALARM => 1],
+            4 => [TOKEN_PLANE => 1],
+            3 => [ALLOWED_AXIS => [1,2], ALARM => 1],
+            2 => [ALARM => 1],
+            1 => [DICE_TRAFFIC => 3, ALARM => 1],
+        ]
+    ],
+    APPROACH_EXP_RED_SXM => [
+        'type' => APPROACH_EXP_RED_SXM,
+        'category' => APPROACH_RED,
+        'name' => 'SXM Princess Juliana',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 1],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2]],
+            2 => [],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    APPROACH_EXP_YELLOW_SXM => [
+        'type' => APPROACH_EXP_YELLOW_SXM,
+        'category' => APPROACH_YELLOW,
+        'name' => 'SXM Princess Juliana',
+        'size' => 5,
+        'spaces' => [
+            5 => [TOKEN_PLANE => 2],
+            4 => [TOKEN_PLANE => 2, DICE_TRAFFIC => 1],
+            3 => [TOKEN_PLANE => 1, DICE_TRAFFIC => 1, ALLOWED_AXIS => [-2, -1]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [-2, -1]],
+        ]
+    ],
+    APPROACH_EXP_BLACK_CPT => [
+        'type' => APPROACH_EXP_BLACK_CPT,
+        'category' => APPROACH_BLACK,
+        'name' => 'CPT Cape Town',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1, ALARM => 1],
+            5 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2], ALARM => 1],
+            4 => [TOKEN_PLANE => 1, ALARM => 1],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1], ALARM => 1],
+            2 => [ALARM => 2],
+            1 => [DICE_TRAFFIC => 3, ALLOWED_AXIS => [2], ALARM => 1],
+        ]
+    ],
+    APPROACH_EXP_GREEN_CPT => [
+        'type' => APPROACH_EXP_GREEN_CPT,
+        'category' => APPROACH_GREEN,
+        'name' => 'CPT Cape Town',
+        'size' => 7,
+        'spaces' => [
+            7 => [TOKEN_PLANE => 1],
+            6 => [TOKEN_PLANE => 1],
+            5 => [ALLOWED_AXIS => [-2, -1, 0]],
+            4 => [TOKEN_PLANE => 1],
+            3 => [TOKEN_PLANE => 1, ALLOWED_AXIS => [-2, -1, 0]],
+            2 => [TOKEN_PLANE => 1],
+            1 => [DICE_TRAFFIC => 2],
+        ]
+    ],
 ];
 
 $this->SCENARIOS = [
     APPROACH_GREEN_YUL_MONTREAL => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_YUL_MONTREAL,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => []
     ],
     APPROACH_GREEN_HND_HANEDA => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_HND_HANEDA,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS]
     ],
     APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_KUL_KUALA_LUMPUR,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_RED_TGU_TONCONTIN => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_TGU_TONCONTIN,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
@@ -653,64 +963,75 @@ $this->SCENARIOS = [
     ],
     // WAVE 2
     APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+        'tags' => ['base'],
         'approach' => APPROACH_BLACK_KUL_KUALA_LUMPUR,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_YELLOW_TGU_TONCONTIN => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_TGU_TONCONTIN,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_RED_HND_HANEDA => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_HND_HANEDA,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_BLACK_LGA_LAGUARDIA => [
+        'tags' => ['promo'],
         'approach' => APPROACH_BLACK_LGA_LAGUARDIA,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_YELLOW_LGA_LAGUARDIA => [
+        'tags' => ['promo'],
         'approach' => APPROACH_YELLOW_LGA_LAGUARDIA,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_BLACK_DUS_DUSSELDORF => [
+        'tags' => ['promo'],
         'approach' => APPROACH_BLACK_DUS_DUSSELDORF,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_YELLOW_DUS_DUSSELDORF => [
+        'tags' => ['promo'],
         'approach' => APPROACH_YELLOW_DUS_DUSSELDORF,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_RED_CDG_PARIS => [
+        'tags' => ['promo'],
         'approach' => APPROACH_RED_CDG_PARIS,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_WINDS, MODULE_INTERN],
     ],
     APPROACH_YELLOW_CDG_PARIS => [
+        'tags' => ['promo'],
         'approach' => APPROACH_YELLOW_CDG_PARIS,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_INTERN],
     ],
     APPROACH_YELLOW_TER_LAJES => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_TER_LAJES,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_BLACK_TER_LAJES => [
+        'tags' => ['base'],
         'approach' => APPROACH_BLACK_TER_LAJES,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
@@ -718,22 +1039,26 @@ $this->SCENARIOS = [
     ],
     // WAVE 3
     APPROACH_BLACK_NZIR => [
+        'tags' => ['base'],
         'approach' => APPROACH_BLACK_NZIR,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_KEROSENE, MODULE_INTERN, MODULE_WINDS_HEADON],
     ],
     APPROACH_RED_NZIR => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_NZIR,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_WINDS_HEADON, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_YELLOW_BUD_BUDAPEST => [
+        'tags' => ['promo'],
         'approach' => APPROACH_YELLOW_BUD_BUDAPEST,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS],
     ],
     APPROACH_RED_BUD_BUDAPEST => [
+        'tags' => ['promo'],
         'approach' => APPROACH_RED_BUD_BUDAPEST,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS, MODULE_SPECIAL_ABILITIES, MODULE_MODIFIED_ALTITUDE],
@@ -741,96 +1066,253 @@ $this->SCENARIOS = [
         'modifiedAltitude' => 2
     ],
     APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+        'tags' => ['promo'],
         'approach' => APPROACH_RED_BLQ_GUGLIELMO_MARCONI,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1,
     ],
     APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+        'tags' => ['promo'],
         'approach' => APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK],
     ],
     // WAVE 4
     APPROACH_GREEN_ATL => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_ATL,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_INTERN],
     ],
     APPROACH_YELLOW_ATL => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_ATL,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1,
     ],
     APPROACH_YELLOW_GIG => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_GIG,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1,
     ],
     APPROACH_RED_GIG => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_GIG,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_BLACK_PBH => [
+        'tags' => ['base'],
         'approach' => APPROACH_BLACK_PBH,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_RED_PBH => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_PBH,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_RED_OSL => [
+        'tags' => ['base'],
         'approach' => APPROACH_RED_OSL,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE_LEAK, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_GREEN_OSL => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_OSL,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE],
     ],
     APPROACH_BLACK_KEF => [
+        'tags' => ['base'],
         'approach' => APPROACH_BLACK_KEF,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_WINDS, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_YELLOW_KEF => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_KEF,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_ICE_BRAKES, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1,
     ],
     APPROACH_YELLOW_LHR => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_LHR,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_INTERN],
     ],
     APPROACH_GREEN_LHR => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_LHR,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC],
     ],
     APPROACH_YELLOW_PRG => [
+        'tags' => ['base'],
         'approach' => APPROACH_YELLOW_PRG,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_GREEN_PRG => [
+        'tags' => ['base'],
         'approach' => APPROACH_GREEN_PRG,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
+    ],
+    // TURBULENCE
+    APPROACH_EXP_YELLOW_DUS => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_YELLOW_DUS,
+        'altitude' => ALTITUDE_A,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_EXP_RED_DUS => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_RED_DUS,
+        'altitude' => ALTITUDE_C,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_REAL_TIME, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_YELLOW_TER => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_YELLOW_TER,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2,
+    ],
+    APPROACH_EXP_BLACK_TER => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_BLACK_TER,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_BLACK_NZIR => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_BLACK_NZIR,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_KEROSENE, MODULE_INTERN, MODULE_WINDS_HEADON, MODULE_PENGUINS],
+    ],
+    APPROACH_EXP_RED_NZIR => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_RED_NZIR,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_WINDS_HEADON, MODULE_SPECIAL_ABILITIES, MODULE_PENGUINS],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_BLACK_KBP => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_BLACK_KBP,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_TOTAL_TRUST, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_EXP_YELLOW_KBP => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_YELLOW_KBP,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TOTAL_TRUST, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_EXP_RED_PEK => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_RED_PEK,
+        'altitude' => ALTITUDE_C,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_GREEN_PEK => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_GREEN_PEK,
+        'altitude' => ALTITUDE_A,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_BLACK_MAD => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_BLACK_MAD,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_MODIFIED_ALTITUDE, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+        'modifiedAltitude' => 2
+    ],
+    APPROACH_EXP_YELLOW_MAD => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_YELLOW_MAD,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_MODIFIED_ALTITUDE, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1,
+        'modifiedAltitude' => 2
+    ],
+    APPROACH_EXP_RED_WAW => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_RED_WAW,
+        'altitude' => ALTITUDE_RED_BLACK,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_STUCK_LANDING_GEAR, MODULE_ALARMS, MODULE_WINDS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_YELLOW_WAW => [
+        'tags' => ['turbulence', 'coming-soon'],
+        'approach' => APPROACH_EXP_YELLOW_WAW,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_STUCK_LANDING_GEAR, MODULE_ALARMS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_RED_SYD => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_RED_SYD,
+        'altitude' => ALTITUDE_C,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 2
+    ],
+    APPROACH_EXP_GREEN_SYD => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_GREEN_SYD,
+        'altitude' => ALTITUDE_GREEN_YELLOW,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
+    ],
+    APPROACH_EXP_RED_SXM => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_RED_SXM,
+        'altitude' => ALTITUDE_D,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_MODIFIED_ALTITUDE, MODULE_KEROSENE, MODULE_INTERN],
+        'modifiedAltitude' => 2
+    ],
+    APPROACH_EXP_YELLOW_SXM => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_YELLOW_SXM,
+        'altitude' => ALTITUDE_B,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TURBULENCE, MODULE_MODIFIED_ALTITUDE, MODULE_INTERN],
+        'modifiedAltitude' => 2
+    ],
+    APPROACH_EXP_BLACK_CPT => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_BLACK_CPT,
+        'altitude' => ALTITUDE_D,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_ALARMS, MODULE_WINDS, MODULE_INTERN]
+    ],
+    APPROACH_EXP_GREEN_CPT => [
+        'tags' => ['turbulence', 'new'],
+        'approach' => APPROACH_EXP_GREEN_CPT,
+        'altitude' => ALTITUDE_B,
+        'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TURBULENCE, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
+        'nrOfSpecialAbilities' => 1
     ],
 ];
 
@@ -862,6 +1344,62 @@ $this->ALTITUDE_TRACKS = [
             2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT],
             1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
         ]
+    ],
+    ALTITUDE_A => [
+        'type' => ALTITUDE_A,
+        'categories' => [APPROACH_GREEN, APPROACH_YELLOW],
+        'size' => 7,
+        'spaces' => [
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT, BAD_VISIBILITY => true],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1, BAD_VISIBILITY => true],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT, BAD_VISIBILITY => true],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT, BAD_VISIBILITY => true],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
+    ],
+    ALTITUDE_B => [
+        'type' => ALTITUDE_B,
+        'categories' => [APPROACH_GREEN, APPROACH_YELLOW],
+        'size' => 7,
+        'spaces' => [
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1, TURBULENCE => true],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT, TURBULENCE => true],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT, TURBULENCE => true],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT, TURBULENCE => true],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
+    ],
+    ALTITUDE_C => [
+        'type' => ALTITUDE_C,
+        'categories' => [APPROACH_RED, APPROACH_BLACK],
+        'size' => 7,
+        'spaces' => [
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT, BAD_VISIBILITY => true],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, BAD_VISIBILITY => true],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT, BAD_VISIBILITY => true],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT, TURBULENCE => true],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT, TURBULENCE => true],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
+    ],
+    ALTITUDE_D => [
+        'type' => ALTITUDE_D,
+        'categories' => [APPROACH_RED, APPROACH_BLACK],
+        'size' => 7,
+        'spaces' => [
+            7 => [ALTITUDE_HEIGHT => '0000', ROUND_START_PLAYER => PILOT, BAD_VISIBILITY => true],
+            6 => [ALTITUDE_HEIGHT => '1000', ROUND_START_PLAYER => CO_PILOT],
+            5 => [ALTITUDE_HEIGHT => '2000', ROUND_START_PLAYER => PILOT, TURBULENCE => true, BAD_VISIBILITY => true],
+            4 => [ALTITUDE_HEIGHT => '3000', ROUND_START_PLAYER => CO_PILOT, TURBULENCE => true, BAD_VISIBILITY => true],
+            3 => [ALTITUDE_HEIGHT => '4000', ROUND_START_PLAYER => PILOT, TURBULENCE => true],
+            2 => [ALTITUDE_HEIGHT => '5000', ROUND_START_PLAYER => CO_PILOT, TURBULENCE => true],
+            1 => [ALTITUDE_HEIGHT => '6000', ROUND_START_PLAYER => PILOT, TOKEN_REROLL => 1],
+        ]
     ]
 ];
 
@@ -872,6 +1410,15 @@ $this->SPECIAL_ABILITIES = [
     SYNCHRONISATION => ['name' => clienttranslate('Synchronisation'), 'description' => clienttranslate('If you have placed at least one die on Landing Gear and one die on Flaps, immediately roll the Traffic die. The Co-Pilot must place it on any empty space on the Control Panel regardless of its colour. Apply the effect of the Traffic die as if it were a normal die. It counts as an extra action for this turn. You can use coffee to change the value, but be aware that the Traffic die has no faces with value 1 or 6.')],
     WORKING_TOGETHER => ['name' => clienttranslate('Working Together'), 'description' => clienttranslate('Once per round, at any time, a player may request to swap the dice values of two unplaced dice. Once the player has chosen a die to swap values for, the other player MUST choose a die as well. The values are then swapped.')],
     CONTROL => ['name' => clienttranslate('Control'), 'description' => clienttranslate('If you play 2 dice of the same value on the <b>AXIS</b>, immediately gain a Coffee token.')],
+];
+
+$this->ALARM_TOKENS = [
+    1 => ['name' => clienttranslate('Concentration Alarm')],
+    2 => ['name' => clienttranslate('Brakes Alarm')],
+    3 => ['name' => clienttranslate('Landing Gear Alarm')],
+    4 => ['name' => clienttranslate('Flaps Alarm')],
+    5 => ['name' => clienttranslate('Pilot Radio Alarm')],
+    6 => ['name' => clienttranslate('Co-Pilot Radio Alarm')],
 ];
 
 

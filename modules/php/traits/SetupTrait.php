@@ -54,6 +54,8 @@ trait SetupTrait
         $this->createSpecialAbilities();
 
         $this->activeNextPlayer();
+
+        $this->flightLogManager->setUp();
     }
 
     private function setInitialPlaneParameters()
@@ -94,6 +96,10 @@ trait SetupTrait
             $specialAbilities = array_filter($specialAbilities, fn($value, $key) => $key !== MASTERY, ARRAY_FILTER_USE_BOTH);
         }
 
+        if ($this->isModuleActive(MODULE_STUCK_LANDING_GEAR)) {
+            $specialAbilities = array_filter($specialAbilities, fn($value, $key) => $key !== SYNCHRONISATION, ARRAY_FILTER_USE_BOTH);
+        }
+
         foreach ($specialAbilities as $type => $specialAbility) {
             $cards[] = ['type' => $type, 'type_arg' => $type, 'nbr' => 1];
         }
@@ -131,6 +137,20 @@ trait SetupTrait
         }
         $rerollTokens = [['type' => TOKEN_REROLL, 'type_arg' => TOKEN_REROLL, 'nbr' => 3 - $rerollCreated]];
         $this->tokens->createCards($rerollTokens, LOCATION_RESERVE);
+
+        if ($this->isModuleActive(MODULE_ALARMS)) {
+            $alarmTokens = [];
+            foreach ($this->ALARM_TOKENS as $typeArg => $alarmToken) {
+                if (!$this->isModuleActive(MODULE_STUCK_LANDING_GEAR)) {
+                    $alarmTokens[] = ['type' => TOKEN_ALARM, 'type_arg' => $typeArg, 'nbr' => 1];
+                } else {
+                    if (in_array($typeArg, [4,6,1])) {
+                        $alarmTokens[] = ['type' => TOKEN_ALARM, 'type_arg' => $typeArg, 'nbr' => 1];
+                    }
+                }
+            }
+            $this->tokens->createCards($alarmTokens, LOCATION_ALARM);
+        }
     }
 
     private function getStartingAltitude() {

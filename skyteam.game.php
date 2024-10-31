@@ -18,6 +18,7 @@
 
 use actions\ActionManager;
 use commands\CommandManager;
+use managers\objects\AlarmToken;
 use managers\objects\SpecialAbilityCard;
 use managers\PlayerManager;
 use managers\PlaneManager;
@@ -38,6 +39,7 @@ require_once('modules/php/utils/ReflectionUtils.php');
 
 require_once('modules/php/objects/Card.php');
 require_once('modules/php/objects/Token.php');
+require_once('modules/php/objects/AlarmToken.php');
 require_once('modules/php/objects/Plane.php');
 require_once('modules/php/objects/PlaneSwitch.php');
 require_once('modules/php/objects/Dice.php');
@@ -61,6 +63,7 @@ require_once('modules/php/traits/SetupTrait.php');
 
 require_once('modules/php/PlayerManager.php');
 require_once('modules/php/PlaneManager.php');
+require_once('modules/php/FlightLogManager.php');
 
 
 class SkyTeam extends Table
@@ -97,9 +100,15 @@ class SkyTeam extends Table
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
 
+        // EXPERIMENTAL to avoid deadlocks.  This locks the global table early in the game constructor.
+        $this->bSelectGlobalsForUpdate = true;
+
         self::initGameStateLabels( array(
+            EXPANSION_OPTION => EXPANSION_OPTION_ID,
             SCENARIO_OPTION => SCENARIO_OPTION_ID,
+            SCENARIO_OPTION_EXPANSION => SCENARIO_OPTION_EXPANSION_ID,
             REAL_TIME_SECONDS => REAL_TIME_SECONDS_OPTION_ID,
+            PERMANENT_TOTAL_TRUST_OPTION => PERMANENT_TOTAL_TRUST_OPTION_ID
         ));
 
         self::$instance = $this;
@@ -116,6 +125,7 @@ class SkyTeam extends Table
         $this->commandManager = new CommandManager();
         $this->playerManager = new PlayerManager();
         $this->actionManager = new ActionManager();
+        $this->flightLogManager = new FlightLogManager();
 
         $this->planeManager = new PlaneManager();
 	}
@@ -151,6 +161,7 @@ class SkyTeam extends Table
             if ($current_player_id == $playerId) {
                 $player['dice'] =  Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
             }
+            $player['flightLog'] = $this->flightLogManager->getPlayerFlightLog($playerId);
         }
 
         $result['round'] = $this->getGlobalVariable(CURRENT_ROUND);
@@ -178,6 +189,8 @@ class SkyTeam extends Table
         $result['victoryConditions'] = $this->planeManager->getVictoryConditionsResults();
         $result['scenario'] = $this->getScenario();
 
+        $result['flightLog'] = $this->flightLogManager->getTeamFlightLog();
+
         $result['chosenSpecialAbilities'] = SpecialAbilityCard::fromArray($this->specialAbilities->getCardsInLocation(LOCATION_AVAILABLE));
         $result['rolesThatUsedAdaptation'] = [];
         $playersThatUsedAdaptation = $this->getGlobalVariable(PLAYERS_THAT_USED_ADAPTATION);
@@ -200,6 +213,12 @@ class SkyTeam extends Table
                 }
             }
         }
+
+        $result['scenarioData'] = $this->SCENARIOS;
+        $result['approachTrackData'] = $this->APPROACH_TRACKS;
+
+        $result['alarmTokens'] = AlarmToken::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_ALARM, null, LOCATION_ALARM));
+        $result['alarmTokenData'] = $this->ALARM_TOKENS;
 
         return $result;
     }

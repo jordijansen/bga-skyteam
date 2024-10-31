@@ -1,19 +1,5 @@
 const determineBoardWidth = (game: SkyTeamGame) => {
-    // const BASE_BOARD = 607;
-    // const COFFEE_RESERVE = 55 * 2;
-    // const TRAFFIC_DICE = 110 * 2;
-    // const WIND_PANEL = 280.5 * 2;
-    //
-    // if (game.gamedatas.scenario.modules.includes('special-abilities') || game.gamedatas.scenario.modules.includes('wind')) {
-    //     console.log(BASE_BOARD + WIND_PANEL)
-    //     return BASE_BOARD + WIND_PANEL;
-    // }
-    //
-    // if (game.gamedatas.scenario.modules.includes('traffic')) {
-    //     return BASE_BOARD + TRAFFIC_DICE;
-    // }
-    // return BASE_BOARD + COFFEE_RESERVE;
-    return 1000;
+    return game.planeManager.calculatePlaneWidth(game.gamedatas);
 }
 
 const determineMaxZoomLevel = (game: SkyTeamGame) => {
@@ -43,6 +29,7 @@ const getZoomLevels = (maxZoomLevel: number) => {
     zoomLevels = zoomLevels.filter(zoomLevel => (zoomLevel <= maxZoomLevel) && (zoomLevel > 0.3))
     return zoomLevels;
 }
+
 class AutoZoomManager extends ZoomManager {
 
     constructor(game: SkyTeamGame, elementId: string, localStorageKey: string) {

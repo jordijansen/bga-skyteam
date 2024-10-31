@@ -3,6 +3,7 @@
 namespace traits;
 
 use BgaUserException;
+use BgaVisibleSystemException;
 use DateTimeImmutable;
 use managers\objects\SpecialAbilityCard;
 use objects\Dice;
@@ -39,8 +40,8 @@ trait ActionTrait
         $pilotDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, PILOT, LOCATION_DECK));
         $coPilotDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, CO_PILOT, LOCATION_DECK));
 
-        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $pilotDice), LOCATION_PLAYER, $activePlayerRole == PILOT ? $activePlayerId : $otherPlayerId);
-        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $coPilotDice), LOCATION_PLAYER, $activePlayerRole == CO_PILOT ? $activePlayerId : $otherPlayerId);
+        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $pilotDice), LOCATION_PLANE, 'skipped');
+        $this->dice->moveCards(array_map(fn($dice) => $dice->id, $coPilotDice), LOCATION_PLANE, 'skipped');
 
         $this->notifyAllPlayers( 'playerRoleAssigned', clienttranslate('${player_name} becomes the <b style="color: #${roleColor}">${roleName}</b>'), [
             'i18n' => ['roleName'],
@@ -100,19 +101,20 @@ trait ActionTrait
             $actionSpaceId = $placement['actionSpaceId'];
             $diceId = $placement['diceId'];
             $diceSide = $placement['diceValue'];
+            $force = $placement['force'];
 
             if (!isset($actionSpaceId) || !isset($diceId)) {
-                throw new BgaUserException('Missing parameter for action confirmPlacement');
+                throw new BgaVisibleSystemException('Missing parameter for action confirmPlacement');
             }
 
             $die = Dice::from($this->dice->getCard($diceId));
             if (!isset($die) || $die->location != LOCATION_PLAYER || $die->locationArg != $playerId) {
-                throw new BgaUserException('Invalid dice supplied!');
+                throw new BgaVisibleSystemException('Invalid dice supplied!');
             }
 
             $actionSpaces = $this->planeManager->getAvailableActionSpaces($playerId, $die->type == DICE_TRAFFIC, $die->type == DICE_INTERN ? ACTION_SPACE_CONCENTRATION : null);
             if (!array_key_exists($actionSpaceId, $actionSpaces)) {
-                throw new BgaUserException('Action space not available.');
+                throw new BgaVisibleSystemException('Action space not available.');
             }
 
             $originalDie = clone $die;
@@ -123,10 +125,10 @@ trait ActionTrait
                 $nrOfCoffeeTokensUsed = abs($originalDie->value - $die->value);
                 $coffeeTokensAvailable = Token::fromArray($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE));
                 if ($nrOfCoffeeTokensUsed > $coffeeTokensAvailable) {
-                    throw new BgaUserException('Not enough coffee tokens');
+                    throw new BgaVisibleSystemException('Not enough coffee tokens');
                 }
                 if ($diceSide > 6 || $diceSide < 1) {
-                    throw new BgaUserException('Can not modify above 6 or below 1');
+                    throw new BgaVisibleSystemException('Can not modify above 6 or below 1');
                 }
 
                 $coffeeTokensUsed = array_slice($coffeeTokensAvailable, 0, $nrOfCoffeeTokensUsed);
@@ -147,12 +149,12 @@ trait ActionTrait
 
             $actionSpace = $actionSpaces[$actionSpaceId];
             if (array_key_exists(ALLOWED_VALUES, $actionSpace) && !in_array($die->value, $actionSpace[ALLOWED_VALUES])) {
-                throw new BgaUserException('Value not allowed');
+                throw new BgaVisibleSystemException('Value not allowed');
             }
 
             $plane = $this->planeManager->get();
             if (array_key_exists(REQUIRES_SWITCH_IN, $actionSpace) && !$plane->switches[$actionSpace[REQUIRES_SWITCH_IN]]->value) {
-                throw new BgaUserException('Requires switch in other location');
+                throw new BgaVisibleSystemException('Requires switch in other location');
             }
 
             $this->dice->moveCard($die->id, LOCATION_PLANE, $actionSpaceId);
@@ -167,8 +169,54 @@ trait ActionTrait
                 'action_type' => $this->ACTION_TYPES[$actionSpace['type']]
             ]);
 
-            $continue = $this->planeManager->resolveDicePlacement($die);
+            $continue = $this->planeManager->resolveDicePlacement($die, $force);
             if ($continue) {
+                if ($die->type === DICE_PLAYER) {
+                    if ($this->isModuleActive(MODULE_BAD_VISIBILITY)) {
+                        $dicePutAside = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER_ASIDE, $playerId));
+                        if (sizeof($dicePutAside) > 0) {
+                            $die = current($dicePutAside);
+                            $die->rollDie();
+                            $this->dice->moveCard($die->id, LOCATION_PLAYER, $playerId);
+                            $diceRevealed = Dice::fromArray($this->dice->getCards([$die->id]));
+                            $this->notifyPlayer($playerId, "diceRolled", clienttranslate('<b>Bad Visibility:</b> ${player_name} gains ${icon_dice}'), [
+                                'playerId' => intval($playerId),
+                                'player_name' => $this->getPlayerName($playerId),
+                                'dice' => $diceRevealed,
+                                'icon_dice' => $diceRevealed
+                            ]);
+                            $this->notifyAllPlayers("gameLog", clienttranslate('<b>Bad Visibility:</b> ${player_name} gains a new die and rolls it'), [
+                                'playerId' => intval($playerId),
+                                'player_name' => $this->getPlayerName($playerId)
+                            ]);
+                        }
+                    }
+                    if ($this->isModuleActive(MODULE_TURBULENCE)) {
+                        $plane = $this->planeManager->get();
+                        $altitudeTrackSpace = $this->getAltitudeTrack()->spaces[$plane->altitude];
+                        if (array_key_exists(TURBULENCE, $altitudeTrackSpace) && $altitudeTrackSpace[TURBULENCE]) {
+                            $remainingPlayerDice = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
+                            if (sizeof($remainingPlayerDice) > 0) {
+                                foreach ($remainingPlayerDice as $dieToRoll) {
+                                    $dieToRoll->rollDie();
+                                }
+
+                                $this->notifyPlayer($playerId, "diceRolled", clienttranslate('<b>Turbulence:</b> ${player_name} re-rolls ${icon_dice}'), [
+                                    'playerId' => intval($playerId),
+                                    'player_name' => $this->getPlayerName($playerId),
+                                    'dice' => $remainingPlayerDice,
+                                    'icon_dice' => $remainingPlayerDice
+                                ]);
+
+                                $this->notifyAllPlayers("gameLog", clienttranslate('<b>Turbulence:</b> ${player_name} re-rolls remaining dice'), [
+                                    'playerId' => intval($playerId),
+                                    'player_name' => $this->getPlayerName($playerId)
+                                ]);
+                            }
+                        }
+                    }
+                }
+
                 if ($this->isSpecialAbilityActive(SYNCHRONISATION) && !$this->getGlobalVariable(SYNCHRONISATION_ACTIVATED)) {
                     $nrOfDiceOnLandingGear = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'landing-gear%'"));
                     $nrOfDiceOnFlaps = intval($this->getUniqueValueFromDB("SELECT count(1) FROM dice WHERE card_location_arg LIKE 'flaps%'"));
@@ -190,27 +238,54 @@ trait ActionTrait
         }
     }
 
-    function skipInternPlacement()
+    function skipPlacement($dieId)
     {
-        $this->checkAction(ACT_SKIP_INTERN);
-
-        $internDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_INTERN, DICE_INTERN, LOCATION_PLAYER));
-        if (sizeof($internDice) === 1) {
-            $internDie = current($internDice);
-            $this->dice->moveCard($internDie->id, LOCATION_DECK);
+        if (!$this->realTimeOutOfTime()) {
+            $this->checkAction(ACT_DICE_PLACEMENT);
 
             $playerId = $this->getActivePlayerId();
-            $internDie = Dice::from($this->dice->getCard($internDie->id));
-            $this->notifyAllPlayers('internDieSkipped', clienttranslate('${player_name} skips placement of ${icon_dice} (no placement possible)'), [
+
+            $die = Dice::from($this->dice->getCard($dieId));
+            if (!isset($die) || $die->location != LOCATION_PLAYER || $die->locationArg != $playerId) {
+                throw new BgaVisibleSystemException('Invalid dice supplied!');
+            }
+            $this->dice->moveCard($die->id, LOCATION_PLANE, 'skipped');
+            $die = Dice::from($this->dice->getCard($dieId));
+
+            $this->notifyAllPlayers('dieSkipped', clienttranslate('${player_name} skips placement of ${icon_dice} (no placement possible)'), [
                 'playerId' => intval($playerId),
                 'player_name' => $this->getPlayerName($playerId),
-                'internDie' => $internDie,
-                'icon_dice' => [$internDie]
+                'die' => $die,
+                'icon_dice' => [$die]
             ]);
 
             $this->gamestate->nextState("");
-        } else {
-            throw new BgaUserException('Not allowed!');
+        }
+    }
+
+    function skipInternPlacement()
+    {
+        if (!$this->realTimeOutOfTime()) {
+            $this->checkAction(ACT_SKIP_INTERN);
+
+            $internDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_INTERN, DICE_INTERN, LOCATION_PLAYER));
+            if (sizeof($internDice) === 1) {
+                $internDie = current($internDice);
+                $this->dice->moveCard($internDie->id, LOCATION_DECK);
+
+                $playerId = $this->getActivePlayerId();
+                $internDie = Dice::from($this->dice->getCard($internDie->id));
+                $this->notifyAllPlayers('dieSkipped', clienttranslate('${player_name} skips placement of ${icon_dice} (no placement possible)'), [
+                    'playerId' => intval($playerId),
+                    'player_name' => $this->getPlayerName($playerId),
+                    'die' => $internDie,
+                    'icon_dice' => [$internDie]
+                ]);
+
+                $this->gamestate->nextState("");
+            } else {
+                throw new BgaUserException('Not allowed!');
+            }
         }
     }
 

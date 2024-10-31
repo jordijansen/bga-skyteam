@@ -20,12 +20,17 @@ const APPROACH_BLACK = 'black';
 
 const TOKEN_PLANE = 'plane';
 const TOKEN_REROLL = 'reroll';
+const TOKEN_ALARM = 'alarm';
 const TOKEN_COFFEE = 'coffee';
 
 const ALLOWED_AXIS = 'allowedAxis';
 
 const ALTITUDE_HEIGHT = 'altitudeHeight';
 const ROUND_START_PLAYER = 'startPlayer';
+
+const BAD_VISIBILITY = 'badVisibility';
+const TURBULENCE = 'turbulence';
+
 
 const PHASE_SETUP = 'setup';
 const PHASE_STRATEGY = 'strategy';
@@ -41,6 +46,7 @@ const ACTION_SPACE_CONCENTRATION = 'concentration';
 const ACTION_SPACE_KEROSENE = 'kerosene';
 const ACTION_SPACE_INTERN = 'intern';
 const ACTION_SPACE_ICE_BRAKES = 'ice-brakes';
+const ACTION_SPACE_ALARMS = 'alarms';
 
 const ALLOWED_ROLES = 'allowedRoles';
 const ALLOWED_VALUES = 'allowedValues';
@@ -48,6 +54,8 @@ const MANDATORY = 'mandatory';
 const REQUIRES_SWITCH_IN = 'requiresSwitchIn';
 const MODULE = 'module';
 const NOT_MODULE = 'notModule';
+const ALARM = 'alarm';
+const TOTAL_TRUST = 'totalTrust';
 
 /**
  * Failure Reasons
@@ -87,9 +95,17 @@ const PREF_BACKGROUND = 102;
 const PREF_BACKGROUND_BLUE = 1;
 const PREF_BACKGROUND_BGA = 2;
 
+const EXPANSION_OPTION_ID = 150;
+const EXPANSION_OPTION = 'expansion';
+
+const EXPANSION_BASE_GAME = 1;
+const EXPANSION_TURBULENCE = 2;
 
 const SCENARIO_OPTION_ID = 100;
 const SCENARIO_OPTION = 'scenario';
+
+const SCENARIO_OPTION_EXPANSION_ID = 151;
+const SCENARIO_OPTION_EXPANSION = 'scenario-expansion';
 
 const REAL_TIME_SECONDS_OPTION_ID = 101;
 const REAL_TIME_SECONDS = 'real-time-seconds';
@@ -97,6 +113,14 @@ const REAL_TIME_SECONDS = 'real-time-seconds';
 const REAL_TIME_60_SECONDS = 60;
 const REAL_TIME_70_SECONDS = 70;
 const REAL_TIME_80_SECONDS = 80;
+
+const PERMANENT_TOTAL_TRUST_OPTION_ID = 160;
+const PERMANENT_TOTAL_TRUST_OPTION = 'permanent-total-trust';
+
+const PERMANENT_TOTAL_TRUST_DISABLED = 1;
+const PERMANENT_TOTAL_TRUST_ENABLED = 2;
+
+
 
 /**
  * Modules
@@ -113,6 +137,12 @@ const MODULE_ICE_BRAKES = 'ice-brakes';
 const MODULE_ENGINE_LOSS = 'engine-loss';
 const MODULE_WINDS_HEADON = 'winds-headon';
 const MODULE_MODIFIED_ALTITUDE = 'modified-altitude';
+const MODULE_PENGUINS = 'penguins';
+const MODULE_ALARMS = 'alarms';
+const MODULE_TOTAL_TRUST = 'total-trust';
+const MODULE_TURBULENCE = 'turbulence';
+const MODULE_BAD_VISIBILITY = 'bad-visibility';
+const MODULE_STUCK_LANDING_GEAR = 'stuck-landing-gear';
 
 /**
  * State
@@ -174,9 +204,12 @@ const LOCATION_APPROACH = 'approach';
 const LOCATION_ALTITUDE = 'altitude';
 const LOCATION_AVAILABLE = 'available';
 const LOCATION_PLAYER = 'player';
+const LOCATION_PLAYER_ASIDE = 'player-aside';
 const LOCATION_PLANE = 'plane';
 const LOCATION_TRAFFIC = 'traffic';
 const LOCATION_INTERN = 'intern';
+const LOCATION_ALARM = 'alarm';
+const LOCATION_OUT_OF_THE_GAME = 'out-of-the-game';
 
 
 /**
@@ -202,6 +235,7 @@ const KEROSENE_ACTIVATED = 'KEROSENE_ACTIVATED';
 const REAL_TIME_END_TIME = 'REAL_TIME_END_TIME';
 const INTERN_TRIGGERED_THROUGH_TRAFFIC = 'INTERN_TRIGGERED_THROUGH_TRAFFIC';
 const FORCE_NEXT_PLAYER = 'FORCE_NEXT_PLAYER';
+const ACTIVE_ALARMS = 'ACTIVE_ALARMS';
 /**
  * Approaches
  */
@@ -243,12 +277,37 @@ const APPROACH_YELLOW_LHR = 32;
 const APPROACH_GREEN_LHR = 33;
 const APPROACH_YELLOW_PRG = 34;
 const APPROACH_GREEN_PRG = 35;
+// TURBULENCE
+const APPROACH_EXP_YELLOW_DUS = 50;
+const APPROACH_EXP_RED_DUS = 51;
+const APPROACH_EXP_YELLOW_TER = 52;
+const APPROACH_EXP_BLACK_TER = 53;
+const APPROACH_EXP_BLACK_NZIR = 54;
+const APPROACH_EXP_RED_NZIR = 55;
+const APPROACH_EXP_BLACK_KBP = 56;
+const APPROACH_EXP_YELLOW_KBP = 57;
+const APPROACH_EXP_RED_PEK = 58;
+const APPROACH_EXP_GREEN_PEK = 59;
+const APPROACH_EXP_BLACK_MAD = 60;
+const APPROACH_EXP_YELLOW_MAD = 61;
+const APPROACH_EXP_RED_WAW = 62;
+const APPROACH_EXP_YELLOW_WAW = 63;
+const APPROACH_EXP_RED_SYD = 64;
+const APPROACH_EXP_GREEN_SYD = 65;
+const APPROACH_EXP_RED_SXM = 66;
+const APPROACH_EXP_YELLOW_SXM = 67;
+const APPROACH_EXP_BLACK_CPT = 68;
+const APPROACH_EXP_GREEN_CPT = 69;
 
 /**
  * Altitude
  */
 const ALTITUDE_GREEN_YELLOW = 1;
 const ALTITUDE_RED_BLACK = 2;
+const ALTITUDE_A = 3;
+const ALTITUDE_B = 4;
+const ALTITUDE_C = 5;
+const ALTITUDE_D = 6;
 
 /**
  * Special Abilities
@@ -260,7 +319,12 @@ const SYNCHRONISATION = 4;
 const WORKING_TOGETHER = 5;
 const CONTROL = 6;
 
-
+/**
+ * Legacy
+ */
+const FLIGHT_LOG_TEAM = 'FLIGHT_LOG_TEAM';
+const FLIGHT_LOG_PLAYER_ = 'FLIGHT_LOG_PLAYER_';
+const FLIGHTLOG = 'FLIGHTLOG';
 
 /**
  * Additional Actions

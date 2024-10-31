@@ -90,7 +90,8 @@ $gameStates = [
         "type" => "game",
         "action" => "stStartRound",
         "transitions" => [
-            '' => ST_STRATEGY
+            'strategy' => ST_STRATEGY,
+            'startDicePlacement' => ST_DICE_PLACEMENT_START
         ]
     ],
     ST_STRATEGY => [

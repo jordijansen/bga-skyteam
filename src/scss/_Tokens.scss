@@ -7,7 +7,7 @@
 
 .st-plane-marker {
   background-image: url('img/skyteam-plane-markers.png');
-  background-size: 300% auto;
+  background-size: 400% auto;
   height: 40px;
   width: 25px;
   &.small {
@@ -17,8 +17,9 @@
   display: inline-block;
   vertical-align: middle;
   &[data-type="aerodynamics-blue"] {background-position: 0 0;}
-  &[data-type="aerodynamics-orange"] {background-position: 50% 0;}
-  &[data-type="brakes-red"] {background-position: 100% 0;}
+  &[data-type="aerodynamics-orange"] {background-position: 33.3333333333% 0;}
+  &[data-type="brakes-red"] {background-position: 66.6666666666% 0;}
+  &[data-type="speed-green"] {background-position: 100% 0;}
 }
 
 .st-action-space-blocked-marker {
@@ -59,7 +60,7 @@
     width: 25px;
     height: 25px;
   }
-  background-size: 300% auto;
+  background-size: 500% auto;
   display: inline-block;
   vertical-align: middle;
   &[data-type="reroll"] {
@@ -75,18 +76,53 @@
   &[data-type="coffee"] {
     width: 47px;
     height: 42px;
-    background-position: 50% 0;
+    background-position: 25% 0;
     &.small {
       width: 27px;
       height: 25px;
     }
   }
-  &[data-type="plane"] {background-position: 100% 0;}
+  &[data-type="plane"] {background-position: 50% 0;}
+  &[data-type="penguin"] {background-position: 75% 0;}
   .card-sides {
     .card-side {
       box-shadow: none;
     }
   }
+}
+
+.st-alarm-token {
+  display: inline-block;
+  position: relative;
+  width: 137px;
+  height: 72px;
+
+  .card-sides {
+    .card-side {
+      border-radius: 10px;
+      width: 137px;
+      height: 72px;
+      box-shadow: none;
+    }
+  }
+
+}
+
+.st-alarm-token-art {
+  background-image: url('img/skyteam-alarm-tokens.png');
+
+  width: 137px;
+  height: 72px;
+  background-size: auto 700%;
+  display: inline-block;
+  vertical-align: middle;
+  &[data-type="back"] {background-position: 0 0;}
+  &[data-type="1"] {background-position: 0 calc(16.666666667% * 1);}
+  &[data-type="2"] {background-position: 0 calc(16.666666667% * 2);}
+  &[data-type="3"] {background-position: 0 calc(16.666666667% * 3);}
+  &[data-type="4"] {background-position: 0 calc(16.666666667% * 4);}
+  &[data-type="5"] {background-position: 0 calc(16.666666667% * 5);}
+  &[data-type="6"] {background-position: 0 100%;}
 }
 
 .st-plane-switch {

@@ -35,7 +35,18 @@ trait ArgsTrait
         $canActivateWorkingTogether = $this->isSpecialAbilityActive(WORKING_TOGETHER);
         $canActivateWorkingTogether = $canActivateWorkingTogether && !$this->getGlobalVariable(WORKING_TOGETHER_ACTIVATED) && sizeof($this->dice->getCardsInLocation(LOCATION_PLAYER)) >= 2;
 
+        $plane = $this->planeManager->get();
+        $altitudeTrackSpace = $this->getAltitudeTrack()->spaces[$plane->altitude];
+        $activeRoundModules = [];
+        if ($this->isModuleActive(MODULE_BAD_VISIBILITY) && array_key_exists(BAD_VISIBILITY, $altitudeTrackSpace) && $altitudeTrackSpace[BAD_VISIBILITY]) {
+            $activeRoundModules[] = MODULE_BAD_VISIBILITY;
+        }
+        if ($this->isModuleActive(MODULE_TURBULENCE) && array_key_exists(TURBULENCE, $altitudeTrackSpace) && $altitudeTrackSpace[TURBULENCE]) {
+            $activeRoundModules[] = MODULE_TURBULENCE;
+        }
+
         return [
+            'activeRoundModules' => $activeRoundModules,
             'nrOfRerollAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_REROLL, null, LOCATION_AVAILABLE)),
             'nrOfCoffeeAvailable' => sizeof($this->tokens->getCardsOfTypeInLocation(TOKEN_COFFEE, null, LOCATION_AVAILABLE)),
             'availableActionSpaces' => $this->planeManager->getAvailableActionSpaces($this->getActivePlayerId()),

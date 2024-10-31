@@ -35,9 +35,14 @@
             </div>
             <div id="st-plane-board-wrapper">
                 <div id="st-main-board-left">
-                    <div id="st-kerosene-board" class="st-board">
-                        <div id="st-kerosene-leak-marker" class="st-action-space-blocked-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
-                        <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
+                    <div id="st-main-board-left-boards">
+                        <div id="st-alarms-board" class="st-board">
+                            <div id="st-alarm-tokens-stock"></div>
+                        </div>
+                        <div id="st-kerosene-board" class="st-board">
+                            <div id="st-kerosene-leak-marker" class="st-action-space-blocked-marker token"><span id="st-kerosene-leak-help" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+                            <div id="st-kerosene-marker" class="st-kerosene-marker token" data-value="-1"></div>
+                        </div>
                     </div>
                     <div id="st-token-reserve">
                         <div id="st-token-reserve-plane" class="st-token-reserve"></div>
@@ -47,6 +52,7 @@
                 </div>
                 <div id="st-main-board" class="st-board">
                     <div id="st-plane-axis-indicator" class="st-plane-axis-indicator token"></div>
+                    <div id="st-plane-speed-green-marker" class="st-plane-marker token" data-type="speed-green" data-mode="engines" data-value="0">0</div>
                     <div id="st-plane-aerodynamics-blue-marker" class="st-plane-marker token" data-type="aerodynamics-blue"></div>
                     <div id="st-plane-aerodynamics-orange-marker" class="st-plane-marker token" data-type="aerodynamics-orange"></div>
                     <div id="st-available-coffee"></div>
@@ -66,6 +72,10 @@
                     <div id="st-engine-loss-marker-2" class="st-action-space-blocked-marker token"><span id="st-engine-loss-help-2" class="st-action-space-help top" style="left: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
                     <span id="st-altitude-help" class="st-action-space-help top" style="right: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                     <span id="st-approach-help" class="st-action-space-help top" style="left: 110px;top: 14px;"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+                    <div id="st-stuck-landing-gear-marker-1" class="st-action-space-blocked-marker token"><span id="st-stuck-landing-gear-help-1" class="st-action-space-help left"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+                    <div id="st-stuck-landing-gear-marker-2" class="st-action-space-blocked-marker token"><span id="st-stuck-landing-gear-help-2" class="st-action-space-help left"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+                    <div id="st-stuck-landing-gear-marker-3" class="st-action-space-blocked-marker token"><span id="st-stuck-landing-gear-help-3" class="st-action-space-help left"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
+
                 </div>
                 <div id="st-main-board-right">
                     <div id="st-winds-board" class="st-board">

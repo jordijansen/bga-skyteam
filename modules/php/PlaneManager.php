@@ -3,6 +3,8 @@
 namespace managers;
 
 use APP_DbObject;
+use BgaUserException;
+use managers\objects\AlarmToken;
 use objects\Dice;
 use objects\Plane;
 use objects\Token;
@@ -30,7 +32,7 @@ class PlaneManager extends APP_DbObject
         $result = [];
         $mandatoryResult = [];
         $plane = $this->get();
-        $remainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $playerId));
+        $remainingDice = [...Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $playerId)), ...Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER_ASIDE, $playerId))];
         foreach ($this->getAllActionSpaces() as $actionSpaceId => $actionSpace) {
             if (!array_key_exists($actionSpaceId, $plane->switches) || !$plane->switches[$actionSpaceId]->value) {
                 if (($ignoreRoleRestrictions || in_array($playerRole, $actionSpace[ALLOWED_ROLES]))
@@ -53,16 +55,30 @@ class PlaneManager extends APP_DbObject
                 }
             }
         }
+
+        if (SkyTeam::$instance->isModuleActive(MODULE_ALARMS)) {
+            $activeAlarms = SkyTeam::$instance->getGlobalVariable(ACTIVE_ALARMS, true, []);
+            foreach ($activeAlarms as $activeAlarm) {
+                $alarmToken = current(AlarmToken::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_ALARM, $activeAlarm, LOCATION_ALARM)));
+                $result = array_filter($result, fn($actionSpace, $actionSpaceId) => !in_array($actionSpaceId, $alarmToken->blocksSpaces), ARRAY_FILTER_USE_BOTH);
+            }
+        }
+
         $mandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array($playerRole, $actionSpace[ALLOWED_ROLES]));
         if ($ignoreRoleRestrictions) {
-            $pilotRemainingDice = Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, SkyTeam::$instance->getPlayerIdForRole(PILOT)));
+            $pilotPlayerId = SkyTeam::$instance->getPlayerIdForRole(PILOT);
+            $pilotRemainingDice = [...Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER, $pilotPlayerId)), ...Dice::fromArray(SkyTeam::$instance->dice->getCardsInLocation(LOCATION_PLAYER_ASIDE, $pilotPlayerId))];
             $pilotMandatorySpaces = array_filter($mandatoryResult, fn($actionSpace) => in_array(PILOT, $actionSpace[ALLOWED_ROLES]));
             if (sizeof($pilotRemainingDice) < sizeof($pilotMandatorySpaces)) {
                 return $pilotMandatorySpaces;
             }
         }
 
-        if (sizeof($remainingDice) > sizeof($mandatorySpaces)) {
+        $nrOfRemainingDice = sizeof($remainingDice);
+        if (SkyTeam::$instance->isModuleActive(MODULE_ENGINE_LOSS)) {
+            $nrOfRemainingDice = $nrOfRemainingDice - 1;
+        }
+        if ($nrOfRemainingDice > sizeof($mandatorySpaces)) {
             return $result;
         } else {
             // Normally we would only be able to place dice on the mandatory spots, but if synchronisation can be used it might be different
@@ -157,10 +173,15 @@ class PlaneManager extends APP_DbObject
             }
             return in_array($actionSpaceId, $availableIceBrakeSpaces);
         }
+        if ($actionSpace['type'] === ACTION_SPACE_ALARMS) {
+            $activeAlarms = SkyTeam::$instance->getGlobalVariable(ACTIVE_ALARMS, true, []);
+            $typeArg = str_replace(ACTION_SPACE_ALARMS.'-', '', $actionSpaceId);
+            return in_array($typeArg, $activeAlarms);
+        }
         return true;
     }
 
-    function resolveDicePlacement(Dice $die): bool
+    function resolveDicePlacement(Dice $die, $force = false): bool
     {
         $continue = true;
         $plane = $this->get();
@@ -194,9 +215,13 @@ class PlaneManager extends APP_DbObject
                 }
 
                 if ($plane->axis >= 3 || $plane->axis <= -3) {
+                    if (!$force) {
+                        throw new BgaUserException('!!!' .FAILURE_AXIS);
+                    }
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_AXIS);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                     $continue = false;
+
                 } else if (SkyTeam::$instance->isOneOfModulesActive(MODULE_WINDS, MODULE_WINDS_HEADON)) {
                     $plane->wind = $plane->wind + $plane->axis;
                     if ($plane->wind < 0) {
@@ -242,6 +267,9 @@ class PlaneManager extends APP_DbObject
                     ]);
 
                     if ($plane->kerosene < 0) {
+                        if (!$force) {
+                            throw new BgaUserException('!!!' .FAILURE_KEROSENE);
+                        }
                         SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_KEROSENE);
                         SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                         $continue = false;
@@ -265,6 +293,9 @@ class PlaneManager extends APP_DbObject
                         $victoryConditionsResults = $this->getVictoryConditionsResults();
                         $engineBrakeCheck = $victoryConditionsResults[VICTORY_D];
                         if ($engineBrakeCheck['status'] === 'failed') {
+                            if (!$force) {
+                                throw new BgaUserException('!!!speedHigherThanBrakes');
+                            }
                             SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_LANDED);
                             $continue = false;
                         }
@@ -290,7 +321,7 @@ class PlaneManager extends APP_DbObject
                             'windModifier' => $plane->getWindModifier() > 0 ? '+' . $plane->getWindModifier() : $plane->getWindModifier()
                         ]);
 
-                        $continue = $this->approachPlane($plane, $advanceApproachSpaces);
+                        $continue = $this->approachPlane($plane, $advanceApproachSpaces, $force);
                     }
                 }
             }
@@ -305,6 +336,10 @@ class PlaneManager extends APP_DbObject
                     'icon_tokens' => [$planeTokenRemoved],
                     'plane' => $planeTokenRemoved
                 ]);
+            } else {
+                if (!$force) {
+                    throw new BgaUserException('!!!radioNoPlaneToken');
+                }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_LANDING_GEAR) {
             $switch = $plane->switches[$die->locationArg];
@@ -352,6 +387,10 @@ class PlaneManager extends APP_DbObject
                     'token' => Token::from(SkyTeam::$instance->tokens->getCard($coffeeToken->id)),
                     'icon_tokens' => [$coffeeToken],
                 ]);
+            } else {
+                if (!$force) {
+                    throw new BgaUserException('!!!concentrationNoCoffee');
+                }
             }
         } else if ($actionSpace['type'] == ACTION_SPACE_BRAKES) {
             $switch = $plane->switches[$die->locationArg];
@@ -389,6 +428,9 @@ class PlaneManager extends APP_DbObject
                 SkyTeam::$instance->setGlobalVariable(KEROSENE_ACTIVATED, true);
 
                 if ($plane->kerosene < 0) {
+                    if (!$force) {
+                        throw new BgaUserException('!!!' .FAILURE_KEROSENE);
+                    }
                     SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_KEROSENE);
                     SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
                     $continue = false;
@@ -441,6 +483,22 @@ class PlaneManager extends APP_DbObject
                     'icon_plane_marker' => 'brakes-red'
                 ]);
             }
+        } else if ($actionSpace['type'] == ACTION_SPACE_ALARMS) {
+            $typeArg = str_replace(ACTION_SPACE_ALARMS.'-', '', $die->locationArg);
+
+            $activeAlarms = SkyTeam::$instance->getGlobalVariable(ACTIVE_ALARMS, true, []);
+            $activeAlarms = array_filter($activeAlarms, fn ($alarmTypeArg) => $alarmTypeArg !== $typeArg);
+            SkyTeam::$instance->setGlobalVariable(ACTIVE_ALARMS, $activeAlarms);
+
+            $alarmToken = current(AlarmToken::fromArray(SkyTeam::$instance->tokens->getCardsOfTypeInLocation(TOKEN_ALARM, $typeArg, LOCATION_ALARM)));
+            SkyTeam::$instance->tokens->moveCard($alarmToken->id, LOCATION_OUT_OF_THE_GAME);
+            $alarmToken->isActive = false;
+
+            SkyTeam::$instance->notifyAllPlayers("alarmDeactivated", clienttranslate('Alarm Deactivated: <b>${alarmName}</b>'), [
+                'i18n' => ['alarmName'],
+                'alarmName' => SkyTeam::$instance->ALARM_TOKENS[$alarmToken->typeArg]['name'],
+                'alarmToken' => $alarmToken
+            ]);
         }
 
         $this->save($plane);
@@ -452,7 +510,7 @@ class PlaneManager extends APP_DbObject
         return $continue;
     }
 
-    function approachPlane($plane, $nrOfSpacesToApproach) {
+    function approachPlane($plane, $nrOfSpacesToApproach, $force) {
         $planeCollision = false;
         $planeTurnFailure = false;
 
@@ -477,20 +535,30 @@ class PlaneManager extends APP_DbObject
             $this->save($plane);
         }
 
+        $continue = true;
         if ($planeTurnFailure) {
+            if (!$force) {
+                throw new BgaUserException('!!!' .FAILURE_TURN);
+            }
             SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_TURN);
             SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-            return false;
+            $continue = false;
         } else if ($plane->approach > sizeof(SkyTeam::$instance->getApproachTrack()->spaces)) {
+            if (!$force) {
+                throw new BgaUserException('!!!' .FAILURE_OVERSHOOT);
+            }
             SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_OVERSHOOT);
             SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-            return false;
+            $continue = false;
         } else if ($planeCollision) {
+            if (!$force) {
+                throw new BgaUserException('!!!' .FAILURE_COLLISION);
+            }
             SkyTeam::$instance->setGlobalVariable(FAILURE_REASON, FAILURE_COLLISION);
             SkyTeam::$instance->gamestate->jumpToState(ST_PLANE_FAILURE);
-            return false;
+            $continue = false;
         }
-        return true;
+        return $continue;
     }
 
     function getVictoryConditionsResults()
@@ -508,7 +576,8 @@ class PlaneManager extends APP_DbObject
             } else if ($conditionLetter == VICTORY_B) {
                 $allSwitchesTrue = true;
                 foreach ($plane->switches as $planeSwitch) {
-                    if (substr($planeSwitch->id, 0, strlen(ACTION_SPACE_FLAPS)) === ACTION_SPACE_FLAPS || substr($planeSwitch->id, 0, strlen(ACTION_SPACE_LANDING_GEAR)) === ACTION_SPACE_LANDING_GEAR) {
+                    if (substr($planeSwitch->id, 0, strlen(ACTION_SPACE_FLAPS)) === ACTION_SPACE_FLAPS
+                        || (!SkyTeam::$instance->isModuleActive(MODULE_STUCK_LANDING_GEAR) && substr($planeSwitch->id, 0, strlen(ACTION_SPACE_LANDING_GEAR)) === ACTION_SPACE_LANDING_GEAR)) {
                         if (!$planeSwitch->value) {
                             $allSwitchesTrue = false;
                             break;

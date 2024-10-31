@@ -7,6 +7,9 @@ class TokenManager  extends CardManager<Card> {
                 div.classList.add('token')
                 div.classList.add('st-token')
                 div.dataset.type = token.type
+                if (token.type === 'plane' && game.gamedatas.scenario.modules.includes('penguins')) {
+                    div.dataset.type = 'penguin';
+                }
             },
             setupFrontDiv: (token: Card, div: HTMLElement) => {
             },

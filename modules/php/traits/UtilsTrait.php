@@ -18,6 +18,17 @@ trait UtilsTrait
         return 60;
     }
 
+    function isPermanentTotalTrust(): bool
+    {
+        $value = $this->getGameStateValue(PERMANENT_TOTAL_TRUST_OPTION);
+        if ($value != null) {
+            if (intval($value) === PERMANENT_TOTAL_TRUST_ENABLED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @return ApproachTrack
      */
@@ -39,7 +50,13 @@ trait UtilsTrait
      */
     function getScenario()
     {
-        return ReflectionUtils::rebuildAllPropertyValues($this->SCENARIOS[$this->getGameStateValue(SCENARIO_OPTION)], Scenario::class);
+        $scenarioId = $this->getGameStateValue(SCENARIO_OPTION);
+        if (intval($this->getGameStateValue(EXPANSION_OPTION)) === EXPANSION_TURBULENCE) {
+            $scenarioId = $this->getGameStateValue(SCENARIO_OPTION_EXPANSION);
+        }
+        $scenario = ReflectionUtils::rebuildAllPropertyValues($this->SCENARIOS[$scenarioId], Scenario::class);
+        $scenario->id = $scenarioId;
+        return $scenario;
     }
 
     function isSpecialAbilityActive($specialAbility)
@@ -69,10 +86,13 @@ trait UtilsTrait
             $VICTORY_CONDITIONS[VICTORY_D] = ['letter' => VICTORY_D, 'description' => clienttranslate('Your Speed is less than your Brakes when you placed your Engine dice.')];
         }
         if ($this->isModuleActive(MODULE_INTERN)) {
-            $VICTORY_CONDITIONS[VICTORY_E] = ['letter' => VICTORY_E, 'description' => clienttranslate('Fully train the Intern by removing all intern tokens from the board')];
+            $VICTORY_CONDITIONS[VICTORY_E] = ['letter' => VICTORY_E, 'description' => clienttranslate('Fully train the Intern by removing all intern tokens from the board.')];
         }
         if ($this->isModuleActive(MODULE_ICE_BRAKES)) {
-            $VICTORY_CONDITIONS[VICTORY_F] = ['letter' => VICTORY_F, 'description' => clienttranslate('Move the Brake marker to the end of the Brake Track (past the 5)')];
+            $VICTORY_CONDITIONS[VICTORY_F] = ['letter' => VICTORY_F, 'description' => clienttranslate('Move the Brake marker to the end of the Brake Track (past the 5).')];
+        }
+        if ($this->isModuleActive(MODULE_STUCK_LANDING_GEAR)) {
+            $VICTORY_CONDITIONS[VICTORY_B] = ['letter' => VICTORY_B, 'description' => clienttranslate('All your Flap Switches show the green light.')];
         }
 
         return $VICTORY_CONDITIONS;
@@ -128,13 +148,13 @@ trait UtilsTrait
         $this->DbQuery("INSERT INTO `global_variables`(`name`, `value`)  VALUES ('$name', '$jsonObj') ON DUPLICATE KEY UPDATE `value` = '$jsonObj'");
     }
 
-    function getGlobalVariable(string $name, $asArray = null) {
+    function getGlobalVariable(string $name, $asArray = null, $default = null) {
         $json_obj = $this->getUniqueValueFromDB("SELECT `value` FROM `global_variables` where `name` = '$name'");
         if ($json_obj) {
             $object = json_decode($json_obj, $asArray);
             return $object;
         } else {
-            return null;
+            return $default;
         }
     }
 

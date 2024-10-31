@@ -8,11 +8,18 @@ class HelpDialogManager {
     showApproachHelp(event) {
         let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
         html += `<p><i>${_('The Approach Track tracks your approach to the airport. Once you reach the top airport space, you have arrived at the airport')}</i></p>`
-        html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">${this.game.tokenIcon('plane', '')}</p></div>`
-        html += `<p>${_('Remove Airplane tokens from the approach track before you advance past the space it is on.')}</p>`
+        if (this.game.gamedatas.scenario.modules.includes('penguins')) {
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">${this.game.tokenIcon('penguin', '')}</p></div>`
+            html += `<b>${_('This scenario uses Penguins instead of Plane tokens. We know very well that Penguins don\'t fly... but look at how CUTE they are!!</b>')}`
+            html += `<p>${_('Remove Penguin tokens from the approach track before you advance past the space it is on.')}</p>`
+        } else {
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">${this.game.tokenIcon('plane', '')}</p></div>`
+            html += `<p>${_('Remove Airplane tokens from the approach track before you advance past the space it is on.')}</p>`
+        }
         html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><div class="st-end-game-info-box failure"><p><h1>${this.game.getFailureReasonTitle('failure-collision')}</h1></br>${this.game.getFailureReasonText('failure-collision')}</p></div>${this.getActionSpaceVictoryCondition('radio')}</div>`
         html += `<br/>`
         if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            html += `<h2 style="text-align: center">${_('Turns')}</h2>`;
             html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-turns-example.png" alt="turns" /></div>`;
             html += `<p><i>${_('Ominous clouds and mountains require a steady hand at the controls. You’d better buckle up!')}</p></i>`
             html += `<p>${_('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions (black or green arrows) in the Current Position screen, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during this round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.')}</p>`
@@ -20,10 +27,18 @@ class HelpDialogManager {
             html += `<br/>`
         }
         if (this.game.gamedatas.scenario.modules.includes('traffic')) {
+            html += `<h2 style="text-align: center">${_('Traffic')}</h2>`;
             html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-traffic-example.png" alt="traffic" /></div>`;
             html += `<p><i>${_('The skies are particularly busy today... airplanes seem to be appearing out of nowhere!')}</p></i>`
             html += `<p>${_('If there is a Traffic icon in the Current Position space at the beginning of the round, Traffic dice are rolled as many as there are icons on the space. Each rolled Traffic die adds an Airplane token to the space indicated by the value of the die, starting with the Current Position space. No Airplane tokens are placed if all Airplane tokens are already on the Approach Track (12).')}</p>`
             html += `<p><b>${_('Please note: the traffic die only has values 2, 3, 4 and 5.')}</b></p>`
+            html += `<br/>`
+        }
+        if (this.game.gamedatas.scenario.modules.includes('total-trust')) {
+            html += `<h2 style="text-align: center">${_('Total Trust')}</h2>`;
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-total-trust-example.png" alt="total trust" /></div>`;
+            html += `<p><i>${_('For one reason or another, communication has become impossible in the cockpit. It’s the ultimate test of trust.')}</p></i>`
+            html += `<p>${_('If the symbol is in the Current Position screen at the end of the round, players will skip the Strategy Discussion in Phase 1 and simply roll their dice at the beginning of the following round.')}</p>`
             html += `<br/>`
         }
         html += `</div>`
@@ -35,6 +50,24 @@ class HelpDialogManager {
         html += `<p><i>${_('The Altitude Track tracks your alitude. Once you reach the top space, you have touched down... hopefully at the Airport...')}</i></p>`
         html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-altitude-example.png" alt="turns" /></div>`;
         html += `<p>${_('If at the start of the round the Current Altitude space contains a Re-Roll token, it is gained. The Altitude Track is automatically advanced at the end of each round. The orange (co-pilot) and blue (pilot) arrows indicate what player will go first in a round.')}</p>`
+        if (this.game.gamedatas.scenario.modules.includes('turbulence')) {
+            html += `<h2 style="text-align: center">${_('Turbulence')}</h2>`;
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-turbulence-example.png" alt="turbulence" /></div>`;
+            html += `<p><i>${_('Eddies in air currents caused by geographical features or thermal pockets are easily explained in theory, but when your wingtips are bending at impossible angles and your plane feels like a roller coaster, you know that turbulence is no joke.')}</p></i>`
+            html += `<p>${_('Every time you place a die, all your remaining dice are rerolled.')}</p>`
+        }
+        if (this.game.gamedatas.scenario.modules.includes('bad-visibility')) {
+            html += `<h2 style="text-align: center">${_('Bad Visibility')}</h2>`;
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-bad-visibility-example.png" alt="bad visibility" /></div>`;
+            html += `<p><i>${_('Despite your ability to fly with instruments only, coming out of a fog bank to see the ground rushing up towards you is... startling. To put it lightly.')}</p></i>`
+            html += `<p>${_('When rolling your dice at the beginning of this round, both players will only roll 2 dice, leaving the other 2 aside. The next two times you place a die, one of the dice you put aside is rolled and can now be placed. In other words, the die you played is replaced with a new one. You never have more than 2 dice to choose from every turn.')}</p>`
+        }
+        if (this.game.gamedatas.scenario.modules.includes('turbulence') && this.game.gamedatas.scenario.modules.includes('bad-visibility')) {
+            html += `<h2 style="text-align: center">${_('Turbulence + Bad Visibility')}</h2>`;
+            html += `<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"><img src="${g_gamethemeurl}/img/skyteam-turbulence-plus-bad-visibility-example.png" alt="turbulence + bad visibility" /></div>`;
+            html += `<p><i>${_('This is what it feels like to fly into a full-fledged storm; you’re trying to land a bucking bronco while half-blindfolded. You’ve had better days.')}</p></i>`
+            html += `<p>${_('Only use 2 dice, like with the Bad Visibility rule, but when you take a new die to replace the one you have placed, roll both of your available dice.')}</p>`
+        }
         html += `</div>`
         this.showDialog(event, _('Altitude Track').toUpperCase(), html)
     }
@@ -51,11 +84,19 @@ class HelpDialogManager {
         this.showDialog(event, this.getModuleTitle(module).toUpperCase(), html)
     }
 
-    showActionSpaceHelp(event, actionSpace: ActionSpace) {
+    showActionSpaceHelp(event, id: string, actionSpace: ActionSpace) {
         let html = `<div class="dp-help-dialog-content"><div class="dp-help-dialog-content-left">`;
         html += actionSpace.mandatory ? `<p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ${_('Mandatory, a die must be placed here each round')}</p>` : '';
+        if (actionSpace.type === 'alarms') {
+            const alarmTokenType = id.replace('alarms-', '');
+            html += `<div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;"><div class="st-alarm-token-art" data-type="${alarmTokenType}"></div><i>${_(this.game.gamedatas.alarmTokenData[alarmTokenType].name)}</i></div>`;
+        }
         html += `<p>${dojo.string.substitute(_('<b>Allowed role(s)</b>: ${roles}'), { roles: actionSpace.allowedRoles.map(role => _(role)).join(', ') })}</p>`
-        html += `<p>${dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: actionSpace.allowedValues ? actionSpace.allowedValues?.map(role => _(role)).join(', ') : _('all values')})}</p>`
+        if (actionSpace.type !== 'intern') {
+            html += `<p>${dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: actionSpace.allowedValues ? actionSpace.allowedValues?.map(role => _(role)).join(', ') : _('all values')})}</p>`
+        } else {
+            html += `<p>${dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: _('a different value compared to the next Intern')})}</p>`
+        }
         html += `<p><i>${this.getActionSpaceFlavorText(actionSpace.type)}</i></p>`
         html += `<p>${this.getActionSpaceDescription(actionSpace.type)}</p>`
         html += `<br/><div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">`
@@ -77,6 +118,8 @@ class HelpDialogManager {
             return _('engine loss');
         } else if (module === 'winds-headon') {
             return _('winds head-on');
+        } else if (module === 'stuck-landing-gear') {
+            return _('stuck landing gear');
         }
         return _(module);
     }
@@ -102,6 +145,8 @@ class HelpDialogManager {
                 return _('Show your nerves of steel by playing in real time.');
             case 'engine-loss':
                 return _('Both our engines have stopped. Our only hope: glide to the Airport');
+            case 'stuck-landing-gear':
+                return _('Your landing gear is stuck. It will not descend. You’ll need to perform a belly landing. But first you have to get rid of all that flammable fuel!');
             default:
                 return '';
         }
@@ -129,6 +174,8 @@ class HelpDialogManager {
                 return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
             case 'ice-brakes':
                 return _('You are landing on an icy runway. Deploy your special brakes to avoid losing control!');
+            case 'alarms':
+                return _('An alarm is sounding. There’s something going on with your electronics. Elements of your panel are shorting out and require attention.')
             default:
                 return '';
         }
@@ -145,6 +192,8 @@ class HelpDialogManager {
                 return _('At the beginning of each round, a 60-second timer (or 70 or 80 seconds) is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
             case 'engine-loss':
                 return _('The 2 Engines Action Spaces will not be used. Each round, the players roll their 4 dice but only play 3. At the end of the round, the Approach Track is automatically advanced by 1 space.<br/><br/>Note: Ice Brakes Module<br/>There is no actual ice on the landing strip here, but you’ll need a much stronger braking system to perform an emergency landing.');
+            case 'stuck-landing-gear':
+                return _('You cannot place dice on the Landing Gear spaces, meaning the blue Aerodynamics marker will stay at 5 for the entire game. You do not need to have the Landing Gear switches engaged when you land. You will use the brakes normally, which will represent spoilers, reverse engines, etc.');
             default:
                 return '';
         }
@@ -172,6 +221,8 @@ class HelpDialogManager {
                 return _('On your turn, you can train your Intern by placing a die of any value on the space of your colour on the Intern Board, and taking the first available token closest to your side. You can then place that token on any space you’d normally be able to place a die, and resolve its effect with the token’s number.<br/><br/><b>Important:</b><br/>An Intern token cannot be modified by a Coffee token.<br/>You cannot use this token on a Concentration space.</br>The die placed must be of a different value than the next available token.');
             case 'ice-brakes':
                 return _('The Ice Brakes track works like the normal Brakes track, but 2 dice of the same value must be placed in the space above and below the track in the same round. If you place a die in a space on the Ice Brake track and you are not able to place a die in the opposite space in the same round, the single die has no effect. The die is removed without moving the Brake marker.<br/><br/>Note that this track does not have Switches. However, as with the normal brakes:<br/>You must deploy them in order, from left to right.<br/>You cannot play a die in a space to the left of the Brake marker (in a space where dice have already been played in a previous round).<br/>You can advance the Brake marker more than once per round if the conditions have been met.');
+            case 'alarms':
+                return _('<b>Rules</b></br>If there is an Alarm symbol in your Current Position space at the beginning of a round, a Alarm token is flipped face-up. You may no longer use that Action space on the Control Panel until you reset the system by removing the Alarm token. If no face-down Alarm tokens remain no token is flipped face-up.<br/><br/><b>Removing Alarm tokens</b><br/>If a player places a die of the correct colour and number onto the Alarm token, this resets the system. The Alarm token is removed from the Alarm board. The corresponding Action Space(s) are now available again.<br/><br/><b>Important:</b> Alarm tokens do not prevent you from landing. You may still land safely if you have active Alarms.')
             default:
                 return '';
         }

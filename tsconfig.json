@@ -47,6 +47,7 @@
     "src/managers/ActionSpaceManager.ts",
     "src/managers/DiceManager.ts",
     "src/managers/TokenManager.ts",
+    "src/managers/AlarmTokenManager.ts",
     "src/managers/SpecialAbilityCardManager.ts",
     "src/managers/HelpDialogManager.ts",
 
@@ -56,6 +57,8 @@
     "src/ui/VictoryConditions.ts",
     "src/ui/WelcomeDialog.ts",
     "src/ui/RealTimeCounter.ts",
+    "src/ui/Preferences.ts",
+    "src/ui/FlightLog.ts",
 
     "src/SkyTeam.ts"
   ]

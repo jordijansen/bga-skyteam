@@ -41,24 +41,26 @@ class CommunicationInfoManager  {
     }
 
     public update(newPhase: SkyTeamGameData['phase']) {
-        if (this.game.prefs[101].value == 1 || this.game.prefs[101].value == 2) {
-            if (newPhase === 'strategy' || newPhase === 'diceplacement') {
-                if (newPhase == 'strategy') {
-                    this.setCommunicationLimited();
-                } else if (newPhase == 'diceplacement') {
-                    this.setCommunicationNotAllowed();
-                }
+      if (newPhase === 'strategy' || newPhase === 'diceplacement') {
+          if (newPhase == 'strategy') {
+              this.setCommunicationLimited();
+          } else if (newPhase == 'diceplacement') {
+              this.setCommunicationNotAllowed();
+          }
 
-                dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', (event) => {
-                    dojo.stopEvent(event);
-                    this.hideBanner();
-                })
-            }
+          dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', (event) => {
+              dojo.stopEvent(event);
+              this.hideBanner();
+          })
+      }
 
-            if (this.game.prefs[101].value == 2) {
-                this.game.delay(10000).then(() => this.hideBanner())
-            }
-        }
+      if (Preferences.getSettingValue('st-show-communications-banner') === 'communication-banner-auto-hide') {
+          this.autoHide();
+      }
+    }
+
+    public autoHide() {
+        this.game.delay(10000).then(() => this.hideBanner())
     }
 
     public hideBanner() {

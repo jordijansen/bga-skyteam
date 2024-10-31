@@ -353,6 +353,37 @@ abstract class Table extends APP_GameClass {
     public function stMakeEveryoneActive() {
         $this->gamestate->setAllPlayersMultiactive();
     }
+
+    function storeLegacyData( $player_id, $key, $data, $ttl = 365 )
+    {
+
+    }
+
+    function retrieveLegacyData( $player_id, $key ) : object
+    {
+
+    }
+
+    function removeLegacyData( $player_id, $key )
+    {
+
+    }
+
+    function storeLegacyTeamData( $data, $ttl = 365 )
+    {
+
+    }
+
+    function retrieveLegacyTeamData() : object
+    {
+
+    }
+
+    function removeLegacyTeamData()
+    {
+
+    }
+
 }
 
 class Page {

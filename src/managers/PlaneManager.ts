@@ -3,10 +3,13 @@ class PlaneManager  {
     public currentApproach = 1;
     private currentAltitude = 1;
     public currentAxis = 1;
+    private currentWindModifier = 0;
+    private currentSpeedMode = 'engines';
 
     private static readonly PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     private static readonly PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     private static readonly PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
+    private static readonly PLANE_SPEED_GREEN_MARKER = 'st-plane-speed-green-marker';
     private static readonly PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     private static readonly KEROSENE_MARKER = 'st-kerosene-marker';
     private static readonly WINDS_PLANE = 'st-winds-plane';
@@ -17,8 +20,10 @@ class PlaneManager  {
     public coffeeTokenStock: SlotStock<Card>;
     public rerollTokenStock: AllVisibleDeck<Card>;
     public specialAbilityCardStock: LineStock<SpecialAbilityCard>
+    public alarmTokenStock: SlotStock<Card>;
 
-    constructor(private game: SkyTeamGame) {
+
+    constructor(private game: SkyTeam) {
 
     }
 
@@ -30,11 +35,15 @@ class PlaneManager  {
         $(PlaneManager.KEROSENE_MARKER).dataset.value = data.plane.kerosene;
         $(PlaneManager.WINDS_PLANE).dataset.value = data.plane.wind;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
+        $(PlaneManager.PLANE_ALTITUDE_TRACK).style.left = this.calculateLeftOffsetForTrack(data, 332);
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+        $(PlaneManager.PLANE_APPROACH_TRACK).style.left = this.calculateLeftOffsetForTrack(data, 103);
+        $('st-main-board-wrapper').style.width = this.calculatePlaneWidth(data) + 'px';
 
         this.currentApproach = data.plane.approach;
         this.currentAltitude = data.plane.altitude;
         this.currentAxis = data.plane.axis;
+        this.currentWindModifier = Number(data.plane.windModifier);
 
         Object.values(data.plane.switches).forEach((planeSwitch) => {
             dojo.place(`<div id="plane-switch-${planeSwitch.id}" class="st-plane-switch-wrapper" data-value="${planeSwitch.value}"><div class="st-plane-switch token"></div></div>`, $('st-plane-switches'))
@@ -71,19 +80,27 @@ class PlaneManager  {
         })
         this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(card => card.location === 'available'));
 
-        this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {})
+        this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {verticalShift: '-10px', horizontalShift: '0px'})
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(card => card.location === 'available'));
 
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), {direction: 'column'})
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(card => card.type === 2), data.rolesThatUsedAdaptation)
 
+        this.alarmTokenStock = new SlotStock<Card>(this.game.alarmTokenManager, $('st-alarm-tokens-stock'), {
+            slotsIds: [1, 2, 3, 4, 5, 6],
+            mapCardToSlot: (card) => card.typeArg,
+            gap: '10.4px',
+            direction: 'column'
+        })
+        this.alarmTokenStock.addCards(data.alarmTokens);
+
         dojo.connect($('st-approach-help'), 'onclick', (event)=>this.game.helpDialogManager.showApproachHelp(event));
         dojo.connect($('st-altitude-help'), 'onclick', (event)=>this.game.helpDialogManager.showAltitudeHelp(event));
 
         console.log(data.scenario.modules);
         if(!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
-            $('st-kerosene-board').style.visibility = 'hidden';
+            $('st-kerosene-board').style.display = 'none';
         }
         if (data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-leak-marker').style.display = 'none';
@@ -105,6 +122,9 @@ class PlaneManager  {
         if(!data.scenario.modules.includes('ice-brakes')) {
             $('st-ice-brakes-board').style.display = 'none';
         }
+        if(!data.scenario.modules.includes('alarms')) {
+            $('st-alarms-board').style.display = 'none';
+        }
         if(data.scenario.modules.includes('ice-brakes')) {
             $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
         }
@@ -116,6 +136,58 @@ class PlaneManager  {
             dojo.connect($(`st-engine-loss-help-1`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'))
             dojo.connect($(`st-engine-loss-help-2`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'))
         }
+
+        if (!data.scenario.modules.includes('stuck-landing-gear')) {
+            $('st-stuck-landing-gear-marker-1').style.display = 'none';
+            $('st-stuck-landing-gear-marker-2').style.display = 'none';
+            $('st-stuck-landing-gear-marker-3').style.display = 'none';
+        } else {
+            dojo.connect($(`st-stuck-landing-gear-help-1`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'))
+            dojo.connect($(`st-stuck-landing-gear-help-2`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'))
+            dojo.connect($(`st-stuck-landing-gear-help-3`), 'onclick', (event) => this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'))
+        }
+
+        this.updateSpeedMarker();
+    }
+
+    public calculatePlaneWidth(data) {
+        let result = 607; // Main board
+
+        // LEFT SIDE
+        if (data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak')) {
+            result += 118;
+        }
+        if (data.scenario.modules.includes('alarms')) {
+            result += 155;
+        }
+        if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak') && !data.scenario.modules.includes('alarms')) {
+            result += 55;
+        }
+        // RIGHT SIDE
+        if (data.scenario.modules.includes('special-abilities')) {
+            result += 288;
+        } else if (data.scenario.modules.includes('winds') || data.scenario.modules.includes('winds-headon')) {
+            result += 278;
+        } else {
+            result += 0;
+        }
+
+        return result;
+    }
+
+    private calculateLeftOffsetForTrack(data, baseOffset = 0) {
+        let result = baseOffset;
+        if (data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak')) {
+            result += 118;
+        }
+        if (data.scenario.modules.includes('alarms')) {
+            result += 155;
+        }
+        if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak') && !data.scenario.modules.includes('alarms')) {
+            result += 55;
+        }
+
+        return `${result}px`;
     }
 
     public setApproachAndAltitude(approachValue: number, altitudeValue: number, forceInstant: boolean = false) {
@@ -136,6 +208,29 @@ class PlaneManager  {
         return this.game.delay(ANIMATION_MS).then(() => {
             wrapper.style.height = `${newWrapperHeight}px`;
         });
+    }
+
+    public updateSpeedMarker(extra: number = 0) {
+        const element = $(PlaneManager.PLANE_SPEED_GREEN_MARKER);
+        element.dataset['mode'] = this.currentSpeedMode;
+        if (this.game.gamedatas.scenario.modules.includes('ice-brakes')) {
+            element.classList.add('ice-brakes')
+        }
+
+        let speed = this.currentWindModifier + extra;
+
+        const die1 = this.game.actionSpaceManager.getDieInLocation('engines-1')
+        if (die1) {
+            speed += die1.value;
+        }
+
+        const die2 = this.game.actionSpaceManager.getDieInLocation('engines-2')
+        if (die2) {
+            speed += die2.value;
+        }
+
+        element.dataset['value'] = speed;
+        element.innerText = speed;
     }
 
     public updateApproach(value: number) {
@@ -179,8 +274,10 @@ class PlaneManager  {
         return this.game.delay(ANIMATION_MS);
     }
 
-    public updateWind(wind: number) {
+    public updateWind(wind: number, windModifier: string) {
+        this.currentWindModifier = Number(windModifier);
         $(PlaneManager.WINDS_PLANE).dataset.value = wind;
+        this.updateSpeedMarker();
         return this.game.delay(ANIMATION_MS);
     }
 
@@ -202,5 +299,11 @@ class PlaneManager  {
     public unhighlightPlane() {
         document.getElementById('st-approach-overlay-track-slot').classList.remove('st-approach-overlay-track-slot-highlighted');
         document.getElementById('st-plane-axis-indicator-highlight')?.remove();
+    }
+
+
+    public setSpeedMode(speedMode: string) {
+        this.currentSpeedMode = speedMode;
+        this.updateSpeedMarker();
     }
 }

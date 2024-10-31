@@ -8,6 +8,7 @@ class Token extends APP_GameClass {
     public string $location;
     public int $locationArg;
     public string $type;
+    public string $typeArg;
 
     public function __construct($dbCard)
     {
@@ -15,6 +16,7 @@ class Token extends APP_GameClass {
         $this->location = $dbCard['card_location'] ?? $dbCard['location'];
         $this->locationArg = intval($dbCard['card_location_arg'] ?? $dbCard['location_arg']);
         $this->type = $dbCard['card_type'] ?? $dbCard['type'];
+        $this->typeArg = $dbCard['card_type_arg'] ?? $dbCard['type_arg'];
     }
 
     /**

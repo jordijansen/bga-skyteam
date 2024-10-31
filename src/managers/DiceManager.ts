@@ -57,16 +57,28 @@ class DiceManager extends CardManager<Dice> {
         }
     }
 
-    public updateDieValue(die: Dice): void {
+    public updateDieValue(die: Dice, silent = false): void {
+        if (!silent) {
+            const dieElementId = this.getId(die);
+            const dieElement = $(dieElementId);
+            if (dieElement) {
+                dieElement.dataset['value'] = String(die.side);
+            }
+        }
+
+        const stock = this.getCardStock(die);
+        if (stock) {
+            this.updateCardInformations(die);
+        }
+    }
+
+    updateDieValueVisual(die: Dice): void {
         const dieElementId = this.getId(die);
         const dieElement = $(dieElementId);
         if (dieElement) {
             dieElement.dataset['value'] = String(die.side);
         }
-        const stock = this.getCardStock(die);
-        if (stock) {
-            this.updateCardInformations(die);
-        }
+
     }
 
     public setSelectionMode(selectionMode, onSelectedActionSpaceChanged?: (selection: Dice[]) => void, allowedValues?: number[], allowedDieTypes?: string[], autoSelectIfOnly1Die: boolean = true) {

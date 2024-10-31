@@ -34,4 +34,16 @@ trait DebugTrait
         $this->planeManager->save($plane);
     }
 
+    function debug_deleteLegacyData()
+    {
+        $this->removeLegacyTeamData();
+        foreach ($this->getPlayerIds() as $playerId) {
+            $this->removeLegacyData($playerId, FLIGHTLOG);
+        }
+    }
+
+    function debug_retrieveLegacyData()
+    {
+        var_dump($this->retrieveLegacyData($this->getCurrentPlayerId(), FLIGHTLOG)[FLIGHTLOG]);
+    }
 }

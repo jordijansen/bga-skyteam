@@ -1,0 +1,557 @@
+<?php
+
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * skyteam implementation : © <Your name here> <Your email address here>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * gameoptions.inc.php
+ *
+ * skyteam game options description
+ * 
+ * In this file, you can define your game options (= game variants).
+ *   
+ * Note: If your game has no variant, you don't have to modify this file.
+ *
+ * Note²: All options defined in this file should have a corresponding "game state labels"
+ *        with the same ID (see "initGameStateLabels" in skyteam.game.php)
+ *
+ * !! It is not a good idea to modify this file when a game is running !!
+ *
+ */
+require_once(__DIR__.'/modules/php/Constants.inc.php');
+
+$game_preferences = [
+];
+
+$game_options = [
+    EXPANSION_OPTION_ID => [
+        'name' => totranslate('Expansion'),
+        'level' => "major",
+        'values' => [
+            EXPANSION_BASE_GAME => [
+                'name' => totranslate('Base Game'),
+                'description' => totranslate('Take the controls of an airliner with your trusty crewmate, coordinate your efforts, and land your aircraft all over the world!'),
+                'default' => true,
+            ],
+            EXPANSION_TURBULENCE => [
+                'name' => totranslate('Turbulence'),
+                'tmdisplay' => totranslate('Turbulence'),
+                'description' => totranslate('Welcome to Sky Team Turbulence. This is an expansion to the Sky Team base game, offering new modules and new scenarios at new destinations.'),
+            ]
+        ]
+
+    ],
+    SCENARIO_OPTION_ID => [
+        'name' => totranslate('Scenario'),
+        'displaycondition' => [
+            [
+                'type' => 'otheroption',
+                'id' => EXPANSION_OPTION_ID,
+                'value' => [ EXPANSION_BASE_GAME ]
+            ]
+        ],
+        'startcondition' => [
+            APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ],
+            APPROACH_BLACK_DUS_DUSSELDORF => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ],
+            APPROACH_RED_PBH => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ],
+            APPROACH_BLACK_PBH => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ]
+        ],
+        'values' => [
+            // GREEN
+            APPROACH_GREEN_YUL_MONTREAL => [
+                'name' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
+                'tmdisplay' => totranslate('Green: YUL - Montreal-Trudeau (beginner)'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> none<br /><br />Your first flight is going well. The sun is rising over the horizon, and the snow-covered landscape is magnificent as you glide over the St. Lawrence River. Perfect conditions for a smooth landing.'),
+                'default' => true,
+                'firstgameonly' => true
+            ],
+            APPROACH_GREEN_HND_HANEDA => [
+                'name' => totranslate('Green: HND - Haneda'),
+                'tmdisplay' => totranslate('Green: HND - Haneda'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic & Turns<br /><br />With iconic Mount Fuji in the background, you must execute a wide left turn to bring your plane over Tokyo Bay and in line with the runway, which juts out into the water.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_GREEN_BLQ_GUGLIELMO_MARCONI => [
+                'name' => totranslate('Green: BLQ - Guglielmo Marconi [PROMO]'),
+                'tmdisplay' => totranslate('Green: BLQ - Guglielmo Marconi [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns & Kerosene Leak<br /><br />You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+                'nobeginner' => true,
+            ],
+            // WAVE 4
+            APPROACH_GREEN_ATL => [
+                'name' => totranslate('Green: ATL - Hartsfield-Jackson'),
+                'tmdisplay' => totranslate('Green: ATL - Hartsfield-Jackson'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic & Intern<br /><br />As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_GREEN_OSL => [
+                'name' => totranslate('Green: OSL - Gardermoen'),
+                'tmdisplay' => totranslate('Green: OSL - Gardermoen'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic & Kerosene<br /><br />You begin your descent into Oslo, the city to your left, with the sun shimmering off the long narrow Øyeren Lake to your right. Keep your eyes on your kerosene. Happy landing!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_GREEN_LHR => [
+                'name' => totranslate('Green: LHR - Heathrow'),
+                'tmdisplay' => totranslate('Green: LHR - Heathrow'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic<br /><br />You see the river Thames cutting a black channel through the lights of London as you near the airport. There is traffic at the end of your approach. Stay calm and land your plane.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_GREEN_PRG => [
+                'name' => totranslate('Green: PRG - Václav Havel'),
+                'tmdisplay' => totranslate('Green: PRG - Václav Havel'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Kerosene & 2 Special Abilities<br /><br />Your skill set is improving. Use these abilities to land safely in Prague, one of Europe’s cultural centres, in the heart of Old Bohemia.'),
+                'nobeginner' => true,
+            ],
+            // YELLOW
+            APPROACH_YELLOW_KUL_KUALA_LUMPUR => [
+                'name' => totranslate('Yellow: KUL - Kuala Lumpur'),
+                'tmdisplay' => totranslate('Yellow: KUL - Kuala Lumpur'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Kerosene & 1 Special Ability<br /><br />You are right to be concerned about Malaysia’s electrical storms... Keep your plane in line between the storm masses. It will be a bumpy landing in Kuala Lumpur.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_TGU_TONCONTIN => [
+                'name' => totranslate('Yellow: TGU - Toncontín'),
+                'tmdisplay' => totranslate('Yellow: TGU - Toncontín'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Kerosene & 2 Special Abilities<br /><br />This airport is nestled at the base of a bowl of mountains; you will need to descend rapidly and make a very tight final turn. Welcome to Honduras!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_LGA_LAGUARDIA => [
+                'name' => totranslate('Yellow: LGA - LaGuardia [PROMO]'),
+                'tmdisplay' => totranslate('Yellow: LGA - LaGuardia [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Ice Brakes & 2 Special Abilities<br /><br />A cold front has the Eastern Seaboard in its icy grip. Weather conditions are less than ideal and the run way is frozen. Brooklyn and Manhattan are glistening pillars of frost. It’s up to you now.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_DUS_DUSSELDORF => [
+                'name' => totranslate('Yellow: DUS - Düsseldorf [PROMO]'),
+                'tmdisplay' => totranslate('Yellow: DUS - Düsseldorf [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Kerosene Leak & 2 Special Abilities<br /><br />A computer problem paralyses Amsterdam airport and some flights, including yours, have been diverted to Düsseldorf. It’s early October, and the skies are already full. What can be going on...?'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_CDG_PARIS => [
+                'name' => totranslate('Yellow: CDG - Paris-Charles de Gaulle [PROMO]'),
+                'tmdisplay' => totranslate('Yellow: CDG - Paris-Charles de Gaulle [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Winds & Intern<br /><br />Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_TER_LAJES => [
+                'name' => totranslate('Yellow: TER - Lajes, Açores [PROMO]'),
+                'tmdisplay' => totranslate('Yellow: TER - Lajes, Açores [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities<br /><br />You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_BUD_BUDAPEST => [
+                'name' => totranslate('Yellow: BUD - Budapest Ferenc Liszt [PROMO]'),
+                'tmdisplay' => totranslate('Yellow: BUD - Budapest Ferenc Liszt [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns & Winds<br /><br />You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+                'nobeginner' => true,
+            ],
+            // WAVE 4
+            APPROACH_YELLOW_ATL => [
+                'name' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
+                'tmdisplay' => totranslate('Yellow: ATL - Hartsfield-Jackson'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Kerosene Leak & 1 Special Ability<br /><br />As you break through the clouds, you pass over the Appalachian foothills to see Atlanta... and a sky packed with traffic. On top of that, you have a nervous Intern to train. Good luck.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_GIG => [
+                'name' => totranslate('Yellow: GIG - Galeão'),
+                'tmdisplay' => totranslate('Yellow: GIG - Galeão'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Winds & 1 Special Ability<br /><br />The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_KEF => [
+                'name' => totranslate('Yellow: KEF - Keflavík'),
+                'tmdisplay' => totranslate('Yellow: KEF - Keflavík'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Ice Brakes & 1 Special Ability<br /><br />As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_LHR => [
+                'name' => totranslate('Yellow: LHR - Heathrow'),
+                'tmdisplay' => totranslate('Yellow: LHR - Heathrow'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic & Intern<br /><br />Heavy fog, common in London, has caused the sky to fill with planes in holding patterns over the British capital. You will need to stay alert right from the start of your approach!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_YELLOW_PRG => [
+                'name' => totranslate('Yellow: PRG - Václav Havel'),
+                'tmdisplay' => totranslate('Yellow: PRG - Václav Havel'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Kerosene Leak & 2 Special Abilities<br /><br />The sky is clear, giving a gorgeous view of the Carpathian mountains in the distance... An alarm sounds. You are losing fuel. Will you have enough to make it? Manage your speed, and may luck be on your side.'),
+                'nobeginner' => true,
+            ],
+            // RED
+            APPROACH_RED_TGU_TONCONTIN => [
+                'name' => totranslate('Red: TGU - Toncontín'),
+                'tmdisplay' => totranslate('Red: TGU - Toncontín'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Winds & 2 Special Abilities<br /><br />When are they going to build a new airport at Tegucigalpa? Landing here haunts your dreams. When you learned what your destination was, your stomach flipped. Drop down to the left between the mountains and do what it takes.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_HND_HANEDA => [
+                'name' => totranslate('Red: HND - Haneda'),
+                'tmdisplay' => totranslate('Red: HND - Haneda'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Intern & 1 Special Ability<br /><br />Your air corridor has been cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_CDG_PARIS => [
+                'name' => totranslate('Red: CDG - Paris-Charles de Gaulle [PROMO]'),
+                'tmdisplay' => totranslate('Red: CDG - Paris-Charles de Gaulle [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Winds & Intern<br /><br />Welcome aboard, fellow pilots! It’s time to test your skills and land your plane at the Paris-Charles de Gaulle airport... But be careful, the conditions are difficult today. Powerful winds are sweeping the French capital, and air traffic is very dense. A bit of a baptism by fire for the Intern who will be joining you on this flight. Are you up to the challenge? Max, Airline Pilot Officer (find Max on Social Media: @lepilotedeligne)'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_NZIR => [
+                'name' => totranslate('Red: NZIR - Ice Runway [PROMO]'),
+                'tmdisplay' => totranslate('Red: NZIR - Ice Runway [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Winds HEAD-ON & 1 Special Ability<br /><br />A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The all-white landscape suggests a landing strip on the ice floe! In this month of November, the ice is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_BLQ_GUGLIELMO_MARCONI => [
+                'name' => totranslate('Red: BLQ - Guglielmo Marconi [PROMO]'),
+                'tmdisplay' => totranslate('Red: BLQ - Guglielmo Marconi [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene & 1 Special Ability<br /><br />You leave behind the foothills of the Dolomites and Lake Garda, and plunge towards the Emilia-Romagna region. Bologna appears on the horizon. The skies are clear. Stay in your approach corridor.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_BUD_BUDAPEST => [
+                'name' => totranslate('Red: BUD - Budapest Ferenc Liszt [PROMO]'),
+                'tmdisplay' => totranslate('Red: BUD - Budapest Ferenc Liszt [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Altitude: 5000, Winds & 2 Special Abilities<br /><br />You are flying over the immense Lake Balaton, approaching the Hungarian capital from the south-west. The wind is pushing hard behind you. Control your approach and line yourself up with the runway.'),
+                'nobeginner' => true,
+            ],
+            // WAVE 4
+            APPROACH_RED_GIG => [
+                'name' => totranslate('Red: GIG - Galeão'),
+                'tmdisplay' => totranslate('Red: GIG - Galeão'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Winds, Kerosene Leak & 2 Special Abilities<br /><br />The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_PBH => [
+                'name' => totranslate('Red: PBH - Paro (Real-Time)'),
+                'tmdisplay' => totranslate('Red: PBH - Paro (Real-Time)'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities<br /><br />They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
+                'nobeginner' => true,
+            ],
+            APPROACH_RED_OSL => [
+                'name' => totranslate('Red: OSL - Gardermoen'),
+                'tmdisplay' => totranslate('Red: OSL - Gardermoen'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Kerosene Leak, Ice Brakes & 2 Special Abilities<br /><br />The runway is frozen solid and your kerosene gauge has been running low for 30 minutes already. 150 passengers and crew are depending on you. Don’t let them down.'),
+                'nobeginner' => true,
+            ],
+            // BLACK
+            APPROACH_BLACK_KUL_KUALA_LUMPUR => [
+                'name' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
+                'tmdisplay' => totranslate('Black: KUL - Kuala Lumpur (Real-Time)'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities<br /><br />Lightning flashes all around as you approach. This must be what it’s like to fly into hell. Getting to the airport is going to take every last ounce of your concentration. Time is against you. Semoga berjaya, as the locals would say.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_LGA_LAGUARDIA => [
+                'name' => totranslate('Black: LGA - LaGuardia [PROMO]'),
+                'tmdisplay' => totranslate('Black: LGA - LaGuardia [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Ice Brakes & 1 Special Ability<br /><br />A cold front has the Eastern Seaboard in its icy grip. Weather conditions are less than ideal and the run way is frozen. Brooklyn and Manhattan are glistening pillars of frost. It’s up to you now.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_DUS_DUSSELDORF => [
+                'name' => totranslate('Black: DUS - Düsseldorf (Real-Time) [PROMO]'),
+                'tmdisplay' => totranslate('Black: DUS - Düsseldorf (Real-Time) [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene Leak, Real-Time & 1 Special Ability<br /><br />A computer problem paralyses Amsterdam airport and some flights, including yours, have been diverted to Düsseldorf. It’s early October, and the skies are already full. What can be going on...?'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_TER_LAJES => [
+                'name' => totranslate('Black: TER - Lajes, Açores [PROMO]'),
+                'tmdisplay' => totranslate('Black: TER - Lajes, Açores [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Engine Loss & 1 Special Abilities<br /><br />You need to make an emergency landing. Your plane has run out of kerosene and your Engines are down. You will have to make multiple turns to slow the aircraft down and activate a stronger braking system to successfully pull this off.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_NZIR => [
+                'name' => totranslate('Black: NZIR - Ice Runway [PROMO]'),
+                'tmdisplay' => totranslate('Black: NZIR - Ice Runway [PROMO]'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Kerosene, Intern & Winds HEAD-ON<br /><br />A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The all-white landscape suggests a landing strip on the ice floe! In this month of November, the ice is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal.'),
+                'nobeginner' => true,
+            ],
+            // WAVE 4
+            APPROACH_BLACK_PBH => [
+                'name' => totranslate('Black: PBH - Paro (Real-Time)'),
+                'tmdisplay' => totranslate('Black: PBH - Paro (Real-Time)'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities<br /><br />They call them foothills, but anywhere else they’d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It’s a narrow valley. The mountains are so high and jagged...'),
+                'nobeginner' => true,
+            ],
+            APPROACH_BLACK_KEF => [
+                'name' => totranslate('Black: KEF - Keflavík'),
+                'tmdisplay' => totranslate('Black: KEF - Keflavík'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Winds, Ice Brakes & 2 Special Abilities<br /><br />As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.'),
+                'nobeginner' => true,
+            ],
+        ]
+    ],
+    SCENARIO_OPTION_EXPANSION_ID => [
+        'name' => totranslate('Scenario'),
+        'displaycondition' => [
+            [
+                'type' => 'otheroption',
+                'id' => EXPANSION_OPTION_ID,
+                'value' => [ EXPANSION_TURBULENCE ]
+            ]
+        ],
+        'startcondition' => [
+            APPROACH_EXP_RED_DUS => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ],
+            APPROACH_EXP_BLACK_MAD => [
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 10, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 11, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 12, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 13, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 14, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 15, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 16, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 17, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 18, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 19, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 20, 'message' => totranslate('This scenario can only be played in Real-Time')],
+                ['type' => 'otheroptionisnot','id' => 200, 'value' => 21, 'message' => totranslate('This scenario can only be played in Real-Time')],
+            ]
+        ],
+        'values' => [
+            // Gren
+            APPROACH_EXP_GREEN_CPT => [
+                'name' => totranslate('Green: CPT - Cape Town'),
+                'tmdisplay' => totranslate('Green: CPT - Cape Town'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> B - Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Turbulence, Kerosene & 1 Special Ability<br /><br />After a first loop over the Cape of Good Hope and False Bay, you try a second approach. This is the place where oceans come together and the sea winds buffet the mountains. Flight conditions here are tough.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_GREEN_SYD => [
+                'name' => totranslate('Green: SYD - Kingsford Smith'),
+                'tmdisplay' => totranslate('Green: SYD - Kingsford Smith'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Alarms & 1 Special Ability<br /><br />You’ve been in the air for 14 hours. You’ve just completed your wide turn to the right to approach Sydney from the south. The electronics seem to be glitching. You’ll have to keep your cool to take care of the systems as they crash.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_GREEN_PEK => [
+                'name' => totranslate('Green: PEK - Beijing Capital'),
+                'tmdisplay' => totranslate('Green: PEK - Beijing Capital'),
+                'description' => totranslate('<b>Difficulty:</b> Green (Routine Landing)<br /><b>Altitude Track:</b> A - Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Bad Visibility & 1 Special Ability<br /><br />You’ve passed over the Yellow Sea, and now you see the Yanshan mountains bordering Mongolia in the distance as you head toward the north-east of Beijing. There’s a thick covering of cloud over the Chinese capital, with only a few breaks… You’re going to have to rely on your instruments for this one.'),
+                'nobeginner' => true,
+            ],
+            // YELLOW
+            APPROACH_EXP_YELLOW_KBP => [
+                'name' => totranslate('Yellow: KBP - Boryspil'),
+                'tmdisplay' => totranslate('Yellow: KBP - Boryspil'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Total Trust & 2 Special Abilities<br /><br />WHAM! you have ploughed headlong into a high-flying flock of geese!! You maintain control, but they’ve torn off some of the housing and cracked a panel in the cockpit. You should be able to land in the Ukr anian capital without any trouble, but noise and vibration caused by the strikes have made flight-deck communication impossible.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_YELLOW_TER => [
+                'name' => totranslate('Yellow: TER - Lajes, Azores'),
+                'tmdisplay' => totranslate('Yellow: TER - Lajes, Azores'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Engine Loss & 2 Special Abilities<br /><br />You need to make an emergency landing. Your plane has run out of fuel and your engines are down. Your only hope is a military base on an isolated island in the Azores. You will have to make multiple turns to slow the aircraft and activate a stronger braking system to successfully pull this off.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_YELLOW_SXM => [
+                'name' => totranslate('Yellow: SXM - Princess Juliana'),
+                'tmdisplay' => totranslate('Yellow: SXM - Princess Juliana'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> B - Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Turbulence, Altitude: 5000 & Intern<br /><br />You promised your intern an interesting landing, and he won’t be disappointed. This is the famous airport whose landing strip starts at the edge of a beach full of people. You’ll have to handle the turbulence carefully on the way down, you wouldn’t want to ruin someone’s day at the beach!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_YELLOW_DUS => [
+                'name' => totranslate('Yellow: DUS - Düsseldorf'),
+                'tmdisplay' => totranslate('Yellow: DUS - Düsseldorf'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> A - Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Bad Visibility, Kerosene Leak & 2 Special Abilities.<br /><br />You’re coming in to Düsseldorf on fumes. You’ve got a fuel leak and there are storms throughout the Rhineland region, meaning your visibility is going to be patchy at best on the way down. Keep focused and you’ll be fine.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_YELLOW_MAD => [
+                'name' => totranslate('Yellow: MAD - Madrid'),
+                'tmdisplay' => totranslate('Yellow: MAD - Madrid'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Altitude: 5000, Intern & 1 Special Ability<br /><br />You’ve passed over the Portuguese Serra da Estrela mountain range and turn south at Salamanca. You get word that there is heavy traffic over the Spanish capital. You descend slowly, turning northeast over Toledo, and at 5,000 feet you get clearance to land. You’ll have to work quickly!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_YELLOW_WAW => [
+                'name' => totranslate('Yellow: WAW - Warsaw Chopin'),
+                'tmdisplay' => totranslate('Yellow: WAW - Warsaw Chopin'),
+                'description' => totranslate('<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Turns, Stuck Landing Gear, Alarms, Kerosene & 1 Special Ability<br /><br />You tried to deploy your landing gear... to no avail. You’ll have to perform a belly landing, but first you needed to climb back up and circle high above the Polish capital to burn the remainder of your fuel. The last thing you need is a full tank when the sparks start to fly. The F-16s have kept you company for everyone’s safety, but now it’s time to put her down. Carefully, very carefully.'),
+                'nobeginner' => true,
+            ],
+            // RED
+            APPROACH_EXP_RED_SXM => [
+                'name' => totranslate('Red: SXM - Princess Juliana'),
+                'tmdisplay' => totranslate('Red: SXM - Princess Juliana'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> D - Red/Black<br /><b>Modules:</b> Traffic, Turns, Bad Visibility, Turbulence, Altitude: 5000, Kerosene & Intern<br /><br />This is white-knuckle time. A heavy storm is lashing the Caribbean, and this landing is always tricky. Bad visibility just before landing, with people on the beach (yes, even in this weather!), is raising your pulse significantly. It’s going to take all your concentration to make this work.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_RED_SYD => [
+                'name' => totranslate('Red: SYD - Kingsford Smith'),
+                'tmdisplay' => totranslate('Red: SYD - Kingsford Smith'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> C - Red/Black<br /><b>Modules:</b> Traffic, Turns, Alarms, Bad Visibility, Turbulence & 2 Special Abilities<br /><br />You’ll remember this 10-hour flight from Tokyo for a while. Near-constant turbulence as you flew over storm after storm. Sydney will offer you more of the same, it seems. You’ll have to descend through thick cloud and driving rain. Visibility will be low, and it will be a bumpy ride. The electronics have just started to act up as well. Hang on tight!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_RED_WAW => [
+                'name' => totranslate('Red: WAW - Warsaw Chopin'),
+                'tmdisplay' => totranslate('Red: WAW - Warsaw Chopin'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Stuck Landing Gear, Alarms, Winds, Kerosene & 1 Special Ability<br /><br />The landing gear is stuck. You’ve known since you took off, so you’ve had the whole flight to discuss options with your co-pilot and air-traffic control at your destination. You’re going to have to perform a belly landing in a gale. Now as you start your descent, an alarm sounds. Looks like the landing gear wasn’t the only issue. A bead of sweat trickles down your brow as you turn to your co-pilot. Time to land.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_RED_DUS => [
+                'name' => totranslate('Red: DUS - Düsseldorf (Real-Time)'),
+                'tmdisplay' => totranslate('Red: - DUS Düsseldorf (Real-Time)'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> C - Red/Black<br /><b>Modules:</b> Traffic, Turns, Bad Visibility, Turbulence, Real-Time, Kerosene Leak & 1 Special Ability.<br /><br />An alarm goes off. The fuel level of your starboard tank has dropped drastically. On top of this, it’s early July, peak tourist season in the Northern Rhineland region of Germany, and the sky is full of planes. You’ll have some maneuvering to do on your way in... But you need to land. Now.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_RED_NZIR => [
+                'name' => totranslate('Red: NZIR - Ice Runway'),
+                'tmdisplay' => totranslate('Red: NZIR - Ice Runway'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Winds HEAD-ON & 1 Special Ability. Wait... are those... PENGUINS?!<br /><br />A strong headwind from the Pole shakes your cargo and the few passengers you have aboard. Welcome to Antarctica. The ice in November is still thick enough to support a landing. This is the first time you’ve seen the famous “Ice Runway” with your own eyes. Landing an airliner in this remote location seems unreal. Wait... are those... penguins on the runway??'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_RED_PEK => [
+                'name' => totranslate('Red: PEK - Beijing Capital'),
+                'tmdisplay' => totranslate('Red: PEK - Beijing Capital'),
+                'description' => totranslate('<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> C - Red/Black<br /><b>Modules:</b> Traffic, Turns, Bad Visibility, Turbulence, Winds & 1 Special Ability<br /><br />A heavy storm front is moving in quickly over the Beijing Capital International Airport region, carried by some heavy winds. It’s going to be a very bumpy descent, and visibility will be low. Very low. You take a breath and switch on the intercom to inform the passengers, reminding yourself to sound confident.'),
+                'nobeginner' => true,
+            ],
+            // BLACK
+            APPROACH_EXP_BLACK_CPT => [
+                'name' => totranslate('Black: CPT - Cape Town'),
+                'tmdisplay' => totranslate('Black: CPT - Cape Town'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> D - Red/Black<br /><b>Modules:</b> Traffic, Turns, Bad Visibility, Turbulence, Alarms, Winds & Intern<br /><br />You’ll be coming in to Cape Town Airport from the north. Table Mountain to the west and the craggy Jonkershoek Mountains to the east mean turbulence is always a possibility. But today, foggy conditions will give you a very, very low ceiling. Your intern has just alerted you to a problem with the electrical systems. Steel yourselves.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_BLACK_MAD => [
+                'name' => totranslate('Black: MAD - Madrid (Real-Time)'),
+                'tmdisplay' => totranslate('Black: MAD - Madrid (Real-Time)'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Altitude: 5000, Kerosene, Real-Time & 1 Special Ability<br /><br />Ninety minutes ago the Madrid control tower held you back due to an emergency on the runway. You’ve been slowly circling downward. But there’s an emergency up here, too: You’re running low on fuel. You’ve finally got the go. There’s no time to lose!!'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_BLACK_TER => [
+                'name' => totranslate('Black: TER - Lajes, Azores'),
+                'tmdisplay' => totranslate('Black: TER - Lajes, Azores'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Engine Loss & 1 Special Abilities<br /><br />Emergency landing. The good news: You’ve found a tiny island with a usable airstrip. The very bad news: All four of your engines are down. You’re coming down fast, but some well-timed maneuvering will slow you somewhat. Once you hit the tarmac, you’ll need to brake extra hard to avoid disaster. Your mouth is dry. Time to get to work.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_BLACK_KBP => [
+                'name' => totranslate('Black: KBP - Boryspil'),
+                'tmdisplay' => totranslate('Black: KBP - Boryspil'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Alarms, Total Trust & 2 Special Abilities<br /><br />You’re cruising in towards Kiev. It would be beautiful if it wasn’t for all the noise. Your instruments show no issues, but something has come loose near the cockpit, making a loud buzzing and whistling noise that’s impossible to speak over. You’ll have some maneuvering to do as well. You’re already looking forward to your hotel room.'),
+                'nobeginner' => true,
+            ],
+            APPROACH_EXP_BLACK_NZIR => [
+                'name' => totranslate('Black: NZIR - Ice Runway'),
+                'tmdisplay' => totranslate('Black: NZIR - Ice Runway'),
+                'description' => totranslate('<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Ice Brakes, Kerosene, Intern & Winds HEAD-ON<br /><br />High winds are whipping across the Ross Archipelago, driven snow almost completely hiding McMurdo Station from view. This means a number of course corrections during your descent. Your intern is excited for the opportunity to land on the Antarctic ice runway, but will she keep her nerve? This is no place to crash...'),
+                'nobeginner' => true,
+            ],
+        ]
+    ],
+    REAL_TIME_SECONDS_OPTION_ID => [
+        'name' => totranslate('Timer Duration'),
+        'displaycondition' => [
+            [
+                'type' => 'otheroption',
+                'id' => SCENARIO_OPTION_ID,
+                'value' => [ APPROACH_BLACK_KUL_KUALA_LUMPUR, APPROACH_BLACK_DUS_DUSSELDORF, APPROACH_BLACK_PBH, APPROACH_RED_PBH]
+            ],
+            [
+                'type' => 'otheroption',
+                'id' => SCENARIO_OPTION_EXPANSION_ID,
+                'value' => [ APPROACH_EXP_RED_DUS, APPROACH_EXP_BLACK_MAD ]
+            ]
+        ],
+        'displayconditionoperand' => 'or',
+        'values' => [
+            REAL_TIME_60_SECONDS => [
+                'name' => totranslate('60 seconds (default)'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 60 seconds'),
+                'description' => totranslate('You have 60 seconds to place your dice each round. This is the intended way of playing Real-Time scenarios.'),
+                'default' => true,
+            ],
+            REAL_TIME_70_SECONDS => [
+                'name' => totranslate('70 seconds'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 70 seconds'),
+                'description' => totranslate('You have 70 seconds to place your dice each round. This is a more forgiving experience. Some actions are slower on BGA than in real life.'),
+                'default' => true,
+            ],
+            REAL_TIME_80_SECONDS => [
+                'name' => totranslate('80 seconds'),
+                'tmdisplay' => totranslate('Real-Time timer duration: 80 seconds'),
+                'description' => totranslate('You have 80 seconds to place your dice each round. This is the most forgiving experience. Some actions are slower on BGA than in real life.'),
+                'default' => true,
+            ],
+        ]
+        
+    ],
+    PERMANENT_TOTAL_TRUST_OPTION_ID => [
+        'name' => totranslate('Advanced: Permanent Total Trust'),
+        'values' => [
+            PERMANENT_TOTAL_TRUST_DISABLED => [
+                'name' => totranslate('Disabled'),
+                'default' => true,
+            ],
+            PERMANENT_TOTAL_TRUST_ENABLED => [
+                'name' => totranslate('Enabled'),
+                'tmdisplay' => totranslate('Permanent Total Trust'),
+                'description' => totranslate('Only Recommended for experienced Pilots and Turn-Based Tables. This is not the intended way to play the game and this can impact the experience and difficulty. Play the scenario with Total Trust (first introduced in Turbulence) enabled in all rounds, this will skip the Strategy Phase each round.'),
+            ]
+        ]
+    ],
+];
+
+

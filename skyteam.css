@@ -416,25 +416,17 @@ body > .card {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
-@keyframes jj-red-color-transition {
+@keyframes jj-flash {
   0% {
-    color: #000;
-  }
-  70% {
-    color: #c13633;
-  }
-  100% {
-    color: #000;
-  }
-}
-@keyframes jj-pulse {
-  0% {
+    opacity: 0.6;
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
   }
-  70% {
+  50% {
+    opacity: 1;
     box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
   }
   100% {
+    opacity: 0.6;
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
@@ -443,12 +435,173 @@ body > .card {
     color: #000;
   }
   70% {
-    color: #c13633;
+    color: red;
   }
   100% {
     color: #000;
   }
 }
+@keyframes jj-font-size-increase {
+  0% {
+    opacity: 1;
+    font-size: 16px;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    opacity: 1;
+    font-size: 64px;
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+}
+.slot-stock .slot.selectable {
+  outline: 6px rgb(80, 200, 255) dashed;
+  cursor: pointer;
+}
+.slot-stock .slot.selected {
+  outline: 6px rgb(124, 252, 0) solid;
+  cursor: pointer;
+}
+
+#undoLast, #undoAll, #undoLast:hover, #undoAll:hover, .bgabutton_yellow {
+  background: linear-gradient(rgb(248, 212, 4), rgb(255, 230, 87));
+  color: black !important;
+}
+
+.jj-ui-hint-box {
+  position: absolute;
+  background-color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 0 2px 1px black;
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 99;
+}
+.jj-ui-hint-box .jj-ui-hint-box-arrow {
+  position: absolute;
+  font-size: 20px;
+  line-height: 20px;
+  vertical-align: bottom;
+  width: 20px;
+  height: 20px;
+}
+.jj-ui-hint-box.bottom .jj-ui-hint-box-arrow {
+  top: -12px;
+  left: calc(50% - 10px);
+}
+.jj-ui-hint-box.top .jj-ui-hint-box-arrow {
+  bottom: -12px;
+  left: calc(50% - 10px);
+  transform: rotate(180deg);
+}
+.jj-ui-hint-box .bgabutton {
+  padding: 3px;
+  margin: 2px;
+}
+
+#jj-preferences-panel {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: auto !important;
+  position: relative;
+  z-index: 99;
+  top: 7px;
+  border-radius: 5px;
+  margin-left: -3px;
+  margin-right: -3px;
+}
+#jj-preferences-panel #jj-preferences-panel-toggle-button {
+  font-size: 35px;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+}
+#jj-preferences-panel #jj-preferences-panel-content {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+#jj-preferences-panel #jj-preferences-panel-content .jj-preferences-panel-category-label {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  border: 1px solid darkgray;
+  text-align: center;
+  padding: 5px;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#jj-preferences-panel #jj-preferences-panel-content .jj-preferences-panel-preference-wrapper {
+  width: 100%;
+  padding: 3px 0;
+}
+#jj-preferences-panel #jj-preferences-panel-content .jj-preferences-panel-preference-wrapper label {
+  font-weight: bold;
+}
+#jj-preferences-panel #jj-preferences-panel-content .jj-preferences-panel-preference-wrapper.jj-select-input select {
+  width: 100%;
+  font-size: 16px;
+}
+
+.jj-tab-manager .jj-tab-manager-tabs {
+  display: flex;
+  align-items: end;
+  border-bottom: 2px solid black;
+}
+.jj-tab-manager .jj-tab-manager-tabs .jj-tab-manager-tab {
+  font-size: 18px;
+  padding: 5px;
+  border-color: black;
+  border-left: 1px;
+  border-right: 1px;
+  border-top: 1px;
+  border-bottom: 0;
+  border-style: solid;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+}
+.jj-tab-manager .jj-tab-manager-tabs .jj-tab-manager-tab.active {
+  scale: 1.1;
+  transform-origin: bottom;
+}
+.jj-tab-manager .jj-tab-manager-contents .jj-tab-manager-content {
+  display: flex;
+  overflow: auto;
+  overflow-x: scroll;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.jj-tab-manager .jj-tab-manager-contents .jj-tab-manager-content::-webkit-scrollbar {
+  display: none;
+}
+
+#jj-final-turn-notice p {
+  color: #c13633;
+  text-decoration: underline;
+}
+
+.jj-icon-stock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.jj-icon-stock .icon-stock-counter {
+  text-shadow: #000 0 0 2px, #000 0 0 2px, #000 0 0 2px, #000 0 0 2px, #000 0 0 2px, #000 0 0 2px;
+  font-weight: bolder;
+  font-size: 14px;
+  color: white;
+}
+
 .st-board {
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
@@ -456,21 +609,36 @@ body > .card {
 }
 
 #st-main-board-left {
-  position: absolute;
-  left: 0;
   height: 850px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: end;
 }
-#st-main-board-left #st-kerosene-board {
+#st-main-board-left #st-main-board-left-boards {
+  display: flex;
+}
+#st-main-board-left #st-main-board-left-boards #st-alarms-board {
+  background-image: url("img/skyteam-alarms-board.png");
+  width: 155px;
+  height: 567px;
+  position: relative;
+}
+#st-main-board-left #st-main-board-left-boards #st-alarms-board #st-alarm-tokens-stock {
+  margin-top: 39px;
+  align-items: center;
+}
+#st-main-board-left #st-main-board-left-boards #st-alarms-board #st-alarm-tokens-stock .slot {
+  width: 137px;
+  height: 72px;
+}
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board {
   background-image: url("img/skyteam-kerosene-board.png");
   width: 118px;
   height: 637px;
   position: relative;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker {
   position: absolute;
   bottom: 27px;
   left: 51px;
@@ -478,70 +646,70 @@ body > .card {
   transition-duration: 1s;
   transition-timing-function: ease-in-out;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="0"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="0"] {
   bottom: 48.71428px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="1"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="1"] {
   bottom: 70.42856px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="2"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="2"] {
   bottom: 92.14284px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="3"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="3"] {
   bottom: 113.85712px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="4"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="4"] {
   bottom: 135.5714px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="5"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="5"] {
   bottom: 157.28568px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="6"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="6"] {
   bottom: 178.99996px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="7"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="7"] {
   bottom: 200.71424px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="8"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="8"] {
   bottom: 222.42852px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="9"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="9"] {
   bottom: 244.1428px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="10"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="10"] {
   bottom: 265.85708px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="11"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="11"] {
   bottom: 287.57136px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="12"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="12"] {
   bottom: 309.28564px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="13"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="13"] {
   bottom: 330.99992px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="14"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="14"] {
   bottom: 352.7142px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="15"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="15"] {
   bottom: 374.42848px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="16"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="16"] {
   bottom: 396.14276px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="17"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="17"] {
   bottom: 417.85704px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="18"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="18"] {
   bottom: 439.57132px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="19"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="19"] {
   bottom: 461.2856px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-marker[data-value="20"] {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-marker[data-value="20"] {
   bottom: 482.99988px;
 }
-#st-main-board-left #st-kerosene-board #st-kerosene-leak-marker {
+#st-main-board-left #st-main-board-left-boards #st-kerosene-board #st-kerosene-leak-marker {
   position: absolute;
   top: 25px;
   left: 43px;
@@ -549,9 +717,9 @@ body > .card {
 #st-main-board-left #st-token-reserve {
   padding-bottom: 10px;
   padding-right: 10px;
-  position: absolute;
   bottom: 262px;
   width: 45px;
+  position: relative;
 }
 #st-main-board-left #st-token-reserve #st-token-reserve-plane {
   top: 70px;
@@ -574,8 +742,6 @@ body > .card {
 
 #st-main-board-right {
   height: 850px;
-  position: absolute;
-  left: 725px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -588,6 +754,7 @@ body > .card {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 #st-main-board-right #st-winds-board.winds-headon {
   background-image: url("img/skyteam-winds-headon-board.png");
@@ -677,8 +844,7 @@ body > .card {
   background-image: url("img/skyteam-main-board.png");
   width: 607px;
   height: 850px;
-  position: absolute;
-  left: 118px;
+  position: relative;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board .st-plane-axis-indicator {
   background-image: url("img/skyteam-axis-indicator.png");
@@ -808,6 +974,137 @@ body > .card {
   left: 464px;
   top: 220px;
   transform: rotate(-90deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  overflow: hidden;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="2"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="0"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="-1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="-2"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="-3"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="-4"] {
+  left: 123px;
+  top: 249px;
+  transform: rotate(83deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="3"] {
+  left: 136px;
+  top: 293px;
+  transform: rotate(65deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="4"] {
+  left: 163px;
+  top: 335px;
+  transform: rotate(48deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="5"] {
+  left: 202px;
+  top: 368px;
+  transform: rotate(34deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="6"] {
+  left: 246px;
+  top: 388px;
+  transform: rotate(18deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="7"] {
+  left: 294px;
+  top: 394px;
+  transform: rotate(0deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="8"] {
+  left: 342px;
+  top: 387px;
+  transform: rotate(-18deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="9"] {
+  left: 385px;
+  top: 367px;
+  transform: rotate(-32deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="10"] {
+  left: 423px;
+  top: 333px;
+  transform: rotate(-48deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="11"] {
+  left: 449px;
+  top: 292px;
+  transform: rotate(-64deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="12"] {
+  left: 462px;
+  top: 245px;
+  transform: rotate(-81deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="13"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="14"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="15"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="16"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="17"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="18"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="19"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=engines][data-value="20"] {
+  left: 462px;
+  top: 245px;
+  transform: rotate(-81deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="0"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="-1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="-2"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="-3"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="-4"] {
+  left: 94px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="2"] {
+  left: 151px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="3"] {
+  left: 245px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="4"] {
+  left: 342px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="5"] {
+  left: 438px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="7"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="8"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="9"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="10"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="11"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="12"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="13"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="14"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="15"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="16"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="17"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="18"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="19"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker.ice-brakes[data-mode=brakes][data-value="20"] {
+  left: 487px;
+  top: 598px;
+  transform: none;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="2"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="0"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="-1"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="-2"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="-3"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="-4"] {
+  left: 199px;
+  top: 532px;
+  transform: rotate(34deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="3"] {
+  left: 253px;
+  top: 555px;
+  transform: rotate(17deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="4"] {
+  left: 290px;
+  top: 559px;
+  transform: rotate(0deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="5"] {
+  left: 346px;
+  top: 550px;
+  transform: rotate(-22deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="6"] {
+  left: 385px;
+  top: 532px;
+  transform: rotate(-35deg);
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="7"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="8"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="9"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="10"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="11"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="12"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="13"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="14"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="15"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="16"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="17"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="18"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="19"], #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-speed-green-marker[data-mode=brakes][data-value="20"] {
+  left: 425px;
+  top: 498px;
+  transform: rotate(-43deg);
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-brake-marker {
   position: absolute;
@@ -1010,6 +1307,66 @@ body > .card {
   left: 417px;
   bottom: 135px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-1 {
+  left: -194px;
+  top: 44px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-1[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-1 .st-action-space-help {
+  left: -78px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-2 {
+  left: -194px;
+  top: 126px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-2[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-2 .st-action-space-help {
+  left: -78px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-3 {
+  left: -194px;
+  top: 209px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-3[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-3 .st-action-space-help {
+  left: -78px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-4 {
+  left: -194px;
+  top: 292px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-4[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-4 .st-action-space-help {
+  left: -78px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-5 {
+  left: -194px;
+  top: 374px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-5[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-5 .st-action-space-help {
+  left: -78px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-6 {
+  left: -194px;
+  top: 456px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-6[data-kerosene-board-active=false] {
+  left: -76px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-action-spaces #alarms-6 .st-action-space-help {
+  left: -78px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-plane-switches #plane-switch-landing-gear-1 {
   top: 386px;
   left: 18px;
@@ -1060,6 +1417,21 @@ body > .card {
   top: 433px;
   right: 193px;
 }
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-stuck-landing-gear-marker-1 {
+  position: absolute;
+  top: 310px;
+  left: 35px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-stuck-landing-gear-marker-2 {
+  position: absolute;
+  top: 445px;
+  left: 35px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-stuck-landing-gear-marker-3 {
+  position: absolute;
+  top: 580px;
+  left: 35px;
+}
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-traffic-dice-stock {
   width: 202px;
   height: 50px;
@@ -1079,7 +1451,7 @@ body > .card {
   border-radius: 10px;
   display: none;
   position: relative;
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 #st-game #st-game-boards-wrapper #st-main-board-wrapper #st-plane-board-wrapper #st-main-board #st-approach-overlay-track #st-approach-overlay-track-slot.st-approach-overlay-track-slot-highlighted {
@@ -1149,8 +1521,18 @@ body > .card {
   display: flex;
   flex-wrap: wrap;
 }
+#st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:hover {
+  opacity: 0.6;
+}
 #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:nth-child(1) {
   margin-top: 36px;
+}
+#st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(4)), #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(5)), #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(6)), #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(7)) {
+  flex-wrap: nowrap;
+}
+#st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(4)) .st-token[data-type=plane], #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(5)) .st-token[data-type=plane], #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(6)) .st-token[data-type=plane], #st-game #st-game-boards-wrapper #st-main-board-tracks #st-approach-track .slot:has(> :last-child:nth-child(7)) .st-token[data-type=plane] {
+  width: 25px;
+  height: 25px;
 }
 
 .st-action-space-help {
@@ -1177,6 +1559,10 @@ body > .card {
   bottom: -25px;
 }
 
+.pulsing-mandatory-indicators-disabled .st-action-space-mandatory-warning {
+  animation: none !important;
+}
+
 .st-action-space {
   position: absolute;
   width: 60px;
@@ -1186,12 +1572,12 @@ body > .card {
   justify-content: center;
 }
 .st-action-space.selected {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
   animation: jj-pulse 2s infinite;
 }
 .st-action-space.selectable {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
   animation: jj-pulse 2s infinite;
 }
@@ -1213,6 +1599,15 @@ body > .card {
 }
 .st-action-space .st-action-space-mandatory-warning.right {
   right: -25px;
+}
+.st-action-space.blocked-by-alarm::before {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-image: url("img/skyteam-tokens.png");
+  background-size: 500% auto;
+  background-position: 100% 0;
 }
 
 .help-buttons-disabled .st-action-space-help {
@@ -1240,7 +1635,7 @@ body > .card {
 
 .st-plane-marker {
   background-image: url("img/skyteam-plane-markers.png");
-  background-size: 300% auto;
+  background-size: 400% auto;
   height: 40px;
   width: 25px;
   display: inline-block;
@@ -1254,9 +1649,12 @@ body > .card {
   background-position: 0 0;
 }
 .st-plane-marker[data-type=aerodynamics-orange] {
-  background-position: 50% 0;
+  background-position: 33.3333333333% 0;
 }
 .st-plane-marker[data-type=brakes-red] {
+  background-position: 66.6666666666% 0;
+}
+.st-plane-marker[data-type=speed-green] {
   background-position: 100% 0;
 }
 
@@ -1293,7 +1691,7 @@ body > .card {
   background-image: url("img/skyteam-tokens.png");
   width: 45px;
   height: 45px;
-  background-size: 300% auto;
+  background-size: 500% auto;
   display: inline-block;
   vertical-align: middle;
 }
@@ -1313,17 +1711,63 @@ body > .card {
 .st-token[data-type=coffee] {
   width: 47px;
   height: 42px;
-  background-position: 50% 0;
+  background-position: 25% 0;
 }
 .st-token[data-type=coffee].small {
   width: 27px;
   height: 25px;
 }
 .st-token[data-type=plane] {
-  background-position: 100% 0;
+  background-position: 50% 0;
+}
+.st-token[data-type=penguin] {
+  background-position: 75% 0;
 }
 .st-token .card-sides .card-side {
   box-shadow: none;
+}
+
+.st-alarm-token {
+  display: inline-block;
+  position: relative;
+  width: 137px;
+  height: 72px;
+}
+.st-alarm-token .card-sides .card-side {
+  border-radius: 10px;
+  width: 137px;
+  height: 72px;
+  box-shadow: none;
+}
+
+.st-alarm-token-art {
+  background-image: url("img/skyteam-alarm-tokens.png");
+  width: 137px;
+  height: 72px;
+  background-size: auto 700%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.st-alarm-token-art[data-type=back] {
+  background-position: 0 0;
+}
+.st-alarm-token-art[data-type="1"] {
+  background-position: 0 16.666666667%;
+}
+.st-alarm-token-art[data-type="2"] {
+  background-position: 0 33.333333334%;
+}
+.st-alarm-token-art[data-type="3"] {
+  background-position: 0 50.000000001%;
+}
+.st-alarm-token-art[data-type="4"] {
+  background-position: 0 66.666666668%;
+}
+.st-alarm-token-art[data-type="5"] {
+  background-position: 0 83.333333335%;
+}
+.st-alarm-token-art[data-type="6"] {
+  background-position: 0 100%;
 }
 
 .st-plane-switch {
@@ -1337,28 +1781,6 @@ body > .card {
   transition-timing-function: ease-in-out;
 }
 
-@keyframes jj-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
-@keyframes jj-red-color-transition {
-  0% {
-    color: #000;
-  }
-  70% {
-    color: #c13633;
-  }
-  100% {
-    color: #000;
-  }
-}
 .st-role-card {
   background-image: url("img/skyteam-roles.jpg");
   background-size: 200% auto;
@@ -1387,11 +1809,11 @@ body > .card {
   background-position: 100% 0;
 }
 .st-role-card.selected {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-role-card.selectable {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 
@@ -1524,69 +1946,69 @@ body > .card {
   transform: rotateY(90.1deg) translateZ(1.364em);
 }
 .st-dice[data-value="1"] {
-  transform: rotateX(720deg) rotateZ(-720deg);
+  transform: rotateX(720.1deg) rotateZ(-720.1deg);
 }
 .st-dice[data-value="2"] {
-  transform: rotateX(-900deg) rotateZ(1080deg);
+  transform: rotateX(-900deg) rotateZ(1080.1deg);
 }
 .st-dice[data-value="3"] {
-  transform: rotateY(809.999999999deg) rotateZ(720deg);
+  transform: rotateY(809.999999999deg) rotateZ(720.1deg);
 }
 .st-dice[data-value="4"] {
-  transform: rotateX(-810deg) rotateZ(-1080deg);
+  transform: rotateX(-810deg) rotateZ(-1080.1deg);
 }
 .st-dice[data-value="5"] {
-  transform: rotateX(450deg) rotateZ(-720deg);
+  transform: rotateX(450deg) rotateZ(-720.1deg);
 }
 .st-dice[data-value="6"] {
-  transform: rotateY(-449.999999999deg) rotateZ(-1440deg);
+  transform: rotateY(-449.999999999deg) rotateZ(-1440.1deg);
 }
 .st-dice.bga-cards_selectable-card[data-value="1"] .side[data-side="1"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selectable-card[data-value="2"] .side[data-side="2"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selectable-card[data-value="3"] .side[data-side="3"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selectable-card[data-value="4"] .side[data-side="4"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selectable-card[data-value="5"] .side[data-side="5"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selectable-card[data-value="6"] .side[data-side="6"] {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="1"] .side[data-side="1"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="2"] .side[data-side="2"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="3"] .side[data-side="3"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="4"] .side[data-side="4"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="5"] .side[data-side="5"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice.bga-cards_selected-card[data-value="6"] .side[data-side="6"] {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 .st-dice[data-type=pilot] [data-side="1"] {
@@ -1671,7 +2093,7 @@ body > .card {
 
 .st-altitude {
   background-image: url("img/skyteam-alltitude-tracks.png");
-  background-size: 200% auto;
+  background-size: 600% auto;
   width: 173px;
   height: 720px;
   filter: drop-shadow(1px 1px 1px black);
@@ -1681,155 +2103,355 @@ body > .card {
   background-position: 0 0;
 }
 .st-altitude[data-type="2"] {
+  background-position: 20% 0;
+}
+.st-altitude[data-type="3"] {
+  background-position: 40% 0;
+}
+.st-altitude[data-type="4"] {
+  background-position: 60% 0;
+}
+.st-altitude[data-type="5"] {
+  background-position: 80% 0;
+}
+.st-altitude[data-type="6"] {
   background-position: 100% 0;
 }
 
 .st-approach {
-  background-image: url("img/skyteam-approach-tracks.png");
-  background-size: 2100% auto;
   width: 173px;
   filter: drop-shadow(1px 1px 1px black);
   -webkit-filter: drop-shadow(1px 1px 1px black);
 }
 .st-approach[data-type="1"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 720px;
-  background-position: 0 0;
+  background-position: 0% 0;
 }
 .st-approach[data-type="2"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 5% 0;
 }
 .st-approach[data-type="3"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 10% 0;
 }
 .st-approach[data-type="4"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 528px;
   background-position: 15% 0;
 }
 .st-approach[data-type="5"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 20% 0;
 }
 .st-approach[data-type="6"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 528px;
   background-position: 25% 0;
 }
 .st-approach[data-type="7"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 30% 0;
 }
 .st-approach[data-type="8"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 720px;
   background-position: 35% 0;
 }
 .st-approach[data-type="9"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 720px;
   background-position: 40% 0;
 }
 .st-approach[data-type="10"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 45% 0;
 }
 .st-approach[data-type="11"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 50% 0;
 }
 .st-approach[data-type="12"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 55% 0;
 }
 .st-approach[data-type="13"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 60% 0;
 }
 .st-approach[data-type="14"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 720px;
   background-position: 65% 0;
 }
 .st-approach[data-type="15"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 720px;
   background-position: 70% 0;
 }
 .st-approach[data-type="16"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 75% 0;
 }
 .st-approach[data-type="17"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 818px;
   background-position: 80% 0;
 }
 .st-approach[data-type="18"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 625px;
   background-position: 85% 0;
 }
 .st-approach[data-type="19"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 625px;
   background-position: 90% 0;
 }
 .st-approach[data-type="20"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 625px;
   background-position: 95% 0;
 }
 .st-approach[data-type="21"] {
+  background-image: url("img/skyteam-approach-tracks-1.png");
+  background-size: 2100% auto;
   height: 625px;
   background-position: 100% 0;
 }
 .st-approach[data-type="22"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 0 100%;
+  background-position: 0% 0;
 }
 .st-approach[data-type="23"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 5% 100%;
+  background-position: 5.263157895% 0;
 }
 .st-approach[data-type="24"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 720px;
-  background-position: 10% 100%;
+  background-position: 10.52631579% 0;
 }
 .st-approach[data-type="25"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 720px;
-  background-position: 15% 100%;
+  background-position: 15.789473685% 0;
 }
 .st-approach[data-type="26"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 20% 100%;
+  background-position: 21.05263158% 0;
 }
 .st-approach[data-type="27"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 25% 100%;
+  background-position: 26.315789475% 0;
 }
 .st-approach[data-type="28"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 30% 100%;
+  background-position: 31.57894737% 0;
 }
 .st-approach[data-type="29"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 35% 100%;
+  background-position: 36.842105265% 0;
 }
 .st-approach[data-type="30"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 40% 100%;
+  background-position: 42.10526316% 0;
 }
 .st-approach[data-type="31"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 45% 100%;
+  background-position: 47.368421055% 0;
 }
 .st-approach[data-type="32"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 50% 100%;
+  background-position: 52.63157895% 0;
 }
 .st-approach[data-type="33"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 625px;
-  background-position: 55% 100%;
+  background-position: 57.894736845% 0;
 }
 .st-approach[data-type="34"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 60% 100%;
+  background-position: 63.15789474% 0;
 }
 .st-approach[data-type="35"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
   height: 818px;
-  background-position: 65% 100%;
+  background-position: 68.421052635% 0;
+}
+.st-approach[data-type="50"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 818px;
+  background-position: 73.68421053% 0;
+}
+.st-approach[data-type="51"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 818px;
+  background-position: 78.947368425% 0;
+}
+.st-approach[data-type="52"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 720px;
+  background-position: 84.21052632% 0;
+}
+.st-approach[data-type="53"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 720px;
+  background-position: 89.473684215% 0;
+}
+.st-approach[data-type="54"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 818px;
+  background-position: 94.73684211% 0;
+}
+.st-approach[data-type="55"] {
+  background-image: url("img/skyteam-approach-tracks-2.png");
+  background-size: 2000% auto;
+  height: 818px;
+  background-position: 100.000000005% 0;
+}
+.st-approach[data-type="56"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 818px;
+  background-position: 0% 0;
+}
+.st-approach[data-type="57"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 818px;
+  background-position: 7.692307692% 0;
+}
+.st-approach[data-type="58"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 625px;
+  background-position: 15.384615384% 0;
+}
+.st-approach[data-type="59"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 625px;
+  background-position: 23.076923076% 0;
+}
+.st-approach[data-type="60"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 720px;
+  background-position: 30.769230768% 0;
+}
+.st-approach[data-type="61"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 720px;
+  background-position: 38.46153846% 0;
+}
+.st-approach[data-type="62"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 528px;
+  background-position: 46.153846152% 0;
+}
+.st-approach[data-type="63"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 528px;
+  background-position: 53.846153844% 0;
+}
+.st-approach[data-type="64"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 818px;
+  background-position: 61.538461536% 0;
+}
+.st-approach[data-type="65"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 818px;
+  background-position: 69.230769228% 0;
+}
+.st-approach[data-type="66"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 528px;
+  background-position: 76.92307692% 0;
+}
+.st-approach[data-type="67"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 528px;
+  background-position: 84.615384612% 0;
+}
+.st-approach[data-type="68"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 720px;
+  background-position: 92.307692304% 0;
+}
+.st-approach[data-type="69"] {
+  background-image: url("img/skyteam-approach-tracks-3.png");
+  background-size: 1400% auto;
+  height: 720px;
+  background-position: 99.999999996% 0;
 }
 
 @media screen and (max-device-width: 480px) {
@@ -1848,18 +2470,35 @@ body > .card {
 }
 
 .bga-cards_selectable-card .card-side {
-  outline: 6px rgba(80, 200, 255, 0.75) dashed;
+  outline: 6px rgb(80, 200, 255) dashed;
   cursor: pointer;
 }
 
 .bga-cards_selected-card .card-side {
-  outline: 6px rgba(124, 252, 0, 0.75) solid;
+  outline: 6px rgb(124, 252, 0) solid;
   cursor: pointer;
 }
 
-.skyteam-background-blue {
+.st-background-blue {
   background-image: unset;
   background-color: #03afee;
+}
+
+.st-background-dark {
+  background-image: unset;
+  background-color: #273583;
+}
+
+.st-background-clouds {
+  background-image: url("img/skyteam-bg.jpg");
+}
+
+.st-background-turbulence {
+  background-image: url("img/skyteam-bg-turbulence.jpg");
+}
+
+.st-background-sunset {
+  background-image: url("img/skyteam-bg-sunset.jpg");
 }
 
 html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
@@ -1891,6 +2530,10 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 #st-player-setup #st-player-setup-role-cards {
   display: flex;
   gap: 18px;
+}
+
+.communication-banner-hidden #st-communication-wrapper {
+  display: none;
 }
 
 #st-communication-wrapper {
@@ -2088,11 +2731,141 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
 }
 
 #popin_stWelcomeDialogId {
-  background: lightgrey;
+  color: white;
+  background-size: cover;
+  background-image: url("img/skyteam-blq.png");
 }
 #popin_stWelcomeDialogId h1 {
   text-align: center;
-  text-decoration: underline;
+}
+#popin_stWelcomeDialogId #popin_stWelcomeDialogId_contents {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+#popin_stWelcomeDialogId #popin_stWelcomeDialogId_contents .st-example-image {
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+#st-system-buttons {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px 10px 5px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 3px;
+  position: relative;
+  width: 100%;
+}
+#st-system-buttons #jj-preferences-panel {
+  background: linear-gradient(180deg, #f8f8f8, #e7e9e8);
+}
+
+#st-flight-log-button {
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #f8f8f8, #e7e9e8);
+  border-radius: 5px;
+}
+
+#popin_st-flight-log-dialog {
+  background: #5D7378;
+}
+#popin_st-flight-log-dialog .standard_popin_title {
+  color: white;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents {
+  background: #B2E3F1;
+  padding: 10px;
+  border-radius: 5px;
+  max-height: 800px;
+  overflow-y: scroll;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row {
+  font-size: 18px;
+  display: flex;
+  gap: 8px;
+  margin: 3px 0;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row.st-flight-log-header {
+  font-weight: bold;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-category {
+  height: 20px;
+  width: 75px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 11px;
+  padding-top: 10px;
+  color: white;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-category[data-type=green] {
+  background-color: #8CC04E;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-category[data-type=yellow] {
+  background-color: #F7B74F;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-category[data-type=red] {
+  background-color: #E43F2E;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-category[data-type=black] {
+  background-color: #3B3F3E;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 225px;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-code {
+  display: flex;
+  width: 107.7876106195px;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-log-code .st-flight-log-code-letter {
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 26.9469026549px;
+  height: 35px;
+  background-size: cover;
+  background-image: url("img/skyteam-flipper.png");
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-status {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-status[data-type=unplayed] {
+  background-color: #fff;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-status[data-type=success] {
+  background-color: #8CC04E;
+}
+#popin_st-flight-log-dialog #popin_st-flight-log-dialog_contents .st-flight-log-row .st-flight-status[data-type=failure] {
+  background-color: #F7B74F;
+}
+
+#bga-zoom-controls {
+  top: 10px !important;
+  right: 5px !important;
+}
+#bga-zoom-controls button {
+  width: 50px !important;
+  height: 50px !important;
 }
 
 /*# sourceMappingURL=skyteam.css.map */

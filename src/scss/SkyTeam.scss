@@ -14,6 +14,7 @@
 @import '../../node_modules/bga-cards/bga-cards';
 @import '../../node_modules/bga-help/bga-help';
 
+@import 'Base';
 @import 'Variables';
 @import 'Boards';
 @import 'Tokens';
@@ -47,9 +48,25 @@
   }
 }
 
-.skyteam-background-blue {
+.st-background-blue {
   background-image: unset;
   background-color: #03afee;
+}
+
+.st-background-dark {
+  background-image: unset;
+  background-color: #273583;
+}
+
+.st-background-clouds {
+  background-image: url("img/skyteam-bg.jpg");
+}
+
+.st-background-turbulence {
+  background-image: url("img/skyteam-bg-turbulence.jpg");
+}
+.st-background-sunset {
+  background-image: url("img/skyteam-bg-sunset.jpg");
 }
 
 html, .mode_3d #game_play_area_background {
@@ -83,6 +100,12 @@ html, .mode_3d #game_play_area_background {
   #st-player-setup-role-cards {
     display: flex;
     gap: 18px;
+  }
+}
+
+.communication-banner-hidden {
+  #st-communication-wrapper {
+    display: none;
   }
 }
 
@@ -298,11 +321,134 @@ html, .mode_3d #game_play_area_background {
 }
 
 #popin_stWelcomeDialogId {
-  background: lightgrey;
+  color: white;
+  background-size: cover;
+  background-image: url('img/skyteam-blq.png');
   h1 {
     text-align: center;
-    text-decoration: underline;
+  }
+
+  #popin_stWelcomeDialogId_contents {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    .st-example-image {
+      border: 2px solid black;
+      border-radius: 5px;
+    }
   }
 }
+
+#st-system-buttons {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px 10px 5px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 3px;
+  position: relative;
+  width: 100%;
+  #jj-preferences-panel {
+    background: linear-gradient(180deg,#f8f8f8,#e7e9e8);
+  }
+}
+
+#st-flight-log-button {
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #f8f8f8, #e7e9e8);
+  border-radius: 5px;
+}
+
+#popin_st-flight-log-dialog {
+  background: #5D7378;
+  .standard_popin_title {
+    color: white;
+  }
+
+  #popin_st-flight-log-dialog_contents {
+    background: #B2E3F1;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 800px;
+    overflow-y: scroll;
+    .st-flight-log-row {
+      font-size: 18px;
+      display: flex;
+      gap: 8px;
+      margin: 3px 0;
+
+      &.st-flight-log-header {
+        font-weight: bold;
+      }
+      .st-flight-log-category {
+        height: 20px;
+        width: 75px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        line-height: 11px;
+        padding-top: 10px;
+        color: white;
+        &[data-type="green"] {background-color: #8CC04E}
+        &[data-type="yellow"] {background-color: #F7B74F}
+        &[data-type="red"] {background-color: #E43F2E}
+        &[data-type="black"] {background-color: #3B3F3E}
+      }
+      .st-flight-log-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 225px;
+      }
+      .st-flight-log-code {
+        display: flex;
+        width: calc(26.946902654867px * 4);
+        .st-flight-log-code-letter {
+          color: white;
+          font-size: 24px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 26.946902654867px;
+          height: 35px;
+          background-size: cover;
+          background-image: url("img/skyteam-flipper.png");
+        }
+      }
+
+      .st-flight-status {
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &[data-type="unplayed"] {background-color: #fff}
+        &[data-type="success"] {background-color: #8CC04E}
+        &[data-type="failure"] {background-color: #F7B74F}
+      }
+    }
+  }
+}
+
+#bga-zoom-controls {
+  top: 10px !important;
+  right: 5px !important;
+  button {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+
+
 
 

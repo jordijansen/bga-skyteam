@@ -9,41 +9,58 @@
 }
 
 #st-main-board-left {
-  position: absolute;
-  left: 0;
   height: 850px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: end;
-  #st-kerosene-board {
-    background-image: url("img/skyteam-kerosene-board.png");
-    width: 118px;
-    height: 637px;
-    position: relative;
-    #st-kerosene-marker {
-      position: absolute;
-      bottom: 27px;
-      left: 51px;
-      transition-property: bottom;
-      transition-duration: 1s;
-      transition-timing-function: ease-in-out;
-      @for $row from 0 through 20 {
-        &[data-value="#{$row}"] { bottom: 27px + (($row + 1) * 21.71428px); }
+  #st-main-board-left-boards {
+    display: flex;
+    #st-alarms-board {
+      background-image: url("img/skyteam-alarms-board.png");
+      width: 155px;
+      height: 567px;
+      position: relative;
+      #st-alarm-tokens-stock {
+        margin-top: 39px;
+        align-items: center;
+        .slot {
+          width: 137px;
+          height: 72px;
+        }
       }
     }
-    #st-kerosene-leak-marker {
-      position: absolute;
-      top: 25px;
-      left: 43px;
+
+    #st-kerosene-board {
+      background-image: url("img/skyteam-kerosene-board.png");
+      width: 118px;
+      height: 637px;
+      position: relative;
+      #st-kerosene-marker {
+        position: absolute;
+        bottom: 27px;
+        left: 51px;
+        transition-property: bottom;
+        transition-duration: 1s;
+        transition-timing-function: ease-in-out;
+        @for $row from 0 through 20 {
+          &[data-value="#{$row}"] { bottom: 27px + (($row + 1) * 21.71428px); }
+        }
+      }
+      #st-kerosene-leak-marker {
+        position: absolute;
+        top: 25px;
+        left: 43px;
+      }
     }
   }
+
   #st-token-reserve {
     padding-bottom: 10px;
     padding-right: 10px;
-    position: absolute;
     bottom: 262px;
     width: 45px;
+    position: relative;
     #st-token-reserve-plane {
       top: 70px;
     }
@@ -67,8 +84,6 @@
 
 #st-main-board-right {
   height: 850px;
-  position: absolute;
-  left: 118px + 607px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -81,6 +96,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     &.winds-headon {
       background-image: url("img/skyteam-winds-headon-board.png");
     }
@@ -114,8 +130,7 @@
           background-image: url("img/skyteam-main-board.png");
           width: 607px;
           height: 850px;
-          position: absolute;
-          left: 118px;
+          position: relative;
 
           .st-plane-axis-indicator {
             background-image: url('img/skyteam-axis-indicator.png');
@@ -169,6 +184,52 @@
             &[data-value="10"] { left: 438px; top: 312px; transform: rotate(-59deg); }
             &[data-value="11"] { left: 457px; top: 268px; transform: rotate(-76deg); }
             &[data-value="12"] { left: 464px; top: 220px; transform: rotate(-90deg); }
+          }
+
+          #st-plane-speed-green-marker {
+            position: absolute;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            overflow: hidden;
+            &[data-mode="engines"] {
+              &[data-value="2"], &[data-value="1"], &[data-value="0"], &[data-value="-1"], &[data-value="-2"], &[data-value="-3"], &[data-value="-4"] { left: 123px; top: 249px; transform: rotate(83deg); }
+              &[data-value="3"] { left: 136px; top: 293px; transform: rotate(65deg); }
+              &[data-value="4"] { left: 163px; top: 335px; transform: rotate(48deg); }
+              &[data-value="5"] { left: 202px; top: 368px; transform: rotate(34deg); }
+              &[data-value="6"] { left: 246px; top: 388px; transform: rotate(18deg); }
+              &[data-value="7"] { left: 294px; top: 394px; transform: rotate(0deg); }
+              &[data-value="8"] { left: 342px; top: 387px; transform: rotate(-18deg); }
+              &[data-value="9"] { left: 385px; top: 367px; transform: rotate(-32deg); }
+              &[data-value="10"] { left: 423px; top: 333px; transform: rotate(-48deg); }
+              &[data-value="11"] { left: 449px; top: 292px; transform: rotate(-64deg); }
+              &[data-value="12"] { left: 462px; top: 245px; transform: rotate(-81deg); }
+              &[data-value="13"], &[data-value="14"], &[data-value="15"], &[data-value="16"], &[data-value="17"], &[data-value="18"], &[data-value="19"], &[data-value="20"] { left: 462px; top: 245px; transform: rotate(-81deg); }
+            }
+
+            &.ice-brakes {
+              &[data-mode="brakes"] {
+                &[data-value="1"], &[data-value="0"], &[data-value="-1"], &[data-value="-2"], &[data-value="-3"], &[data-value="-4"] { left: 94px; top: 598px; transform: none; }
+                &[data-value="2"] { left: 151px; top: 598px; transform: none;}
+                &[data-value="3"] { left: 245px; top: 598px; transform: none;}
+                &[data-value="4"] { left: 342px; top: 598px; transform: none;}
+                &[data-value="5"] { left: 438px; top: 598px; transform: none;}
+                &[data-value="7"], &[data-value="8"], &[data-value="9"], &[data-value="10"], &[data-value="11"], &[data-value="12"], &[data-value="13"], &[data-value="14"], &[data-value="15"], &[data-value="16"], &[data-value="17"], &[data-value="18"], &[data-value="19"], &[data-value="20"] { left: 487px; top: 598px; transform: none; }
+              }
+            }
+
+            &[data-mode="brakes"] {
+              &[data-value="2"], &[data-value="1"], &[data-value="0"], &[data-value="-1"], &[data-value="-2"], &[data-value="-3"], &[data-value="-4"] { left: 199px; top: 532px; transform: rotate(34deg); }
+              &[data-value="3"] { left: 253px; top: 555px; transform: rotate(17deg); }
+              &[data-value="4"] { left: 290px; top: 559px; transform: rotate(0deg); }
+              &[data-value="5"] { left: 346px; top: 550px; transform: rotate(-22deg); }
+              &[data-value="6"] { left: 385px; top: 532px; transform: rotate(-35deg); }
+              &[data-value="7"], &[data-value="8"], &[data-value="9"], &[data-value="10"], &[data-value="11"], &[data-value="12"], &[data-value="13"], &[data-value="14"], &[data-value="15"], &[data-value="16"], &[data-value="17"], &[data-value="18"], &[data-value="19"], &[data-value="20"] { left: 425px; top: 498px; transform: rotate(-43deg); }
+            }
           }
 
           #st-plane-brake-marker {
@@ -238,6 +299,12 @@
             #ice-brakes-2-2 {left: 226px; bottom: 135px;}
             #ice-brakes-2-3 {left: 321px; bottom: 135px;}
             #ice-brakes-2-4 {left: 417px; bottom: 135px;}
+            #alarms-1 {left: -194px; top: 44px;  &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
+            #alarms-2 {left: -194px; top: 126px; &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
+            #alarms-3 {left: -194px; top: 209px; &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
+            #alarms-4 {left: -194px; top: 292px; &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
+            #alarms-5 {left: -194px; top: 374px; &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
+            #alarms-6 {left: -194px; top: 456px; &[data-kerosene-board-active="false"] {left: -76px} .st-action-space-help {left: -78px}}
           }
           #st-plane-switches {
             #plane-switch-landing-gear-1 { top: 386px; left: 18px; }
@@ -253,6 +320,10 @@
           }
           #st-engine-loss-marker-1 {position: absolute; top: 433px; left: 195px;}
           #st-engine-loss-marker-2 {position: absolute; top: 433px; right: 193px;}
+
+          #st-stuck-landing-gear-marker-1 {position: absolute; top: 310px; left: 35px;}
+          #st-stuck-landing-gear-marker-2 {position: absolute; top: 445px; left: 35px;}
+          #st-stuck-landing-gear-marker-3 {position: absolute; top: 580px; left: 35px;}
 
           #st-traffic-dice-stock {
             width: 202px;
@@ -345,8 +416,22 @@
           align-items: center;
           display: flex;
           flex-wrap: wrap;
+          &:hover {
+            opacity: 0.6;
+          }
+
           &:nth-child(1) {
             margin-top: 36px;
+          }
+
+          &:has(> :last-child:nth-child(4)),&:has(> :last-child:nth-child(5)),&:has(> :last-child:nth-child(6)),&:has(> :last-child:nth-child(7)) {
+            flex-wrap: nowrap;
+            .st-token {
+              &[data-type="plane"] {
+              width: 25px;
+              height: 25px;
+              }
+            }
           }
         }
       }
@@ -375,6 +460,12 @@
   }
   &.bottom {
     bottom: -25px;
+  }
+}
+
+.pulsing-mandatory-indicators-disabled {
+  .st-action-space-mandatory-warning {
+    animation: none !important;
   }
 }
 
@@ -414,6 +505,18 @@
     }
     &.right {
       right: -25px;
+    }
+  }
+
+  &.blocked-by-alarm {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-image: url("img/skyteam-tokens.png");
+      background-size: 500% auto;
+      background-position: 100% 0;
     }
   }
 }

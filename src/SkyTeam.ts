@@ -33,8 +33,9 @@ class SkyTeam implements SkyTeamGame {
     public playerRoleManager: PlayerRoleManager;
     public diceManager: DiceManager;
     public tokenManager: TokenManager;
+    public alarmTokenManager: AlarmTokenManager;
     public communicationInfoManager: CommunicationInfoManager;
-    private actionSpaceManager: ActionSpaceManager;
+    actionSpaceManager: ActionSpaceManager;
     public helpDialogManager: HelpDialogManager;
     public specialAbilityCardManager: SpecialAbilityCardManager;
 
@@ -49,6 +50,7 @@ class SkyTeam implements SkyTeamGame {
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
         this.tokenManager = new TokenManager(this);
+        this.alarmTokenManager = new AlarmTokenManager(this);
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
@@ -78,6 +80,10 @@ class SkyTeam implements SkyTeamGame {
         log( "Starting game setup" );
         log('gamedatas', data);
 
+        (this as any).dontPreloadImage('skyteam-approach-tracks-1.png');
+        (this as any).dontPreloadImage('skyteam-approach-tracks-2.png');
+        (this as any).dontPreloadImage('skyteam-approach-tracks-3.png');
+
         const maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-communication-wrapper"><div id="st-communication-info"></div></div>', $('pagesection_gameview'), 'last')
         dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last')
@@ -94,11 +100,11 @@ class SkyTeam implements SkyTeamGame {
 
         // Setup Managers
         this.playerRoleManager.setUp(data);
+        this.actionSpaceManager.setUp(data);
         this.planeManager.setUp(data);
         this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
         this.communicationInfoManager.setUp(data);
-        this.actionSpaceManager.setUp(data);
 
         // Setup UI
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
@@ -124,6 +130,11 @@ class SkyTeam implements SkyTeamGame {
             this.helpDialogManager.showModuleHelp(null, 'engine-loss');
         }
 
+        if (data.scenario.modules.includes('stuck-landing-gear') && tableId && localStorage.getItem(`st-stuck-landing-gear-welcome-dialog-${tableId}`) !== 'shown') {
+            localStorage.setItem(`st-stuck-landing-gear-welcome-dialog-${tableId}`, 'shown');
+            this.helpDialogManager.showModuleHelp(null, 'stuck-landing-gear');
+        }
+
         this.setupNotifications();
         log( "Ending game setup" );
     }
@@ -136,6 +147,8 @@ class SkyTeam implements SkyTeamGame {
     //
     public onEnteringState(stateName: string, args: any) {
         log('Entering state: ' + stateName, args.args);
+
+        this.planeManager.updateSpeedMarker();
 
         switch (stateName) {
             case 'playerSetup':
@@ -228,6 +241,7 @@ class SkyTeam implements SkyTeamGame {
     private onDicePlacementActionSelected(args: DicePlacementSelectArgs, die: Dice, space: string) {
         document.querySelector('.st-dice-placeholder')?.remove();
         this.planeManager.unhighlightPlane();
+        this.planeManager.updateSpeedMarker();
 
         if (space) {
             const dieElement = this.diceManager.getCardElement(die);
@@ -250,6 +264,8 @@ class SkyTeam implements SkyTeamGame {
 
                     this.planeManager.hightlightAxis(this.planeManager.currentAxis + axisChange);
                 }
+            } else if (space.startsWith('engine')) {
+                this.planeManager.updateSpeedMarker(die.value)
             }
             dojo.removeClass('confirmPlacement', 'disabled');
         } else {
@@ -311,11 +327,32 @@ class SkyTeam implements SkyTeamGame {
                     (this as any).addActionButton('confirmReadyStrategy', _("I'm Ready"), () => this.confirmReadyStrategy());
                     break;
                 case 'dicePlacementSelect':
+                    const dicePlacementSelectArgs = (args as DicePlacementSelectArgs);
                     (this as any).addActionButton('confirmPlacement', _("Confirm"), () => this.confirmPlacement());
                     dojo.addClass('confirmPlacement', 'disabled');
 
                     if ((args as DicePlacementSelectArgs).canActivateAdaptation) {
                         (this as any).addActionButton('useAdaptation', _("Use Special Ability: Adaptation"), () => this.requestAdaptation(), null, null, 'gray');
+                    } else {
+                        const dice = this.diceManager.playerDiceStock.getCards();
+                        const diceThatCanBePlaced = [];
+                        dice.forEach(die => {
+                            const minDieValue = Math.max(die.value - dicePlacementSelectArgs.nrOfCoffeeAvailable, die.type === 'traffic' ? 2 : 1);
+                            const maxDieValue = Math.min(die.value + dicePlacementSelectArgs.nrOfCoffeeAvailable,  die.type === 'traffic' ? 5 : 6);
+                            const possibleDieValues = Array.from({ length: maxDieValue - minDieValue + 1 }, (_, i) => minDieValue + i);
+                            possibleDieValues.forEach(dieValue => {
+                                if (this.actionSpaceManager.getValidPlacements(dicePlacementSelectArgs.availableActionSpaces, dieValue).length > 0) {
+                                    diceThatCanBePlaced.push(die);
+                                }
+                            })
+                        });
+
+                        if (diceThatCanBePlaced.length === 0) {
+                            const diceThatCanNotBePlaced = dice.filter(die => !diceThatCanBePlaced.includes(die));
+                            diceThatCanNotBePlaced.forEach(die => {
+                                (this as any).addActionButton('skipPlacement', dojo.string.substitute(_("Skip die with value ${diceIcon} (no placement possible)"), {diceIcon: die.value}), () => this.skipPlacement(die.id));
+                            })
+                        }
                     }
                     break;
                 case 'rerollDice':
@@ -376,33 +413,59 @@ class SkyTeam implements SkyTeamGame {
         const diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         const diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
 
-        let confirmMessage = undefined;
-        if (actionSpaceId.startsWith('radio') && document.querySelectorAll('.st-approach-overlay-track-slot-highlighted').length === 0) {
-            confirmMessage = _('Your Radio reach is outside of the Approach Track. This action has no effect.');
-        } else if (actionSpaceId.startsWith('concentration') && this.reserveManager.reserveCoffeeStock.getCards().length === 0) {
-            confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
-        }
+        const isSafeMode = Preferences.getSettingValue('st-safe-mode') === 'enabled';
 
-        const runnable = () => {
+        const placement = {actionSpaceId, diceId, diceValue, force: true}
+        if (isSafeMode) {
+            placement.force = false;
+        }
+        const data = { placement: JSON.stringify(placement)}
+
+        this.takeAction('confirmPlacement', data, () => {
+            console.log('oncomplete');
             this.actionSpaceManager.selectedActionSpaceId = null;
             this.actionSpaceManager.setActionSpacesSelectable({}, null);
             this.diceManager.setSelectionMode('none', null);
             this.spendCoffee.destroy();
+        }, (error: string) => {
+            if (error.startsWith('!!!')) {
+                console.log(error);
+                let confirmMessage = undefined;
+                if (error === '!!!radioNoPlaneToken') {
+                    confirmMessage = _('The targeted Radio Space contains no Plane token.');
+                } else if (error === '!!!concentrationNoCoffee') {
+                    confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
+                } else if (error === '!!!speedHigherThanBrakes') {
+                    confirmMessage = _('Your Speed is higher than your Brakes. This results in a Failure.');
+                } else {
+                    const failure = error.replace('!!!','');
+                    confirmMessage = `<p>${_('This action results in the following critical failure:')}</p>`
+                    confirmMessage += `<b>${this.getFailureReasonTitle(failure)}</b><br/>`
+                    confirmMessage += this.getFailureReasonText(failure);
+                }
 
-            this.takeAction('confirmPlacement', {
-                placement: JSON.stringify({actionSpaceId, diceId, diceValue})
-            })
-        };
-
-        if (confirmMessage) {
-            this.wrapInConfirm(runnable, confirmMessage);
-        } else {
-            runnable();
-        }
+                if (confirmMessage) {
+                    this.wrapInConfirm(() => {
+                        placement.force = true;
+                        const data = { placement: JSON.stringify(placement)}
+                        this.takeAction('confirmPlacement', data, () => {
+                            this.actionSpaceManager.selectedActionSpaceId = null;
+                            this.actionSpaceManager.setActionSpacesSelectable({}, null);
+                            this.diceManager.setSelectionMode('none', null);
+                            this.spendCoffee.destroy();
+                        });
+                    }, confirmMessage)
+                }
+            }
+        });
     }
 
     private skipInternPlacement() {
         this.takeAction('skipInternPlacement', {});
+    }
+
+    private skipPlacement(dieId) {
+        this.takeAction('skipPlacement', {dieId});
     }
 
     private confirmPlayerSetup(args: PlayerSetupArgs) {
@@ -511,6 +574,7 @@ class SkyTeam implements SkyTeamGame {
     ///////////////////////////////////////////////////
 
     private setFinalRound() {
+        this.planeManager.setSpeedMode('brakes');
         dojo.place(`<p>${_('This is the final round!')}</p>`, $('st-final-round-notice'))
     }
 
@@ -576,17 +640,15 @@ class SkyTeam implements SkyTeamGame {
         return Object.values(this.gamedatas.players).find(player => Number(player.id) == playerId);
     }
 
-    public takeAction(action: string, data?: any, onComplete: () => void = () => {}) {
-        if ((this as any).checkLock()) {
-            data = data || {};
-            data.lock = true;
-            (this as any).ajaxcall(`/skyteam/skyteam/${action}.html`, data, this, onComplete);
-        }
+    public takeAction(action: string, data?: any, onComplete: () => void = () => {}, onError: (error) => void = (error) => {}) {
+        // TODO ON NEXT PROJECTS USE checkAction: true
+        (this as any).bgaPerformAction(action, data, {checkAction: false, lock: true})
+            .then(() => onComplete())
+            .catch(onError)
     }
     public takeNoLockAction(action: string, data?: any, onComplete: () => void = () => {}) {
         this.disableActionButtons();
-        data = data || {};
-        (this as any).ajaxcall(`/skyteam/skyteam/${action}.html`, data, this, onComplete);
+        (this as any).bgaPerformAction(action, data, {checkAction: false, lock: false}).then(() => onComplete())
     }
 
     public setTooltip(id: string, html: string) {
@@ -604,12 +666,12 @@ class SkyTeam implements SkyTeamGame {
         return true; // For now always ask for confirmation, might make this a preference later on.
     }
 
-    private wrapInConfirm(runnable: () => void, message: string = _("This action can not be undone. Are you sure?")) {
+    private wrapInConfirm(runnable: () => void, message: string = _("This action can not be undone. Are you sure?"), onCancel: () => void = () => {}) {
         if ((this as any).checkLock()) {
             if (this.isAskForConfirmation()) {
                 (this as any).confirmationDialog(message, () => {
                     runnable();
-                });
+                }, onCancel);
             } else {
                 runnable();
             }
@@ -701,7 +763,11 @@ class SkyTeam implements SkyTeamGame {
             ['internTrained', undefined],
             ['realTimeTimerStarted', 1],
             ['realTimeTimerCleared', 1],
-            ['internDieSkipped', 1]
+            ['dieSkipped', 1],
+            ['flightLogUpdated', 1],
+            ['alarmActivated', 1000],
+            ['alarmDeactivated', 1000],
+            ['dicePutAside', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -718,6 +784,20 @@ class SkyTeam implements SkyTeamGame {
             // make all notif as synchronous
             (this as any).notifqueue.setSynchronous(notif[0], notif[1]);
         });
+    }
+
+    private notif_alarmActivated(args: NotifAlarmActivated) {
+        this.actionSpaceManager.activeAlarms.push(args.alarmToken);
+        this.actionSpaceManager.updateActiveAlarms();
+
+        this.alarmTokenManager.flipCard(args.alarmToken);
+    }
+
+    private notif_alarmDeactivated(args: NotifAlarmActivated) {
+        this.actionSpaceManager.activeAlarms = this.actionSpaceManager.activeAlarms.filter(alarm => alarm.id !== args.alarmToken.id);
+        this.actionSpaceManager.updateActiveAlarms();
+
+        this.planeManager.alarmTokenStock.removeCard(args.alarmToken);
     }
 
     private notif_newPhaseStarted(args: NotifNewPhaseStarted) {
@@ -745,19 +825,29 @@ class SkyTeam implements SkyTeamGame {
         return Promise.resolve();
     }
 
-    private notif_diceRolled(args: NotifDiceRolled) {
+    private async notif_diceRolled(args: NotifDiceRolled) {
         this.diceManager.toggleShowPlayerDice(true);
-        const promises = args.dice.map(die => {
+        for (const die of args.dice) {
             let cardStock = this.diceManager.getCardStock(die);
             if (!cardStock) {
                 this.diceManager.playerDiceStock.addCard(die);
                 cardStock = this.diceManager.getCardStock(die);
             }
+
             const originalDie = cardStock.getCards().find(originalDie => originalDie.id === die.id);
-            this.diceManager.updateDieValue({...originalDie, side: 7 - die.side})
-            return this.delay(500).then(() => this.diceManager.updateDieValue(die));
-        });
-        return Promise.all(promises);
+            this.diceManager.updateDieValue(die, true)
+
+            window.requestAnimationFrame(async () => {
+                await this.delay(500).then(() => this.diceManager.updateDieValueVisual({...originalDie, side: 7 - die.side}))
+                console.log('after1');
+
+                window.requestAnimationFrame(async () => {
+                    await this.delay(500).then(() => this.diceManager.updateDieValueVisual(die));
+                    console.log('after2');
+                })
+            })
+        }
+        console.log('end');
     }
 
     notif_playerUsedAdaptation(args: NotifPlayerUsedAdaptation) {
@@ -765,7 +855,7 @@ class SkyTeam implements SkyTeamGame {
     }
 
     private notif_diePlaced(args: NotifDiePlaced) {
-        return this.actionSpaceManager.moveDieToActionSpace(args.die);
+        return this.actionSpaceManager.moveDieToActionSpace(args.die).then(() => this.planeManager.updateSpeedMarker());
     }
 
     private notif_planeAxisChanged(args: NotifPlaneAxisChanged) {
@@ -830,12 +920,19 @@ class SkyTeam implements SkyTeamGame {
         }
     }
 
+    private notif_dicePutAside(args: NotifDicePutAside) {
+        this.actionSpaceManager.removeDice(args.dice);
+    }
+
     private notif_victoryConditionsUpdated(args: NotifVictoryConditionsUpdated) {
         this.victoryConditions.updateVictoryConditions(args.victoryConditions);
     }
 
     private notif_planeLanded(args: NotifPlaneLanded) {
-        return this.endGameInfo.setEndGameInfo(args.victoryConditions).then(() => Object.keys(this.gamedatas.players).forEach(playerId => this.setScore(Number(playerId), args.score)));
+        return this.endGameInfo.setEndGameInfo(args.victoryConditions)
+            .then(() => {
+                Object.keys(this.gamedatas.players).forEach(playerId => this.setScore(Number(playerId), args.score))
+            });
     }
 
     private notif_newRoundStarted(args: NotifNewRoundStarted) {
@@ -860,10 +957,11 @@ class SkyTeam implements SkyTeamGame {
 
     private notif_diceRemoved(args: NotifDiceRemoved) {
         this.actionSpaceManager.removeDice(args.dice);
+        this.planeManager.updateSpeedMarker()
     }
 
     private notif_windChanged(args: NotifWindChanged) {
-        return this.planeManager.updateWind(args.wind);
+        return this.planeManager.updateWind(args.wind, args.windModifier);
     }
 
     private notif_internTrained(args: NotifInternTrained) {
@@ -882,9 +980,14 @@ class SkyTeam implements SkyTeamGame {
         this.realTimeCounter.clear();
     }
 
-    private notif_internDieSkipped(args: NotifInternDieSkipped) {
-        this.diceManager.playerDiceStock.removeCard(args.internDie);
-        this.diceManager.otherPlayerDiceStock.removeCard(args.internDie);
+    private notif_dieSkipped(args: NotifDieSkipped) {
+        this.diceManager.playerDiceStock.removeCard(args.die);
+        this.diceManager.otherPlayerDiceStock.removeCard(args.die);
+    }
+
+    private notif_flightLogUpdated(args: NotifFlightLogUpdated) {
+        FlightLog.teamFlightLog = args.team;
+        FlightLog.playerFlightLog = args.players;
     }
 
     public format_string_recursive(log: string, args: any) {
@@ -915,6 +1018,14 @@ class SkyTeam implements SkyTeamGame {
         return (this as any).inherited(arguments);
     }
 
+    /* @Override */
+    showMessage(msg, type) {
+        if (type == "error" && msg && msg.startsWith("!!!")) {
+            return; // suppress red banner and gamelog message
+        }
+        return (this as any).inherited(arguments);
+    }
+
     public updatePlayerOrdering() {
         (this as any).inherited(arguments);
         this.realTimeCounter = new RealTimeCounter(this, () => this.takeAction('realTimeOutOfTime'));
@@ -922,6 +1033,9 @@ class SkyTeam implements SkyTeamGame {
         dojo.place(`<div id="st-victory-conditions-panel" class="player-board st-victory-conditions" style="height: auto;"></div>`, `player_boards`, 'first');
         this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
         this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);
+        dojo.place(`<div class="player-board" style="height: auto;"><div id="st-system-buttons"></div></div>`, `player_boards`, 'last');
+        FlightLog.addButton(this, "st-system-buttons")
+        Preferences.addButton(this, "st-system-buttons")
     }
 
     public formatWithIcons(description) {

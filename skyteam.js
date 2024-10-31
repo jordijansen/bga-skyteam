@@ -2125,21 +2125,7 @@ function sortFunction() {
     };
 }
 var determineBoardWidth = function (game) {
-    // const BASE_BOARD = 607;
-    // const COFFEE_RESERVE = 55 * 2;
-    // const TRAFFIC_DICE = 110 * 2;
-    // const WIND_PANEL = 280.5 * 2;
-    //
-    // if (game.gamedatas.scenario.modules.includes('special-abilities') || game.gamedatas.scenario.modules.includes('wind')) {
-    //     console.log(BASE_BOARD + WIND_PANEL)
-    //     return BASE_BOARD + WIND_PANEL;
-    // }
-    //
-    // if (game.gamedatas.scenario.modules.includes('traffic')) {
-    //     return BASE_BOARD + TRAFFIC_DICE;
-    // }
-    // return BASE_BOARD + COFFEE_RESERVE;
-    return 1000;
+    return game.planeManager.calculatePlaneWidth(game.gamedatas);
 };
 var determineMaxZoomLevel = function (game) {
     var bodycoords = dojo.marginBox("zoom-overall");
@@ -2228,6 +2214,8 @@ var PlaneManager = /** @class */ (function () {
         this.currentApproach = 1;
         this.currentAltitude = 1;
         this.currentAxis = 1;
+        this.currentWindModifier = 0;
+        this.currentSpeedMode = 'engines';
     }
     PlaneManager.prototype.setUp = function (data) {
         var _this = this;
@@ -2238,10 +2226,14 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.KEROSENE_MARKER).dataset.value = data.plane.kerosene;
         $(PlaneManager.WINDS_PLANE).dataset.value = data.plane.wind;
         $(PlaneManager.PLANE_ALTITUDE_TRACK).dataset.type = data.altitude.type;
+        $(PlaneManager.PLANE_ALTITUDE_TRACK).style.left = this.calculateLeftOffsetForTrack(data, 332);
         $(PlaneManager.PLANE_APPROACH_TRACK).dataset.type = data.approach.type;
+        $(PlaneManager.PLANE_APPROACH_TRACK).style.left = this.calculateLeftOffsetForTrack(data, 103);
+        $('st-main-board-wrapper').style.width = this.calculatePlaneWidth(data) + 'px';
         this.currentApproach = data.plane.approach;
         this.currentAltitude = data.plane.altitude;
         this.currentAxis = data.plane.axis;
+        this.currentWindModifier = Number(data.plane.windModifier);
         Object.values(data.plane.switches).forEach(function (planeSwitch) {
             dojo.place("<div id=\"plane-switch-".concat(planeSwitch.id, "\" class=\"st-plane-switch-wrapper\" data-value=\"").concat(planeSwitch.value, "\"><div class=\"st-plane-switch token\"></div></div>"), $('st-plane-switches'));
         });
@@ -2272,16 +2264,23 @@ var PlaneManager = /** @class */ (function () {
             center: false
         });
         this.coffeeTokenStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'available'; }));
-        this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), {});
+        this.rerollTokenStock = new AllVisibleDeck(this.game.tokenManager, $('st-available-reroll'), { verticalShift: '-10px', horizontalShift: '0px' });
         this.rerollTokenStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'available'; }));
         this.specialAbilityCardStock = new LineStock(this.game.specialAbilityCardManager, $('st-main-board-special-abilities'), { direction: 'column' });
         this.specialAbilityCardStock.addCards(data.chosenSpecialAbilities);
         this.game.specialAbilityCardManager.updateRolesThatUsedCard(data.chosenSpecialAbilities.find(function (card) { return card.type === 2; }), data.rolesThatUsedAdaptation);
+        this.alarmTokenStock = new SlotStock(this.game.alarmTokenManager, $('st-alarm-tokens-stock'), {
+            slotsIds: [1, 2, 3, 4, 5, 6],
+            mapCardToSlot: function (card) { return card.typeArg; },
+            gap: '10.4px',
+            direction: 'column'
+        });
+        this.alarmTokenStock.addCards(data.alarmTokens);
         dojo.connect($('st-approach-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showApproachHelp(event); });
         dojo.connect($('st-altitude-help'), 'onclick', function (event) { return _this.game.helpDialogManager.showAltitudeHelp(event); });
         console.log(data.scenario.modules);
         if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak')) {
-            $('st-kerosene-board').style.visibility = 'hidden';
+            $('st-kerosene-board').style.display = 'none';
         }
         if (data.scenario.modules.includes('kerosene')) {
             $('st-kerosene-leak-marker').style.display = 'none';
@@ -2303,6 +2302,9 @@ var PlaneManager = /** @class */ (function () {
         if (!data.scenario.modules.includes('ice-brakes')) {
             $('st-ice-brakes-board').style.display = 'none';
         }
+        if (!data.scenario.modules.includes('alarms')) {
+            $('st-alarms-board').style.display = 'none';
+        }
         if (data.scenario.modules.includes('ice-brakes')) {
             $(PlaneManager.PLANE_BRAKE_MARKER).classList.add('ice-brakes');
         }
@@ -2314,6 +2316,55 @@ var PlaneManager = /** @class */ (function () {
             dojo.connect($("st-engine-loss-help-1"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'); });
             dojo.connect($("st-engine-loss-help-2"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'engine-loss'); });
         }
+        if (!data.scenario.modules.includes('stuck-landing-gear')) {
+            $('st-stuck-landing-gear-marker-1').style.display = 'none';
+            $('st-stuck-landing-gear-marker-2').style.display = 'none';
+            $('st-stuck-landing-gear-marker-3').style.display = 'none';
+        }
+        else {
+            dojo.connect($("st-stuck-landing-gear-help-1"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'); });
+            dojo.connect($("st-stuck-landing-gear-help-2"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'); });
+            dojo.connect($("st-stuck-landing-gear-help-3"), 'onclick', function (event) { return _this.game.helpDialogManager.showModuleHelp(event, 'stuck-landing-gear'); });
+        }
+        this.updateSpeedMarker();
+    };
+    PlaneManager.prototype.calculatePlaneWidth = function (data) {
+        var result = 607; // Main board
+        // LEFT SIDE
+        if (data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak')) {
+            result += 118;
+        }
+        if (data.scenario.modules.includes('alarms')) {
+            result += 155;
+        }
+        if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak') && !data.scenario.modules.includes('alarms')) {
+            result += 55;
+        }
+        // RIGHT SIDE
+        if (data.scenario.modules.includes('special-abilities')) {
+            result += 288;
+        }
+        else if (data.scenario.modules.includes('winds') || data.scenario.modules.includes('winds-headon')) {
+            result += 278;
+        }
+        else {
+            result += 0;
+        }
+        return result;
+    };
+    PlaneManager.prototype.calculateLeftOffsetForTrack = function (data, baseOffset) {
+        if (baseOffset === void 0) { baseOffset = 0; }
+        var result = baseOffset;
+        if (data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak')) {
+            result += 118;
+        }
+        if (data.scenario.modules.includes('alarms')) {
+            result += 155;
+        }
+        if (!data.scenario.modules.includes('kerosene') && !data.scenario.modules.includes('kerosene-leak') && !data.scenario.modules.includes('alarms')) {
+            result += 55;
+        }
+        return "".concat(result, "px");
     };
     PlaneManager.prototype.setApproachAndAltitude = function (approachValue, altitudeValue, forceInstant) {
         if (forceInstant === void 0) { forceInstant = false; }
@@ -2330,6 +2381,25 @@ var PlaneManager = /** @class */ (function () {
         return this.game.delay(ANIMATION_MS).then(function () {
             wrapper.style.height = "".concat(newWrapperHeight, "px");
         });
+    };
+    PlaneManager.prototype.updateSpeedMarker = function (extra) {
+        if (extra === void 0) { extra = 0; }
+        var element = $(PlaneManager.PLANE_SPEED_GREEN_MARKER);
+        element.dataset['mode'] = this.currentSpeedMode;
+        if (this.game.gamedatas.scenario.modules.includes('ice-brakes')) {
+            element.classList.add('ice-brakes');
+        }
+        var speed = this.currentWindModifier + extra;
+        var die1 = this.game.actionSpaceManager.getDieInLocation('engines-1');
+        if (die1) {
+            speed += die1.value;
+        }
+        var die2 = this.game.actionSpaceManager.getDieInLocation('engines-2');
+        if (die2) {
+            speed += die2.value;
+        }
+        element.dataset['value'] = speed;
+        element.innerText = speed;
     };
     PlaneManager.prototype.updateApproach = function (value) {
         this.currentApproach = value;
@@ -2364,8 +2434,10 @@ var PlaneManager = /** @class */ (function () {
         $(PlaneManager.KEROSENE_MARKER).dataset.value = kerosene;
         return this.game.delay(ANIMATION_MS);
     };
-    PlaneManager.prototype.updateWind = function (wind) {
+    PlaneManager.prototype.updateWind = function (wind, windModifier) {
+        this.currentWindModifier = Number(windModifier);
         $(PlaneManager.WINDS_PLANE).dataset.value = wind;
+        this.updateSpeedMarker();
         return this.game.delay(ANIMATION_MS);
     };
     PlaneManager.prototype.highlightApproachSlot = function (offset) {
@@ -2386,9 +2458,14 @@ var PlaneManager = /** @class */ (function () {
         document.getElementById('st-approach-overlay-track-slot').classList.remove('st-approach-overlay-track-slot-highlighted');
         (_a = document.getElementById('st-plane-axis-indicator-highlight')) === null || _a === void 0 ? void 0 : _a.remove();
     };
+    PlaneManager.prototype.setSpeedMode = function (speedMode) {
+        this.currentSpeedMode = speedMode;
+        this.updateSpeedMarker();
+    };
     PlaneManager.PLANE_AXIS_INDICATOR = 'st-plane-axis-indicator';
     PlaneManager.PLANE_AERODYNAMICS_ORANGE_MARKER = 'st-plane-aerodynamics-orange-marker';
     PlaneManager.PLANE_AERODYNAMICS_BLUE_MARKER = 'st-plane-aerodynamics-blue-marker';
+    PlaneManager.PLANE_SPEED_GREEN_MARKER = 'st-plane-speed-green-marker';
     PlaneManager.PLANE_BRAKE_MARKER = 'st-plane-brake-marker';
     PlaneManager.KEROSENE_MARKER = 'st-kerosene-marker';
     PlaneManager.WINDS_PLANE = 'st-winds-plane';
@@ -2407,7 +2484,12 @@ var ReserveManager = /** @class */ (function () {
         this.reserveCoffeeStock.addCards(Object.values(data.coffeeTokens).filter(function (card) { return card.location === 'reserve'; }));
         this.reserveRerollStock.addCards(Object.values(data.rerollTokens).filter(function (card) { return card.location === 'reserve'; }));
         this.reservePlaneStock.addCards(Object.values(data.planeTokens).filter(function (card) { return card.location === 'reserve'; }));
-        this.game.setTooltip(ReserveManager.TOKEN_RESERVE_PLANE, this.getTooltipHtml('Plane token reserve', 'Shows the number of Plane tokens in the reserve. During the scenario set-up a number of plane tokens are added to the approach track. Additional plane tokens can be added to the approach track when playing with the `Traffic` module. If the Plane token reserve is depleted, no Plane tokens can be added to the Approach track. Total number of Plane tokens: 12.'));
+        if (data.scenario.modules.includes('penguins')) {
+            this.game.setTooltip(ReserveManager.TOKEN_RESERVE_PLANE, this.getTooltipHtml('Penguin token reserve', '<b>This scenario uses Penguins instead of Plane tokens. We know very well that Penguins don\'t fly... but look at how CUTE they are!!</b><br/>Shows the number of Penguin tokens in the reserve. During the scenario set-up a number of Penguin tokens are added to the approach track. Additional Penguin tokens can be added to the approach track when playing with the `Traffic` module. If the Penguin token reserve is depleted, no Penguin tokens can be added to the Approach track. Total number of Penguin tokens: 12.'));
+        }
+        else {
+            this.game.setTooltip(ReserveManager.TOKEN_RESERVE_PLANE, this.getTooltipHtml('Plane token reserve', 'Shows the number of Plane tokens in the reserve. During the scenario set-up a number of plane tokens are added to the approach track. Additional plane tokens can be added to the approach track when playing with the `Traffic` module. If the Plane token reserve is depleted, no Plane tokens can be added to the Approach track. Total number of Plane tokens: 12.'));
+        }
         this.game.setTooltip(ReserveManager.TOKEN_RESERVE_REROLL, this.getTooltipHtml('Re-roll token reserve', 'Shows the number of Re-roll tokens in the reserve. You can gain re-roll tokens by reaching certain altitude levels on the altitude track or by using the `Mastery` Special Ability (only in advanced scenarios). You can not gain more Re-roll tokens if the reserve is depleted. Total number of Re-roll tokens: 3.'));
         this.game.setTooltip(ReserveManager.TOKEN_RESERVE_COFFEE, this.getTooltipHtml('Coffee reserve', 'Shows the number of Coffee tokens in the reserve. You can gain Coffee tokens by placing dice on the the `Concentration` action spaces or by using the `Control` Special Ability (only in advanced scenarios). You can not gain more Coffee tokens if the reserve is depleted. Total number of Coffee tokens: 3.'));
     };
@@ -2450,23 +2532,25 @@ var CommunicationInfoManager = /** @class */ (function () {
     };
     CommunicationInfoManager.prototype.update = function (newPhase) {
         var _this = this;
-        if (this.game.prefs[101].value == 1 || this.game.prefs[101].value == 2) {
-            if (newPhase === 'strategy' || newPhase === 'diceplacement') {
-                if (newPhase == 'strategy') {
-                    this.setCommunicationLimited();
-                }
-                else if (newPhase == 'diceplacement') {
-                    this.setCommunicationNotAllowed();
-                }
-                dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', function (event) {
-                    dojo.stopEvent(event);
-                    _this.hideBanner();
-                });
+        if (newPhase === 'strategy' || newPhase === 'diceplacement') {
+            if (newPhase == 'strategy') {
+                this.setCommunicationLimited();
             }
-            if (this.game.prefs[101].value == 2) {
-                this.game.delay(10000).then(function () { return _this.hideBanner(); });
+            else if (newPhase == 'diceplacement') {
+                this.setCommunicationNotAllowed();
             }
+            dojo.connect($('st-communication-info-dialog-close-button'), 'onclick', function (event) {
+                dojo.stopEvent(event);
+                _this.hideBanner();
+            });
         }
+        if (Preferences.getSettingValue('st-show-communications-banner') === 'communication-banner-auto-hide') {
+            this.autoHide();
+        }
+    };
+    CommunicationInfoManager.prototype.autoHide = function () {
+        var _this = this;
+        this.game.delay(10000).then(function () { return _this.hideBanner(); });
     };
     CommunicationInfoManager.prototype.hideBanner = function () {
         var element = $(CommunicationInfoManager.ELEMENT_ID);
@@ -2504,6 +2588,7 @@ var ActionSpaceManager = /** @class */ (function () {
         this.game = game;
         this.selectedActionSpaceId = null;
         this.actionSpaces = {};
+        this.activeAlarms = [];
     }
     ActionSpaceManager.prototype.setUp = function (data) {
         var _this = this;
@@ -2517,7 +2602,7 @@ var ActionSpaceManager = /** @class */ (function () {
                 warningPlacement = 'right';
             }
             var helpPlacement = 'top';
-            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1') {
+            if (space.type === 'landing-gear' || id === 'axis-1' || id === 'radio-1' || space.type === 'alarms') {
                 helpPlacement = 'left';
             }
             else if (space.type === 'flaps' || space.type === 'concentration' || id === 'axis-2' || id === 'radio-2' || id === 'radio-3') {
@@ -2526,12 +2611,25 @@ var ActionSpaceManager = /** @class */ (function () {
             else if (id.startsWith('ice-brakes-2')) {
                 helpPlacement = 'bottom';
             }
-            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
+            dojo.place("<div id=\"".concat(id, "\" class=\"st-action-space\" data-kerosene-board-active=\"").concat(data.scenario.modules.includes('kerosene') || data.scenario.modules.includes('kerosene-leak') ? 'true' : 'false', "\">\n                                ").concat(space.mandatory ? "<span class=\"st-action-space-mandatory-warning ".concat(warningPlacement, "\"><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>") : '', "\n                                <span id=\"").concat(id, "-help\" class=\"st-action-space-help ").concat(helpPlacement, "\"><i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i></span>\n                             </div>"), $('st-action-spaces'));
             _this.actionSpaces[id] = new LineStock(_this.game.diceManager, $(id), {});
             dojo.connect($(id), 'onclick', function (event) { return _this.actionSpaceClicked(id, event); });
-            dojo.connect($("".concat(id, "-help")), 'onclick', function (event) { return _this.game.helpDialogManager.showActionSpaceHelp(event, space); });
+            dojo.connect($("".concat(id, "-help")), 'onclick', function (event) { return _this.game.helpDialogManager.showActionSpaceHelp(event, id, space); });
         });
         data.planeDice.forEach(function (die) { return _this.moveDieToActionSpace(die); });
+        this.activeAlarms = data.alarmTokens.filter(function (alarm) { return alarm.isActive === true; });
+        this.updateActiveAlarms();
+    };
+    ActionSpaceManager.prototype.updateActiveAlarms = function () {
+        var _this = this;
+        document.querySelectorAll('.st-action-space').forEach(function (element) {
+            element.classList.remove('blocked-by-alarm');
+            _this.activeAlarms.forEach(function (alarm) {
+                if (alarm.blocksSpaces.includes(element.id)) {
+                    element.classList.add('blocked-by-alarm');
+                }
+            });
+        });
     };
     ActionSpaceManager.prototype.getValidPlacements = function (ids, dieValue) {
         return Object.entries(ids).filter(function (_a) {
@@ -2544,6 +2642,7 @@ var ActionSpaceManager = /** @class */ (function () {
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         this.game.planeManager.unhighlightPlane();
+        this.game.planeManager.updateSpeedMarker();
         this.onSelectedActionSpaceChanged = onSelectedActionSpaceChanged;
         this.setAllActionSpacesUnselectable();
         var validPlacements = this.getValidPlacements(ids, dieValue);
@@ -2565,7 +2664,10 @@ var ActionSpaceManager = /** @class */ (function () {
     };
     ActionSpaceManager.prototype.moveDieToActionSpace = function (die) {
         this.game.diceManager.updateDieValue(die);
-        return this.actionSpaces[die.locationArg].addCard(die).then(function () { return $(die.locationArg).classList.add('st-action-space-occupied'); });
+        if (this.actionSpaces[die.locationArg]) {
+            return this.actionSpaces[die.locationArg].addCard(die).then(function () { return $(die.locationArg).classList.add('st-action-space-occupied'); });
+        }
+        return Promise.resolve();
     };
     ActionSpaceManager.prototype.resetActionSpaceOccupied = function () {
         document.querySelectorAll('.st-action-space-occupied').forEach(function (node) { return node.classList.remove('st-action-space-occupied'); });
@@ -2579,7 +2681,8 @@ var ActionSpaceManager = /** @class */ (function () {
         }); });
     };
     ActionSpaceManager.prototype.getDieInLocation = function (space) {
-        var dice = this.actionSpaces[space].getCards();
+        var _a;
+        var dice = (_a = this.actionSpaces[space]) === null || _a === void 0 ? void 0 : _a.getCards();
         if (dice && dice.length === 1) {
             return dice[0];
         }
@@ -2654,15 +2757,25 @@ var DiceManager = /** @class */ (function (_super) {
             }
         }
     };
-    DiceManager.prototype.updateDieValue = function (die) {
-        var dieElementId = this.getId(die);
-        var dieElement = $(dieElementId);
-        if (dieElement) {
-            dieElement.dataset['value'] = String(die.side);
+    DiceManager.prototype.updateDieValue = function (die, silent) {
+        if (silent === void 0) { silent = false; }
+        if (!silent) {
+            var dieElementId = this.getId(die);
+            var dieElement = $(dieElementId);
+            if (dieElement) {
+                dieElement.dataset['value'] = String(die.side);
+            }
         }
         var stock = this.getCardStock(die);
         if (stock) {
             this.updateCardInformations(die);
+        }
+    };
+    DiceManager.prototype.updateDieValueVisual = function (die) {
+        var dieElementId = this.getId(die);
+        var dieElement = $(dieElementId);
+        if (dieElement) {
+            dieElement.dataset['value'] = String(die.side);
         }
     };
     DiceManager.prototype.setSelectionMode = function (selectionMode, onSelectedActionSpaceChanged, allowedValues, allowedDieTypes, autoSelectIfOnly1Die) {
@@ -2700,6 +2813,9 @@ var TokenManager = /** @class */ (function (_super) {
                 div.classList.add('token');
                 div.classList.add('st-token');
                 div.dataset.type = token.type;
+                if (token.type === 'plane' && game.gamedatas.scenario.modules.includes('penguins')) {
+                    div.dataset.type = 'penguin';
+                }
             },
             setupFrontDiv: function (token, div) {
             },
@@ -2710,6 +2826,32 @@ var TokenManager = /** @class */ (function (_super) {
         return _this;
     }
     return TokenManager;
+}(CardManager));
+var AlarmTokenManager = /** @class */ (function (_super) {
+    __extends(AlarmTokenManager, _super);
+    function AlarmTokenManager(game) {
+        var _this = _super.call(this, game, {
+            getId: function (token) { return "st-token-".concat(token.id); },
+            setupDiv: function (token, div) {
+                div.classList.add('token');
+                div.classList.add('st-alarm-token');
+            },
+            setupFrontDiv: function (token, div) {
+                div.classList.add('st-alarm-token-art');
+                div.dataset.type = token.typeArg + '';
+            },
+            setupBackDiv: function (token, div) {
+                div.classList.add('st-alarm-token-art');
+                div.dataset.type = 'back';
+            },
+            isCardVisible: function (token) { return token.isActive; },
+            cardWidth: 137,
+            cardHeight: 72
+        }) || this;
+        _this.game = game;
+        return _this;
+    }
+    return AlarmTokenManager;
 }(CardManager));
 var SpecialAbilityCardManager = /** @class */ (function (_super) {
     __extends(SpecialAbilityCardManager, _super);
@@ -2758,11 +2900,19 @@ var HelpDialogManager = /** @class */ (function () {
     HelpDialogManager.prototype.showApproachHelp = function (event) {
         var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
         html += "<p><i>".concat(_('The Approach Track tracks your approach to the airport. Once you reach the top airport space, you have arrived at the airport'), "</i></p>");
-        html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">".concat(this.game.tokenIcon('plane', ''), "</p></div>");
-        html += "<p>".concat(_('Remove Airplane tokens from the approach track before you advance past the space it is on.'), "</p>");
+        if (this.game.gamedatas.scenario.modules.includes('penguins')) {
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">".concat(this.game.tokenIcon('penguin', ''), "</p></div>");
+            html += "<b>".concat(_('This scenario uses Penguins instead of Plane tokens. We know very well that Penguins don\'t fly... but look at how CUTE they are!!</b>'));
+            html += "<p>".concat(_('Remove Penguin tokens from the approach track before you advance past the space it is on.'), "</p>");
+        }
+        else {
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">".concat(this.game.tokenIcon('plane', ''), "</p></div>");
+            html += "<p>".concat(_('Remove Airplane tokens from the approach track before you advance past the space it is on.'), "</p>");
+        }
         html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><div class=\"st-end-game-info-box failure\"><p><h1>".concat(this.game.getFailureReasonTitle('failure-collision'), "</h1></br>").concat(this.game.getFailureReasonText('failure-collision'), "</p></div>").concat(this.getActionSpaceVictoryCondition('radio'), "</div>");
         html += "<br/>";
         if (this.game.gamedatas.scenario.modules.includes('turns')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Turns'), "</h2>");
             html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-turns-example.png\" alt=\"turns\" /></div>");
             html += "<p><i>".concat(_('Ominous clouds and mountains require a steady hand at the controls. You’d better buckle up!'), "</p></i>");
             html += "<p>".concat(_('When you advance the Approach Track, if the airplane’s Axis is not in one of the permitted positions (black or green arrows) in the Current Position screen, you lose the game. This also applies to both spaces you fly through if you advance 2 spaces during this round. If you do not advance the Approach Track (you move 0 spaces), you do not need to follow these constraints.'), "</p>");
@@ -2770,10 +2920,18 @@ var HelpDialogManager = /** @class */ (function () {
             html += "<br/>";
         }
         if (this.game.gamedatas.scenario.modules.includes('traffic')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Traffic'), "</h2>");
             html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-traffic-example.png\" alt=\"traffic\" /></div>");
             html += "<p><i>".concat(_('The skies are particularly busy today... airplanes seem to be appearing out of nowhere!'), "</p></i>");
             html += "<p>".concat(_('If there is a Traffic icon in the Current Position space at the beginning of the round, Traffic dice are rolled as many as there are icons on the space. Each rolled Traffic die adds an Airplane token to the space indicated by the value of the die, starting with the Current Position space. No Airplane tokens are placed if all Airplane tokens are already on the Approach Track (12).'), "</p>");
             html += "<p><b>".concat(_('Please note: the traffic die only has values 2, 3, 4 and 5.'), "</b></p>");
+            html += "<br/>";
+        }
+        if (this.game.gamedatas.scenario.modules.includes('total-trust')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Total Trust'), "</h2>");
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-total-trust-example.png\" alt=\"total trust\" /></div>");
+            html += "<p><i>".concat(_('For one reason or another, communication has become impossible in the cockpit. It’s the ultimate test of trust.'), "</p></i>");
+            html += "<p>".concat(_('If the symbol is in the Current Position screen at the end of the round, players will skip the Strategy Discussion in Phase 1 and simply roll their dice at the beginning of the following round.'), "</p>");
             html += "<br/>";
         }
         html += "</div>";
@@ -2784,6 +2942,24 @@ var HelpDialogManager = /** @class */ (function () {
         html += "<p><i>".concat(_('The Altitude Track tracks your alitude. Once you reach the top space, you have touched down... hopefully at the Airport...'), "</i></p>");
         html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-altitude-example.png\" alt=\"turns\" /></div>");
         html += "<p>".concat(_('If at the start of the round the Current Altitude space contains a Re-Roll token, it is gained. The Altitude Track is automatically advanced at the end of each round. The orange (co-pilot) and blue (pilot) arrows indicate what player will go first in a round.'), "</p>");
+        if (this.game.gamedatas.scenario.modules.includes('turbulence')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Turbulence'), "</h2>");
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-turbulence-example.png\" alt=\"turbulence\" /></div>");
+            html += "<p><i>".concat(_('Eddies in air currents caused by geographical features or thermal pockets are easily explained in theory, but when your wingtips are bending at impossible angles and your plane feels like a roller coaster, you know that turbulence is no joke.'), "</p></i>");
+            html += "<p>".concat(_('Every time you place a die, all your remaining dice are rerolled.'), "</p>");
+        }
+        if (this.game.gamedatas.scenario.modules.includes('bad-visibility')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Bad Visibility'), "</h2>");
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-bad-visibility-example.png\" alt=\"bad visibility\" /></div>");
+            html += "<p><i>".concat(_('Despite your ability to fly with instruments only, coming out of a fog bank to see the ground rushing up towards you is... startling. To put it lightly.'), "</p></i>");
+            html += "<p>".concat(_('When rolling your dice at the beginning of this round, both players will only roll 2 dice, leaving the other 2 aside. The next two times you place a die, one of the dice you put aside is rolled and can now be placed. In other words, the die you played is replaced with a new one. You never have more than 2 dice to choose from every turn.'), "</p>");
+        }
+        if (this.game.gamedatas.scenario.modules.includes('turbulence') && this.game.gamedatas.scenario.modules.includes('bad-visibility')) {
+            html += "<h2 style=\"text-align: center\">".concat(_('Turbulence + Bad Visibility'), "</h2>");
+            html += "<div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-turbulence-plus-bad-visibility-example.png\" alt=\"turbulence + bad visibility\" /></div>");
+            html += "<p><i>".concat(_('This is what it feels like to fly into a full-fledged storm; you’re trying to land a bucking bronco while half-blindfolded. You’ve had better days.'), "</p></i>");
+            html += "<p>".concat(_('Only use 2 dice, like with the Bad Visibility rule, but when you take a new die to replace the one you have placed, roll both of your available dice.'), "</p>");
+        }
         html += "</div>";
         this.showDialog(event, _('Altitude Track').toUpperCase(), html);
     };
@@ -2798,12 +2974,21 @@ var HelpDialogManager = /** @class */ (function () {
         html += "</div>";
         this.showDialog(event, this.getModuleTitle(module).toUpperCase(), html);
     };
-    HelpDialogManager.prototype.showActionSpaceHelp = function (event, actionSpace) {
+    HelpDialogManager.prototype.showActionSpaceHelp = function (event, id, actionSpace) {
         var _a;
         var html = "<div class=\"dp-help-dialog-content\"><div class=\"dp-help-dialog-content-left\">";
         html += actionSpace.mandatory ? "<p><i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> ".concat(_('Mandatory, a die must be placed here each round'), "</p>") : '';
+        if (actionSpace.type === 'alarms') {
+            var alarmTokenType = id.replace('alarms-', '');
+            html += "<div style=\"display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;\"><div class=\"st-alarm-token-art\" data-type=\"".concat(alarmTokenType, "\"></div><i>").concat(_(this.game.gamedatas.alarmTokenData[alarmTokenType].name), "</i></div>");
+        }
         html += "<p>".concat(dojo.string.substitute(_('<b>Allowed role(s)</b>: ${roles}'), { roles: actionSpace.allowedRoles.map(function (role) { return _(role); }).join(', ') }), "</p>");
-        html += "<p>".concat(dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: actionSpace.allowedValues ? (_a = actionSpace.allowedValues) === null || _a === void 0 ? void 0 : _a.map(function (role) { return _(role); }).join(', ') : _('all values') }), "</p>");
+        if (actionSpace.type !== 'intern') {
+            html += "<p>".concat(dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: actionSpace.allowedValues ? (_a = actionSpace.allowedValues) === null || _a === void 0 ? void 0 : _a.map(function (role) { return _(role); }).join(', ') : _('all values') }), "</p>");
+        }
+        else {
+            html += "<p>".concat(dojo.string.substitute(_('<b>Allowed values(s)</b>: ${values}'), { values: _('a different value compared to the next Intern') }), "</p>");
+        }
         html += "<p><i>".concat(this.getActionSpaceFlavorText(actionSpace.type), "</i></p>");
         html += "<p>".concat(this.getActionSpaceDescription(actionSpace.type), "</p>");
         html += "<br/><div style=\"display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;\">";
@@ -2829,6 +3014,9 @@ var HelpDialogManager = /** @class */ (function () {
         else if (module === 'winds-headon') {
             return _('winds head-on');
         }
+        else if (module === 'stuck-landing-gear') {
+            return _('stuck landing gear');
+        }
         return _(module);
     };
     HelpDialogManager.prototype.getActionSpaceTitle = function (type) {
@@ -2852,6 +3040,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('Show your nerves of steel by playing in real time.');
             case 'engine-loss':
                 return _('Both our engines have stopped. Our only hope: glide to the Airport');
+            case 'stuck-landing-gear':
+                return _('Your landing gear is stuck. It will not descend. You’ll need to perform a belly landing. But first you have to get rid of all that flammable fuel!');
             default:
                 return '';
         }
@@ -2878,6 +3068,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('An intern has been assigned to you. They will be helpful during the flight, but you must finish their training before you land.');
             case 'ice-brakes':
                 return _('You are landing on an icy runway. Deploy your special brakes to avoid losing control!');
+            case 'alarms':
+                return _('An alarm is sounding. There’s something going on with your electronics. Elements of your panel are shorting out and require attention.');
             default:
                 return '';
         }
@@ -2893,6 +3085,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('At the beginning of each round, a 60-second timer (or 70 or 80 seconds) is started IMMEDIATELY after rolling your dice. You cannot place any dice after the timer has run out; the round ends immediately. Any dice that haven’t been placed are simply ignored. If the Axis and Engine spaces haven’t been filled, you’ve lost the game.');
             case 'engine-loss':
                 return _('The 2 Engines Action Spaces will not be used. Each round, the players roll their 4 dice but only play 3. At the end of the round, the Approach Track is automatically advanced by 1 space.<br/><br/>Note: Ice Brakes Module<br/>There is no actual ice on the landing strip here, but you’ll need a much stronger braking system to perform an emergency landing.');
+            case 'stuck-landing-gear':
+                return _('You cannot place dice on the Landing Gear spaces, meaning the blue Aerodynamics marker will stay at 5 for the entire game. You do not need to have the Landing Gear switches engaged when you land. You will use the brakes normally, which will represent spoilers, reverse engines, etc.');
             default:
                 return '';
         }
@@ -2919,6 +3113,8 @@ var HelpDialogManager = /** @class */ (function () {
                 return _('On your turn, you can train your Intern by placing a die of any value on the space of your colour on the Intern Board, and taking the first available token closest to your side. You can then place that token on any space you’d normally be able to place a die, and resolve its effect with the token’s number.<br/><br/><b>Important:</b><br/>An Intern token cannot be modified by a Coffee token.<br/>You cannot use this token on a Concentration space.</br>The die placed must be of a different value than the next available token.');
             case 'ice-brakes':
                 return _('The Ice Brakes track works like the normal Brakes track, but 2 dice of the same value must be placed in the space above and below the track in the same round. If you place a die in a space on the Ice Brake track and you are not able to place a die in the opposite space in the same round, the single die has no effect. The die is removed without moving the Brake marker.<br/><br/>Note that this track does not have Switches. However, as with the normal brakes:<br/>You must deploy them in order, from left to right.<br/>You cannot play a die in a space to the left of the Brake marker (in a space where dice have already been played in a previous round).<br/>You can advance the Brake marker more than once per round if the conditions have been met.');
+            case 'alarms':
+                return _('<b>Rules</b></br>If there is an Alarm symbol in your Current Position space at the beginning of a round, a Alarm token is flipped face-up. You may no longer use that Action space on the Control Panel until you reset the system by removing the Alarm token. If no face-down Alarm tokens remain no token is flipped face-up.<br/><br/><b>Removing Alarm tokens</b><br/>If a player places a die of the correct colour and number onto the Alarm token, this resets the system. The Alarm token is removed from the Alarm board. The corresponding Action Space(s) are now available again.<br/><br/><b>Important:</b> Alarm tokens do not prevent you from landing. You may still land safely if you have active Alarms.');
             default:
                 return '';
         }
@@ -3065,7 +3261,7 @@ var EndGameInfo = /** @class */ (function () {
             var element = $(this.elementId);
             dojo.place(this.createFailureReaseonInfoBox(failureReason), element, 'only');
             element.scrollIntoView({ block: 'center', behavior: 'smooth' });
-            return this.game.delay(5000);
+            return this.game.delay(5000).then(function () { return FlightLog.open(); });
         }
         return Promise.resolve();
     };
@@ -3082,7 +3278,7 @@ var EndGameInfo = /** @class */ (function () {
             dojo.place("<h2>".concat(_('Unfortunately, not all victory conditions were met, better luck next time pilots!'), "</h2>"), $('st-end-game-info-box'));
         }
         element.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        return this.game.delay(10000);
+        return this.game.delay(5000).then(function () { return FlightLog.open(); });
     };
     EndGameInfo.prototype.createFailureReaseonInfoBox = function (failureReason) {
         return "<div class=\"st-end-game-info-box failure\">\n                    <h1>".concat(this.game.getFailureReasonTitle(failureReason), "</h1>\n                    <p>").concat(this.game.getFailureReasonText(failureReason), "</p>\n                </div>");
@@ -3104,11 +3300,13 @@ var SpendCoffee = /** @class */ (function () {
         var _this = this;
         var element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
+        console.log('init');
         if (this.currentDie) {
             this.currentDie.side = this.originalSide;
             this.currentDie.value = this.originalValue;
             this.game.diceManager.updateDieValue(this.currentDie);
         }
+        console.log(die);
         if (nrOfCoffeeTokens > 0) {
             this.currentDie = die;
             this.originalSide = die.side;
@@ -3146,6 +3344,7 @@ var SpendCoffee = /** @class */ (function () {
     };
     SpendCoffee.prototype.destroy = function () {
         this.initiate(null, 0, null);
+        console.log('destroy');
         var element = $(SpendCoffee.ELEMENT_ID);
         dojo.empty(element);
         this.currentDie = null;
@@ -3223,7 +3422,7 @@ var WelcomeDialog = /** @class */ (function () {
     function WelcomeDialog(game) {
         var _this = this;
         this.game = game;
-        this.localStorageKey = 'skyteam-welcome-dialog-2';
+        this.localStorageKey = 'skyteam-welcome-dialog-4';
         this.dialogId = 'stWelcomeDialogId';
         dojo.place('<div id="bga-help_buttons"><button class="bga-help_button bga-help_popin-button">?</button></div>', $('left-side'));
         dojo.connect($('bga-help_buttons'), 'click', function () { return _this.showDialog(true); });
@@ -3234,7 +3433,7 @@ var WelcomeDialog = /** @class */ (function () {
         if (!this.isHideWelcomeScreen() || force) {
             this.dialog = new ebg.popindialog();
             this.dialog.create(this.dialogId);
-            this.dialog.setTitle("<i class=\"fa fa-plane\" aria-hidden=\"true\"></i> ".concat(_('Welcome to Sky Team!')));
+            this.dialog.setTitle("<i class=\"fa fa-plane\" aria-hidden=\"true\"></i> ".concat(_('Welcome to Turbulence, an expansion for Sky Team.')));
             this.dialog.setContent(this.createContent());
             this.dialog.show();
             dojo.connect($('welcome-dialog-hide'), 'change', function (event) {
@@ -3250,14 +3449,12 @@ var WelcomeDialog = /** @class */ (function () {
     };
     WelcomeDialog.prototype.createContent = function () {
         var html = '';
-        html += "<p><b>".concat(_('NEW: In this BGA version you will find all the Special Scenarios available on <a href="https://www.scorpionmasque.com/Skyteam/">scorpionmasque.com/Skyteam/</a>. This is our way of thanking you for stepping into our cockpit in such great numbers. Find even more Scenarios in the physical Sky Team game.'), "</b></p>");
+        html += "<p><b>".concat(_('NEW: The Winner of the Spiel des Jahres is expanding! The Turbulence expansion is now live with 6 new scenarios (and there are more on the way!). On the agenda for your next landings: Terrible weather conditions and technical glitches. In addition to new destinations, the expansion introduces new rules and new modules, such as Turbulence, Low Visibility, and Alarms, that will add depth and diversity to your favourite game. Hang on to your seats… It is going to be a bumpy ride!'), "</b></p>");
         html += "<div style=\"display: flex; justify-content: center;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-logo.png\" width=\"100%\" style=\"max-width: 300px;\"></img></div>");
-        html += "<p>".concat(_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! You’ll need to communicate with the Control Tower to make sure your approach is free of air traffic, adjust your speed to not overshoot the airport, level your plane in order to land square with the ground, deploy your flaps to increase lift and allow you to descend more steeply, deploy your landing gear to ensure a safe landing, and finally engage the brakes to slow the plane once you\'ve landed. Cooperation and nerves of steel are all it takes to succeed!'), "</p>");
+        html += "<p>".concat(_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! '), "</p>");
         html += "<h1>".concat(_('Communications'), "</h1>");
         html += "<p>".concat(_('In Sky Team, there are 2 ways to communicate: Verbally, before rolling the dice; and by placing your die during the Dice Placement phase without talking. While nothing restricts you from talking during the dice placement phase, talking and discussing strategy is against the intended nature of the game. Watch out for the communication banner during the game to know when you are allowed to communicate verbally. You can also click on the banners for more info.'), "</p>");
-        html += "<img src=\"".concat(g_gamethemeurl, "/img/skyteam-welcome-comms-banners.png\" width=\"100%\"></img>");
-        html += "<h1>".concat(_('Preferences'), "</h1>");
-        html += "<p>".concat(_('Once you are familiar with the game you can hide the communications banner and/or help buttons to have a cleaner interface. Go to the preferences panel through the BGA menu.'), "</p>");
+        html += "<img class=\"st-example-image\" src=\"".concat(g_gamethemeurl, "/img/skyteam-welcome-comms-banners.png\" width=\"100%\"></img>");
         html += "<h3 style=\"text-align: center\">".concat(_('Enjoy Sky Team!'), "</br>Le Scorpion Masque</h3>");
         html += "</br>";
         html += "<label for=\"welcome-dialog-hide\" style=\"cursor: pointer;\"><input id=\"welcome-dialog-hide\" type=\"checkbox\" ".concat(this.isHideWelcomeScreen() ? 'checked="checked"' : '', " /> ").concat(_('Hide this Welcome Screen when opening the table (you can always access it through the ? in the bottom left corner)'), "</label>");
@@ -3349,6 +3546,273 @@ var RealTimeCounter = /** @class */ (function () {
     };
     return RealTimeCounter;
 }());
+var Preferences = /** @class */ (function () {
+    function Preferences() {
+    }
+    Preferences.addButton = function (game, targetId) {
+        var _this = this;
+        dojo.place("<div id=\"jj-preferences-panel\">\n                            <div id=\"jj-preferences-panel-toggle-button\"><i class=\"fa6 fa6-sliders\"></i></div>\n                            <div id=\"jj-preferences-panel-content\" style=\"display: none;\">\n                                ".concat(this.getSettings().map(function (setting) {
+            if (setting.type === 'category') {
+                return "<h2 class=\"jj-preferences-panel-category-label\">".concat(setting.name, "</h2>");
+            }
+            else if (setting.type === 'text') {
+                return "<p class=\"jj-preferences-panel-text\">".concat(setting.name, "</p>");
+            }
+            else if (setting.type === 'slider') {
+                // @ts-ignore
+                var s = setting;
+                return "<div class=\"jj-preferences-panel-preference-wrapper jj-slider-input\">\n                                                  <label for=\"".concat(s.id, "\">").concat(s.name, "</label>\n                                                  <input type=\"range\" id=\"").concat(s.id, "\" \n                                                      name=\"range\" \n                                                      min=\"").concat(s.min, "\" \n                                                      max=\"").concat(s.max, "\"\n                                                      value=\"").concat(Preferences.getSettingValue(s.id), "\"\n                                                      step=\"").concat(s.steps, "\"/>\n                                                </div>");
+            }
+            else if (setting.type === 'checkbox') {
+                var s = setting;
+                return "<div class=\"jj-preferences-panel-preference-wrapper jj-checkbox-input\">\n                                                  <input type=\"checkbox\" id=\"".concat(s.id, "\" ").concat(Preferences.getSettingValue(s.id) === 'true' ? 'checked' : '', " />\n                                                  <label for=\"").concat(s.id, "\">").concat(s.name, "</label>\n                                                </div>");
+            }
+            else if (setting.type === 'select') {
+                var s_1 = setting;
+                return "<div class=\"jj-preferences-panel-preference-wrapper jj-select-input\">\n                                                    <label for=\"".concat(s_1.id, "\">").concat(s_1.name, "</label>\n                                                    <select id=\"").concat(s_1.id, "\">\n                                                        ").concat(s_1.options.map(function (option) { return "<option value=\"".concat(option.value, "\" ").concat(Preferences.getSettingValue(s_1.id) === option.value ? 'selected="selected"' : '', ">").concat(option.label, "</option>"); }).join(''), "\n                                                    </select>\n                                                </div>");
+            }
+        }).join(''), "\n                               <div id=\"jj-preferences-panel-reset-button\" class=\"bgabutton bgabutton_gray\"><i class=\"fa6 fa6-arrows-rotate\"></i>  ").concat(_('Restore defaults'), "</div>\n                            </div>\n                         </div>"), targetId);
+        this.getSettings().forEach(function (setting) {
+            if (setting.id) {
+                // Apply initial setting
+                setting.onChanged(Preferences.getSettingValue(setting.id));
+                // Listen for changes
+                Preferences.onInputChange(document.getElementById(setting.id), _this.onSettingValueUpdated);
+            }
+        });
+        dojo.connect($('jj-preferences-panel-toggle-button'), 'onclick', function (event) {
+            var contentPanel = $('jj-preferences-panel-content');
+            if (contentPanel.style.display === 'none') {
+                contentPanel.style.display = 'flex';
+            }
+            else {
+                contentPanel.style.display = 'none';
+            }
+        });
+        dojo.connect($('jj-preferences-panel-reset-button'), 'onclick', function (event) {
+            Preferences.getSettings().forEach(function (setting) {
+                if (!['category', 'text'].includes(setting.type)) {
+                    Preferences.setSetting(setting, setting.defaultValue);
+                }
+            });
+            window.location.reload();
+        });
+    };
+    Preferences.getSettings = function () {
+        return [
+            { id: '', type: 'category', name: _('Gameplay') },
+            {
+                id: 'st-safe-mode',
+                type: 'select',
+                name: _('Safe mode'),
+                options: [{ value: 'enabled', label: _('Enabled (default)') }, { value: 'Disabled', label: _('Disabled') }],
+                defaultValue: 'enabled',
+                onChanged: function (newValue) {
+                    console.log('New safe mode value: ' + newValue);
+                }
+            },
+            { id: '', type: 'text', name: _('With Safe Mode enabled, the game will ask for confirmation when making inefficient moves or moves that result in failures.') },
+            { id: '', type: 'category', name: _('UI') },
+            {
+                id: 'st-show-communications-banner',
+                type: 'select',
+                name: _('Communication banner'),
+                options: [{ value: 'communication-banner-visible', label: _('Always visible (default)') }, { value: 'communication-banner-auto-hide', label: _('Auto hide after 10 seconds') }, { value: 'communication-banner-hidden', label: _('Do not show') }],
+                defaultValue: 'communication-banner-visible',
+                onChanged: function (newValue) {
+                    var HTMLelement = document.querySelector('html');
+                    HTMLelement.classList.remove('communication-banner-visible', 'communication-banner-auto-hide', 'communication-banner-hidden');
+                    HTMLelement.classList.add(newValue);
+                    if (newValue === 'communication-banner-auto-hide') {
+                        //@ts-ignore
+                        gameui.communicationInfoManager.autoHide();
+                    }
+                    console.log('New communication banner value: ' + newValue);
+                }
+            },
+            {
+                id: 'st-background3',
+                type: 'select',
+                name: _('Background'),
+                options: [{ value: 'st-background-clouds', label: _('Clouds') }, { value: 'st-background-sunset', label: _('Clouds Sunset') }, { value: 'st-background-turbulence', label: _('Clouds Turbulence') }, { value: 'st-background-dark', label: _('Dark (Turbulence default)') }, { value: 'st-background-blue', label: _('Blue (Base Game default)') }, { value: 'st-background-bga', label: _('Default BGA background (wood)') }],
+                //@ts-ignore
+                defaultValue: gameui.gamedatas.scenarioData[gameui.gamedatas.scenario.id].tags.includes('turbulence') ? 'st-background-dark' : 'st-background-blue',
+                onChanged: function (newValue) {
+                    var HTMLelement = document.querySelector('html');
+                    HTMLelement.classList.remove('st-background-clouds', 'st-background-blue', 'st-background-bga', 'st-background-sunset', 'st-background-turbulence', 'st-background-dark');
+                    HTMLelement.classList.add(newValue);
+                    console.log('New background value: ' + newValue);
+                }
+            },
+            {
+                id: 'st-show-help-buttons',
+                type: 'checkbox',
+                name: _('Show ? buttons'),
+                defaultValue: true,
+                onChanged: function (newValue) {
+                    var value = newValue + '';
+                    var HTMLelement = document.querySelector('html');
+                    HTMLelement.classList.remove('help-buttons-enabled', 'help-buttons-disabled');
+                    if (value == 'true') {
+                        HTMLelement.classList.add('help-buttons-enabled');
+                    }
+                    else {
+                        HTMLelement.classList.add('help-buttons-disabled');
+                    }
+                    console.log('New show ? buttons value: ' + newValue);
+                }
+            },
+            {
+                id: 'st-show-pulsing-mandatory-indicators',
+                type: 'checkbox',
+                name: _('Pulsing mandatory indicators'),
+                defaultValue: true,
+                onChanged: function (newValue) {
+                    var value = newValue + '';
+                    var HTMLelement = document.querySelector('html');
+                    HTMLelement.classList.remove('pulsing-mandatory-indicators-enabled', 'pulsing-mandatory-indicators-disabled');
+                    if (value == 'true') {
+                        HTMLelement.classList.add('pulsing-mandatory-indicators-enabled');
+                    }
+                    else {
+                        HTMLelement.classList.add('pulsing-mandatory-indicators-disabled');
+                    }
+                    console.log('New pulsing-mandatory-indicators value: ' + newValue);
+                }
+            },
+        ];
+    };
+    Preferences.onInputChange = function (r, f) {
+        var n, c, m;
+        r.addEventListener("input", function (e) {
+            n = 1;
+            c = e.target.type === 'checkbox'
+                ? e.target.checked
+                : e.target.value;
+            if (c != m)
+                f(e);
+            m = c;
+        });
+        r.addEventListener("change", function (e) {
+            if (!n)
+                f(e);
+        });
+    };
+    Preferences.onSettingValueUpdated = function (e) {
+        var settingId = e.target.id;
+        var setting = Preferences.getSettings().find(function (setting) { return setting.id === settingId; });
+        var newValue = e.target.type === 'checkbox'
+            ? e.target.checked
+            : e.target.value;
+        Preferences.setSetting(setting, newValue);
+    };
+    Preferences.setSetting = function (setting, newValue) {
+        console.log("Setting ".concat(setting.id, " updated: ").concat(newValue));
+        localStorage.setItem(setting.id, newValue);
+        setting.onChanged(newValue);
+    };
+    Preferences.getSettingValue = function (id) {
+        var localStorageValue = localStorage.getItem(id);
+        if (localStorageValue) {
+            return localStorageValue;
+        }
+        return Preferences.getSettings().find(function (setting) { return setting.id === id; }).defaultValue;
+    };
+    return Preferences;
+}());
+var FlightLog = /** @class */ (function () {
+    function FlightLog() {
+    }
+    FlightLog.addButton = function (game, targetId) {
+        var _this = this;
+        FlightLog.game = game;
+        dojo.place("<div id=\"st-flight-log-button\" class=\"bgabutton bgabutton_gray\"><i class=\"fa6 fa6-plane-circle-check\"></i> ".concat(_('Flight Log'), "</div>"), targetId);
+        dojo.connect($('st-flight-log-button'), 'onclick', function () {
+            var dialog = new ebg.popindialog();
+            dialog.create('st-flight-log-dialog');
+            dialog.setTitle("<i class=\"fa6 fa6-plane-circle-check\" aria-hidden=\"true\"></i> ".concat(_('Flight Log')));
+            dialog.setContent(FlightLog.createDialogHtml());
+            dialog.show();
+        });
+        this.teamFlightLog = game.gamedatas.flightLog;
+        Object.keys(game.gamedatas.players).forEach(function (playerId) { return _this.playerFlightLog[playerId] = game.gamedatas.players[playerId].flightLog; });
+    };
+    FlightLog.open = function () {
+        $('st-flight-log-button').click();
+    };
+    FlightLog.createDialogHtml = function () {
+        var _this = this;
+        var html = '';
+        html += "<div style=\"display: flex; justify-content: center;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-logo-blue.png\" width=\"100%\" style=\"max-width: 300px;\"></img></div>");
+        var colors = ['green', 'yellow', 'red', 'black'];
+        var tags = ['base', 'promo', 'turbulence'];
+        var playerIds = Object.keys(this.game.gamedatas.players);
+        html += "<div class=\"st-flight-log-row st-flight-log-header\">\n                    <div style=\"width: 75px;\">".concat(_('COLOR').toUpperCase(), "</div>\n                    <div class=\"st-flight-log-code\">").concat(_('CODE').toUpperCase(), "</div>\n                    <div class=\"st-flight-log-title\">").concat(_('SCENARIO').toUpperCase(), "</div>\n                    <div class=\"st-flight-status\">").concat(_("TEAM (W/L)").toUpperCase(), "</div>\n                    ").concat(playerIds.map(function (playerId) { return "<div class=\"st-flight-status\" style=\"display: block;\">".concat(dojo.string.substitute(_("${playerName} (W/L)"), { playerName: _this.game.gamedatas.players[playerId].name }), "</div>"); }).join(''), "\n                </div>");
+        colors.forEach(function (color) {
+            tags.forEach(function (tag) {
+                Object.keys(_this.game.gamedatas.scenarioData).forEach(function (scenarioId) {
+                    var scenario = _this.game.gamedatas.scenarioData[scenarioId];
+                    var approach = _this.game.gamedatas.approachTrackData[scenario.approach];
+                    if (approach.category === color && scenario.tags.includes(tag) && !scenario.tags.includes('coming-soon')) {
+                        var nameParts = _(approach.name).split(" ");
+                        var scenarioCode = nameParts.shift();
+                        var scenarioName = nameParts.join(' ');
+                        var teamScenarioData = _this.teamFlightLog[scenarioId];
+                        var teamScenarioStatus = 'unplayed';
+                        if (teamScenarioData && teamScenarioData.length === 2) {
+                            if (teamScenarioData[0] > 0) {
+                                teamScenarioStatus = 'success';
+                            }
+                            else {
+                                teamScenarioStatus = 'failure';
+                            }
+                        }
+                        html += "<div class=\"st-flight-log-row\">";
+                        html += "    <div class=\"st-flight-log-category\" data-type=\"".concat(approach.category, "\">").concat(FlightLog.getTagsLabel(scenario.tags), "</div>");
+                        html += "    <div class=\"st-flight-log-code\">".concat(scenarioCode.split('').map(function (codeLetter) { return "<div class=\"st-flight-log-code-letter\">".concat(codeLetter, "</div>"); }).join(''), "</div>");
+                        html += "    <div class=\"st-flight-log-title\">".concat(scenarioName, " ").concat(scenario.modules.includes('real-time') ? '<i class="fa6 fa6-clock"></i>' : '', " ").concat(scenario.tags.includes('new') ? "<i class=\"fa fa6-star\"></i>" : '', "</div>");
+                        html += "    <div class=\"st-flight-status\" data-type=\"".concat(teamScenarioStatus, "\">").concat(teamScenarioData ? teamScenarioData.join(' / ') : '', "</div>");
+                        playerIds.forEach(function (playerId) {
+                            var playerScenarioData = _this.playerFlightLog[playerId][scenarioId];
+                            var playerScenarioStatus = 'unplayed';
+                            if (playerScenarioData && playerScenarioData.length === 2) {
+                                if (playerScenarioData[0] > 0) {
+                                    playerScenarioStatus = 'success';
+                                }
+                                else {
+                                    playerScenarioStatus = 'failure';
+                                }
+                            }
+                            html += "    <div class=\"st-flight-status\" data-type=\"".concat(playerScenarioStatus, "\">").concat(playerScenarioData ? playerScenarioData.join(' / ') : '', "</div>");
+                        });
+                        html += "</div>";
+                    }
+                });
+            });
+        });
+        html += "<div class=\"st-flight-log-row\" style=\"flex-direction: column; font-size: 12px; width: 735px; gap: 0px;\">";
+        html += "<p><i class=\"fa6 fa6-clock\"></i> = ".concat(_('Real-time scenario'), "</p>");
+        html += "<p><i class=\"fa6 fa6-star\"></i> = ".concat(_('New'), "</p>");
+        html += "<p>".concat(_('* The Flight Log tracks games played from the 8th november 2024 and onwards, games played before this date are not shown. Your Flight Log gets deleted after not completing a game for 365 days.'), "</p>");
+        html += "<p>".concat(_('** Data is shown as WIN / LOSSES per scenario. If you have multiple games running, the data shown might be outdated as the Flight Log above gets populated at the start of the game.'), "</p>");
+        html += "</div>";
+        return html;
+    };
+    FlightLog.getTagsLabel = function (tags) {
+        if (tags.includes('promo')) {
+            return _('PROMO');
+        }
+        else if (tags.includes('base')) {
+            return _('BASE');
+        }
+        else if (tags.includes('turbulence')) {
+            return _('TURBULENCE');
+        }
+    };
+    FlightLog.teamFlightLog = null;
+    FlightLog.playerFlightLog = {};
+    return FlightLog;
+}());
 var ANIMATION_MS = 1000;
 var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var SkyTeam = /** @class */ (function () {
@@ -3377,6 +3841,7 @@ var SkyTeam = /** @class */ (function () {
         this.playerRoleManager = new PlayerRoleManager(this);
         this.diceManager = new DiceManager(this);
         this.tokenManager = new TokenManager(this);
+        this.alarmTokenManager = new AlarmTokenManager(this);
         this.communicationInfoManager = new CommunicationInfoManager(this);
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
@@ -3402,6 +3867,9 @@ var SkyTeam = /** @class */ (function () {
         this.setAlwaysFixTopActions();
         log("Starting game setup");
         log('gamedatas', data);
+        this.dontPreloadImage('skyteam-approach-tracks-1.png');
+        this.dontPreloadImage('skyteam-approach-tracks-2.png');
+        this.dontPreloadImage('skyteam-approach-tracks-3.png');
         var maintitlebarContent = $('maintitlebar_content');
         dojo.place('<div id="st-communication-wrapper"><div id="st-communication-info"></div></div>', $('pagesection_gameview'), 'last');
         dojo.place('<div id="st-player-dice-wrapper"><div id="st-player-dice"></div></div>', maintitlebarContent, 'last');
@@ -3415,11 +3883,11 @@ var SkyTeam = /** @class */ (function () {
         this.animationManager = new AnimationManager(this, { duration: ANIMATION_MS });
         // Setup Managers
         this.playerRoleManager.setUp(data);
+        this.actionSpaceManager.setUp(data);
         this.planeManager.setUp(data);
         this.reserveManager.setUp(data);
         this.diceManager.setUp(data);
         this.communicationInfoManager.setUp(data);
-        this.actionSpaceManager.setUp(data);
         // Setup UI
         this.playerSetup = new PlayerSetup(this, 'st-player-setup');
         this.endGameInfo = new EndGameInfo(this, 'st-end-game-info-wrapper');
@@ -3441,6 +3909,10 @@ var SkyTeam = /** @class */ (function () {
             localStorage.setItem("st-engine-loss-welcome-dialog-".concat(tableId), 'shown');
             this.helpDialogManager.showModuleHelp(null, 'engine-loss');
         }
+        if (data.scenario.modules.includes('stuck-landing-gear') && tableId && localStorage.getItem("st-stuck-landing-gear-welcome-dialog-".concat(tableId)) !== 'shown') {
+            localStorage.setItem("st-stuck-landing-gear-welcome-dialog-".concat(tableId), 'shown');
+            this.helpDialogManager.showModuleHelp(null, 'stuck-landing-gear');
+        }
         this.setupNotifications();
         log("Ending game setup");
     };
@@ -3451,6 +3923,7 @@ var SkyTeam = /** @class */ (function () {
     //
     SkyTeam.prototype.onEnteringState = function (stateName, args) {
         log('Entering state: ' + stateName, args.args);
+        this.planeManager.updateSpeedMarker();
         switch (stateName) {
             case 'playerSetup':
                 this.enteringPlayerSetup(args.args);
@@ -3541,6 +4014,7 @@ var SkyTeam = /** @class */ (function () {
         var _a;
         (_a = document.querySelector('.st-dice-placeholder')) === null || _a === void 0 ? void 0 : _a.remove();
         this.planeManager.unhighlightPlane();
+        this.planeManager.updateSpeedMarker();
         if (space) {
             var dieElement = this.diceManager.getCardElement(die);
             var dieElementClonePlaceholder = dieElement.cloneNode(true);
@@ -3561,6 +4035,9 @@ var SkyTeam = /** @class */ (function () {
                     var axisChange = copilotValue - pilotValue;
                     this.planeManager.hightlightAxis(this.planeManager.currentAxis + axisChange);
                 }
+            }
+            else if (space.startsWith('engine')) {
+                this.planeManager.updateSpeedMarker(die.value);
             }
             dojo.removeClass('confirmPlacement', 'disabled');
         }
@@ -3618,10 +4095,31 @@ var SkyTeam = /** @class */ (function () {
                     this.addActionButton('confirmReadyStrategy', _("I'm Ready"), function () { return _this.confirmReadyStrategy(); });
                     break;
                 case 'dicePlacementSelect':
+                    var dicePlacementSelectArgs_1 = args;
                     this.addActionButton('confirmPlacement', _("Confirm"), function () { return _this.confirmPlacement(); });
                     dojo.addClass('confirmPlacement', 'disabled');
                     if (args.canActivateAdaptation) {
                         this.addActionButton('useAdaptation', _("Use Special Ability: Adaptation"), function () { return _this.requestAdaptation(); }, null, null, 'gray');
+                    }
+                    else {
+                        var dice = this.diceManager.playerDiceStock.getCards();
+                        var diceThatCanBePlaced_1 = [];
+                        dice.forEach(function (die) {
+                            var minDieValue = Math.max(die.value - dicePlacementSelectArgs_1.nrOfCoffeeAvailable, die.type === 'traffic' ? 2 : 1);
+                            var maxDieValue = Math.min(die.value + dicePlacementSelectArgs_1.nrOfCoffeeAvailable, die.type === 'traffic' ? 5 : 6);
+                            var possibleDieValues = Array.from({ length: maxDieValue - minDieValue + 1 }, function (_, i) { return minDieValue + i; });
+                            possibleDieValues.forEach(function (dieValue) {
+                                if (_this.actionSpaceManager.getValidPlacements(dicePlacementSelectArgs_1.availableActionSpaces, dieValue).length > 0) {
+                                    diceThatCanBePlaced_1.push(die);
+                                }
+                            });
+                        });
+                        if (diceThatCanBePlaced_1.length === 0) {
+                            var diceThatCanNotBePlaced = dice.filter(function (die) { return !diceThatCanBePlaced_1.includes(die); });
+                            diceThatCanNotBePlaced.forEach(function (die) {
+                                _this.addActionButton('skipPlacement', dojo.string.substitute(_("Skip die with value ${diceIcon} (no placement possible)"), { diceIcon: die.value }), function () { return _this.skipPlacement(die.id); });
+                            });
+                        }
                     }
                     break;
                 case 'rerollDice':
@@ -3679,31 +4177,57 @@ var SkyTeam = /** @class */ (function () {
         var actionSpaceId = this.actionSpaceManager.selectedActionSpaceId;
         var diceId = this.diceManager.playerDiceStock.getSelection()[0].id;
         var diceValue = this.spendCoffee.currentDie ? this.spendCoffee.currentDie.side : null;
-        var confirmMessage = undefined;
-        if (actionSpaceId.startsWith('radio') && document.querySelectorAll('.st-approach-overlay-track-slot-highlighted').length === 0) {
-            confirmMessage = _('Your Radio reach is outside of the Approach Track. This action has no effect.');
+        var isSafeMode = Preferences.getSettingValue('st-safe-mode') === 'enabled';
+        var placement = { actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue, force: true };
+        if (isSafeMode) {
+            placement.force = false;
         }
-        else if (actionSpaceId.startsWith('concentration') && this.reserveManager.reserveCoffeeStock.getCards().length === 0) {
-            confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
-        }
-        var runnable = function () {
+        var data = { placement: JSON.stringify(placement) };
+        this.takeAction('confirmPlacement', data, function () {
+            console.log('oncomplete');
             _this.actionSpaceManager.selectedActionSpaceId = null;
             _this.actionSpaceManager.setActionSpacesSelectable({}, null);
             _this.diceManager.setSelectionMode('none', null);
             _this.spendCoffee.destroy();
-            _this.takeAction('confirmPlacement', {
-                placement: JSON.stringify({ actionSpaceId: actionSpaceId, diceId: diceId, diceValue: diceValue })
-            });
-        };
-        if (confirmMessage) {
-            this.wrapInConfirm(runnable, confirmMessage);
-        }
-        else {
-            runnable();
-        }
+        }, function (error) {
+            if (error.startsWith('!!!')) {
+                console.log(error);
+                var confirmMessage = undefined;
+                if (error === '!!!radioNoPlaneToken') {
+                    confirmMessage = _('The targeted Radio Space contains no Plane token.');
+                }
+                else if (error === '!!!concentrationNoCoffee') {
+                    confirmMessage = _('No Coffee tokens remaining. This action has no effect.');
+                }
+                else if (error === '!!!speedHigherThanBrakes') {
+                    confirmMessage = _('Your Speed is higher than your Brakes. This results in a Failure.');
+                }
+                else {
+                    var failure = error.replace('!!!', '');
+                    confirmMessage = "<p>".concat(_('This action results in the following critical failure:'), "</p>");
+                    confirmMessage += "<b>".concat(_this.getFailureReasonTitle(failure), "</b><br/>");
+                    confirmMessage += _this.getFailureReasonText(failure);
+                }
+                if (confirmMessage) {
+                    _this.wrapInConfirm(function () {
+                        placement.force = true;
+                        var data = { placement: JSON.stringify(placement) };
+                        _this.takeAction('confirmPlacement', data, function () {
+                            _this.actionSpaceManager.selectedActionSpaceId = null;
+                            _this.actionSpaceManager.setActionSpacesSelectable({}, null);
+                            _this.diceManager.setSelectionMode('none', null);
+                            _this.spendCoffee.destroy();
+                        });
+                    }, confirmMessage);
+                }
+            }
+        });
     };
     SkyTeam.prototype.skipInternPlacement = function () {
         this.takeAction('skipInternPlacement', {});
+    };
+    SkyTeam.prototype.skipPlacement = function (dieId) {
+        this.takeAction('skipPlacement', { dieId: dieId });
     };
     SkyTeam.prototype.confirmPlayerSetup = function (args) {
         if (!this.playerSetup.selectedRole) {
@@ -3799,6 +4323,7 @@ var SkyTeam = /** @class */ (function () {
     //// Utility methods
     ///////////////////////////////////////////////////
     SkyTeam.prototype.setFinalRound = function () {
+        this.planeManager.setSpeedMode('brakes');
         dojo.place("<p>".concat(_('This is the final round!'), "</p>"), $('st-final-round-notice'));
     };
     SkyTeam.prototype.unsetFinalRound = function () {
@@ -3856,19 +4381,18 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.getPlayer = function (playerId) {
         return Object.values(this.gamedatas.players).find(function (player) { return Number(player.id) == playerId; });
     };
-    SkyTeam.prototype.takeAction = function (action, data, onComplete) {
+    SkyTeam.prototype.takeAction = function (action, data, onComplete, onError) {
         if (onComplete === void 0) { onComplete = function () { }; }
-        if (this.checkLock()) {
-            data = data || {};
-            data.lock = true;
-            this.ajaxcall("/skyteam/skyteam/".concat(action, ".html"), data, this, onComplete);
-        }
+        if (onError === void 0) { onError = function (error) { }; }
+        // TODO ON NEXT PROJECTS USE checkAction: true
+        this.bgaPerformAction(action, data, { checkAction: false, lock: true })
+            .then(function () { return onComplete(); })
+            .catch(onError);
     };
     SkyTeam.prototype.takeNoLockAction = function (action, data, onComplete) {
         if (onComplete === void 0) { onComplete = function () { }; }
         this.disableActionButtons();
-        data = data || {};
-        this.ajaxcall("/skyteam/skyteam/".concat(action, ".html"), data, this, onComplete);
+        this.bgaPerformAction(action, data, { checkAction: false, lock: false }).then(function () { return onComplete(); });
     };
     SkyTeam.prototype.setTooltip = function (id, html) {
         this.addTooltipHtml(id, html, TOOLTIP_DELAY);
@@ -3883,13 +4407,14 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.isAskForConfirmation = function () {
         return true; // For now always ask for confirmation, might make this a preference later on.
     };
-    SkyTeam.prototype.wrapInConfirm = function (runnable, message) {
+    SkyTeam.prototype.wrapInConfirm = function (runnable, message, onCancel) {
         if (message === void 0) { message = _("This action can not be undone. Are you sure?"); }
+        if (onCancel === void 0) { onCancel = function () { }; }
         if (this.checkLock()) {
             if (this.isAskForConfirmation()) {
                 this.confirmationDialog(message, function () {
                     runnable();
-                });
+                }, onCancel);
             }
             else {
                 runnable();
@@ -3971,7 +4496,11 @@ var SkyTeam = /** @class */ (function () {
             ['internTrained', undefined],
             ['realTimeTimerStarted', 1],
             ['realTimeTimerCleared', 1],
-            ['internDieSkipped', 1]
+            ['dieSkipped', 1],
+            ['flightLogUpdated', 1],
+            ['alarmActivated', 1000],
+            ['alarmDeactivated', 1000],
+            ['dicePutAside', 1]
             // ['shortTime', 1],
             // ['fixedTime', 1000]
         ];
@@ -3985,6 +4514,16 @@ var SkyTeam = /** @class */ (function () {
             // make all notif as synchronous
             _this.notifqueue.setSynchronous(notif[0], notif[1]);
         });
+    };
+    SkyTeam.prototype.notif_alarmActivated = function (args) {
+        this.actionSpaceManager.activeAlarms.push(args.alarmToken);
+        this.actionSpaceManager.updateActiveAlarms();
+        this.alarmTokenManager.flipCard(args.alarmToken);
+    };
+    SkyTeam.prototype.notif_alarmDeactivated = function (args) {
+        this.actionSpaceManager.activeAlarms = this.actionSpaceManager.activeAlarms.filter(function (alarm) { return alarm.id !== args.alarmToken.id; });
+        this.actionSpaceManager.updateActiveAlarms();
+        this.planeManager.alarmTokenStock.removeCard(args.alarmToken);
     };
     SkyTeam.prototype.notif_newPhaseStarted = function (args) {
         this.communicationInfoManager.update(args.newPhase);
@@ -4009,25 +4548,60 @@ var SkyTeam = /** @class */ (function () {
         return Promise.resolve();
     };
     SkyTeam.prototype.notif_diceRolled = function (args) {
-        var _this = this;
-        this.diceManager.toggleShowPlayerDice(true);
-        var promises = args.dice.map(function (die) {
-            var cardStock = _this.diceManager.getCardStock(die);
-            if (!cardStock) {
-                _this.diceManager.playerDiceStock.addCard(die);
-                cardStock = _this.diceManager.getCardStock(die);
-            }
-            var originalDie = cardStock.getCards().find(function (originalDie) { return originalDie.id === die.id; });
-            _this.diceManager.updateDieValue(__assign(__assign({}, originalDie), { side: 7 - die.side }));
-            return _this.delay(500).then(function () { return _this.diceManager.updateDieValue(die); });
+        return __awaiter(this, void 0, void 0, function () {
+            var _loop_3, this_1, _i, _a, die;
+            var _this = this;
+            return __generator(this, function (_b) {
+                this.diceManager.toggleShowPlayerDice(true);
+                _loop_3 = function (die) {
+                    var cardStock = this_1.diceManager.getCardStock(die);
+                    if (!cardStock) {
+                        this_1.diceManager.playerDiceStock.addCard(die);
+                        cardStock = this_1.diceManager.getCardStock(die);
+                    }
+                    var originalDie = cardStock.getCards().find(function (originalDie) { return originalDie.id === die.id; });
+                    this_1.diceManager.updateDieValue(die, true);
+                    window.requestAnimationFrame(function () { return __awaiter(_this, void 0, void 0, function () {
+                        var _this = this;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, this.delay(500).then(function () { return _this.diceManager.updateDieValueVisual(__assign(__assign({}, originalDie), { side: 7 - die.side })); })];
+                                case 1:
+                                    _a.sent();
+                                    console.log('after1');
+                                    window.requestAnimationFrame(function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var _this = this;
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, this.delay(500).then(function () { return _this.diceManager.updateDieValueVisual(die); })];
+                                                case 1:
+                                                    _a.sent();
+                                                    console.log('after2');
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    }); });
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); });
+                };
+                this_1 = this;
+                for (_i = 0, _a = args.dice; _i < _a.length; _i++) {
+                    die = _a[_i];
+                    _loop_3(die);
+                }
+                console.log('end');
+                return [2 /*return*/];
+            });
         });
-        return Promise.all(promises);
     };
     SkyTeam.prototype.notif_playerUsedAdaptation = function (args) {
         this.specialAbilityCardManager.updateRolesThatUsedCard(this.planeManager.specialAbilityCardStock.getCards().find(function (card) { return card.type === 2; }), args.rolesThatUsedAdaptation);
     };
     SkyTeam.prototype.notif_diePlaced = function (args) {
-        return this.actionSpaceManager.moveDieToActionSpace(args.die);
+        var _this = this;
+        return this.actionSpaceManager.moveDieToActionSpace(args.die).then(function () { return _this.planeManager.updateSpeedMarker(); });
     };
     SkyTeam.prototype.notif_planeAxisChanged = function (args) {
         return this.planeManager.updateAxis(args.axis);
@@ -4081,12 +4655,18 @@ var SkyTeam = /** @class */ (function () {
             return this.diceManager.otherPlayerDiceStock.addCards(args.dice);
         }
     };
+    SkyTeam.prototype.notif_dicePutAside = function (args) {
+        this.actionSpaceManager.removeDice(args.dice);
+    };
     SkyTeam.prototype.notif_victoryConditionsUpdated = function (args) {
         this.victoryConditions.updateVictoryConditions(args.victoryConditions);
     };
     SkyTeam.prototype.notif_planeLanded = function (args) {
         var _this = this;
-        return this.endGameInfo.setEndGameInfo(args.victoryConditions).then(function () { return Object.keys(_this.gamedatas.players).forEach(function (playerId) { return _this.setScore(Number(playerId), args.score); }); });
+        return this.endGameInfo.setEndGameInfo(args.victoryConditions)
+            .then(function () {
+            Object.keys(_this.gamedatas.players).forEach(function (playerId) { return _this.setScore(Number(playerId), args.score); });
+        });
     };
     SkyTeam.prototype.notif_newRoundStarted = function (args) {
         if (args.finalRound) {
@@ -4107,9 +4687,10 @@ var SkyTeam = /** @class */ (function () {
     };
     SkyTeam.prototype.notif_diceRemoved = function (args) {
         this.actionSpaceManager.removeDice(args.dice);
+        this.planeManager.updateSpeedMarker();
     };
     SkyTeam.prototype.notif_windChanged = function (args) {
-        return this.planeManager.updateWind(args.wind);
+        return this.planeManager.updateWind(args.wind, args.windModifier);
     };
     SkyTeam.prototype.notif_internTrained = function (args) {
         if (args.playerId === this.getPlayerId()) {
@@ -4125,9 +4706,13 @@ var SkyTeam = /** @class */ (function () {
     SkyTeam.prototype.notif_realTimeTimerCleared = function () {
         this.realTimeCounter.clear();
     };
-    SkyTeam.prototype.notif_internDieSkipped = function (args) {
-        this.diceManager.playerDiceStock.removeCard(args.internDie);
-        this.diceManager.otherPlayerDiceStock.removeCard(args.internDie);
+    SkyTeam.prototype.notif_dieSkipped = function (args) {
+        this.diceManager.playerDiceStock.removeCard(args.die);
+        this.diceManager.otherPlayerDiceStock.removeCard(args.die);
+    };
+    SkyTeam.prototype.notif_flightLogUpdated = function (args) {
+        FlightLog.teamFlightLog = args.team;
+        FlightLog.playerFlightLog = args.players;
     };
     SkyTeam.prototype.format_string_recursive = function (log, args) {
         var _this = this;
@@ -4163,6 +4748,13 @@ var SkyTeam = /** @class */ (function () {
         }
         return this.inherited(arguments);
     };
+    /* @Override */
+    SkyTeam.prototype.showMessage = function (msg, type) {
+        if (type == "error" && msg && msg.startsWith("!!!")) {
+            return; // suppress red banner and gamelog message
+        }
+        return this.inherited(arguments);
+    };
     SkyTeam.prototype.updatePlayerOrdering = function () {
         var _this = this;
         this.inherited(arguments);
@@ -4170,6 +4762,9 @@ var SkyTeam = /** @class */ (function () {
         dojo.place("<div id=\"st-victory-conditions-panel\" class=\"player-board st-victory-conditions\" style=\"height: auto;\"></div>", "player_boards", 'first');
         this.victoryConditions = new VictoryConditions(this, 'st-victory-conditions-panel');
         this.victoryConditions.updateVictoryConditions(this.gamedatas.victoryConditions);
+        dojo.place("<div class=\"player-board\" style=\"height: auto;\"><div id=\"st-system-buttons\"></div></div>", "player_boards", 'last');
+        FlightLog.addButton(this, "st-system-buttons");
+        Preferences.addButton(this, "st-system-buttons");
     };
     SkyTeam.prototype.formatWithIcons = function (description) {
         //@ts-ignore

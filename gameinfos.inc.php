@@ -15,15 +15,6 @@ $gameinfos = array(
 // Name of the game in English (will serve as the basis for translation) 
 'game_name' => "Sky Team",
 
-// Game designer (or game designers, separated by commas)
-'designer' => 'Luc Rémond',
-
-// Game artist (or game artists, separated by commas)
-'artist' => 'Eric Hibbeler, Adrien Rives',
-
-// Year of FIRST publication of this game. Can be negative.
-'year' => 2023,
-
 // Game publisher (use empty string if there is no publisher)
 'publisher' => 'Le Scorpion Masqué',
 
@@ -86,18 +77,6 @@ $gameinfos = array(
 // NB: the default will be the first language in this list spoken by the player, so you should list them by popularity/preference.
 'language_dependency' => false,
 
-// Complexity of the game, from 0 (extremely simple) to 5 (extremely complex)
-'complexity' => 3,    
-
-// Luck of the game, from 0 (absolutely no luck in this game) to 5 (totally luck driven)
-'luck' => 3,    
-
-// Strategy of the game, from 0 (no strategy can be setup) to 5 (totally based on strategy)
-'strategy' => 4,
-
-// Diplomacy of the game, from 0 (no interaction in this game) to 5 (totally based on interaction and discussion between players)
-'diplomacy' => 4,
-
 // Colors attributed to players
 'player_colors' => array( "000000", "000000"),
 
@@ -124,16 +103,6 @@ $gameinfos = array(
     //  maximum possible value: unlimited
     //  minimum possible value: 740
     'max' => null
-),
-
-// Game presentation
-// Short game presentation text that will appear on the game description page, structured as an array of paragraphs.
-// Each paragraph must be wrapped with totranslate() for translation and should not contain html (plain text without formatting).
-// A good length for this text is between 100 and 150 words (about 6 to 9 lines on a standard display)
-'presentation' => array(
-    totranslate("Sky Team is a co-operative game, exclusively for two players, in which you play a pilot and co-pilot at the controls of an airliner. Your goal is to work together as a team to land your airplane in different airports around the world."),
-    totranslate("To land your plane, you need to silently assign your dice to the correct spaces in your cockpit to balance the axis of your plane, control its speed, deploy the flaps, extend the landing gear, contact the control tower to clear your path, and even have a little coffee to improve your concentration enough to change the value of your dice."),
-    totranslate("If the aircraft tilts too much and stalls, overshoots the airport, or collides with another aircraft, you lose the game...and your pilot's license...and probably your life."),
 ),
 
 //////// BGA SANDBOX ONLY PARAMETERS (DO NOT MODIFY)

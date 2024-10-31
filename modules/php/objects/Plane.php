@@ -14,6 +14,7 @@ class Plane extends APP_GameClass {
     public int $altitude;
     public int $kerosene;
     public int $wind;
+    public int $windModifier;
     public array $switches;
 
     public function __construct($axis, $aerodynamicsBlue, $aerodynamicsOrange, $brake, $approach, $altitude, $kerosene, $wind)
@@ -26,6 +27,7 @@ class Plane extends APP_GameClass {
         $this->altitude = $altitude;
         $this->kerosene = $kerosene;
         $this->wind = $wind;
+        $this->windModifier = $this->getWindModifier();
         $this->switches = PlaneSwitch::fromArray(self::getCollectionFromDB('SELECT * FROM plane_switch'));
     }
 
@@ -71,7 +73,7 @@ class Plane extends APP_GameClass {
                 case 11:
                     return -3;
             }
-        } else {
+        } else if (SkyTeam::$instance->isModuleActive(MODULE_WINDS)) {
             switch ($this->wind) {
                 case 0:
                 case 19:
@@ -102,5 +104,6 @@ class Plane extends APP_GameClass {
                     return +3;
             }
         }
+        return 0;
     }
 }
