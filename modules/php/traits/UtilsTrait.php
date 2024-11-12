@@ -4,11 +4,58 @@ namespace traits;
 
 use managers\objects\Scenario;
 use objects\AltitudeTrack;
+use objects\Dice;
 use utils\ReflectionUtils;
 use objects\ApproachTrack;
 
 trait UtilsTrait
 {
+    function handleTurbulenceAndBadVisibility($playerId) {
+        if ($this->isModuleActive(MODULE_BAD_VISIBILITY)) {
+            $dicePutAside = Dice::fromArray($this->dice->getCardsInLocation(LOCATION_PLAYER_ASIDE, $playerId));
+            if (sizeof($dicePutAside) > 0) {
+                $die = current($dicePutAside);
+                $die->rollDie();
+                $this->dice->moveCard($die->id, LOCATION_PLAYER, $playerId);
+                $diceRevealed = Dice::fromArray($this->dice->getCards([$die->id]));
+                $this->notifyPlayer($playerId, "diceRolled", clienttranslate('<b>Bad Visibility:</b> ${player_name} gains ${icon_dice}'), [
+                    'playerId' => intval($playerId),
+                    'player_name' => $this->getPlayerName($playerId),
+                    'dice' => $diceRevealed,
+                    'icon_dice' => $diceRevealed
+                ]);
+                $this->notifyAllPlayers("gameLog", clienttranslate('<b>Bad Visibility:</b> ${player_name} gains a new die and rolls it'), [
+                    'playerId' => intval($playerId),
+                    'player_name' => $this->getPlayerName($playerId)
+                ]);
+            }
+        }
+        if ($this->isModuleActive(MODULE_TURBULENCE)) {
+            $plane = $this->planeManager->get();
+            $altitudeTrackSpace = $this->getAltitudeTrack()->spaces[$plane->altitude];
+            if (array_key_exists(TURBULENCE, $altitudeTrackSpace) && $altitudeTrackSpace[TURBULENCE]) {
+                $remainingPlayerDice = Dice::fromArray($this->dice->getCardsOfTypeInLocation(DICE_PLAYER, null, LOCATION_PLAYER, $playerId));
+                if (sizeof($remainingPlayerDice) > 0) {
+                    foreach ($remainingPlayerDice as $dieToRoll) {
+                        $dieToRoll->rollDie();
+                    }
+
+                    $this->notifyPlayer($playerId, "diceRolled", clienttranslate('<b>Turbulence:</b> ${player_name} re-rolls ${icon_dice}'), [
+                        'playerId' => intval($playerId),
+                        'player_name' => $this->getPlayerName($playerId),
+                        'dice' => $remainingPlayerDice,
+                        'icon_dice' => $remainingPlayerDice
+                    ]);
+
+                    $this->notifyAllPlayers("gameLog", clienttranslate('<b>Turbulence:</b> ${player_name} re-rolls remaining dice'), [
+                        'playerId' => intval($playerId),
+                        'player_name' => $this->getPlayerName($playerId)
+                    ]);
+                }
+            }
+        }
+    }
+
     function getRealTimeTimerSeconds(): int
     {
         $value = $this->getGameStateValue(REAL_TIME_SECONDS);

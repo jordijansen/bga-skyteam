@@ -306,13 +306,14 @@ trait StateTrait
 
     function stPlaneLanded()
     {
-        $this->flightLogManager->saveScenarioResult(true);
 
         $results = $this->planeManager->getVictoryConditionsResults();
         $failure = sizeof(array_filter($results, fn($victoryCondition) => $victoryCondition['status'] == 'failed')) > 0;
         $score = 0;
+
         if ($failure) {
             $score = -1;
+            $this->flightLogManager->saveScenarioResult(false);
         } else {
             $approachTrack = $this->getApproachTrack();
             if ($approachTrack->category == APPROACH_GREEN) {
@@ -324,6 +325,7 @@ trait StateTrait
             } else if ($approachTrack->category == APPROACH_BLACK) {
                 $score = 4;
             }
+            $this->flightLogManager->saveScenarioResult(true);
         }
         $this->notifyAllPlayers('planeLanded', clienttranslate('Plane landed'), [
             "failure" => $failure,

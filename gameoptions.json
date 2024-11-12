@@ -3,15 +3,15 @@
     "name": "Expansion",
     "level": "major",
     "values": {
-      "2": {
-        "name": "Turbulence",
-        "tmdisplay": "Turbulence",
-        "description": "Welcome to Sky Team Turbulence. This is an expansion to the Sky Team base game, offering new modules and new scenarios at new destinations."
-      },
       "1": {
         "name": "Base Game",
         "description": "Take the controls of an airliner with your trusty crewmate, coordinate your efforts, and land your aircraft all over the world!",
         "default": true
+      },
+      "2": {
+        "name": "Turbulence",
+        "tmdisplay": "Turbulence",
+        "description": "Welcome to Sky Team Turbulence. This is an expansion to the Sky Team base game, offering new modules and new scenarios at new destinations."
       }
     }
   },
@@ -425,7 +425,7 @@
       "31": {
         "name": "Yellow: KEF - Keflav\u00edk",
         "tmdisplay": "Yellow: KEF - Keflav\u00edk",
-        "description": "<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Ice Brakes & 1 Special Ability<br /><br />As you pierce the clouds, you find yourself in the midst of an incredible blizzard. The runway lights can be dimly seen through the snow. Your passengers are depending on you. Concentrate. Focus. Land.",
+        "description": "<b>Difficulty:</b> Yellow (Exceptional Conditions)<br /><b>Altitude Track:</b> Green/Yellow<br /><b>Modules:</b> Traffic, Ice Brakes & 1 Special Ability<br /><br />As you break through the low clouds, you see the peninsula with the Icelandic airport. It is all white, covered in new-fallen snow. You're going to need a light touch to arrive safely in the 'Land of Fire and Ice'.",
         "nobeginner": true
       },
       "32": {
@@ -449,7 +449,7 @@
       "7": {
         "name": "Red: HND - Haneda",
         "tmdisplay": "Red: HND - Haneda",
-        "description": "<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Intern & 1 Special Ability<br /><br />Your air corridor has been cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach.",
+        "description": "<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Intern & 1 Special Ability<br /><br />Your air corridor has been reduced. It is hanami, the cherry blossom festival, and the skies are packed with planes. It will take all your focus to navigate your approach",
         "nobeginner": true
       },
       "12": {
@@ -479,7 +479,7 @@
       "25": {
         "name": "Red: GIG - Gale\u00e3o",
         "tmdisplay": "Red: GIG - Gale\u00e3o",
-        "description": "<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Winds, Kerosene Leak & 2 Special Abilities<br /><br />The Rio de Janeiro control tower is not responding. The strong tail wind is bringing you in much too fast as you pass over Copacabana beach. Make a wide turn and control your approach speed.",
+        "description": "<b>Difficulty:</b> Red (Elite Pilots Only)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Winds, Kerosene Leak & 2 Special Abilities<br /><br />Arriving at the tail end of a rare South Atlantic tropical cyclone means seriously high winds and a narrow air corridor. You have what it takes to make this landing... But why are your palms so sweaty?",
         "nobeginner": true
       },
       "27": {
@@ -527,7 +527,7 @@
       "26": {
         "name": "Black: PBH - Paro (Real-Time)",
         "tmdisplay": "Black: PBH - Paro (Real-Time)",
-        "description": "<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities<br /><br />They call them foothills, but anywhere else they\u2019d be called mountains. You are landing in Bhutan, on the edge of the Himalayas, at an altitude of over 7,000 feet. It\u2019s a narrow valley. The mountains are so high and jagged...",
+        "description": "<b>Difficulty:</b> Black (Heroic Landing)<br /><b>Altitude Track:</b> Red/Black<br /><b>Modules:</b> Traffic, Turns, Kerosene, Real-Time & 2 Special Abilities<br /><br />Welcome back to the most dangerous airport in the world. The weather is clear at least, but one thought keeps returning: Only 8 pilots in the world are certified to land here. It’s time to add your name to the list... Or not.",
         "nobeginner": true
       },
       "30": {

@@ -3450,6 +3450,7 @@ var WelcomeDialog = /** @class */ (function () {
     WelcomeDialog.prototype.createContent = function () {
         var html = '';
         html += "<p><b>".concat(_('NEW: The Winner of the Spiel des Jahres is expanding! The Turbulence expansion is now live with 6 new scenarios (and there are more on the way!). On the agenda for your next landings: Terrible weather conditions and technical glitches. In addition to new destinations, the expansion introduces new rules and new modules, such as Turbulence, Low Visibility, and Alarms, that will add depth and diversity to your favourite game. Hang on to your seats… It is going to be a bumpy ride!'), "</b></p>");
+        html += "<p><b>".concat(dojo.string.substitute(_('More info: ${link}'), { link: "<a href=\"https://boardgamearena.com/forum/viewtopic.php?t=39522\">https://boardgamearena.com/forum/viewtopic.php?t=39522</a>" }), "</b></p> ");
         html += "<div style=\"display: flex; justify-content: center;\"><img src=\"".concat(g_gamethemeurl, "/img/skyteam-logo.png\" width=\"100%\" style=\"max-width: 300px;\"></img></div>");
         html += "<p>".concat(_('In this cooperative game, you play a team of pilots charged with landing your commercial airliner at airports all over the world. But landing an airplane is not as easy as you might think! '), "</p>");
         html += "<h1>".concat(_('Communications'), "</h1>");

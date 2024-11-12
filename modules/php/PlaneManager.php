@@ -457,6 +457,8 @@ class PlaneManager extends APP_DbObject
                     SkyTeam::$instance->setGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC, false);
                 }
 
+                SkyTeam::$instance->handleTurbulenceAndBadVisibility($playerId);
+
                 SkyTeam::$instance->gamestate->jumpToState(ST_PLACE_INTERN);
                 $continue = false;
             }
