@@ -1,8 +1,9 @@
 <?php
 namespace managers\objects;
-use APP_GameClass;
 
-class PlaneSwitch extends APP_GameClass {
+use SkyTeam;
+
+class PlaneSwitch {
 
     public string $id;
     public bool $value;
@@ -18,7 +19,7 @@ class PlaneSwitch extends APP_GameClass {
     }
 
     public function save() {
-        self::DbQuery("UPDATE plane_switch SET value = $this->value WHERE id = '$this->id'");
+        SkyTeam::DbQuery("UPDATE plane_switch SET value = $this->value WHERE id = '$this->id'");
     }
 
     /**

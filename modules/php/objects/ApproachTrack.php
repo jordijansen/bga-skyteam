@@ -1,8 +1,7 @@
 <?php
 namespace objects;
-use APP_GameClass;
 
-class ApproachTrack extends APP_GameClass {
+class ApproachTrack {
 
     public int $type;
     public string $category;

@@ -55,10 +55,6 @@ class SkyTeam implements SkyTeamGame {
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
-        // Init Modules
-        // @ts-ignore
-        // Set mobile viewport for portrait orientation based on gameinfos.inc.php
-        this.default_viewport = "width=740"
     }
 
     /*

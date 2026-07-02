@@ -3,8 +3,7 @@ const determineBoardWidth = (game: SkyTeamGame) => {
 }
 
 const determineMaxZoomLevel = (game: SkyTeamGame) => {
-    const bodycoords = dojo.marginBox("zoom-overall");
-    const contentWidth = bodycoords.w;
+    const contentWidth = $('zoom-overall').clientWidth;
     const rowWidth = determineBoardWidth(game);
 
     return contentWidth / rowWidth;
@@ -13,7 +12,7 @@ const determineMaxZoomLevel = (game: SkyTeamGame) => {
 const getZoomLevels = (maxZoomLevel: number) => {
     let zoomLevels = [];
     let increments = 0.05;
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= 20; i++) {
         zoomLevels.push(1 - (increments * i));
     }
 
@@ -29,7 +28,6 @@ const getZoomLevels = (maxZoomLevel: number) => {
     zoomLevels = [...zoomLevels, 1, maxZoomLevel];
     zoomLevels = zoomLevels.sort();
     zoomLevels = zoomLevels.filter(zoomLevel => (zoomLevel <= maxZoomLevel) && (zoomLevel > 0.3))
-
     return zoomLevels;
 }
 

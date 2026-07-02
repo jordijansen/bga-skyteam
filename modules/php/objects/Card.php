@@ -1,8 +1,7 @@
 <?php
 namespace objects;
-use APP_GameClass;
 
-class Card extends APP_GameClass {
+class Card {
 
     public int $id;
     public string $location;

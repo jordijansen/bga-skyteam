@@ -1,8 +1,7 @@
 <?php
 namespace objects;
-use APP_GameClass;
 
-class Token extends APP_GameClass {
+class Token {
 
     public int $id;
     public string $location;

@@ -2872,4 +2872,8 @@ html .whiteblock:empty, .mode_3d #game_play_area_background .whiteblock:empty {
   height: 50px !important;
 }
 
+html[data-theme=dark] .player-board, html[data-theme=dark] #st-flight-log-button {
+  color: black;
+}
+
 /*# sourceMappingURL=skyteam.css.map */

@@ -1,9 +1,8 @@
 <?php
 namespace managers\objects;
-use APP_GameClass;
 use SkyTeam;
 
-class SpecialAbilityCard extends APP_GameClass {
+class SpecialAbilityCard {
 
     public int $id;
     public int $type;

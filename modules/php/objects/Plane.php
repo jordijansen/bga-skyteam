@@ -1,10 +1,9 @@
 <?php
 namespace objects;
-use APP_GameClass;
 use managers\objects\PlaneSwitch;
 use SkyTeam;
 
-class Plane extends APP_GameClass {
+class Plane {
 
     public int $axis;
     public int $aerodynamicsBlue;
@@ -28,7 +27,7 @@ class Plane extends APP_GameClass {
         $this->kerosene = $kerosene;
         $this->wind = $wind;
         $this->windModifier = $this->getWindModifier();
-        $this->switches = PlaneSwitch::fromArray(self::getCollectionFromDB('SELECT * FROM plane_switch'));
+        $this->switches = PlaneSwitch::fromArray(SkyTeam::getCollectionFromDB('SELECT * FROM plane_switch'));
     }
 
     public static function from($dbCard) {

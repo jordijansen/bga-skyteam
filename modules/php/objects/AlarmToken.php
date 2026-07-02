@@ -1,10 +1,9 @@
 <?php
 namespace managers\objects;
-use APP_GameClass;
 use objects\Token;
 use SkyTeam;
 
-class AlarmToken extends APP_GameClass {
+class AlarmToken {
 
     public int $id;
     public string $location;

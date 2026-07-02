@@ -1024,7 +1024,7 @@ $this->SCENARIOS = [
         'modules' => [MODULE_TRAFFIC, MODULE_WINDS, MODULE_INTERN],
     ],
     APPROACH_YELLOW_TER_LAJES => [
-        'tags' => ['base'],
+        'tags' => ['promo'],
         'approach' => APPROACH_YELLOW_TER_LAJES,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],

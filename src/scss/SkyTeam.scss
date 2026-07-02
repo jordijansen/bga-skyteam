@@ -453,6 +453,12 @@ html, .mode_3d #game_play_area_background {
 }
 
 
+html[data-theme="dark"] {
+  .player-board, #st-flight-log-button {
+    color: black;
+  }
+}
+
 
 
 

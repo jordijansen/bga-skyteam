@@ -1,8 +1,7 @@
 <?php
 namespace objects;
-use APP_GameClass;
 
-class AltitudeTrack extends APP_GameClass {
+class AltitudeTrack {
 
     public int $type;
     public array $categories;

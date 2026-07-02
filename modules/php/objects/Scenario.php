@@ -1,8 +1,7 @@
 <?php
 namespace managers\objects;
-use APP_GameClass;
 
-class Scenario extends APP_GameClass {
+class Scenario {
 
     public int $id;
     public int $approach;

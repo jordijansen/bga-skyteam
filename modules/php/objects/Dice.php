@@ -1,8 +1,9 @@
 <?php
 namespace objects;
-use APP_GameClass;
 
-class Dice extends APP_GameClass {
+use SkyTeam;
+
+class Dice {
 
     public int $id;
     public string $type;
@@ -20,7 +21,7 @@ class Dice extends APP_GameClass {
         $this->typeArg = $dbCard['card_type_arg'] ?? $dbCard['type_arg'];
         $this->location = $dbCard['card_location'] ?? $dbCard['location'];
         $this->locationArg = $dbCard['card_location_arg'] ?? $dbCard['location_arg'];
-        $this->side = self::getUniqueValueFromDB('SELECT card_side FROM dice WHERE card_id = '.$this->id);
+        $this->side = SkyTeam::getUniqueValueFromDB('SELECT card_side FROM dice WHERE card_id = '.$this->id);
         $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
     }
 
@@ -28,7 +29,7 @@ class Dice extends APP_GameClass {
     {
         $this->side = bga_rand(1, 6);
         $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
-        self::DbQuery("UPDATE dice SET card_side = $this->side WHERE card_id = $this->id");
+        SkyTeam::DbQuery("UPDATE dice SET card_side = $this->side WHERE card_id = $this->id");
         return $this->side;
     }
 
@@ -36,7 +37,7 @@ class Dice extends APP_GameClass {
     {
         $this->side = $side;
         $this->value = $this->type == 'traffic' ? $this->getTrafficDieValue() : $this->side;
-        self::DbQuery("UPDATE dice SET card_side = $side WHERE card_id = $this->id");
+        SkyTeam::DbQuery("UPDATE dice SET card_side = $side WHERE card_id = $this->id");
     }
 
     public function getTrafficDieValue()

@@ -2128,15 +2128,14 @@ var determineBoardWidth = function (game) {
     return game.planeManager.calculatePlaneWidth(game.gamedatas);
 };
 var determineMaxZoomLevel = function (game) {
-    var bodycoords = dojo.marginBox("zoom-overall");
-    var contentWidth = bodycoords.w;
+    var contentWidth = $('zoom-overall').clientWidth;
     var rowWidth = determineBoardWidth(game);
     return contentWidth / rowWidth;
 };
 var getZoomLevels = function (maxZoomLevel) {
     var zoomLevels = [];
     var increments = 0.05;
-    for (var i = 1; i <= 9; i++) {
+    for (var i = 1; i <= 20; i++) {
         zoomLevels.push(1 - (increments * i));
     }
     if (maxZoomLevel > 1) {
@@ -3847,10 +3846,6 @@ var SkyTeam = /** @class */ (function () {
         this.actionSpaceManager = new ActionSpaceManager(this);
         this.helpDialogManager = new HelpDialogManager(this);
         this.specialAbilityCardManager = new SpecialAbilityCardManager(this);
-        // Init Modules
-        // @ts-ignore
-        // Set mobile viewport for portrait orientation based on gameinfos.inc.php
-        this.default_viewport = "width=740";
     }
     /*
         setup:
