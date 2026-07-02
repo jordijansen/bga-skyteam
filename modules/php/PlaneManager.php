@@ -457,8 +457,6 @@ class PlaneManager extends APP_DbObject
                     SkyTeam::$instance->setGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC, false);
                 }
 
-                SkyTeam::$instance->handleTurbulenceAndBadVisibility($playerId);
-
                 SkyTeam::$instance->gamestate->jumpToState(ST_PLACE_INTERN);
                 $continue = false;
             }
@@ -517,14 +515,18 @@ class PlaneManager extends APP_DbObject
         $planeTurnFailure = false;
 
         for ($i = 1; $i <= $nrOfSpacesToApproach; $i++) {
-            $currentApproachSpace = SkyTeam::$instance->getApproachTrack()->spaces[$plane->approach];
-            if (SkyTeam::$instance->isModuleActive(MODULE_TURNS) && array_key_exists(ALLOWED_AXIS, $currentApproachSpace)) {
-                // The current approach track space has turn requirements, checking now to see if they are in the allowed axis range.
-                if (!in_array($plane->axis, $currentApproachSpace[ALLOWED_AXIS])) {
-                    $planeTurnFailure = true;
-                    break;
+            // Check if the approach slot is still on the ApproachTrack, we might be overshooting it.
+            if (array_key_exists($plane->approach, SkyTeam::$instance->getApproachTrack()->spaces)) {
+                $currentApproachSpace = SkyTeam::$instance->getApproachTrack()->spaces[$plane->approach];
+                if (SkyTeam::$instance->isModuleActive(MODULE_TURNS) && array_key_exists(ALLOWED_AXIS, $currentApproachSpace)) {
+                    // The current approach track space has turn requirements, checking now to see if they are in the allowed axis range.
+                    if (!in_array($plane->axis, $currentApproachSpace[ALLOWED_AXIS])) {
+                        $planeTurnFailure = true;
+                        break;
+                    }
                 }
             }
+
             if (sizeof(SkyTeam::$instance->tokens->getCardsInLocation(LOCATION_APPROACH, $plane->approach)) > 0) {
                 $planeCollision = true;
                 break;

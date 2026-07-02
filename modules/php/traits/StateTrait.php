@@ -317,13 +317,13 @@ trait StateTrait
         } else {
             $approachTrack = $this->getApproachTrack();
             if ($approachTrack->category == APPROACH_GREEN) {
-                $score = 1;
+                $score = 5;
             } else if ($approachTrack->category == APPROACH_YELLOW) {
-                $score = 2;
+                $score = 10;
             } else if ($approachTrack->category == APPROACH_RED) {
-                $score = 3;
+                $score = 15;
             } else if ($approachTrack->category == APPROACH_BLACK) {
-                $score = 4;
+                $score = 20;
             }
             $this->flightLogManager->saveScenarioResult(true);
         }

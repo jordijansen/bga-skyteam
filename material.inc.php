@@ -1175,76 +1175,76 @@ $this->SCENARIOS = [
     ],
     // TURBULENCE
     APPROACH_EXP_YELLOW_DUS => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_YELLOW_DUS,
         'altitude' => ALTITUDE_A,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_EXP_RED_DUS => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_DUS,
         'altitude' => ALTITUDE_C,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_REAL_TIME, MODULE_KEROSENE_LEAK, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_YELLOW_TER => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_YELLOW_TER,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2,
     ],
     APPROACH_EXP_BLACK_TER => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_BLACK_TER,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_ENGINE_LOSS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_BLACK_NZIR => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_BLACK_NZIR,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_KEROSENE, MODULE_INTERN, MODULE_WINDS_HEADON, MODULE_PENGUINS],
     ],
     APPROACH_EXP_RED_NZIR => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_NZIR,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ICE_BRAKES, MODULE_WINDS_HEADON, MODULE_SPECIAL_ABILITIES, MODULE_PENGUINS],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_BLACK_KBP => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence', 'new'],
         'approach' => APPROACH_EXP_BLACK_KBP,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_TOTAL_TRUST, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_EXP_YELLOW_KBP => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence', 'new'],
         'approach' => APPROACH_EXP_YELLOW_KBP,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TOTAL_TRUST, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_EXP_RED_PEK => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_PEK,
         'altitude' => ALTITUDE_C,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_WINDS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_GREEN_PEK => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_GREEN_PEK,
         'altitude' => ALTITUDE_A,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_BLACK_MAD => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_BLACK_MAD,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_MODIFIED_ALTITUDE, MODULE_KEROSENE, MODULE_REAL_TIME, MODULE_SPECIAL_ABILITIES],
@@ -1252,7 +1252,7 @@ $this->SCENARIOS = [
         'modifiedAltitude' => 2
     ],
     APPROACH_EXP_YELLOW_MAD => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_YELLOW_MAD,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_MODIFIED_ALTITUDE, MODULE_INTERN, MODULE_SPECIAL_ABILITIES],
@@ -1260,55 +1260,55 @@ $this->SCENARIOS = [
         'modifiedAltitude' => 2
     ],
     APPROACH_EXP_RED_WAW => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_WAW,
         'altitude' => ALTITUDE_RED_BLACK,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_STUCK_LANDING_GEAR, MODULE_ALARMS, MODULE_WINDS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_YELLOW_WAW => [
-        'tags' => ['turbulence', 'coming-soon'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_YELLOW_WAW,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_STUCK_LANDING_GEAR, MODULE_ALARMS, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_RED_SYD => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_SYD,
         'altitude' => ALTITUDE_C,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 2
     ],
     APPROACH_EXP_GREEN_SYD => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_GREEN_SYD,
         'altitude' => ALTITUDE_GREEN_YELLOW,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_ALARMS, MODULE_SPECIAL_ABILITIES],
         'nrOfSpecialAbilities' => 1
     ],
     APPROACH_EXP_RED_SXM => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_RED_SXM,
         'altitude' => ALTITUDE_D,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_MODIFIED_ALTITUDE, MODULE_KEROSENE, MODULE_INTERN],
         'modifiedAltitude' => 2
     ],
     APPROACH_EXP_YELLOW_SXM => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_YELLOW_SXM,
         'altitude' => ALTITUDE_B,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TURBULENCE, MODULE_MODIFIED_ALTITUDE, MODULE_INTERN],
         'modifiedAltitude' => 2
     ],
     APPROACH_EXP_BLACK_CPT => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_BLACK_CPT,
         'altitude' => ALTITUDE_D,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_BAD_VISIBILITY, MODULE_TURBULENCE, MODULE_ALARMS, MODULE_WINDS, MODULE_INTERN]
     ],
     APPROACH_EXP_GREEN_CPT => [
-        'tags' => ['turbulence', 'new'],
+        'tags' => ['turbulence'],
         'approach' => APPROACH_EXP_GREEN_CPT,
         'altitude' => ALTITUDE_B,
         'modules' => [MODULE_TRAFFIC, MODULE_TURNS, MODULE_TURBULENCE, MODULE_KEROSENE, MODULE_SPECIAL_ABILITIES],

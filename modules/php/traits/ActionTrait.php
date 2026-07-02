@@ -171,7 +171,10 @@ trait ActionTrait
 
             $continue = $this->planeManager->resolveDicePlacement($die, $force);
             if ($continue) {
-                if (in_array($die->type, [DICE_PLAYER])) {
+                if ($die->type === DICE_PLAYER && $actionSpace['type'] !== ACTION_SPACE_INTERN) {
+                    $this->handleTurbulenceAndBadVisibility($playerId);
+                }
+                if ($die->type === DICE_INTERN && boolval($this->getGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC)) === false) {
                     $this->handleTurbulenceAndBadVisibility($playerId);
                 }
 
@@ -239,6 +242,10 @@ trait ActionTrait
                     'die' => $internDie,
                     'icon_dice' => [$internDie]
                 ]);
+
+                if (boolval($this->getGlobalVariable(INTERN_TRIGGERED_THROUGH_TRAFFIC)) === false) {
+                    $this->handleTurbulenceAndBadVisibility($playerId);
+                }
 
                 $this->gamestate->nextState("");
             } else {

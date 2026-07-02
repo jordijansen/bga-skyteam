@@ -34,6 +34,12 @@ trait DebugTrait
         $this->planeManager->save($plane);
     }
 
+    function debug_jump()
+    {
+        $this->gamestate->changeActivePlayer(2380015);
+        $this->gamestate->jumpToState(ST_DICE_PLACEMENT_SELECT);
+    }
+
     function debug_deleteLegacyData()
     {
         $this->removeLegacyTeamData();

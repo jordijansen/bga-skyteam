@@ -13,20 +13,23 @@ const determineMaxZoomLevel = (game: SkyTeamGame) => {
 const getZoomLevels = (maxZoomLevel: number) => {
     let zoomLevels = [];
     let increments = 0.05;
+    for (let i = 1; i <= 9; i++) {
+        zoomLevels.push(1 - (increments * i));
+    }
+
     if (maxZoomLevel > 1) {
         const maxZoomLevelsAbove1 = maxZoomLevel - 1;
         increments = (maxZoomLevelsAbove1 / 9)
-        zoomLevels = [];
-        for (let i = 1; i <= 9; i++) {
-            zoomLevels.push((increments * i) + 1);
+        if (increments > 0.05) {
+            for (let i = 1; i <= 9; i++) {
+                zoomLevels.push((increments * i) + 1);
+            }
         }
-    }
-    for (let i = 1; i <= 9; i++) {
-        zoomLevels.push(1 - (increments * i));
     }
     zoomLevels = [...zoomLevels, 1, maxZoomLevel];
     zoomLevels = zoomLevels.sort();
     zoomLevels = zoomLevels.filter(zoomLevel => (zoomLevel <= maxZoomLevel) && (zoomLevel > 0.3))
+
     return zoomLevels;
 }
 

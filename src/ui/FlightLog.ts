@@ -60,7 +60,7 @@ class FlightLog {
                             }
                         }
 
-                        html += `<div class="st-flight-log-row">`
+                        html += `<div class="st-flight-log-row" data-active="${this.game.gamedatas.scenario.id === Number(scenarioId)}">`
                         html += `    <div class="st-flight-log-category" data-type="${approach.category}">${FlightLog.getTagsLabel(scenario.tags)}</div>`
                         html += `    <div class="st-flight-log-code">${scenarioCode.split('').map(codeLetter => `<div class="st-flight-log-code-letter">${codeLetter}</div>`).join('')}</div>`
                         html += `    <div class="st-flight-log-title">${scenarioName} ${scenario.modules.includes('real-time') ? '<i class="fa6 fa6-clock"></i>' : ''} ${scenario.tags.includes('new') ? `<i class="fa fa6-star"></i>` : ''}</div>`
